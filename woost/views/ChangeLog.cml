@@ -90,12 +90,15 @@ from woost.views.uigeneration import backoffice_display
             for item in self.items:
                 self.changes.extend(item.changes)
 
-        if self.changesets is None and self.changes:
-            changesets = set()
-            changesets.update(change.changeset for change in self.changes)
-            self.changesets = list(changesets)
-            self.changesets.sort(key = lambda changeset: changeset.date)
-            self.changesets.reverse()
+        if self.changesets is None:
+            if self.changes:
+                changesets = set()
+                changesets.update(change.changeset for change in self.changes)
+                self.changesets = list(changesets)
+                self.changesets.sort(key = lambda changeset: changeset.date)
+                self.changesets.reverse()
+            else:
+                self.changesets = ()
         ?>
     </py:ready>
 
