@@ -64,6 +64,7 @@ def require_all_translation_requests(
     language_paths = None,
     policy = REQUIRE_MISSING_TRANSLATIONS,
     state = None,
+    subset = None,
     verbose = False
 ):
     if language_paths is None:
@@ -79,7 +80,10 @@ def require_all_translation_requests(
         for model in models:
             print " - ", model.__name__
 
-    for instance in cls.select():
+    if subset is None:
+        subset = cls.select()
+
+    for instance in subset:
 
         if not isinstance(instance, models):
             continue
