@@ -53,7 +53,7 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
-        "cocktail==1.2"
+        "cocktail>=1.2,<1.3"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
