@@ -273,12 +273,17 @@ def any_translation(obj, language_chain = None, **kwargs):
     if not language_chain:
         return translations(obj, **kwargs)
     else:
+        if isinstance(obj, schema.SchemaObject):
+            chain_kwargs = kwargs.copy()
+            chain_kwargs.setdefault("discard_generic_translation", True)
+        else:
+            chain_kwargs = kwargs
+
         for language in language_chain:
             label = translations(
                 obj,
                 language = language,
-                discard_generic_translation = True,
-                **kwargs
+                **chain_kwargs
             )
             if label:
                 return label

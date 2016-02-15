@@ -63,7 +63,7 @@ class PDFExtension(Extension):
         import os
         from shutil import rmtree
         from tempfile import mkdtemp
-        from subprocess import Popen
+        from subprocess import Popen, PIPE
         import cherrypy
         from cocktail.controllers import Location, serve_file
         from woost.controllers import BaseCMSController
@@ -82,10 +82,13 @@ class PDFExtension(Extension):
 
                 # Create the file
                 command = extension.command % {
-                    "url": unicode(location),
+                    "url": unicode("'%s'" % location),
                     "output_file": pdf_file_path
                 }
-                proc = Popen(command.encode("utf-8"), shell = True)
+                proc = Popen(command.encode("utf-8"),
+                    shell = True,
+                    stderr = PIPE
+                )
                 stdout, stderr = proc.communicate()
 
                 if proc.returncode:

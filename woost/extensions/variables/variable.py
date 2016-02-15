@@ -12,7 +12,8 @@ class Variable(Item):
     members_order = [
         "identifier",
         "text",
-        "translated_text"
+        "translated_text",
+        "dynamic_value"
     ]
 
     identifier = schema.String(
@@ -32,7 +33,7 @@ class Variable(Item):
         edit_control = "cocktail.html.TextArea"
     )
 
-    expression = schema.CodeBlock(
+    dynamic_value = schema.CodeBlock(
         language = "python"
     )
 
@@ -40,11 +41,11 @@ class Variable(Item):
 
         text = self.translated_text or self.text
 
-        expr = self.expression
+        expr = self.dynamic_value
         if expr:
             code_object = compile(
-                self.expression,
-                "%r.expression" % self,
+                self.dynamic_value,
+                "%r.dynamic_value" % self,
                 "exec"
             )
             context = {"self": self, "text": text}
