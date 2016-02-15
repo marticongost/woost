@@ -55,7 +55,7 @@ of its features include:\n"
         "simplejson",
         "enum34",
         "clipboard",
-        "cocktail==1.7"
+        "cocktail>=1.7,<1.8"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
