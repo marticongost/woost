@@ -9,7 +9,7 @@ in python.
 @since:			October 2008
 """
 
-__version__ = "1.1"
+__version__ = "1.1.1"
 
 from woost.application import Application
 from woost.translations import strings
