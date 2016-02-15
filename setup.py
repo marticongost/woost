@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "1.2",
+    version = "1.2.1",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -53,7 +53,7 @@ of its features include:\n"
     ],
     install_requires = [
         "simplejson",
-        "cocktail==1.0"
+        "cocktail>=1.0,<1.1"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
