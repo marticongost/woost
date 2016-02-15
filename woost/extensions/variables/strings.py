@@ -37,7 +37,7 @@ translations.define("Variable.translated_text",
     en = u"Translated text"
 )
 
-translations.define("Variable.expression",
+translations.define("Variable.dynamic_value",
     ca = u"Expressió",
     es = u"Expresión",
     en = u"Expression"

@@ -44,7 +44,8 @@ class VariablesExtension(Extension):
 
         from woost.extensions.variables import (
             strings,
-            variable
+            variable,
+            migration
         )
 
         from woost.controllers.publishablecontroller \
