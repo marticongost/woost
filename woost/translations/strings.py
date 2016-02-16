@@ -3368,6 +3368,18 @@ translations.define("User-plural",
     en = u"Users"
 )
 
+translations.define("User.user_data",
+    ca = u"Dades de l'usuari",
+    es = u"Datos del usuario",
+    en = u"User data"
+)
+
+translations.define("User.language_preferences",
+    ca = u"Preferències d'idioma",
+    es = u"Preferencias de idioma",
+    en = u"Language preferences"
+)
+
 translations.define("User.email",
     ca = u"Correu electrònic",
     es = u"Correo electrónico",
