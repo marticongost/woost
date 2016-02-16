@@ -61,6 +61,7 @@ class User(Item):
         "email",
         "password",
         "enabled",
+        "roles",
         "prefered_language",
         "backoffice_language_chain",
         "backoffice_visible_translations"
@@ -72,7 +73,8 @@ class User(Item):
         descriptive = True,
         max = 255,
         indexed = True,
-        format = "^.+@.+$"
+        format = "^.+@.+$",
+        member_group = "user_data"
     )
 
     password = schema.String(
@@ -87,7 +89,22 @@ class User(Item):
         edit_control = display_factory(
             "cocktail.html.PasswordBox",
             autocomplete = "off"
-        )
+        ),
+        member_group = "user_data"
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        member_group = "user_data"
+    )
+
+    roles = schema.Collection(
+        items = "woost.models.Role",
+        bidirectional = True,
+        listed_by_default = True,
+        member_group = "user_data"
     )
 
     def _backoffice_language_default():
@@ -98,10 +115,6 @@ class User(Item):
         from woost.models.configuration import Configuration
         return Configuration.backoffice_language.enumeration
 
-    def _backoffice_language_chain_enumeration(ctx):
-        from woost.models.configuration import Configuration
-        return Configuration.instance.languages
-
     prefered_language = schema.String(
         required = True,
         default = schema.DynamicDefault(_backoffice_language_default),
@@ -109,38 +122,25 @@ class User(Item):
         translate_value = lambda value, language = None, **kwargs:
             "" if value is None else translations(value, language, **kwargs),
         text_search = False,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "language_preferences"
     )
 
     backoffice_language_chain = schema.Collection(
-        items = schema.String(
-            enumeration = _backoffice_language_chain_enumeration,
-            edit_control = "cocktail.html.TextBox"
-        ),
+        items = LocaleMember(),
         searchable = False,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "language_preferences"
     )
 
     del _backoffice_language_default
     del _backoffice_language_enumeration
-    del _backoffice_language_chain_enumeration
 
     backoffice_visible_translations = schema.Collection(
         items = LocaleMember(),
-        edit_control = "cocktail.html.CheckList",
-        searchable = False
-    )
-
-    roles = schema.Collection(
-        items = "woost.models.Role",
-        bidirectional = True,
-        listed_by_default = True
-    )
-
-    enabled = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False
+        edit_control = "cocktail.html.SplitSelector",
+        searchable = False,
+        member_group = "language_preferences"
     )
 
     @classmethod
