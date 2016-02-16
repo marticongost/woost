@@ -54,7 +54,8 @@ class UserEditNode(EditNode):
                     name = "password_confirmation",
                     edit_control = "cocktail.html.PasswordBox",
                     visible_in_detail_view = False,
-                    required = password_member.required
+                    required = password_member.required,
+                    member_group = password_member.member_group
                 )
                 form_schema.add_member(password_conf_member)
                 order.insert(pos + 1, "password_confirmation")
@@ -65,7 +66,8 @@ class UserEditNode(EditNode):
                         name = "change_password",
                         required = True,
                         default = False,
-                        visible_in_detail_view = False
+                        visible_in_detail_view = False,
+                        member_group = password_member.member_group
                     )
                     form_schema.add_member(change_password_member)
                     order.insert(pos, "change_password")
