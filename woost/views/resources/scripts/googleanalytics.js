@@ -56,7 +56,9 @@ woost.ga.getEventData = function (element) {
 woost.ga.eventTrigger = function (e) {
     var gaEvent = woost.ga.getEventData(this);
     gaEvent.transport = "beacon";
-    ga("send", "event", gaEvent);
+    if (window.ga) {
+        ga("send", "event", gaEvent);
+    }
 }
 
 jQuery(function () {
