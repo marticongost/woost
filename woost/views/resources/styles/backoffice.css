@@ -1064,6 +1064,12 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     background-color: #e0e0e0;
 }
 
+.BackOfficeLayout .Table td th {
+    background: none;
+    background-color: transparent;
+    border: none;
+}
+
 .BackOfficeLayout .ContentTable td,
 .BackOfficeLayout .ContentTable td * {
     cursor: default;
