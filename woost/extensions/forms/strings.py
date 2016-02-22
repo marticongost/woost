@@ -440,6 +440,12 @@ translations.define("OptionsFieldOption.title",
     en = u"Name"
 )
 
+translations.define("OptionsFieldOption.enabled",
+    ca = u"Visible",
+    es = u"Visible",
+    en = u"Enabled"
+)
+
 # EmailAddressField
 #------------------------------------------------------------------------------
 translations.define("EmailAddressField",
