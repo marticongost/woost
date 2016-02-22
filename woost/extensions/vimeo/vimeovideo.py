@@ -65,7 +65,7 @@ def import_url_as_vimeo_video(url_import):
     if video_id:
         item = VimeoVideo()
         url_import.apply_scraped_info(item)
-        item.vimeo_id = video_id
+        item.video_id = video_id
         return item
 
     return None
