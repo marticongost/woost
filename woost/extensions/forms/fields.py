@@ -423,7 +423,8 @@ class OptionsFieldOption(Item):
 
     members_order = [
         "field",
-        "title"
+        "title",
+        "enabled"
     ]
 
     field = schema.Reference(
@@ -438,6 +439,11 @@ class OptionsFieldOption(Item):
         spellcheck = True,
         descriptive = True,
         translated = True
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True
     )
 
 
@@ -473,7 +479,11 @@ class OptionsField(Field):
     def _init_member(self, member):
         Field._init_member(self, member)
         member.type = OptionsFieldOption
-        member.enumeration = lambda ctx: self.options
+        member.enumeration = lambda ctx: [
+            option
+            for option in self.options
+            if option.enabled
+        ]
 
 
 class EmailAddressField(Field):
