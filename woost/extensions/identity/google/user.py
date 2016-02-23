@@ -10,7 +10,7 @@ User.add_member(
     schema.String("google_user_id",
         indexed = True,
         unique = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         listed_by_default = False
     )
 )
