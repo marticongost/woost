@@ -5,6 +5,7 @@
 
 .TextBlockView > .block_link {
     display: block;
+    text-decoration: none;
 }
 
 .TextBlockView .image_gallery .image_entry {
@@ -96,10 +97,6 @@
     display: inline !important;
     margin: 0;
     padding: 0;
-}
-
-.TextBlockView.inline a.block_link {
-    text-decoration: none;
 }
 
 .TextBlockView.inline a.block_link .text_container {
