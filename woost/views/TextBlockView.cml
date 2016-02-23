@@ -72,8 +72,8 @@ from cocktail.controllers import Location
 
             self.block_link.parameters = parameters
 
-            if self.link_opens_in_new_window:
-                self.block_link["target"] = "_blank"
+        if self.link_opens_in_new_window:
+            self.block_link["target"] = "_blank"
         ?>
     </py:ready>
 
