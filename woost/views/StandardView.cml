@@ -55,12 +55,7 @@ from woost import app
                 <span py:id="site_title_text">
                     <py:ready>
                         <?py
-                        if self._site_logo is not None and self._site_title:
-                            element.set_style("position", "absolute")
-                            element.set_style("z-index", "0")
-                            element.set_style("left", "0")
-                            element.set_style("top", "0")
-                            element.set_style("visibility", "hidden")
+                        if self._site_logo is None and self._site_title:
                             element.append(self._site_title)
                         else:
                             element.visible = False
