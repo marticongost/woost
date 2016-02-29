@@ -32,14 +32,14 @@ body {
     background-color: white;
 }
 
-.GenericSiteLayout .header {
+.GenericSiteLayout .site_header {
     position: relative;
     padding: 1.2em 2em;
     background-color: #3e4351;
     margin-bottom: 1em;
 }
 
-.GenericSiteLayout .header h1 {
+.GenericSiteLayout .site_header h1 {
     font-size: 1.8em;
     padding: 0;
     margin: 0;
@@ -47,13 +47,13 @@ body {
     color: white;
 }
 
-.GenericSiteLayout .header h1 a {
+.GenericSiteLayout .site_header h1 a {
     color: inherit;
 }
 
 /* Language selector
 -----------------------------------------------------------------------------*/
-.GenericSiteLayout .header .LanguageSelector {
+.GenericSiteLayout .site_header .LanguageSelector {
     position: absolute;
     right: 2em;
     top: 1.5em;
@@ -62,47 +62,47 @@ body {
     margin: 0;
 }
 
-.GenericSiteLayout .header .LanguageSelector li {
+.GenericSiteLayout .site_header .LanguageSelector li {
     display: inline;
     padding: 0;
     margin: 0;
 }
 
-.GenericSiteLayout .header .LanguageSelector li + li {
+.GenericSiteLayout .site_header .LanguageSelector li + li {
     border-left: 1px solid #666;
     margin-left: 1em;
     padding-left: 1em;
 }
 
-.GenericSiteLayout .header .LanguageSelector a {
+.GenericSiteLayout .site_header .LanguageSelector a {
     text-decoration: none;
     font-size: 1.2em;
 }
 
-.GenericSiteLayout .header .LanguageSelector strong a {
+.GenericSiteLayout .site_header .LanguageSelector strong a {
     color: white;
 }
 
 /* Active user session
 -----------------------------------------------------------------------------*/
-.GenericSiteLayout .header .identity {
+.GenericSiteLayout .site_header .identity {
     position: absolute;
     right: 30em;
     top: 1.5em;
     color: white;
 }
 
-.GenericSiteLayout .header .identity * {
+.GenericSiteLayout .site_header .identity * {
     display: inline-block;
 }
 
-.GenericSiteLayout .header .identity form {
+.GenericSiteLayout .site_header .identity form {
     margin: 0;
     padding: 0;
 }
 
-.GenericSiteLayout .header a,
-.GenericSiteLayout .header .identity button {
+.GenericSiteLayout .site_header a,
+.GenericSiteLayout .site_header .identity button {
     display: inline;
     font-size: inherit;
     background: none;
@@ -113,11 +113,11 @@ body {
     cursor: pointer;
 }
 
-.GenericSiteLayout .header .identity strong {
+.GenericSiteLayout .site_header .identity strong {
     font-size: 1.2em;
 }
 
-.GenericSiteLayout .header .identity button {
+.GenericSiteLayout .site_header .identity button {
     font-size: 1.2em;
     margin-left: 0.7em;
     color: white;
@@ -126,7 +126,7 @@ body {
 
 /* Site menu
 -----------------------------------------------------------------------------*/
-.GenericSiteLayout .navigation {
+.GenericSiteLayout .site_navigation {
     float: left;
     width: 20em;
 }
@@ -165,7 +165,7 @@ body {
     font-weight: bold;
 }
 
-.GenericSiteLayout .navigation + .main {
+.GenericSiteLayout .site_navigation + .main_article {
     border-left: 1px solid #ddd;
     margin-left: -1px;
 }
@@ -180,20 +180,20 @@ body {
     padding-bottom: 1.5em;
 }
 
-.GenericSiteLayout .main .content_title_label {
+.GenericSiteLayout .main .main_heading {
     font-size: 2em;
 }
 
-.GenericSiteLayout .main .content {
+.GenericSiteLayout .main .main_content {
     clear: both;
 }
 
-.GenericSiteLayout .main .content p {
+.GenericSiteLayout .main .main_content p {
     font-size: 1.3em;
     color: #333;
 }
 
-.GenericSiteLayout .footer {
+.GenericSiteLayout .site_footer {
     clear: left;
 }
 

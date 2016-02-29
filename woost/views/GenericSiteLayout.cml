@@ -11,7 +11,7 @@ from woost import app
     self.add_resource("/resources/styles/GenericSiteLayout.css")
     ?>
 
-    <py:with py:element="self.header">
+    <py:with py:element="self.site_header">
         <?py
         if app.installation_color:
             element.set_style("background-color", app.installation_color)
