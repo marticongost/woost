@@ -22,6 +22,7 @@ class Style(Item):
         "applicable_to_blocks",
         "custom_class_name",
         "html_tag",
+        "editor_keyboard_shortcut",
         "declarations",
         "admin_declarations"
     ]
@@ -59,6 +60,10 @@ class Style(Item):
     )
 
     html_tag = schema.String(
+        listed_by_default = False
+    )
+
+    editor_keyboard_shortcut = schema.String(
         listed_by_default = False
     )
 

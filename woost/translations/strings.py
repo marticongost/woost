@@ -4157,6 +4157,12 @@ translations.define("Style.html_tag-explanation",
          u"applied to using the rich text editor."
 )
 
+translations.define("Style.editor_keyboard_shortcut",
+    ca = u"Drecera de teclat",
+    es = u"Atajo de teclado",
+    en = u"Keyboard shortcut"
+)
+
 translations.define("Style.applicable_to_text",
     ca = u"Aplicable al text",
     es = u"Aplicable al texto",

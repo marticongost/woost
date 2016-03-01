@@ -41,5 +41,13 @@ woost.richTextEditor.init = function (editor) {
     editor.on("PastePostProcess", function (e) {
         cleanDOM(e.node);
     });
+
+    if (editor.settings.woostShortcuts) {
+        for (var i = 0; i < editor.settings.woostShortcuts.length; i++) {
+            var shortcut = editor.settings.woostShortcuts[i];
+            var shortcutCallback = new Function(shortcut[2]);
+            editor.addShortcut(shortcut[0], shortcut[1], shortcutCallback, editor);
+        }
+    }
 }
 
