@@ -66,6 +66,13 @@ class RichTextEditor(TinyMCE):
     def _get_default_styles(self):
         return list(Style.select({"applicable_to_text": True}))
 
+    def _get_tinymce_style_definition(self, style):
+        return {
+            "title": translations(style),
+            "inline": "span",
+            "classes": style.class_name
+        }
+
     def _ready(self):
 
         styles = self.styles
@@ -78,11 +85,7 @@ class RichTextEditor(TinyMCE):
                     "woost.views.RichTextEditor.styles_menu_entry"
                 ),
                 "items": [
-                    {
-                        "title": translations(style),
-                        "inline": "span",
-                        "classes": style.class_name
-                    }
+                    self._get_tinymce_style_definition(style)
                     for style in styles
                 ]
             }])
