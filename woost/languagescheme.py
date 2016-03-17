@@ -50,10 +50,12 @@ class LanguageScheme(object):
 
     def infer_language(self):
 
+        available_languages = Configuration.instance.get_enabled_languages()
+
         # Check for a language preference in a cookie
         cookie = cherrypy.request.cookie.get("language")
 
-        if cookie:
+        if cookie and cookie.value in available_languages:
             return cookie.value
 
         config = Configuration.instance
@@ -63,8 +65,6 @@ class LanguageScheme(object):
             accept_language = cherrypy.request.headers.get("Accept-Language", None)
 
             if accept_language:
-                available_languages = \
-                    Configuration.instance.get_enabled_languages()
                 best_language = None
                 best_score = None
 
