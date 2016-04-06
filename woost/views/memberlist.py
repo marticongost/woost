@@ -20,8 +20,8 @@ class MemberList(Element):
     __enumeration = None
 
     def _build(self):
-        self.add_resource("/cocktail/scripts/autocomplete.js")
-        self.add_resource("/resources/scripts/MemberList.js")
+        self.add_resource("cocktail://scripts/autocomplete.js")
+        self.add_resource("woost://scripts/MemberList.js")
 
     def _ready(self):
 

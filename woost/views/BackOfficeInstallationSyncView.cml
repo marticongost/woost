@@ -16,7 +16,7 @@ from woost.models import File
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/BackOfficeInstallationSyncView.js")
+    self.add_resource("woost://scripts/BackOfficeInstallationSyncView.js")
     self.action_context.add("installation_sync")
     ?>
 

@@ -5,7 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/scripts/SiteInstallationForm.js")
+    self.add_resource("woost://scripts/SiteInstallationForm.js")
     ?>
 
     <py:with py:def="control" py:args="obj, member">

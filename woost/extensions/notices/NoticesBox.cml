@@ -14,7 +14,7 @@ from woost import app
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/notices-NoticesBox.js")
+    self.add_resource("woost://scripts/notices-NoticesBox.js")
     ?>
 
     <button

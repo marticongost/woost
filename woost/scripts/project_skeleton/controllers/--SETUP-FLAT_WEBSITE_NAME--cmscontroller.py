@@ -22,7 +22,5 @@ class --SETUP-WEBSITE--CMSController(CMSController):
     _cp_config["rendering.engine"] = "cocktail"
 
     class ApplicationContainer(CMSController.ApplicationContainer):
-        --SETUP-FLAT_WEBSITE_NAME--_resources = folder_publisher(
-            resource_filename("--SETUP-PACKAGE--.views", "resources")
-        )
+        pass
 

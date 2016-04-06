@@ -8,7 +8,8 @@ from threading import local
 from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod
 from cocktail.caching import Cache
-from cocktail.controllers import context
+from cocktail.controllers import context, folder_publisher
+from cocktail.html.resources import resource_repositories
 
 
 class Application(object):
@@ -277,6 +278,19 @@ http://woost.info
         .. type:: `woost.models.navigation_point`
         """
     )
+
+    def add_resources_repository(self, repository_name, repository_path):
+        from woost.controllers.cmsresourcescontroller import CMSResourcesController
+        resource_repositories.define(
+            repository_name,
+            "/resources/" + repository_name,
+            repository_path
+        )
+        setattr(
+            CMSResourcesController,
+            repository_name.replace(".", "-"),
+            folder_publisher(repository_path)
+        )
 
 
 @GenericMethod

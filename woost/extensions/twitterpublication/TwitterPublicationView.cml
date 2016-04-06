@@ -23,8 +23,8 @@
     ?>
 
     <?py
-    self.add_resource("/resources/styles/twitterpublication-TwitterPublicationView.css")
-    self.add_resource("/resources/scripts/twitterpublication-TwitterPublicationView.js")
+    self.add_resource("woost://styles/twitterpublication-TwitterPublicationView.css")
+    self.add_resource("woost://scripts/twitterpublication-TwitterPublicationView.js")
     ?>
 
     <py:ready>
@@ -129,7 +129,7 @@
                         ?>
                         <img py:local_id="outcome_icon"
                             py:visible="${self.action == 'publish'}"
-                            src="/resources/images/twitterpublication-${'error' if error else 'success'}.png"/>
+                            src="${normalize_resource_uri('woost://images/twitterpublication-%s.png' % ('error' if error else 'success'))}"/>
                         ${outcome_translation}
                     </td>
                 </tr>

@@ -8,7 +8,7 @@ from cocktail.controllers.viewstate import view_state
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/styles/SurveyResultsView.css")
+    self.add_resource("woost://styles/SurveyResultsView.css")
     ?>
 
     <py:ready>

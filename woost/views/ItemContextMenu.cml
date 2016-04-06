@@ -12,7 +12,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/ItemContextMenu.js")
+    self.add_resource("woost://scripts/ItemContextMenu.js")
     ?>
 
     <py:ready>

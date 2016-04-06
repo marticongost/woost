@@ -10,9 +10,9 @@ from simplejson import dumps
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/cocktail/scripts/jquery.cookie.js")
-    self.add_resource("/cocktail/scripts/jquery.ba-hashchange.min.js")
-    self.add_resource("/resources/scripts/BackOfficeEditView.js")
+    self.add_resource("cocktail://scripts/jquery.cookie.js")
+    self.add_resource("cocktail://scripts/jquery.ba-hashchange.min.js")
+    self.add_resource("woost://scripts/BackOfficeEditView.js")
     self.action_context.add("edit")
     ?>
 

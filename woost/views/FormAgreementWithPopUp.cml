@@ -17,7 +17,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/FormAgreementWithPopUp.js")
+    self.add_resource("woost://scripts/FormAgreementWithPopUp.js")
     ?>
 
     <py:cocktail.html.CheckBox py:id="input"/>

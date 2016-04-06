@@ -10,9 +10,9 @@ from cocktail import schema
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/cocktail/styles/jquery.tablednd.css")
-    self.add_resource("/cocktail/scripts/jquery.tablednd.js")
-    self.add_resource("/resources/scripts/TreeContentView.js")
+    self.add_resource("cocktail://styles/jquery.tablednd.css")
+    self.add_resource("cocktail://scripts/jquery.tablednd.js")
+    self.add_resource("woost://scripts/TreeContentView.js")
     ?>
 
     <?py-class

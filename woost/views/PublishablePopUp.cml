@@ -12,7 +12,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/PublishablePopUp.js")
+    self.add_resource("woost://scripts/PublishablePopUp.js")
     ?>
 
     <py:ready>

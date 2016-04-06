@@ -22,7 +22,7 @@ import rfc822
 import cherrypy
 from cherrypy.lib.cptools import validate_since
 from simplejson import dumps
-from pkg_resources import resource_filename, iter_entry_points
+from pkg_resources import resource_filename
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
@@ -31,7 +31,6 @@ from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher,
     Location,
-    folder_publisher,
     try_decode,
     session
 )
@@ -53,6 +52,7 @@ from woost.models import (
 )
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
+from woost.controllers.cmsresourcescontroller import CMSResourcesController
 from woost.controllers.imagescontroller import ImagesController
 from woost.controllers.autocomplete import AutocompleteController
 from woost.controllers.cmsmetadatacontroller import CMSMetadataController
@@ -201,14 +201,7 @@ class CMSController(BaseCMSController):
             # All requests are forwarded to the nested dispatcher:
             return self.__dispatcher.respond(args, self.__cms)
 
-        # Static resources
-        resources = folder_publisher(
-            resource_filename("woost.views", "resources")
-        )
-
-        cocktail = folder_publisher(
-            resource_filename("cocktail.html", "resources")
-        )
+        resources = CMSResourcesController()
 
     def session_middleware(self, app):
         return SessionMiddleware(app, session.config)

@@ -21,7 +21,7 @@ from cocktail.html import EmbeddedResources
     ?>
 
     <?py
-    self.add_resource("/resources/styles/newsletters.css")
+    self.add_resource("woost://styles/newsletters.css")
     ?>
 
     <py:block py:def="content">

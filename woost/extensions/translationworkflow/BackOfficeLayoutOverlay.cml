@@ -10,7 +10,7 @@ from woost.models import Role
     py:class="woost.views.BackOfficeLayout">
 
     <?py
-    self.add_resource("/resources/styles/translationworkflow.css")
+    self.add_resource("woost://styles/translationworkflow.css")
     ?>
 
     <py:with py:element="self.user_views_bar">

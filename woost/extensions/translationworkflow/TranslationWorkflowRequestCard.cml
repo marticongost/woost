@@ -11,7 +11,7 @@ from woost.extensions.translationworkflow.request import TranslationWorkflowRequ
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/styles/TranslationWorkflowRequestCard.css")
+    self.add_resource("woost://styles/TranslationWorkflowRequestCard.css")
     ?>
 
     <py:with py:element="self.item_info">

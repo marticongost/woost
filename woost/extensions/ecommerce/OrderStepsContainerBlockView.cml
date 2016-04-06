@@ -50,7 +50,7 @@ from woost.extensions.ecommerce.utils import catalog_current_state_uri
 
 
     <?py
-    self.add_resource("/cocktail/scripts/form.js")
+    self.add_resource("cocktail://scripts/form.js")
     ?>
 
     <button

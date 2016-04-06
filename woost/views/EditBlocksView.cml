@@ -25,7 +25,7 @@ from woost.models import Block, Configuration, block_type_groups
     ?>
 
     <?py
-    self.add_resource("/resources/styles/EditBlocksView.css")
+    self.add_resource("woost://styles/EditBlocksView.css")
     ?>
 
     <py:ready>

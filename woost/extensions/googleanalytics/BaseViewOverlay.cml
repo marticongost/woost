@@ -6,7 +6,7 @@
     py:class="woost.views.BaseView">
 
     <?py
-    self.add_resource("/resources/scripts/googleanalytics.js")
+    self.add_resource("woost://scripts/googleanalytics.js")
     ?>
 
 </py:overlay>

@@ -13,7 +13,7 @@ from woost.controllers.notifications import Notification
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/NotificationBox.js")
+    self.add_resource("woost://scripts/NotificationBox.js")
     ?>
 
     <py:ready>

@@ -24,7 +24,7 @@ class ContentTypePicker(ContentTypeTree):
 
     def _build(self):
         ContentTypeTree._build(self)
-        self.add_resource("/resources/scripts/ContentTypePicker.js")
+        self.add_resource("woost://scripts/ContentTypePicker.js")
 
     def _ready(self):
 

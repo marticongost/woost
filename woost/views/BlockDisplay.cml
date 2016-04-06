@@ -24,7 +24,7 @@ from woost.controllers.backoffice.useractions import get_block_clipboard_content
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/BlockDisplay.js")
+    self.add_resource("woost://scripts/BlockDisplay.js")
     ?>
 
     <py:ready>
@@ -99,7 +99,7 @@ from woost.controllers.backoffice.useractions import get_block_clipboard_content
     <span
         py:def="status_label" py:args="status"
         title="${translations('woost.views.BlockDisplay.' + status + '_status.title')}">
-        <img py:local_id="icon" src="/resources/images/blocks-status-${status}.png"/>
+        <img py:local_id="icon" src="${normalize_resource_uri('woost://images/blocks-status-' + status + '.png')}"/>
         <span py:local_id="label">${translations("woost.views.BlockDisplay." + status + "_status.label")}</span>
     </span>
 

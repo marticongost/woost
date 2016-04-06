@@ -15,7 +15,7 @@ from woost.extensions.ecommerce.basket import Basket
 
     <?py
     self.add_resource("/ecommerce_state", mime_type = "text/javascript")
-    self.add_resource("/resources/scripts/ecommerce-BasketIndicator.js")
+    self.add_resource("woost://scripts/ecommerce-BasketIndicator.js")
     ?>
 
     <py:ready>

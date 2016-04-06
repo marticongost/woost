@@ -43,7 +43,7 @@ Element.depends_on = depends_on
 
 resource_repositories.define(
     "woost",
-    "/resources",
+    "/resources/woost",
     resource_filename("woost.views", "resources")
 )
 

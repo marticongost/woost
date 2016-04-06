@@ -15,7 +15,7 @@ from woost.models import File
     ?>
 
     <?py
-    self.add_resource("/resources/styles/facebookpublication-FacebookAlbumsView.css")
+    self.add_resource("woost://styles/facebookpublication-FacebookAlbumsView.css")
     ?>
 
     <py:with py:element="self.body">
@@ -85,7 +85,7 @@ from woost.models import File
                     </td>
                     <td py:local_id="outcome_cell">
                         <?py element.add_class("publication_error" if error else "publication_success") ?>
-                        <img py:local_id="outcome_icon" src="/resources/images/facebookpublication-${'error' if error else 'success'}.png"/>
+                        <img py:local_id="outcome_icon" src="${normalize_resource_uri('woost://images/facebookpublication-%s.png' % ('error' if error else 'success'))}"/>
                         <span py:local_id="outcome_label">
                             ${translations(error or "woost.extensions.facebookpublication.FacebookAlbumsView.success")}
                             <?py

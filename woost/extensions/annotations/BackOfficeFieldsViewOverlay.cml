@@ -9,7 +9,7 @@ from woost.extensions.annotations.annotations import Annotation
     py:class="woost.views.BackOfficeFieldsView">
 
     <?py
-    self.add_resource("/resources/scripts/annotations-BackOfficeFieldsViewOverlay.js")
+    self.add_resource("woost://scripts/annotations-BackOfficeFieldsViewOverlay.js")
     ?>
 
     <py:with py:def="edit_form">
@@ -28,7 +28,7 @@ from woost.extensions.annotations.annotations import Annotation
             <py:with py:element="element.label">
                 <img
                     py:local_id="icon"
-                    src="/resources/images/annotations.png"
+                    src="${normalize_resource_uri('woost://images/annotations.png')}"
                     alt="${translations('woost.extensions.annotations.FormOverlay.annotationDropdown.label')}"/>
             </py:with>
         </py:cocktail.html.DropdownPanel>
