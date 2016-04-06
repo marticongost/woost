@@ -105,8 +105,8 @@ from woost.controllers.backoffice.useractions import get_view_actions
     ?>
 
     <?py
-    self.add_resource("/cocktail/scripts/selectable.js")
-    self.add_resource("/resources/scripts/ActionBar.js")
+    self.add_resource("cocktail://scripts/selectable.js")
+    self.add_resource("woost://scripts/ActionBar.js")
     self.action_context = set()
     ?>
 

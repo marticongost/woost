@@ -8,7 +8,7 @@ from woost import app
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/styles/GenericSiteLayout.css")
+    self.add_resource("woost://styles/GenericSiteLayout.css")
     ?>
 
     <py:with py:element="self.site_header">

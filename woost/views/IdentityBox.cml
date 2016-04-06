@@ -6,7 +6,7 @@
 
     <?py
     self.add_resource("/current_user", mime_type = "text/javascript")
-    self.add_resource("/resources/scripts/IdentityBox.js")
+    self.add_resource("woost://scripts/IdentityBox.js")
     ?>
 
     <div py:id="box" py:client_model="woost.views.IdentityBox.box">

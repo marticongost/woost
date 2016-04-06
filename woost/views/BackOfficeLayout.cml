@@ -32,16 +32,16 @@ from woost.controllers.backoffice.editstack import (
     ?>
 
     <?py
-    self.add_resource("/resources/styles/backoffice.css")
-    self.add_resource("/cocktail/scripts/form.js")
-    self.add_resource("/resources/scripts/BackOfficeLayout.js")
+    self.add_resource("woost://styles/backoffice.css")
+    self.add_resource("cocktail://scripts/form.js")
+    self.add_resource("woost://scripts/BackOfficeLayout.js")
 
     # TODO: Implement conditional comments for IE more generally
     self.add_head_element(IEConditionalComment(condition = "lt IE 8", children = [
         Element("link",
             rel = "Stylesheet",
             type = "text/css",
-            href = "/resources/styles/backoffice_ie.css")
+            href = "woost://styles/backoffice_ie.css")
     ]))
 
     self.add_head_element(
@@ -49,17 +49,20 @@ from woost.controllers.backoffice.editstack import (
             rel = "Stylesheet",
             type = "text/css",
             media = "print",
-            href = "/resources/styles/print.css")
+            href = "woost://styles/print.css")
     )
 
-    self.add_resource("/cocktail/scripts/jquery.hotkeys.js")
-    self.add_resource("/cocktail/scripts/jquery.query.js")
-    self.add_resource("/cocktail/scripts/selectors.js")
+    self.add_resource("cocktail://scripts/jquery.hotkeys.js")
+    self.add_resource("cocktail://scripts/jquery.query.js")
+    self.add_resource("cocktail://scripts/selectors.js")
 
     self.action_context = set()
     ?>
 
-    <link rel="icon" type="image/png" href="/resources/images/favicon.ico"/>
+    <link
+        rel="icon"
+        type="image/png"
+        href="${normalize_resource_uri('woost://images/favicon.ico')}"/>
 
     <py:ready>
         <?py

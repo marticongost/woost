@@ -78,7 +78,7 @@ from woost.views.uigeneration import backoffice_display
     ?>
 
     <?py
-    self.add_resource("/resources/styles/ChangeLog.css")
+    self.add_resource("woost://styles/ChangeLog.css")
     self.__revision_schemas = {}
     self.__revision_adapters = {}
     ?>

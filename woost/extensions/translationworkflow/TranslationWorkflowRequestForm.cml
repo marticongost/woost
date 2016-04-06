@@ -5,7 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/styles/TranslationWorkflowRequestForm.css")
+    self.add_resource("woost://styles/TranslationWorkflowRequestForm.css")
     self.set_member_label("translated_values", "")
     ?>
 

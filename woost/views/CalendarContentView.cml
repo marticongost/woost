@@ -143,7 +143,7 @@ from cocktail.controllers import view_state
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/CalendarContentView.js")
+    self.add_resource("woost://scripts/CalendarContentView.js")
     ?>
 
     <py:ready>

@@ -26,8 +26,8 @@ from woost.models import Publishable
     ?>
 
     <?py
-    self.add_resource("/resources/styles/ImageGallery.css")
-    self.add_resource("/resources/scripts/ImageGallery.js")
+    self.add_resource("woost://styles/ImageGallery.css")
+    self.add_resource("woost://scripts/ImageGallery.js")
     self.set_client_param("publishableActivationSelector", "a")
     ?>
 
@@ -116,12 +116,12 @@ from woost.models import Publishable
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
-                <img py:local_id="image" src="/resources/images/ImageGallery-previous_button.png" alt=""/>
+                <img py:local_id="image" src="images://ImageGallery-previous_button.png" alt=""/>
             </button>
             <button
                 py:local_id="next_button"
                 title="${translations('woost.views.ImageGallery.next_button')}">
-                <img py:local_id="image" src="/resources/images/ImageGallery-next_button.png" alt=""/>
+                <img py:local_id="image" src="${normalize_resource_uri('woost://images/ImageGallery-next_button.png')}" alt=""/>
             </button>
             <div py:local_id="footnote"/>
             <div py:local_id="original_image_link">

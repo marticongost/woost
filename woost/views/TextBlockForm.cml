@@ -5,7 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/scripts/TextBlockForm.js")
+    self.add_resource("woost://scripts/TextBlockForm.js")
     ?>
 
 </py:woost.views.ContentForm>

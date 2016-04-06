@@ -15,7 +15,7 @@ PasswordBox = loader.get_class("cocktail.html.PasswordBox")
     ?>
 
     <?py
-    self.add_resource("/resources/styles/installer.css")
+    self.add_resource("woost://styles/installer.css")
     ?>
 
     <py:with py:element="self.body">

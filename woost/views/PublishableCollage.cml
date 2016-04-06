@@ -40,8 +40,8 @@ from woost.views.viewfactory import publishable_grid_view_factory
 
     <?py
     self.collage_options = deepcopy(self.collage_options)
-    self.add_resource("/cocktail/scripts/collage.js")
-    self.add_resource("/resources/scripts/PublishableCollage.js")
+    self.add_resource("cocktail://scripts/collage.js")
+    self.add_resource("woost://scripts/PublishableCollage.js")
     ?>
 
     <py:ready>

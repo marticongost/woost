@@ -22,7 +22,7 @@ from woost.extensions.translationworkflow.request \
     ?>
 
     <?py
-    self.add_resource("/resources/styles/TranslationWorkflowRequestCollectionEditor.css")
+    self.add_resource("woost://styles/TranslationWorkflowRequestCollectionEditor.css")
     ?>
 
     <py:with py:element="self.toolbar">

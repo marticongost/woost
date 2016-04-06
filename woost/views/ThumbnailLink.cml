@@ -21,7 +21,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/ThumbnailLink.js")
+    self.add_resource("woost://scripts/ThumbnailLink.js")
     self.set_client_param("publishableActivationSelector", ".ThumbnailLink")
     ?>
 

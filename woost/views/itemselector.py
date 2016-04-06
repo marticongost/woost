@@ -61,7 +61,7 @@ class ItemSelector(Element):
                 self.member.related_type.descriptive_member
 
         if self.descriptive_member:
-            self.add_resource("/resources/scripts/ItemSelector.js")
+            self.add_resource("woost://scripts/ItemSelector.js")
 
             key = self.descriptive_member.name
             if self.descriptive_member.translated:

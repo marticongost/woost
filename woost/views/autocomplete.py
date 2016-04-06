@@ -18,7 +18,7 @@ class Autocomplete(BaseAutocomplete):
 
     def _build(self):
         BaseAutocomplete._build(self)
-        self.add_resource("/resources/scripts/Autocomplete.js")
+        self.add_resource("woost://scripts/Autocomplete.js")
 
     def _ready(self):
         BaseAutocomplete._ready(self)

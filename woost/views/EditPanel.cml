@@ -25,8 +25,8 @@ from woost.models import (
     ?>
 
     <?py
-    self.add_resource("/resources/styles/EditPanel.css")
-    self.add_resource("/resources/scripts/EditPanel.js")
+    self.add_resource("woost://styles/EditPanel.css")
+    self.add_resource("woost://scripts/EditPanel.js")
     ?>
 
     <py:binding>
@@ -53,7 +53,7 @@ from woost.models import (
         title = translations('woost.views.EditPanel.show_panel_button')
         ?>
         <img
-            src="/resources/images/edit.png"
+            src="images://edit.png"
             alt="${title}"
             title="${title} (alt + shift + e)"/>
     </button>
@@ -65,7 +65,7 @@ from woost.models import (
         title = translations('woost.views.EditPanel.close_panel_button')
         ?>
         <img
-            src="/resources/images/EditPanel-close_button.png"
+            src="${normalize_resource_uri('woost://images/EditPanel-close_button.png')}"
             alt="${title}"
             title="${title} (alt + shift + e)"/>
     </button>

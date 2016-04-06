@@ -13,7 +13,7 @@ from woost.models import Configuration
     ?>
 
     <?py
-    self.add_resource("/resources/styles/identity-IdentityProvidersBox.css")
+    self.add_resource("woost://styles/identity-IdentityProvidersBox.css")
     ?>
 
     <py:ready>
@@ -39,7 +39,7 @@ from woost.models import Configuration
 
         <img
             py:local_id="identity_provider_icon"
-            src="/resources/images/${provider.__class__.__name__}.png"/>
+            src="${normalize_resource_uri('woost://images/%s.png' % provider.__class__.__name__)}"/>
 
         <span py:local_id="identity_provider_label">
             ${provider.provider_name}

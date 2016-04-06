@@ -16,7 +16,7 @@ from woost.models.publishable import Publishable
     ?>
 
     <?py
-    self.add_resource("/resources/scripts/LoginFormView.js")
+    self.add_resource("woost://scripts/LoginFormView.js")
     ?>
 
     <py:cocktail.html.List

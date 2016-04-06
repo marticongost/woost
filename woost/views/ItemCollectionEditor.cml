@@ -55,8 +55,8 @@ from woost.controllers.backoffice.useractions import export_user_actions
         entry_selector = ".entries .entry"
     )
 
-    self.add_resource("/cocktail/scripts/jquery-ui.js")
-    self.add_resource("/resources/scripts/ItemCollectionEditor.js")
+    self.add_resource("cocktail://scripts/jquery-ui.js")
+    self.add_resource("woost://scripts/ItemCollectionEditor.js")
     ?>
 
     <py:ready>

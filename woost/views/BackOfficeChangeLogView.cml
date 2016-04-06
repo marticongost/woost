@@ -18,7 +18,7 @@ from cocktail.html.datadisplay import NO_SELECTION
     <?py
     self.action_context.add("changelog")
 
-    self.add_resource("/resources/scripts/BackOfficeChangeLogView.js")
+    self.add_resource("woost://scripts/BackOfficeChangeLogView.js")
     self.add_client_translation("woost.views.BackOfficeChangeLogView collapsed")
     self.add_client_translation("woost.views.BackOfficeChangeLogView expanded")
     ?>

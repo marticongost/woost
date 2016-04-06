@@ -5,7 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?py
-    self.add_resource("/resources/scripts/ContentTypePickerDropdown.js")
+    self.add_resource("woost://scripts/ContentTypePickerDropdown.js")
     ?>
 
     <py:with py:element="self.panel">

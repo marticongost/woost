@@ -24,7 +24,7 @@ from woost.models import Item
                 self.add_class(cls.name)
 
         # Pending changes warning
-        self.add_resource("/resources/scripts/BackOfficeItemView.js")
+        self.add_resource("woost://scripts/BackOfficeItemView.js")
         self.set_client_param("hasPendingChanges", bool(self.changes))
         self.add_client_translation("woost.views.BackOfficeItemView pending changes warning")
         ?>

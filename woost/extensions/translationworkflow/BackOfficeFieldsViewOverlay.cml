@@ -11,7 +11,7 @@ from woost.extensions.translationworkflow.utils \
     py:class="woost.views.BackOfficeFieldsView">
 
     <?py
-    self.add_resource("/resources/scripts/translationworkflow-BackOfficeFieldsViewOverlay.js")
+    self.add_resource("woost://scripts/translationworkflow-BackOfficeFieldsViewOverlay.js")
     ?>
 
     <py:binding>

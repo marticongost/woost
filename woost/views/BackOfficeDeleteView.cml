@@ -26,7 +26,7 @@
     ?>
 
     <?py
-    self.add_resource("/resources/styles/BackOfficeDeleteView.css")
+    self.add_resource("woost://styles/BackOfficeDeleteView.css")
     ?>
 
     <py:binding>
