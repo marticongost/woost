@@ -53,7 +53,7 @@ class IconResolver(object):
         self.icon_repositories = [
             (
                 resource_filename("woost.views", "resources/images/icons"),
-                "/resources/images/icons"
+                "/resources/woost/images/icons"
             )
         ]
         self.file_resolvers = TypeMapping()
