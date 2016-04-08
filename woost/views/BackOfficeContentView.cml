@@ -51,7 +51,7 @@ from woost.models import UserView
                 element["href"] = self.edit_uri(UserView, "fields", **add_user_view_params)
                 ?>
             </py:ready>
-            <img src="/resources/woost/images/add_user_view.png"/>
+            <img src="${normalize_resource_uri('woost://images/add_user_view.png')}"/>
             <span>${translations('woost.views.BackOfficeContentView add user view')}</span>
         </a>
     </py:with>
