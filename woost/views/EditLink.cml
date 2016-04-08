@@ -82,7 +82,7 @@ from woost.models import (
     </py:ready>
 
     <img py:id="icon"
-        src="/resources/images/EditLink-@{self.action}.png"/>
+        src="/resources/woost/images/EditLink-@{self.action}.png"/>
 
     <span py:id="label">
         @{translations("woost.views.EditLink-" + self.action, target_desc = self.target_desc)}

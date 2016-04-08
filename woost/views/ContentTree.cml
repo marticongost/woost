@@ -145,7 +145,7 @@ ACCESSIBLE_DESCENDANTS = 2
             <a py:if="not empty"
                 class="expander"
                 href="?${view_state(expanded = expanded_param)}">
-                <img src="${self.cms.application_uri('resources', 'images', state + '.png')}"/>
+                <img src="${normalize_resource_uri('woost://images/%s.png' % state)}"/>
             </a>
             <?py
             tree_display.tree_label = self.create_tree_label(value)
