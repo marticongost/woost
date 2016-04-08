@@ -63,7 +63,7 @@ from woost.models import (
                     element.visible = False
                 ?>
             </py:binding>
-            <img class="icon" src="/resources/woost/images/edit_blocks.png" alt=""/>
+            <img class="icon" src="${normalize_resource_uri('woost://images/edit_blocks.png')}" alt=""/>
             <span class="label">${translations("woost.views.BlockSection.edit_slot_link")}</span>
         </a>
 

@@ -53,7 +53,7 @@ from woost.models import (
         title = translations('woost.views.EditPanel.show_panel_button')
         ?>
         <img
-            src="/resources/woost/images/edit.png"
+            src="${normalize_resource_uri('woost://images/edit.png')}"
             alt="${title}"
             title="${title} (alt + shift + e)"/>
     </button>

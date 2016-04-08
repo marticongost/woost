@@ -38,7 +38,7 @@ cocktail.bind(".Autocomplete", function ($autocomplete) {
         if ($autocomplete.data("woost-autocomplete-show-icons")) {
             icon = $autocomplete[0].getEntryIcon($autocomplete[0].selectedEntry);
             if (!icon) {
-                icon = "/resources/woost/images/empty_set.png";
+                icon = $autocomplete[0].emptyIcon;
             }
         }
 

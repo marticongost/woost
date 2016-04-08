@@ -5,6 +5,7 @@ u"""
 """
 from cocktail.pkgutils import resolve
 from cocktail.translations import require_language
+from cocktail.html.resources import resource_repositories
 from cocktail.html.autocomplete import Autocomplete as BaseAutocomplete
 
 
@@ -21,12 +22,20 @@ class Autocomplete(BaseAutocomplete):
         self.add_resource("woost://scripts/Autocomplete.js")
 
     def _ready(self):
+
         BaseAutocomplete._ready(self)
+
         self["data-woost-autocomplete-show-types"] = \
             "true" if self.show_types else "false"
         self["data-woost-autocomplete-show-icons"] = \
             "true" if self.show_icons else "false"
         self["data-woost-autocomplete-icon-factory"] = self.icon_factory
+
+        self.set_client_param(
+            "emptyIcon",
+            resource_repositories.normalize_uri("woost://images/empty_set.png")
+        )
+
         if self.show_types:
             self.add_resource(
                 "/cms_metadata?language=%s&format=javascript"
