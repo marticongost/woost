@@ -22,7 +22,6 @@ class TextBlock(Block):
     instantiable = True
     view_class = "woost.views.TextBlockView"
     block_display = "woost.views.TextBlockDisplay"
-    edit_form = "woost.views.TextBlockForm"
 
     groups_order = [
         "content",
@@ -116,7 +115,7 @@ class TextBlock(Block):
     image_close_up_factory = BlockImageFactoryReference(
         required = True,
         default = schema.DynamicDefault(
-            lambda: ImageFactory.get_instance(identifier = "gallery_close_up")
+            lambda: ImageFactory.get_instance(identifier = "image_gallery_close_up")
         ),
         member_group = "images"
     )
