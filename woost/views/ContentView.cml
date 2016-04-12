@@ -23,7 +23,8 @@ from woost.controllers.backoffice.editstack import SelectionNode
 
 <py:cocktail.html.CollectionView
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    novalidate="novalidate">
 
     <?py
     self.add_resource("/resources/scripts/ContentView.js")

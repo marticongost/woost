@@ -97,11 +97,11 @@ class PDFExtension(Extension):
                     )
 
                 # Serve the file
-                cherrypy.response.headers["Content-Type"] = "application/x-pdf"
+                cherrypy.response.headers["Content-Type"] = "application/pdf"
 
                 return serve_file(
                     pdf_file_path,
-                    content_type = "application/x-pdf",
+                    content_type = "application/pdf",
                     disposition = "attachment",
                     name = extension.get_filename(app.publishable)
                 )

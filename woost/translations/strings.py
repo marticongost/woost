@@ -4142,6 +4142,27 @@ translations.define("Style.custom_class_name",
     en = u"CSS class"
 )
 
+translations.define("Style.html_tag",
+    ca = u"Etiqueta HTML",
+    es = u"Etiqueta HTML",
+    en = u"HTML tag"
+)
+
+translations.define("Style.html_tag-explanation",
+    ca = u"L'etiqueta HTML que s'utilitzarà pel contingut al que s'apliqui "
+         u"aquest estil des de l'editor de text.",
+    es = u"La etiqueta HTML que se utilizará para el contenido al que se "
+         u"aplique este estilo desde el editor de texto.",
+    en = u"The HTML tag that will be used for content that this style is "
+         u"applied to using the rich text editor."
+)
+
+translations.define("Style.editor_keyboard_shortcut",
+    ca = u"Drecera de teclat",
+    es = u"Atajo de teclado",
+    en = u"Keyboard shortcut"
+)
+
 translations.define("Style.applicable_to_text",
     ca = u"Aplicable al text",
     es = u"Aplicable al texto",
