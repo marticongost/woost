@@ -25,7 +25,6 @@ from cocktail.controllers import Location
     link_opens_in_new_window = False
 
     alignments_with_text_above = ["column_right", "center_bottom", "bottom_left"]
-    enable_ie_table_layout_workaround = True
 
     def insert_heading(self, heading):
         if self.heading_alignment == "inside":
@@ -108,18 +107,12 @@ from cocktail.controllers import Location
 
     <py:ready>
         <?py
-        if self.text and self._images:
-
-            if self.image_alignment in self.alignments_with_text_above:
-                self.image_gallery.place_after(self.text_container)
-
-            if self._column_layout and self.enable_ie_table_layout_workaround:
-                self.insert(0, self.create_ie_table_layout_workaround("<table class='ie_layout_workaround'><tr>"))
-                self.create_ie_table_layout_workaround("<td class='image_gallery_cell' valign='top'>").place_before(self.image_gallery)
-                self.create_ie_table_layout_workaround("</td>").place_after(self.image_gallery)
-                self.create_ie_table_layout_workaround("<td class='text_container_cell' valign='top'>").place_before(self.text_container)
-                self.create_ie_table_layout_workaround("</td>").place_after(self.text_container)
-                self.append(self.create_ie_table_layout_workaround("</tr></table>"))
+        if (
+            self.text
+            and self._images
+            and self.image_alignment in self.alignments_with_text_above
+        ):
+            self.image_gallery.place_after(self.text_container)
 
         alignment = self.image_alignment
 
@@ -146,12 +139,6 @@ from cocktail.controllers import Location
                 return entry
         ?>
     </py:ready>
-
-    <py:cocktail.html.IEConditionalComment
-        py:def="ie_table_layout_workaround" py:args="html"
-        py:condition="lt IE 9">
-        ${html}
-    </py:cocktail.html.IEConditionalComment>
 
 </div>
 

@@ -34,7 +34,7 @@ class BlockList(Element):
 
                 if slot:
                     self.depends_on(self.container, slot.cache_part)
-                    self.blocks = getattr(self.container, slot.name, None)
+                    self.blocks = self.get_blocks(self.container, slot)
 
         if self.tag in ("ul", "ol"):
             self.__wrap = self.wrap_with_list_item
@@ -44,6 +44,9 @@ class BlockList(Element):
             self.__wrap = self.wrap_with_dl_row
 
         self._fill_blocks()
+
+    def get_blocks(self, container, slot):
+        return getattr(container, slot.name, None)
 
     def _fill_blocks(self):
         has_visible_blocks = False

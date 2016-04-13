@@ -53,7 +53,8 @@ class NewsListing(Block):
         enumeration = [
             "woost.views.CompactNewsListing",
             "woost.views.TextOnlyNewsListing",
-            "woost.views.TextAndImageNewsListing"
+            "woost.views.TextAndImageNewsListing",
+            "woost.views.ExtractNewsListing"
         ],
         default = "woost.views.TextOnlyNewsListing",
         member_group = "listing"

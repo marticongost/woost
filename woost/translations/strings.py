@@ -7985,6 +7985,13 @@ translations.define(
     en = u"Text and image"
 )
 
+translations.define(
+    "NewsListing.view_class=woost.views.ExtractNewsListing",
+    ca = u"Extracte",
+    es = u"Extracto",
+    en = u"Extract"
+)
+
 # EventListing
 #------------------------------------------------------------------------------
 translations.define("EventListing",
