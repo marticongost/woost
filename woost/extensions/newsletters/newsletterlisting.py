@@ -10,24 +10,16 @@ from woost.models import Block, Publishable
 class NewsletterListing(Block):
 
     type_group = "blocks.newsletter"
-
-    members_order = [
-        "view_class",
-        "listed_items"
+    default_view_class = "woost.extensions.newsletters.NewsletterListingTextOnlyView",
+    views = [
+        "woost.extensions.newsletters.NewsletterListingTextOnlyView",
+        "woost.extensions.newsletters.NewsletterListingTextAndIconView",
+        "woost.extensions.newsletters.NewsletterListingSummaryView"
     ]
 
-    view_class = schema.String(
-        shadows_attribute = True,
-        default = "woost.extensions.newsletters.NewsletterListingTextOnlyView",
-        enumeration = [
-            "woost.extensions.newsletters.NewsletterListingTextOnlyView",
-            "woost.extensions.newsletters.NewsletterListingTextAndIconView",
-            "woost.extensions.newsletters.NewsletterListingSummaryView"
-        ],
-        required = True,
-        text_search = False,
-        member_group = "content"
-    )
+    members_order = [
+        "listed_items"
+    ]
 
     listed_items = schema.Collection(
         items = schema.Reference(type = Publishable),

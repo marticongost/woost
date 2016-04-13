@@ -51,7 +51,6 @@ from woost.models import (
     ModifyMemberPermission,
     ReadTranslationPermission
 )
-from woost.models.blockutils import add_block
 from woost.controllers.notifications import Notification
 
 
@@ -1192,53 +1191,6 @@ class EditBlocksNode(StackNode):
     def back_hash(self, previous_node):
         if isinstance(previous_node, EditNode):
             return "block" + str(previous_node.item.id)
-
-
-class AddBlockNode(EditNode):
-
-    block_parent = None
-    block_slot = None
-    block_positioning = "append"
-    block_anchor = None
-
-    _persistent_keys = EditNode._persistent_keys | frozenset(["block_positioning"])
-
-    def __getstate__(self):
-        state = EditNode.__getstate__(self)
-        state["block_parent"] = self.block_parent.id
-        state["block_slot"] = self.block_slot.name
-
-        if self.block_anchor is not None:
-            state["block_anchor"] = self.block_anchor.id
-        else:
-            state["block_anchor"] = None
-
-        return state
-
-    def __setstate__(self, state):
-
-        EditNode.__setstate__(self, state)
-
-        self.block_parent = Item.get_instance(state["block_parent"])
-
-        if self.block_parent:
-            block_type = type(self.block_parent)
-            self.block_slot = block_type.get_member(state["block_slot"])
-
-        anchor_id = state.get("block_anchor")
-        if anchor_id is not None:
-            self.block_anchor = Block.get_instance(anchor_id)
-
-    @event_handler
-    def handle_saving(cls, e):
-        node = e.source
-        add_block(
-            node.item,
-            node.block_parent,
-            node.block_slot,
-            positioning = node.block_positioning,
-            anchor = node.block_anchor
-        )
 
 
 class WrongEditStackError(Exception):

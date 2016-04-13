@@ -11,6 +11,7 @@ from threading import Lock
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
+from cocktail.pkgutils import resolve
 from cocktail.persistence import datastore, transactional
 from cocktail.controllers import (
     view_state,
@@ -50,8 +51,7 @@ from woost.controllers.backoffice.editstack import (
     EditNode,
     SelectionNode,
     RelationNode,
-    EditBlocksNode,
-    AddBlockNode
+    EditBlocksNode
 )
 
 # User action model declaration
@@ -1064,7 +1064,8 @@ class AddBlockAction(UserAction):
             edit_stack = edit_stacks_manager.current_edit_stack
 
             block = self.block_type()
-            node = AddBlockNode(
+            node_class = resolve(block.edit_node_class)
+            node = node_class(
                 block,
                 visible_translations = controller.visible_languages
             )

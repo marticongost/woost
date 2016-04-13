@@ -14,7 +14,6 @@ from cocktail.controllers import (
 )
 from .event import Event
 from .block import Block
-from .elementtype import ElementType
 
 
 class EventListing(Block):
@@ -27,18 +26,21 @@ class EventListing(Block):
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
 
+    views = [
+        "woost.views.CompactEventListing",
+        "woost.views.DateLocationTitleEventListing",
+        "woost.views.EventsCalendar"
+    ]
+
+    default_view_class = "woost.views.DateLocationTitleEventListing"
+
     members_order = [
         "element_type",
         "include_expired",
         "listing_order",
         "paginated",
-        "page_size",
-        "view_class"
+        "page_size"
     ]
-
-    element_type = ElementType(
-        member_group = "content"
-    )
 
     include_expired = schema.Boolean(
         required = True,
@@ -67,21 +69,8 @@ class EventListing(Block):
         member_group = "listing"
     )
 
-    view_class = schema.String(
-        required = True,
-        shadows_attribute = True,
-        enumeration = [
-            "woost.views.CompactEventListing",
-            "woost.views.DateLocationTitleEventListing",
-            "woost.views.EventsCalendar"
-        ],
-        default = "woost.views.DateLocationTitleEventListing",
-        member_group = "listing"
-    )
-
     def init_view(self, view):
         Block.init_view(self, view)
-        view.tag = self.element_type
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
         view.depends_on(Event)

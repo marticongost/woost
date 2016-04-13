@@ -13,7 +13,7 @@ class LoginBlock(Block):
 
     instantiable = True
     type_group = "blocks.forms"
-    view_class = "woost.views.LoginBlockView"
+    views = ["woost.views.LoginBlockView"]
 
     login_target = schema.Reference(
         type = Publishable,

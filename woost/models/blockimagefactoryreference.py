@@ -17,25 +17,14 @@ def _iter_block_image_factories():
 def _block_image_factories_enumeration(ctx):
     return list(_iter_block_image_factories())
 
-_block_image_factories_default = schema.DynamicDefault(
-    lambda: first(_iter_block_image_factories())
-)
-
-_mandatory_dropdown = display_factory(
-    "cocktail.html.DropdownSelector",
-    empty_option_displayed = False
-)
-
 
 class BlockImageFactoryReference(schema.Reference):
 
     def __init__(self, *args, **kwargs):
 
-        kwargs.setdefault("required", True)
         kwargs.setdefault("type", ImageFactory)
         kwargs.setdefault("enumeration", _block_image_factories_enumeration)
-        kwargs.setdefault("default", _block_image_factories_default)
-        kwargs.setdefault("edit_control", _mandatory_dropdown)
+        kwargs.setdefault("edit_control", "cocktail.html.DropdownSelector")
 
         if "bidirectional" not in kwargs and "related_end" not in kwargs:
             kwargs["related_end"] = schema.Collection()

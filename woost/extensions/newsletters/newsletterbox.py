@@ -10,22 +10,12 @@ from woost.models import Block, Slot
 class NewsletterBox(Block):
 
     type_group = "blocks.newsletter"
+    default_view_class = "woost.extensions.newsletters.NewsletterBoxView"
+    views = ["woost.extensions.newsletters.NewsletterBoxView"]
 
     members_order = [
-        "view_class",
         "blocks"
     ]
-
-    view_class = schema.String(
-        shadows_attribute = True,
-        required = True,
-        default = "woost.extensions.newsletters.NewsletterBoxView",
-        enumeration = [
-            "woost.extensions.newsletters.NewsletterBoxView"
-        ],
-        text_search = False,
-        member_group = "content"
-    )
 
     blocks = Slot()
 
