@@ -12,7 +12,7 @@ class FacebookLikeBox(Block):
 
     instantiable = True
     type_group = "blocks.social"
-    view_class = "cocktail.html.FacebookLikeBox"
+    views = ["cocktail.html.FacebookLikeBox"]
 
     members_order = [
         "fb_href",

@@ -10,7 +10,6 @@ from cocktail.controllers import (
     Pagination
 )
 from .block import Block
-from .elementtype import ElementType
 from .publishable import Publishable
 
 
@@ -21,25 +20,26 @@ class PublishableListing(Block):
     instantiable = True
     type_group = "blocks.listings"
     block_display = "woost.views.PublishableListingDisplay"
+    views = [
+        "woost.views.PublishableTextualListing",
+        "woost.views.PublishableIconListing",
+        "woost.views.PublishableGrid",
+        "woost.views.PublishableCollage"
+    ]
+    default_view_class = "woost.views.PublishableTextualListing"
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
 
     members_order = [
-        "element_type",
         "publishables",
         "item_accessibility",
         "listing_order",
         "links_open_in_new_window",
         "links_force_download",
         "paginated",
-        "page_size",
-        "view_class"
+        "page_size"
     ]
-
-    element_type = ElementType(
-        member_group = "content"
-    )
 
     publishables = schema.Collection(
         items = schema.Reference(type = Publishable),
@@ -89,22 +89,8 @@ class PublishableListing(Block):
         member_group = "listing"
     )
 
-    view_class = schema.String(
-        required = True,
-        shadows_attribute = True,
-        enumeration = [
-            "woost.views.PublishableTextualListing",
-            "woost.views.PublishableIconListing",
-            "woost.views.PublishableGrid",
-            "woost.views.PublishableCollage"
-        ],
-        default = "woost.views.PublishableTextualListing",
-        member_group = "listing"
-    )
-
     def init_view(self, view):
         Block.init_view(self, view)
-        view.tag = self.element_type
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
         view.links_open_in_new_window = self.links_open_in_new_window

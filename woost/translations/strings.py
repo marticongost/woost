@@ -6829,68 +6829,6 @@ translations.define("woost.controllers.InstallationSyncController.success",
     en = u"Successfully synchronized the selected content."
 )
 
-# Element types
-#------------------------------------------------------------------------------
-translations.define("woost.models.ElementType=div",
-    ca = u"Element genèric (div)",
-    es = u"Elemento genérico (div)",
-    en = u"Generic element (div)"
-)
-
-translations.define("woost.models.ElementType=section",
-    ca = u"Secció",
-    es = u"Sección",
-    en = u"Section"
-)
-
-translations.define("woost.models.ElementType=article",
-    ca = u"Article",
-    es = u"Artículo",
-    en = u"Article"
-)
-
-translations.define("woost.models.ElementType=details",
-    ca = u"Detalls",
-    es = u"Detalles",
-    en = u"Details"
-)
-
-translations.define("woost.models.ElementType=figure",
-    ca = u"Recurs complementari (figure)",
-    es = u"Recurso complementario (figure)",
-    en = u"Figure"
-)
-
-translations.define("woost.models.ElementType=aside",
-    ca = u"Contingut relacionat (aside)",
-    es = u"Contenido relacionado (aside)",
-    en = u"Tangentially related content (aside)"
-)
-
-translations.define("woost.models.ElementType=header",
-    ca = u"Capçalera",
-    es = u"Cabecera",
-    en = u"Header"
-)
-
-translations.define("woost.models.ElementType=footer",
-    ca = u"Peu",
-    es = u"Pie",
-    en = u"Footer"
-)
-
-translations.define("woost.models.ElementType=nav",
-    ca = u"Navegació",
-    es = u"Navegación",
-    en = u"Navigation"
-)
-
-translations.define("woost.models.ElementType=dd",
-    ca = u"Definició (dd)",
-    es = u"Definición (dd)",
-    en = u"Definition (dd)"
-)
-
 # Block
 #------------------------------------------------------------------------------
 translations.define("Block",
@@ -6911,10 +6849,10 @@ translations.define("Block.content",
     en = u"Content"
 )
 
-translations.define("Block.behavior",
-    ca = u"Comportament",
-    es = u"Comportamiento",
-    en = u"Behavior"
+translations.define("Block.publication",
+    ca = u"Publicació",
+    es = u"Publicación",
+    en = u"Publication"
 )
 
 translations.define("Block.html",
@@ -6924,9 +6862,33 @@ translations.define("Block.html",
 )
 
 translations.define("Block.heading",
+    ca = u"Títol",
+    es = u"Título",
+    en = u"Title"
+)
+
+translations.define("Block.heading_display",
     ca = u"Encapçalament",
     es = u"Encabezado",
     en = u"Heading"
+)
+
+translations.define("Block.heading_display=off",
+    ca = u"Cap",
+    es = u"Ninguno",
+    en = u"None"
+)
+
+translations.define("Block.heading_display=hidden",
+    ca = u"Ocult",
+    es = u"Oculto",
+    en = u"Hidden"
+)
+
+translations.define("Block.heading_display=on",
+    ca = u"Visible",
+    es = u"Visible",
+    en = u"Visible"
 )
 
 translations.define("Block.heading_type",
@@ -6970,6 +6932,178 @@ translations.define("Block.heading_type=figcaption",
     ca = u"Títol per un recurs complementari (figcaption)",
     es = u"Título para un recurso complementario (figcaption)",
     en = u"Figure caption"
+)
+
+translations.define("Block.element_type",
+    ca = u"Tipus d'element",
+    es = u"Tipo de elemento",
+    en = u"Element type"
+)
+
+translations.define("Block.default_value",
+    ca = u"-- Valor predeterminat --",
+    es = u"-- Valor predeterminado --",
+    en = u"-- Default --"
+)
+
+translations.define("Block.element_type=div",
+    ca = u"Element genèric (div)",
+    es = u"Elemento genérico (div)",
+    en = u"Generic element (div)"
+)
+
+translations.define("Block.element_type=section",
+    ca = u"Secció",
+    es = u"Sección",
+    en = u"Section"
+)
+
+translations.define("Block.element_type=article",
+    ca = u"Article",
+    es = u"Artículo",
+    en = u"Article"
+)
+
+translations.define("Block.element_type=details",
+    ca = u"Detalls",
+    es = u"Detalles",
+    en = u"Details"
+)
+
+translations.define("Block.element_type=figure",
+    ca = u"Recurs complementari (figure)",
+    es = u"Recurso complementario (figure)",
+    en = u"Figure"
+)
+
+translations.define("Block.element_type=aside",
+    ca = u"Contingut relacionat (aside)",
+    es = u"Contenido relacionado (aside)",
+    en = u"Tangentially related content (aside)"
+)
+
+translations.define("Block.element_type=header",
+    ca = u"Capçalera",
+    es = u"Cabecera",
+    en = u"Header"
+)
+
+translations.define("Block.element_type=footer",
+    ca = u"Peu",
+    es = u"Pie",
+    en = u"Footer"
+)
+
+translations.define("Block.element_type=nav",
+    ca = u"Navegació",
+    es = u"Navegación",
+    en = u"Navigation"
+)
+
+translations.define("Block.element_type=dd",
+    ca = u"Definició (dd)",
+    es = u"Definición (dd)",
+    en = u"Definition (dd)"
+)
+
+translations.define("Block.view_class",
+    ca = u"Aparença",
+    es = u"Apariencia",
+    en = u"Appearence"
+)
+
+# - TextBlock views
+translations.define(
+    "Block.view_class=woost.views.TextBlockView",
+    ca = u"Text i imatge estàndard",
+    es = u"Texto e imagen estándar",
+    en = u"Standard text and image"
+)
+
+# - PublishableListing views
+translations.define(
+    "Block.view_class=woost.views.PublishableTextualListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "Block.view_class=woost.views.PublishableIconListing",
+    ca = u"Icona i text",
+    es = u"Icono y texto",
+    en = u"Icon and text"
+)
+
+translations.define(
+    "Block.view_class=woost.views.PublishableGrid",
+    ca = u"Graella",
+    es = u"Parrilla",
+    en = u"Grid"
+)
+
+translations.define(
+    "Block.view_class=woost.views.PublishableCollage",
+    ca = u"Collage",
+    es = u"Collage",
+    en = u"Collage"
+)
+
+# - NewsListing views
+translations.define(
+    "Block.view_class=woost.views.CompactNewsListing",
+    ca = u"Compacta",
+    es = u"Compacta",
+    en = u"Compact"
+)
+
+translations.define(
+    "Block.view_class=woost.views.TextOnlyNewsListing",
+    ca = u"Només text",
+    es = u"Solo texto",
+    en = u"Text only"
+)
+
+translations.define(
+    "Block.view_class=woost.views.TextAndImageNewsListing",
+    ca = u"Text i imatge",
+    es = u"Texto e imagen",
+    en = u"Text and image"
+)
+
+# - EventListing views
+translations.define(
+    "Block.view_class=woost.views.CompactEventListing",
+    ca = u"Només el títol",
+    es = u"Solo el título",
+    en = u"Title only"
+)
+
+translations.define(
+    "Block.view_class=woost.views.DateLocationTitleEventListing",
+    ca = u"Data, ubicació i títol",
+    es = u"Fecha, ubicación y título",
+    en = u"Date, location and title"
+)
+
+translations.define(
+    "Block.view_class=woost.views.EventsCalendar",
+    ca = u"Calendari mensual",
+    es = u"Calendario mensual",
+    en = u"Monthly calendar"
+)
+
+# - VideoBlockView views
+translations.define("Block.view_class=woost.views.VideoBlockView",
+    ca = u"Incrustat",
+    es = u"Incrustado",
+    en = u"Embedded"
+)
+
+translations.define("Block.view_class=woost.views.VideoPopUp",
+    ca = u"Finestra emergent",
+    es = u"Ventana emergente",
+    en = u"Pop up"
 )
 
 translations.define("Block.html_attributes",
@@ -7104,18 +7238,6 @@ translations.define("CustomBlock-plural",
     en = u"Custom blocks"
 )
 
-translations.define("CustomBlock.view_class",
-    ca = u"Vista",
-    es = u"Vista",
-    en = u"View"
-)
-
-translations.define("CustomBlock.view_class-explanation",
-    ca = u"Nom qualificat de la vista CML a mostrar",
-    es = u"Nombre cualificado de la vista CML a mostrar",
-    en = u"The qualified name of the CML view to display"
-)
-
 # ContainerBlock
 #------------------------------------------------------------------------------
 translations.define("ContainerBlock",
@@ -7134,12 +7256,6 @@ translations.define("ContainerBlock.blocks",
     ca = u"Blocs fills",
     es = u"Bloques hijos",
     en = u"Child blocks"
-)
-
-translations.define("ContainerBlock.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
 )
 
 translations.define("ContainerBlock.list_type",
@@ -7184,12 +7300,6 @@ translations.define("SlideShowBlock-plural",
     ca = u"Passadors",
     es = u"Pasadores",
     en = u"Slide shows"
-)
-
-translations.define("SlideShowBlock.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
 )
 
 translations.define("SlideShowBlock.slides",
@@ -7421,12 +7531,6 @@ translations.define("TextBlock.heading_alignment=inside",
     en = u"Start of the text"
 )
 
-translations.define("TextBlock.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
-)
-
 translations.define("TextBlock.link",
     ca = u"Enllaç",
     es = u"Enlace",
@@ -7472,9 +7576,27 @@ translations.define("TextBlock.images",
     en = u"Images"
 )
 
+translations.define("TextBlock.images.layout",
+    ca = u"Disposició",
+    es = u"Disposición",
+    en = u"Layout"
+)
+
+translations.define("TextBlock.images.close_up",
+    ca = u"Ampliació",
+    es = u"Ampliación",
+    en = u"Close up"
+)
+
+translations.define("TextBlock.images.fields",
+    ca = u"Camps",
+    es = u"Campos",
+    en = u"Fields"
+)
+
 translations.define("TextBlock.image_alignment",
-    ca = u"Disposició de les imatges",
-    es = u"Disposición de las imágenes",
+    ca = u"Alineament d'imatge",
+    es = u"Alineamiento de imagen",
     en = u"Image alignment"
 )
 
@@ -7557,8 +7679,8 @@ translations.define("TextBlock.image_alignment=fallback",
 )
 
 translations.define("TextBlock.image_thumbnail_factory",
-    ca = u"Processat de les imatges",
-    es = u"Procesado de las imágenes",
+    ca = u"Processat d'imatge",
+    es = u"Procesado de imagen",
     en = u"Image processing"
 )
 
@@ -7612,12 +7734,6 @@ translations.define("VideoBlock-plural",
     en = u"Videos"
 )
 
-translations.define("VideoBlock.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
-)
-
 translations.define("VideoBlock.video",
     ca = u"Vídeo",
     es = u"Video",
@@ -7628,24 +7744,6 @@ translations.define("VideoBlock.player_settings",
     ca = u"Opcions de reproductor de vídeo",
     es = u"Opciones de reproductor de video",
     en = u"Video player settings"
-)
-
-translations.define("VideoBlock.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
-translations.define("VideoBlock.view_class=woost.views.VideoBlockView",
-    ca = u"Incrustat",
-    es = u"Incrustado",
-    en = u"Embedded"
-)
-
-translations.define("VideoBlock.view_class=woost.views.VideoPopUp",
-    ca = u"Finestra emergent",
-    es = u"Ventana emergente",
-    en = u"Pop up"
 )
 
 # TwitterTimelineBlock
@@ -7940,12 +8038,6 @@ translations.define("NewsListing.listing",
     en = u"Listing"
 )
 
-translations.define("NewsListing.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
-)
-
 translations.define("NewsListing.paginated",
     ca = u"Paginar els resultats",
     es = u"Paginar los resultados",
@@ -7956,40 +8048,6 @@ translations.define("NewsListing.page_size",
     ca = u"Mida del llistat",
     es = u"Tamaño del listado",
     en = u"Listing size"
-)
-
-translations.define("NewsListing.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
-translations.define(
-    "NewsListing.view_class=woost.views.CompactNewsListing",
-    ca = u"Compacta",
-    es = u"Compacta",
-    en = u"Compact"
-)
-
-translations.define(
-    "NewsListing.view_class=woost.views.TextOnlyNewsListing",
-    ca = u"Només text",
-    es = u"Solo texto",
-    en = u"Text only"
-)
-
-translations.define(
-    "NewsListing.view_class=woost.views.TextAndImageNewsListing",
-    ca = u"Text i imatge",
-    es = u"Texto e imagen",
-    en = u"Text and image"
-)
-
-translations.define(
-    "NewsListing.view_class=woost.views.ExtractNewsListing",
-    ca = u"Extracte",
-    es = u"Extracto",
-    en = u"Extract"
 )
 
 # EventListing
@@ -8010,12 +8068,6 @@ translations.define("EventListing.listing",
     ca = u"Llistat",
     es = u"Listado",
     en = u"Listing"
-)
-
-translations.define("EventListing.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
 )
 
 translations.define("EventListing.include_expired",
@@ -8052,33 +8104,6 @@ translations.define("EventListing.page_size",
     ca = u"Mida del llistat",
     es = u"Tamaño del listado",
     en = u"Listing size"
-)
-
-translations.define("EventListing.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
-translations.define(
-    "EventListing.view_class=woost.views.CompactEventListing",
-    ca = u"Només el títol",
-    es = u"Solo el título",
-    en = u"Title only"
-)
-
-translations.define(
-    "EventListing.view_class=woost.views.DateLocationTitleEventListing",
-    ca = u"Data, ubicació i títol",
-    es = u"Fecha, ubicación y título",
-    en = u"Date, location and title"
-)
-
-translations.define(
-    "EventListing.view_class=woost.views.EventsCalendar",
-    ca = u"Calendari mensual",
-    es = u"Calendario mensual",
-    en = u"Monthly calendar"
 )
 
 # EventsCalendar
@@ -8581,46 +8606,6 @@ translations.define("PublishableListing.page_size",
     ca = u"Mida del llistat",
     es = u"Tamaño del listado",
     en = u"Listing size"
-)
-
-translations.define("PublishableListing.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
-translations.define(
-    "PublishableListing.view_class=woost.views.PublishableTextualListing",
-    ca = u"Només text",
-    es = u"Solo texto",
-    en = u"Text only"
-)
-
-translations.define(
-    "PublishableListing.view_class=woost.views.PublishableIconListing",
-    ca = u"Icona i text",
-    es = u"Icono y texto",
-    en = u"Icon and text"
-)
-
-translations.define(
-    "PublishableListing.view_class=woost.views.PublishableGrid",
-    ca = u"Graella",
-    es = u"Parrilla",
-    en = u"Grid"
-)
-
-translations.define(
-    "PublishableListing.view_class=woost.views.PublishableCollage",
-    ca = u"Collage",
-    es = u"Collage",
-    en = u"Collage"
-)
-
-translations.define("PublishableListing.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
 )
 
 # RichTextEditor

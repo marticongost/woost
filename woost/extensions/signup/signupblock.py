@@ -25,7 +25,7 @@ def excluded_roles():
 class SignUpBlock(Block):
 
     type_group = "blocks.forms"
-    view_class = "woost.extensions.signup.SignUpForm"
+    views = ["woost.extensions.signup.SignUpForm"]
 
     members_order = [
         "user_type",

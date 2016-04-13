@@ -8,33 +8,29 @@ from cocktail.html.datadisplay import display_factory
 from woost.models import Publishable, File
 from woost.models.rendering import ImageFactory
 from .block import Block
-from .elementtype import ElementType
 from .blockimagefactoryreference import BlockImageFactoryReference
-
-_mandatory_dropdown = display_factory(
-    "cocktail.html.DropdownSelector",
-    empty_option_displayed = False
-)
 
 
 class TextBlock(Block):
 
     instantiable = True
-    view_class = "woost.views.TextBlockView"
+    views = ["woost.views.TextBlockView"]
     block_display = "woost.views.TextBlockDisplay"
 
     groups_order = [
         "content",
         "images",
+        "images.layout",
+        "images.close_up",
+        "images.fields",
         "link",
-        "behavior",
+        "publication",
         "html",
         "administration"
     ]
 
     members_order = [
         "heading_alignment",
-        "element_type",
         "text",
         "images",
         "image_alignment",
@@ -49,19 +45,6 @@ class TextBlock(Block):
         "link_parameters",
         "link_opens_in_new_window"
     ]
-
-    heading_alignment = schema.String(
-        required = True,
-        default = "top",
-        enumeration = ["top", "inside"],
-        edit_control = "cocktail.html.RadioSelector",
-        text_search = False,
-        member_group = "content"
-    )
-
-    element_type = ElementType(
-        member_group = "content"
-    )
 
     text = schema.HTML(
         edit_control = "woost.views.RichTextEditor",
@@ -79,8 +62,6 @@ class TextBlock(Block):
     )
 
     image_alignment = schema.String(
-        required = True,
-        default = "float_top_left",
         enumeration = [
             "float_top_left",
             "float_top_right",
@@ -96,52 +77,41 @@ class TextBlock(Block):
             "background",
             "fallback"
         ],
-        edit_control = _mandatory_dropdown,
         text_search = False,
-        member_group = "images"
+        member_group = "images.layout"
     )
 
     image_thumbnail_factory = BlockImageFactoryReference(
-        required = True,
-        member_group = "images"
+        member_group = "images.layout"
     )
 
     image_close_up_enabled = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "images"
+        edit_control = "cocktail.html.DropdownSelector",
+        member_group = "images.close_up"
     )
 
     image_close_up_factory = BlockImageFactoryReference(
-        required = True,
-        default = schema.DynamicDefault(
-            lambda: ImageFactory.get_instance(identifier = "image_gallery_close_up")
-        ),
-        member_group = "images"
+        member_group = "images.close_up"
     )
 
     image_close_up_preload = schema.Boolean(
-        required = True,
-        default = True,
-        member_group = "images"
+        edit_control = "cocktail.html.DropdownSelector",
+        member_group = "images.close_up"
     )
 
     image_labels_visible = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "images"
+        edit_control = "cocktail.html.DropdownSelector",
+        member_group = "images.fields"
     )
 
     image_footnotes_visible = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "images"
+        edit_control = "cocktail.html.DropdownSelector",
+        member_group = "images.fields"
     )
 
     image_original_link_visible = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "images"
+        edit_control = "cocktail.html.DropdownSelector",
+        member_group = "images.fields"
     )
 
     def get_block_image(self):
@@ -164,36 +134,60 @@ class TextBlock(Block):
     )
 
     link_opens_in_new_window = schema.Boolean(
-        default = False,
-        required = True,
+        edit_control = "cocktail.html.DropdownSelector",
         member_group = "link"
+    )
+
+    heading_alignment = schema.String(
+        enumeration = ["top", "inside"],
+        text_search = False,
+        after_member = "heading_type",
+        member_group = "html"
     )
 
     def init_view(self, view):
 
         view.text = self.text
-        view.heading_alignment = self.heading_alignment
         view.images = self.images
-        view.image_alignment = self.image_alignment
-        view.image_thumbnail_factory = self.image_thumbnail_factory
-        view.image_close_up_factory = self.image_close_up_factory
-        view.image_close_up_enabled = self.image_close_up_enabled
-        view.image_close_up_preload = self.image_close_up_preload
-        view.image_labels_visible = self.image_labels_visible
-        view.image_footnotes_visible = self.image_footnotes_visible
-        view.image_original_link_visible = self.image_original_link_visible
-        view.link_destination = self.link_destination
-        view.link_parameters = self.link_parameters
-        view.link_opens_in_new_window = self.link_opens_in_new_window
-    
+
+        if self.heading_alignment:
+            view.heading_alignment = self.heading_alignment
+
+        if self.image_alignment:
+            view.image_alignment = self.image_alignment
+
+        if self.image_thumbnail_factory:
+            view.image_thumbnail_factory = self.image_thumbnail_factory
+
+        if self.image_close_up_factory:
+            view.image_close_up_factory = self.image_close_up_factory
+
+        if self.image_close_up_enabled is not None:
+            view.image_close_up_enabled = self.image_close_up_enabled
+
+        if self.image_close_up_preload is not None:
+            view.image_close_up_preload = self.image_close_up_preload
+
+        if self.image_labels_visible is not None:
+            view.image_labels_visible = self.image_labels_visible
+
+        if self.image_footnotes_visible is not None:
+            view.image_footnotes_visible = self.image_footnotes_visible
+
+        if self.image_original_link_visible is not None:
+            view.image_original_link_visible = self.image_original_link_visible
+
+        if self.link_destination is not None:
+            view.link_destination = self.link_destination
+
+        if self.link_parameters is not None:
+            view.link_parameters = self.link_parameters
+
+        if self.link_opens_in_new_window is not None:
+            view.link_opens_in_new_window = self.link_opens_in_new_window
+
         Block.init_view(self, view)
 
-        if self.element_type == "dd":
-            view.tag = None
-            view.content_wrapper.tag = "dd"
-        else:
-            view.tag = self.element_type
-        
     def get_block_proxy(self, view):
         if self.element_type == "dd":
             return view.content_wrapper

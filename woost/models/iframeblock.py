@@ -11,7 +11,7 @@ class IFrameBlock(Block):
 
     instantiable = True
     type_group = "blocks.custom"
-    view_class = "cocktail.html.Element"
+    views = ["cocktail.html.Element"]
 
     members_order = [
         "src",

@@ -35,10 +35,3 @@ class SubscriptionFormBlock(Block):
         listed_by_default = False
     )
 
-    view_class = schema.String(
-        required = True,
-        shadows_attribute = True,
-        before_member = "controller",
-        member_group = "behavior"
-    )
-

@@ -11,7 +11,7 @@ from .block import Block
 class FlashBlock(Block):
 
     instantiable = True
-    view_class = "cocktail.html.SWFObject"
+    views = ["cocktail.html.SWFObject"]
 
     members_order = [
         "swf_file",

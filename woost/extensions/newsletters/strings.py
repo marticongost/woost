@@ -80,15 +80,8 @@ translations.define("NewsletterContent-plural",
     en = u"Content"
 )
 
-translations.define("NewsletterContent.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
 translations.define(
-    "NewsletterContent.view_class"
-    "=woost.extensions.newsletters.NewsletterContentView",
+    "Block.view_class=woost.extensions.newsletters.NewsletterContentView",
     ca = u"Estàndard",
     es = u"Estándar",
     en = u"Standard"
@@ -156,15 +149,8 @@ translations.define("NewsletterBox-plural",
     en = u"Boxes"
 )
 
-translations.define("NewsletterBox.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
 translations.define(
-    "NewsletterBox.view_class"
-    "=woost.extensions.newsletters.NewsletterBoxView",
+    "Block.view_class=woost.extensions.newsletters.NewsletterBoxView",
     ca = u"Estàndard",
     es = u"Estándar",
     en = u"Standard"
@@ -190,31 +176,25 @@ translations.define("NewsletterListing-plural",
     en = u"Listings"
 )
 
-translations.define("NewsletterListing.view_class",
-    ca = u"Aparença",
-    es = u"Apariencia",
-    en = u"Appearence"
-)
-
 translations.define(
-    "NewsletterListing.view_class"
-    "=woost.extensions.newsletters.NewsletterListingTextOnlyView",
+    "Block.view_class="
+    "woost.extensions.newsletters.NewsletterListingTextOnlyView",
     ca = u"Només text",
     es = u"Solo texto",
     en = u"Text only"
 )
 
 translations.define(
-    "NewsletterListing.view_class"
-    "=woost.extensions.newsletters.NewsletterListingTextAndIconView",
+    "Block.view_class="
+    "woost.extensions.newsletters.NewsletterListingTextAndIconView",
     ca = u"Text i icona",
     es = u"Texto e icono",
     en = u"Text and icon"
 )
 
 translations.define(
-    "NewsletterListing.view_class"
-    "=woost.extensions.newsletters.NewsletterListingSummaryView",
+    "Block.view_class="
+    "woost.extensions.newsletters.NewsletterListingSummaryView",
     ca = u"Resum",
     es = u"Resumen",
     en = u"Summary"

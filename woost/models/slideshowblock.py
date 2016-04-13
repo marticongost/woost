@@ -8,26 +8,24 @@ from cocktail.html import templates
 from .rendering import ImageFactory
 from .block import Block
 from .slot import Slot
-from .elementtype import ElementType
 from .blockutils import create_block_views
 
 
 class SlideShowBlock(Block):
 
     instantiable = True
-    view_class = "woost.views.SlideShowBlockView"
+    views = ["woost.views.SlideShowBlockView"]
 
     groups_order = [
         "content",
         "transition_settings",
         "controls",
-        "behavior",
+        "publication",
         "html",
         "administration"
     ]
 
     members_order = [
-        "element_type",
         "slides",
         "autoplay",
         "interval",
@@ -38,17 +36,6 @@ class SlideShowBlock(Block):
         "bullet_view_class",
         "bullet_image_factory"
     ]
-
-    element_type = ElementType(
-        enumeration = list(ElementType.enumeration),
-        member_group = "content"
-    )
-
-    for et in ("nav", "dd"):
-        try:
-            element_type.enumeration.remove(et)
-        except:
-            pass
 
     slides = Slot()
 
@@ -117,7 +104,6 @@ class SlideShowBlock(Block):
 
         Block.init_view(self, view)
 
-        view.tag = self.element_type
         view.autoplay = self.autoplay
         view.interval = self.interval
         view.transition_effect = self.transition_effect

@@ -11,7 +11,7 @@ from woost.extensions.surveys.survey import Survey
 class SurveyBlock(Block):
 
     type_group = "blocks.forms"
-    view_class = "woost.extensions.surveys.SurveyView"
+    views = ["woost.extensions.surveys.SurveyView"]
     default_controller = \
         "woost.extensions.surveys.surveycontroller.SurveyController"
 
