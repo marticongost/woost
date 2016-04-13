@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.translations import DATE_STYLE_TEXT
+?>
+
+<py:woost.views.NewsListing
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    date_style = DATE_STYLE_TEXT
+    ?>
+
+    <article py:def="entry" py:args="news, news_index">
+
+        <h1 py:local_id="heading">
+            <py:new
+                py:element="self.create_news_link(news)"
+                py:local_id="link">
+                ${news.title}
+            </py:new>
+        </h1>
+
+        <div py:local_id="date" py:visible="${bool(news.news_date)}">
+            ${translations(news.news_date, style = self.date_style)}
+        </div>
+
+        <py:woost.views.BlockList
+            py:local_id="extract"
+            py:container="${news}"
+            py:slot="blocks">
+            <?py
+            @extend(element)
+            def get_blocks(extract, container, slot):
+                blocks = call_base(container, slot)
+                if blocks:
+                    for block in blocks:
+                        if block.is_published():
+                            return [block]
+                return blocks
+            ?>
+        </py:woost.views.BlockList>
+
+    </article>
+
+</py:woost.views.NewsListing>
+
