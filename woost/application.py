@@ -68,21 +68,27 @@ http://woost.info
         package = self.package
 
         if root and package:
-            repository = (
-                self.path("views", "resources", "images", "icons"),
-                "/" + self.package + "_resources/images/icons"
+
+            repository_uri = resource_repositories.normalize_uri(
+                "%s://images/icons" % package
             )
 
-            if (
-                self.__custom_icon_repository is not None
-                and self.__custom_icon_repository != repository
-            ):
-                self.icon_resolver.icon_repositories.remove(
-                    self.__custom_icon_repository
+            if repository_uri:
+                repository = (
+                    self.path("views", "resources", "images", "icons"),
+                    repository_uri
                 )
 
-            self.__custom_icon_repository = repository
-            self.icon_resolver.icon_repositories.insert(0, repository)
+                if (
+                    self.__custom_icon_repository is not None
+                    and self.__custom_icon_repository != repository
+                ):
+                    self.icon_resolver.icon_repositories.remove(
+                        self.__custom_icon_repository
+                    )
+
+                self.__custom_icon_repository = repository
+                self.icon_resolver.icon_repositories.insert(0, repository)
 
     @property
     def icon_resolver(self):
@@ -291,6 +297,8 @@ http://woost.info
             repository_name.replace(".", "-"),
             folder_publisher(repository_path)
         )
+        if repository_name == self.package:
+            self.__add_custom_icon_repository()
 
 
 @GenericMethod
