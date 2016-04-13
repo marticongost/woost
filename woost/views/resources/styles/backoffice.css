@@ -329,7 +329,7 @@ body {
 
 .BackOfficeLayout input[type=search] {
     padding-left: 1.6em !important;
-    background: white url(/resources/images/search_box.png) 0.3em center no-repeat;
+    background: white url(../images/search_box.png) 0.3em center no-repeat;
 }
 
 .BackOfficeLayout .CodeMirror-wrapping {
@@ -1058,7 +1058,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .BackOfficeLayout .Table th {
     background-position: bottom left;
     background-repeat: repeat-x;
-    background-image: url(/resources/images/header.png);
+    background-image: url(../images/header.png);
     background-image: -webkit-linear-gradient(#eee, #d6d6d6);
     background-image: linear-gradient(#eee, #d6d6d6);
     background-color: #e0e0e0;
@@ -1129,7 +1129,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .ascending {
-    background-image: url(/resources/images/ascending.png);
+    background-image: url(../images/ascending.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -1137,7 +1137,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .sorting_options .descending {
-    background-image: url(/resources/images/descending.png);
+    background-image: url(../images/descending.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -1145,7 +1145,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .ContentTable .search_options .add_filter {
-    background-image: url(/resources/images/add.png);
+    background-image: url(../images/add.png);
     _background-position:0 -2px;
     _background-repeat:no-repeat;
     _display:block;
@@ -1166,7 +1166,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 .BackOfficeLayout .PropertyTable .type_header th {
     font-weight: bold;
     color: rgb(50,50,50);
-    background-image: url(/resources/images/expanded_block.png);
+    background-image: url(../images/expanded_block.png);
     background-repeat: no-repeat;
     background-position: 0.3em center;
     padding-left: 1.5em;
@@ -1174,7 +1174,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .PropertyTable .type_group.collapsed .type_header th {
-    background-image: url(/resources/images/collapsed_block.png);
+    background-image: url(../images/collapsed_block.png);
     background-position: 0.6em center;
 }
 
@@ -1728,7 +1728,7 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     position: relative;
     padding-left: 0.2em;
     padding-right: 1em;
-    background: url(/resources/images/dropdown_arrow.png) no-repeat right 0.7em;
+    background: url(../images/dropdown_arrow.png) no-repeat right 0.7em;
     border: 1px solid transparent;
     z-index: 2;
     cursor: pointer;
@@ -2252,7 +2252,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     color: rgb(70,70,70);
     font-size: 90%;
     background-repeat: no-repeat;
-    background-image: url(/resources/images/open_resource.png);
+    background-image: url(../images/open_resource.png);
     background-position: left center;
     padding-left: 0.7em;
     padding-top: 0.2em;
@@ -2694,7 +2694,7 @@ button.TypeSelectorButton span {
 .BackOfficeLayout .ContentView .advanced_search {
     text-decoration: underline;
     font-size: 70%;
-    background-image: url(/resources/images/collapsed_block.png);
+    background-image: url(../images/collapsed_block.png);
     background-repeat: no-repeat;
     background-position: 0 center;
     margin-left: 1em;
@@ -2808,7 +2808,7 @@ button.TypeSelectorButton {
 .BackOfficeLayout .CollectionView .filters .new_filter_selector > .button > .label {
     padding-left: 1.6em !important;
     background-position: left center;
-    background-image: url(/resources/images/add.png);
+    background-image: url(../images/add.png);
     background-repeat: no-repeat;
 }
 
@@ -3014,42 +3014,42 @@ button.TypeSelectorButton {
 
 /* External */
 .defaultSkin .mceExternalClose {
-    background:url(/resources/images/icons_tiny.gif) -820px 0 !important;
+    background:url(../images/icons_tiny.gif) -820px 0 !important;
 }
 
 /* Layout */
 .defaultSkin .mceStatusbar a.mceResize {
-    background:url(/resources/images/icons_tiny.gif) -800px 0 !important;
+    background:url(../images/icons_tiny.gif) -800px 0 !important;
 }
 
 body .defaultSkin .mceIcon {
-   background: url(/resources/images/icons_tiny.gif) no-repeat 20px 20px;
+   background: url(../images/icons_tiny.gif) no-repeat 20px 20px;
 }
 
 /* Separator */
 .defaultSkin .mceSeparator {
-    background:url(/resources/images/icons_tiny.gif) -180px 0 !important;
+    background:url(../images/icons_tiny.gif) -180px 0 !important;
 }
 
 /* ListBox */
 .defaultSkin .mceListBox .mceOpen {
-    background:url(/resources/images/icons_tiny.gif) -741px 0 !important;
+    background:url(../images/icons_tiny.gif) -741px 0 !important;
 }
 
 /* SplitButton */
 body .defaultSkin .mceSplitButton span.mceAction {
-    background-image:url(/resources/images/icons_tiny.gif);
+    background-image:url(../images/icons_tiny.gif);
 }
 .defaultSkin .mceSplitButton a.mceOpen {
-    background:url(/resources/images/icons_tiny.gif) -741px 0 !important;
+    background:url(../images/icons_tiny.gif) -741px 0 !important;
 }
 
 /* Browse */
 a.browse span {
-    background:url(/resources/images/icons_tiny.gif) -860px 0 !important;
+    background:url(../images/icons_tiny.gif) -860px 0 !important;
 }
 a.pickcolor span {
-    background:url(/resources/images/icons_tiny.gif) -840px 0 !important;
+    background:url(../images/icons_tiny.gif) -840px 0 !important;
 }
 
 /* Feed edit form
@@ -3161,7 +3161,7 @@ a.pickcolor span {
     text-align: left;
     background-position: bottom left;
     background-repeat: repeat-x;
-    background-image: url(/resources/images/header.png);
+    background-image: url(../images/header.png);
     background-color: rgb(220,223,227);
     border: 1px solid rgb(200,205,212);
 }
@@ -3467,12 +3467,12 @@ a.pickcolor span {
 
 .ExportStaticSiteView .export_log .exported .outcome_cell {
     color: rgb(20,80,20);
-    background-image: url(/resources/images/staticsite-status-exported.png);
+    background-image: url(../images/staticsite-status-exported.png);
 }
 
 .ExportStaticSiteView .export_log .failed .outcome_cell {
     color: rgb(135,35,10);
-    background-image: url(/resources/images/staticsite-status-failed.png);
+    background-image: url(../images/staticsite-status-failed.png);
 }
 
 .ExportStaticSiteView .export_log .error_cell {
@@ -3946,7 +3946,7 @@ div.success_label {
 .BackOfficeLayout .dragInsertionMarker {
     position: absolute;
     background-repeat: no-repeat;
-    background-image: url(/resources/images/insertion_marker.png);
+    background-image: url(../images/insertion_marker.png);
     background-position: left center;
     padding-left: 0.8em;
     white-space: nowrap;
