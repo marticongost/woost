@@ -12,26 +12,18 @@ from woost.models.rendering import ImageFactory
 class NewsletterContent(Block):
 
     type_group = "blocks.newsletter"
+    default = "woost.extensions.newsletters.NewsletterContentView"
+    views = [
+        "woost.extensions.newsletters.NewsletterContentView"
+    ]
 
     members_order = [
-        "view_class",
         "text",
         "image",
         "image_alignment",
         "image_factory",
         "link"
     ]
-
-    view_class = schema.String(
-        shadows_attribute = True,
-        required = True,
-        default = "woost.extensions.newsletters.NewsletterContentView",
-        enumeration = [
-            "woost.extensions.newsletters.NewsletterContentView"
-        ],
-        text_search = False,
-        member_group = "content"
-    )
 
     text = schema.HTML(
         edit_control = "woost.extensions.newsletters.NewsletterRichTextEditor",

@@ -20,6 +20,11 @@ class ECommerceProductListing(Block):
     instantiable = True
     type_group = "blocks.ecommerce"
     block_display = "woost.extensions.ecommerce.ProductListingDisplay"
+    default_view_class = "woost.extensions.ecommerce.TextAndImageProductListing"
+    views = [
+        "woost.extensions.ecommerce.CompactProductListing",
+        "woost.extensions.ecommerce.TextAndImageProductListing"
+    ]
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
@@ -30,8 +35,7 @@ class ECommerceProductListing(Block):
         "item_accessibility",
         "listing_order",
         "paginated",
-        "page_size",
-        "view_class"
+        "page_size"
     ]
 
     default_controller = "woost.extensions.ecommerce" \
@@ -79,17 +83,6 @@ class ECommerceProductListing(Block):
     page_size = schema.Integer(
         min = 1,
         required = paginated,
-        member_group = "listing"
-    )
-
-    view_class = schema.String(
-        required = True,
-        shadows_attribute = True,
-        enumeration = [
-            "woost.extensions.ecommerce.CompactProductListing",
-            "woost.extensions.ecommerce.TextAndImageProductListing"
-        ],
-        default = "woost.extensions.ecommerce.TextAndImageProductListing",
         member_group = "listing"
     )
 

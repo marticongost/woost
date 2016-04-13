@@ -11,7 +11,7 @@ class OrderStepsContainerBlock(Block):
 
     instantiable = True
     type_group = "blocks.ecommerce"
-    view_class = "woost.extensions.ecommerce.OrderStepsContainerBlockView"
+    views = ["woost.extensions.ecommerce.OrderStepsContainerBlockView"]
 
     members_order = [
         "list_type"

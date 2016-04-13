@@ -4,11 +4,15 @@ u"""Defines the `Block` model.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from datetime import datetime
+from cocktail.modeling import extend, call_base
+from cocktail.events import when
 from cocktail.pkgutils import import_object
 from cocktail.iteration import last
 from cocktail.translations import translations, get_language, require_language
 from cocktail import schema
 from cocktail.html import templates, Element
+from cocktail.html.utils import is_sectioning_content
+from cocktail.html.uigeneration import display_factory
 from .enabledtranslations import auto_enables_translations
 from .item import Item
 from .localemember import LocaleMember
@@ -32,34 +36,52 @@ class Block(Item):
         "blocks.forms",
         "blocks.custom"
     ]
-    view_class = None
     block_display = "woost.views.BlockDisplay"
     edit_node_class = (
-        "woost.controllers.backoffice.enabledtranslationseditnode."
-        "EnabledTranslationsEditNode"
+        "woost.controllers.backoffice.blockeditnode."
+        "BlockEditNode"
     )
     backoffice_card_view = "woost.views.BlockCard"
+    views = []
 
     groups_order = [
         "content",
-        "behavior",
+        "publication",
         "html",
         "administration"
     ]
 
     members_order = [
+        "view_class",
         "heading",
-        "heading_type",
+        "heading_display",
         "per_language_publication",
         "enabled",
         "enabled_translations",
         "start_date",
         "end_date",
         "controller",
+        "element_type",
+        "heading_type",
         "styles",
         "inline_css_styles",
         "html_attributes"
     ]
+
+    # content
+
+    view_class = schema.String(
+        required = True,
+        text_search = False,
+        member_group = "content"
+    )
+
+    @extend(view_class)
+    def produce_default(member, instance = None):
+        default = call_base(instance)
+        if default is None and instance is not None and instance.views:
+            default = instance.views[0]
+        return default
 
     heading = schema.String(
         descriptive = True,
@@ -68,12 +90,83 @@ class Block(Item):
         member_group = "content"
     )
 
-    heading_type = schema.String(
-        default = "hidden",
+    heading_display = schema.String(
+        required = True,
+        default = "off",
         enumeration = [
+            "off",
             "hidden",
-            "hidden_h1",
-            "generic",
+            "on"
+        ],
+        edit_control = display_factory(
+            "cocktail.html.DropdownSelector",
+            empty_option_displayed = False
+        ),
+        text_search = False,
+        member_group = "content"
+    )
+
+    # publication
+
+    per_language_publication = schema.Boolean(
+        required = True,
+        default = False,
+        member_group = "publication"
+    )
+
+    enabled = schema.Boolean(
+        required = True,
+        default = True,
+        member_group = "publication"
+    )
+
+    enabled_translations = schema.Collection(
+        items = LocaleMember(),
+        default_type = set,
+        edit_control = "woost.views.EnabledTranslationsSelector",
+        member_group = "publication"
+    )
+
+    start_date = schema.DateTime(
+        indexed = True,
+        affects_cache_expiration = True,
+        member_group = "publication"
+    )
+
+    end_date = schema.DateTime(
+        indexed = True,
+        min = start_date,
+        affects_cache_expiration = True,
+        member_group = "publication"
+    )
+
+    controller = schema.String(
+        text_search = False,
+        member_group = "publication"
+    )
+
+    # html
+
+    element_type = schema.String(
+        enumeration = [
+            "div",
+            "section",
+            "article",
+            "details",
+            "aside",
+            "figure",
+            "header",
+            "footer",
+            "nav",
+            "dd"
+        ],
+        text_search = False,
+        member_group = "html"
+    )
+
+    heading_type = schema.String(
+        enumeration = [
+            "div",
             "h1",
             "h2",
             "h3",
@@ -84,45 +177,7 @@ class Block(Item):
             "figcaption"
         ],
         text_search = False,
-        required = heading,
-        member_group = "content"
-    )
-
-    per_language_publication = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "behavior"
-    )
-
-    enabled = schema.Boolean(
-        required = True,
-        default = True,
-        member_group = "behavior"
-    )
-
-    enabled_translations = schema.Collection(
-        items = LocaleMember(),
-        default_type = set,
-        edit_control = "woost.views.EnabledTranslationsSelector",
-        member_group = "behavior"
-    )
-
-    start_date = schema.DateTime(
-        indexed = True,
-        affects_cache_expiration = True,
-        member_group = "behavior"
-    )
-
-    end_date = schema.DateTime(
-        indexed = True,
-        min = start_date,
-        affects_cache_expiration = True,
-        member_group = "behavior"
-    )
-
-    controller = schema.String(
-        text_search = False,
-        member_group = "behavior"
+        member_group = "html"
     )
 
     styles = schema.Collection(
@@ -144,6 +199,8 @@ class Block(Item):
         text_search = False,
         member_group = "html"
     )
+
+    # administration
 
     initialization = schema.CodeBlock(
         language = "python",
@@ -190,6 +247,12 @@ class Block(Item):
     def init_view(self, view):
         view.block = self
 
+        if self.element_type:
+            view.tag = self.element_type
+        elif view.tag == "div":
+            if self.heading and self.heading_display != "off":
+                view.tag = "section"
+
         block_proxy = self.get_block_proxy(view)
         block_proxy.set_client_param("blockId", self.id)
         block_proxy.add_class("block")
@@ -234,40 +297,48 @@ class Block(Item):
         return bool(self.heading)
 
     def add_heading(self, view):
-        if self.heading_type != "hidden":
+
+        heading = None
+
+        if self.heading_display != "off":
             if hasattr(view, "heading"):
                 if isinstance(view.heading, Element):
-                    if self.heading_type == "hidden_h1":
-                        view.heading.tag = "h1"
-                        view.heading.set_style("display", "none")
-                    elif self.heading_type == "generic":
-                        view.heading.tag = "div"
-                    else:
-                        view.heading.tag = self.heading_type
-
+                    heading = view.heading
                     label = self.heading
                     if label:
-                        view.heading.append(label)
+                        heading.append(label)
                 else:
                     view.heading = self.heading
             else:
                 insert_heading = getattr(view, "insert_heading", None)
-                view.heading = self.create_heading()
+                view.heading = heading = self.create_heading()
                 if insert_heading:
                     insert_heading(view.heading)
                 else:
                     view.insert(0, view.heading)
 
+        if heading is not None:
+
+            if self.heading_display == "hidden":
+                heading.set_style("display", "none")
+
+            if self.heading_type is None:
+                if view.tag == "details":
+                    heading.tag = "summary"
+                else:
+                    heading.tag = (
+                        "h1"
+                        if is_sectioning_content(view.tag)
+                        else "div"
+                    )
+            else:
+                heading.tag = self.heading_type
+
+        return heading
+
     def create_heading(self):
 
-        if self.heading_type == "hidden_h1":
-            heading = Element("h1")
-            heading.set_style("display", "none")
-        elif self.heading_type == "generic":
-            heading = Element()
-        else:
-            heading = Element(self.heading_type)
-
+        heading = Element()
         heading.add_class("heading")
 
         label = self.heading
@@ -410,4 +481,28 @@ class Block(Item):
                 for container in self.get(member):
                     slot_content = container.get(related_end)
                     slot_content[slot_content.index(self)] = replacement
+
+
+def setup_translation_of_default_values_for_block_type(block_type):
+
+    def setup_translation_of_default_values_for_member(member):
+        @extend(member)
+        def __translate__(member, language, **kwargs):
+            trans = call_base(language, **kwargs)
+            if not trans and kwargs.get("suffix") == "=none":
+                return translations("Block.default_value", language)
+            return trans
+
+    for member in block_type.iter_members(recursive = False):
+        setup_translation_of_default_values_for_member(member)
+
+    @when(block_type.member_added)
+    def setup_translation_of_default_values_for_added_member(e):
+        setup_translation_of_default_values_for_member(e.member)
+
+setup_translation_of_default_values_for_block_type(Block)
+
+@when(Block.inherited)
+def setup_translation_of_default_values_for_block_subtype(e):
+    setup_translation_of_default_values_for_block_type(e.schema)
 

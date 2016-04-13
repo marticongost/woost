@@ -12,10 +12,10 @@ from cocktail.controllers import Location
     text = None
     heading_alignment = "top"
     images = None
-    image_alignment = None
-    image_thumbnail_factory = None
-    image_close_up_factory = None
-    image_close_up_enabled = True
+    image_alignment = "float_top_left"
+    image_thumbnail_factory = "image_gallery_thumbnail"
+    image_close_up_factory = "image_gallery_close_up"
+    image_close_up_enabled = False
     image_close_up_preload = False
     image_labels_visible = False
     image_footnotes_visible = False
