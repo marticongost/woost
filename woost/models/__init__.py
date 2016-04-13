@@ -133,7 +133,6 @@ from .synchronization import (
 from . import staticpublication
 
 # Blocks
-from .elementtype import ElementType
 from .slot import Slot
 from .block import Block
 from .containerblock import ContainerBlock

@@ -12,7 +12,7 @@ class FacebookLikeButton(Block):
 
     instantiable = True
     type_group = "blocks.social"
-    view_class = "cocktail.html.FacebookLikeButton"
+    views = ["cocktail.html.FacebookLikeButton"]
 
     members_order = [
         "fb_href",

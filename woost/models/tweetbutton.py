@@ -12,7 +12,7 @@ class TweetButton(Block):
 
     instantiable = True
     type_group = "blocks.social"
-    view_class = "woost.views.TweetButton"
+    views = ["woost.views.TweetButton"]
 
     groups_order = list(Block.groups_order)
     pos = groups_order.index("content")

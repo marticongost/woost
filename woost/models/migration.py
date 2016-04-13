@@ -1234,3 +1234,43 @@ def create_generic_error_page(e):
         tb_block.insert()
         config.generic_error_page.blocks.append(tb_block)
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Set Block.view_class")
+
+@when(step.executing)
+def set_block_view_class(e):
+
+    from woost.models import Block
+
+    for block in Block.select():
+
+        if not block.view_class:
+            block.view_class = (
+                getattr(block, "default_view_class", None)
+                or block.views[0]
+            )
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Set Block.heading_display")
+
+@when(step.executing)
+def set_block_heading_display(e):
+
+    from woost.models import Block
+
+    for block in Block.select():
+
+        if block.heading_type in ("generic", "h1"):
+            block.heading_type = None
+            block.heading_display = "on"
+        elif block.heading_type == "hidden_h1":
+            block.heading_type = None
+            block.heading_display = "hidden"
+        elif block.heading_type == "hidden":
+            block.heading_type = None
+            block.heading_display = "off"
+        else:
+            block.heading_display = "on"
+

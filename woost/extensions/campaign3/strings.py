@@ -225,12 +225,6 @@ translations.define("SubscriptionFormBlock.lists",
     en = u"Lists"
 )
 
-translations.define("SubscriptionFormBlock.view_class",
-    ca = u"Vista",
-    es = u"Vista",
-    en = u"View"
-)
-
 # ResubscribeFormView
 #------------------------------------------------------------------------------
 translations.define("woost.extensions.campaign3.ResubscribeFormView.unsubscribed_by_error",

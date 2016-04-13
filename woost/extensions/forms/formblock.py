@@ -15,7 +15,8 @@ from .fields import FieldSet, Field, OptionsFieldOption
 class FormBlock(Block):
 
     type_group = "blocks.forms"
-
+    default_view_class = "woost.extensions.forms.FormView"
+    default_controller = "woost.extensions.forms.formcontroller.FormController"
     groups_order = list(Block.groups_order)
     groups_order.insert(1, "form")
 
@@ -26,11 +27,8 @@ class FormBlock(Block):
         "email_messages",
         "redirection",
         "submit_code",
-        "after_submit_code",
-        "view_class"
+        "after_submit_code"
     ]
-
-    default_controller = "woost.extensions.forms.formcontroller.FormController"
 
     field_set = schema.Reference(
         type = FieldSet,
@@ -77,14 +75,6 @@ class FormBlock(Block):
     after_submit_code = schema.CodeBlock(
         language = "python",
         member_group = "administration"
-    )
-
-    view_class = schema.String(
-        shadows_attribute = True,
-        after_member = "controller",
-        listed_by_default = False,
-        default = "woost.extensions.forms.FormView",
-        member_group = "behavior"
     )
 
     def __init__(self, *args, **kwargs):

@@ -13,7 +13,7 @@ from woost.extensions.issuu.issuudocument import IssuuDocument
 class IssuuBlock(Block):
 
     instantiable = True
-    view_class = "woost.extensions.issuu.IssuuBlockView"
+    views = ["woost.extensions.issuu.IssuuBlockView"]
     block_display = "woost.extensions.issuu.IssuuBlockDisplay"
 
     members_order = ["element_type", "issuu_document", "width", "height"]

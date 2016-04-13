@@ -11,7 +11,7 @@ from .document import Document
 class MenuBlock(Block):
 
     instantiable = True
-    view_class = "woost.views.Menu"
+    views = ["woost.views.Menu"]
 
     root = schema.Reference(
         type = Document,

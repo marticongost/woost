@@ -11,7 +11,7 @@ class TwitterTimelineBlock(Block):
 
     instantiable = True
     type_group = "blocks.social"
-    view_class = "cocktail.html.TwitterTimeline"
+    views = ["cocktail.html.TwitterTimeline"]
 
     members_order = [
         "widget_id",
