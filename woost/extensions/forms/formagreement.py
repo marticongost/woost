@@ -15,6 +15,7 @@ class FormAgreement(Item):
     members_order = [
         "forms",
         "title",
+        "text",
         "document"
     ]
 
@@ -32,6 +33,10 @@ class FormAgreement(Item):
         indexed = True,
         spellcheck = True,
         normalized_index = True
+    )
+
+    text = schema.HTML(
+        translated = True
     )
 
     document = schema.Reference(
