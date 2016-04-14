@@ -610,6 +610,12 @@ translations.define("FormAgreement.title",
     en = u"Name"
 )
 
+translations.define("FormAgreement.text",
+    ca = u"Text",
+    es = u"Texto",
+    en = u"Text"
+)
+
 translations.define("FormAgreement.document",
     ca = u"Document",
     es = u"Documento",
