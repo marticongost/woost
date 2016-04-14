@@ -5,6 +5,7 @@ u"""
 """
 import cherrypy
 from datetime import datetime
+from cocktail.modeling import extend, call_base
 from cocktail.controllers import (
     Controller,
     FormProcessor,
@@ -30,6 +31,13 @@ class FormController(FormProcessor, Controller):
                     name = "agreement%d" % agreement.id,
                     document = agreement.document
                 )
+                if agreement.text:
+                    if agreement.text:
+                        @extend(agreement_member)
+                        def __translate__(agreement_member, language, **kwargs):
+                            if not kwargs.get("suffix"):
+                                return agreement.text
+                            return call_base(language, **kwargs)
 
         @property
         def model(self):
