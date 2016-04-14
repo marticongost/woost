@@ -1,0 +1,4 @@
+syntax: glob
+woost.egg-info
+build
+dist
