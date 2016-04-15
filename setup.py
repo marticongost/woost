@@ -81,6 +81,7 @@ of its features include:\n"
 			"signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
+            "googletagmanager=woost.extensions.googletagmanager:GoogleTagManagerExtension",
             "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
             "mailer = woost.extensions.mailer:MailerExtension",
             "usermodels = woost.extensions.usermodels:UserModelsExtension",
