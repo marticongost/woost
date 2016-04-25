@@ -42,7 +42,7 @@ class ReCaptchaBox(Element):
         if language == "ca":
             options["lang"] = "es"
             options["custom_translations"] = {
-                "instructions_visual": "Escriu les 2 paraules:",
+                "instructions_visual": "Escriu el text de la imatge:",
                 "instructions_audio": "Escriu el que sentis:",
                 "play_again": "Tornar a escoltar",
                 "cant_hear_this": "Descarregar so en MP3",
