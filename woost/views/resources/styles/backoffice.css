@@ -320,7 +320,7 @@ body {
 .BackOfficeLayout input[type=search],
 .BackOfficeLayout input[type=tel],
 .BackOfficeLayout textarea,
-.BackOfficeLayout .CodeMirror-wrapping {
+.BackOfficeLayout .CodeMirror {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
     -moz-box-sizing: border-box;
@@ -332,7 +332,7 @@ body {
     background: white url(../images/search_box.png) 0.3em center no-repeat;
 }
 
-.BackOfficeLayout .CodeMirror-wrapping {
+.BackOfficeLayout .CodeMirror {
     clear: left;
     width: 45em !important;
     height: 10em !important;
@@ -3345,17 +3345,17 @@ a.pickcolor span {
     width: 30em !important;
 }
 
-.Trigger .condition_field .CodeMirror-wrapping {
+.Trigger .condition_field .CodeMirror {
     width: 30em !important;
     height: 2.5em !important;
 }
 
 /* Syndication feed styles
 -----------------------------------------------------------------------------*/
-.Feed .item_title_expression_field .CodeMirror-wrapping,
-.Feed .item_link_expression_field .CodeMirror-wrapping,
-.Feed .item_publication_date_expression_field .CodeMirror-wrapping,
-.Feed .item_description_expression_field .CodeMirror-wrapping {
+.Feed .item_title_expression_field .CodeMirror,
+.Feed .item_link_expression_field .CodeMirror,
+.Feed .item_publication_date_expression_field .CodeMirror,
+.Feed .item_description_expression_field .CodeMirror {
     width: 30em !important;
     height: 2.5em !important;
 }
@@ -3373,9 +3373,9 @@ a.pickcolor span {
 
 /* Tweaks for email templates
 -----------------------------------------------------------------------------*/
-.EmailTemplate .sender_field .CodeMirror-wrapping,
-.EmailTemplate .receivers_field .CodeMirror-wrapping,
-.EmailTemplate .bcc_field .CodeMirror-wrapping {
+.EmailTemplate .sender_field .CodeMirror,
+.EmailTemplate .receivers_field .CodeMirror,
+.EmailTemplate .bcc_field .CodeMirror {
     height: 5em;
 }
 
