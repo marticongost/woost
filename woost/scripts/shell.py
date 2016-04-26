@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import webbrowser
+from cocktail.schema import TranslatedValues as T
 from cocktail.translations import *
 from cocktail.persistence import *
 from woost import app
