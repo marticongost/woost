@@ -47,7 +47,6 @@ class TextBlock(Block):
     ]
 
     text = schema.HTML(
-        edit_control = "woost.views.RichTextEditor",
         translated = True,
         spellcheck = True,
         member_group = "content"
