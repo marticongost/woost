@@ -51,6 +51,9 @@ class Website(Item):
         "email",
         "technical_contact_email",
 
+        # publication
+        "common_styles_initialization",
+
         # publication.pages
         "home",
         "login_page",
@@ -195,6 +198,11 @@ class Website(Item):
 
     # publication.pages
     #--------------------------------------------------------------------------
+    common_styles_initialization = schema.CodeBlock(
+        language = "scss",
+        member_group = "publication"
+    )
+
     home = schema.Reference(
         type = Publishable,
         required = True,

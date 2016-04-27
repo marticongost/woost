@@ -2020,6 +2020,26 @@ translations.define("Configuration.caching_policies",
     en = u"Caching policies"
 )
 
+translations.define("Configuration.common_styles_initialization",
+    ca = u"Inicialització d'estils comú",
+    es = u"Inicialización de estilos común",
+    en = u"Common styles initialization"
+)
+
+translations.define("Configuration.common_styles_initialization-explanation",
+    ca = u"Codi SCSS comú a tots els elements de la web que defineixen estils "
+         u"propis. Permet fer importacions o definicions per tal que estiguin "
+         u"automàticament disponibles als camps de definició d'estils dels "
+         u"blocs i dels estils d'usuari.",
+    es = u"Código SCSS común a todos los elementos de la web que definen "
+         u"estilos propios. Permite hacer importaciones o definiciones que "
+         u"estarán disponibles en los campos de definición de estilos de los "
+         u"bloques y los estilos de usuario.",
+    en = u"Common SCSS initialization code that will be made available to all "
+         u"content that provides fields to customize its styles (such as "
+         u"blocks and user styles)."
+)
+
 translations.define("Configuration.login_page",
     ca = u"Pàgina d'autenticació",
     es = u"Página de autenticación",
@@ -2277,6 +2297,26 @@ translations.define("Website.meta",
     ca = u"Metadades",
     es = u"Metadatos",
     en = u"Metadata"
+)
+
+translations.define("Website.common_styles_initialization",
+    ca = u"Inicialització d'estils comú",
+    es = u"Inicialización de estilos común",
+    en = u"Common styles initialization"
+)
+
+translations.define("Website.common_styles_initialization-explanation",
+    ca = u"Codi SCSS comú a tots els elements de la web que defineixen estils "
+         u"propis. Permet fer importacions o definicions per tal que estiguin "
+         u"automàticament disponibles als camps de definició d'estils dels "
+         u"blocs i dels estils d'usuari.",
+    es = u"Código SCSS común a todos los elementos de la web que definen "
+         u"estilos propios. Permite hacer importaciones o definiciones que "
+         u"estarán disponibles en los campos de definición de estilos de los "
+         u"bloques y los estilos de usuario.",
+    en = u"Common SCSS initialization code that will be made available to all "
+         u"content that provides fields to customize its styles (such as "
+         u"blocks and user styles)."
 )
 
 translations.define("Website.language",
@@ -4187,16 +4227,68 @@ translations.define("Style.custom_class_name-explanation",
          u"pattern."
 )
 
+translations.define("Style.declarations_initialization",
+    ca = u"Inicialització dels estils",
+    es = u"Inicialización de los estilos",
+    en = u"Style initialization"
+)
+
+translations.define("Style.declarations_initialization-explanation",
+    ca = u"Un fragment de codi SCSS que precedirà els estils afegits pels "
+         u"camps <em>estils</em> i <em>estils per l'administració</em>. "
+         u"Útil per importar fulls d'estil i fer declaracions fora de "
+         u"l'àmbit de l'estil. Es combina amb els camps <em>inicialització "
+         u"d'estils comú</em> de la configuració i els llocs web.",
+    es = u"Un fragmento de código SCSS que precederá los estilos añadidos "
+         u"por los campos <em>estilos</em> y <em>estilos para el "
+         u"administrador</em>. Útil para importar hojas de estilo y hacer "
+         u"declaraciones fuera del ámbito del estilo. Se combina con los "
+         u"campos <em>inicialización de estilos común</em> de la "
+         u"configuración y los sitios web.",
+    en = u"A fragment of SCSS code that will precede the styles added by the "
+         u"<em>styles</em> and <em>admin styles</em> fields. Useful to import "
+         u"style sheets or to make declarations outside the scope of the "
+         u"style. Will be combined with the <em>common styles "
+         u"initialization</em> fields specified by the configuration and "
+         u"websites."
+)
+
 translations.define("Style.declarations",
-    ca = u"Declaracions CSS",
-    es = u"Declaraciones CSS",
-    en = u"CSS declarations"
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
+)
+
+translations.define("Style.declarations-explanation",
+    ca = u"Codi SCSS que s'aplicarà als elements vinculats a aquest estil. "
+         u"S'embolcalla automàticament amb el selector adequat.",
+    es = u"Código SCSS que se aplicará a los elementos vinculados con este "
+         u"estilo. Se envuelve automáticamente con el selector adecuado.",
+    en = u"SCSS code that will be applied to elements linked to this style. "
+         u"The code is automatically wrapped in the appropiate selector."
 )
 
 translations.define("Style.admin_declarations",
-    ca = u"Declaracions CSS per l'administració",
-    es = u"Declaraciones CSS para el administrador",
-    en = u"Admin CSS declarations"
+    ca = u"Estils per l'administració",
+    es = u"Estilos para el administrador",
+    en = u"Admin styles"
+)
+
+translations.define("Style.admin_declarations-explanation",
+    ca = u"Com el camp <em>estils</em>, però només s'aplica dins de la "
+         u"interfície d'administració. Això és útil per fer més llegibles "
+         u"estils que quedarien fora de lloc dins de l'editor de text; per "
+         u"exemple, donar un altre color a text que al frontal hagi de ser "
+         u"blanc.",
+    es = u"Como el campo <em>estilos</em>, pero solo se aplica dentro de la "
+         u"interfaz de administración. Esto es útil para hacer más legibles "
+         u"estilos que quedarían fuera de sitio dentro del editor de texto; "
+         u"por ejemplo, dar otro color a texto que en el frontal tenga que "
+         u"ser blanco.",
+    en = u"Like the <em>styles</em> field, but will be only applied within "
+         u"the administration interface. This is useful to subdue styles that "
+         u"would look out of place on the text editor; for example, to change "
+         u"the color of text that should be white on the frontend."
 )
 
 # UserView
@@ -7118,10 +7210,47 @@ translations.define("Block.styles",
     en = u"Styles"
 )
 
-translations.define("Block.inline_css_styles",
-    ca = u"Estils en línia",
-    es = u"Estilos en linea",
-    en = u"Inline CSS styles"
+translations.define("Block.embedded_styles_initialization",
+    ca = u"Inicialització dels estils incrustats",
+    es = u"Inicialización de los estilos incrustados",
+    en = u"Embedded styles initialization"
+)
+
+translations.define("Block.embedded_styles_initialization-explanation",
+    ca = u"Un fragment de codi SCSS que precedirà els estils afegits pel "
+         u"camp <em>estils incrustats</em>. Útil per importar fulls d'estil "
+         u"i fer declaracions fora de l'àmbit del bloc. Es combina amb els "
+         u"camps <em>inicialització d'estils comú</em> de la configuració "
+         u"i els llocs web.",
+    es = u"Un fragmento de código SCSS que precederá los estilos añadidos "
+         u"por el campo <em>estilos incrustados</em>. Útil para importar "
+         u"hojas de estilo y hacer declaraciones fuera del ámbito del "
+         u"bloque. Se combina con los campos <em>inicialización de estilos "
+         u"común</em> de la configuración y los sitios web.",
+    en = u"A fragment of SCSS code that will precede the styles added by the "
+         u"<em>embedded styles</em> field. Useful to import style sheets or "
+         u"to make declarations outside the scope of the block. Will be "
+         u"combined with the <em>common styles initialization</em> fields "
+         u"specified by the configuration and websites."
+)
+
+translations.define("Block.embedded_styles",
+    ca = u"Estils incrustats",
+    es = u"Estilos incrustados",
+    en = u"Embedded styles"
+)
+
+translations.define("Block.embedded_styles-explanation",
+    ca = u"Un bloc de codi SCSS que s'afegirà utilitzant un tag "
+         u"<code>&lt;style&gt;</code> al <code>&lt;head&gt;</code> de la "
+         u"pàgina. El codi serà embolcallat en un selector pel bloc.",
+    es = u"Un bloque de código SCSS que se añadirá utilizando un tag "
+         u"<code>&lt;style&gt;</code> al <code>&lt;head&gt;</code> de la "
+         u"página. El código será envuelto en un selector para el bloque.",
+    en = u"An SCSS code block that will be added using a "
+         u"<code>&lt;style&gt;</code> tag to the page's "
+         u"<code>&lt;head&gt;</code>. The code will be wrapped in a selector "
+         u"for this block."
 )
 
 translations.define("Block.per_language_publication",

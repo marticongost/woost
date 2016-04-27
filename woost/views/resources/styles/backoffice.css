@@ -3059,6 +3059,16 @@ a.pickcolor span {
     width: 4em;
 }
 
+/* Block edit form
+-----------------------------------------------------------------------------*/
+.BlockFieldsView .embedded_styles_initialization_field .CodeMirror {
+    height: 4em !important;
+}
+
+.BlockFieldsView .embedded_styles_field .CodeMirror {
+    height: 14em !important;
+}
+
 /* Member list
 -----------------------------------------------------------------------------*/
 .BackOfficeFieldsView .MemberList-autocomplete {
