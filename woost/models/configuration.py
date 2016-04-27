@@ -61,6 +61,7 @@ class Configuration(Item):
     members_order = [
         "websites",
         "caching_policies",
+        "common_styles_initialization",
         "down_for_maintenance",
         "maintenance_page",
         "maintenance_addresses",
@@ -105,6 +106,11 @@ class Configuration(Item):
         items = schema.Reference(type = CachingPolicy),
         integral = True,
         related_end = schema.Reference(),
+        member_group = "publication"
+    )
+
+    common_styles_initialization = schema.CodeBlock(
+        language = "scss",
         member_group = "publication"
     )
 

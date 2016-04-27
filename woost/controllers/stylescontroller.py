@@ -7,7 +7,9 @@
 @since:			January 2010
 """
 import cherrypy
-from woost.models import Style
+from cocktail.html.resources import compile_sass
+from woost import app
+from woost.models import Configuration, Style
 from woost.controllers.publishablecontroller import PublishableController
 
 
@@ -15,7 +17,23 @@ class StylesController(PublishableController):
 
     def _produce_content(self, backoffice = False):
 
+        config = Configuration.instance
+        website = app.website
+
         for style in Style.select():
+
             declarations = (backoffice and style.admin_declarations) or style.declarations
-            yield ".%s{\n%s\n}\n" % (style.class_name, declarations or "")
+
+            sass_init = config.common_styles_initialization or ""
+            sass_init += website.common_styles_initialization or ""
+            sass_init += style.declarations_initialization or ""
+
+            sass_code = "%s.%s{\n%s\n}" % (
+                sass_init,
+                style.class_name,
+                declarations or ""
+            )
+
+            yield compile_sass(string = sass_code)
+            yield "\n"
 

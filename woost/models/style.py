@@ -23,6 +23,7 @@ class Style(Item):
         "custom_class_name",
         "html_tag",
         "editor_keyboard_shortcut",
+        "declarations_initialization",
         "declarations",
         "admin_declarations"
     ]
@@ -67,15 +68,18 @@ class Style(Item):
         listed_by_default = False
     )
 
-    declarations = schema.String(
-        text_search = False,
-        edit_control = "cocktail.html.TextArea",
+    declarations_initialization = schema.CodeBlock(
+        language = "scss",
         listed_by_default = False
     )
 
-    admin_declarations = schema.String(
-        text_search = False,
-        edit_control = "cocktail.html.TextArea",
+    declarations = schema.CodeBlock(
+        language = "scss",
+        listed_by_default = False
+    )
+
+    admin_declarations = schema.CodeBlock(
+        language = "scss",
         listed_by_default = False
     )
 

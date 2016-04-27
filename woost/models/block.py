@@ -3,7 +3,9 @@ u"""Defines the `Block` model.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import sys
 from datetime import datetime
+import sass
 from cocktail.modeling import extend, call_base
 from cocktail.events import when
 from cocktail.pkgutils import import_object
@@ -11,8 +13,10 @@ from cocktail.iteration import last
 from cocktail.translations import translations, get_language, require_language
 from cocktail import schema
 from cocktail.html import templates, Element
+from cocktail.html.resources import compile_sass
 from cocktail.html.utils import is_sectioning_content
 from cocktail.html.uigeneration import display_factory
+from woost import app
 from .enabledtranslations import auto_enables_translations
 from .item import Item
 from .localemember import LocaleMember
@@ -64,7 +68,8 @@ class Block(Item):
         "element_type",
         "heading_type",
         "styles",
-        "inline_css_styles",
+        "embedded_styles_initialization",
+        "embedded_styles",
         "html_attributes"
     ]
 
@@ -187,9 +192,13 @@ class Block(Item):
         member_group = "html"
     )
 
-    inline_css_styles = schema.String(
-        edit_control = "cocktail.html.TextArea",
-        text_search = False,
+    embedded_styles_initialization = schema.CodeBlock(
+        language = "scss",
+        member_group = "html"
+    )
+
+    embedded_styles = schema.CodeBlock(
+        language = "scss",
         member_group = "html"
     )
 
@@ -268,14 +277,46 @@ class Block(Item):
                 else:
                     block_proxy[key.strip()] = value.strip()
 
-        if self.inline_css_styles:
-            for line in self.inline_css_styles.split(";"):
+        if self.embedded_styles:
+            element_id = block_proxy.require_id()
+
+            @view.when_document_ready
+            def add_embedded_styles(document):
+
+                from .configuration import Configuration
+
+                config = Configuration.instance
+                website = app.website
+
+                sass_init = config.common_styles_initialization or ""
+                sass_init += app.website.common_styles_initialization or ""
+                sass_init += self.embedded_styles_initialization or ""
+
+                sass_code = "%s#%s {%s}" % (
+                    sass_init,
+                    element_id,
+                    self.embedded_styles
+                )
+
                 try:
-                    key, value = line.split(":")
-                except:
-                    pass
+                    css = compile_sass(string = sass_code)
+                except sass.CompileError, error:
+                    sys.stderr.write(
+                        (
+                            "Error compiling SASS for block %r:\n"
+                            "  SASS:\n%s\n"
+                            "  Exception: %s" % (
+                                self,
+                                sass_code,
+                                error
+                            )
+                        ).encode("utf-8")
+                    )
                 else:
-                    block_proxy.set_style(key.strip(), value.strip())
+                    styles = Element("style")
+                    styles["type"] = "text/css"
+                    styles.append(css)
+                    document.head.append(styles)
 
         for style in self.styles:
             block_proxy.add_class(style.class_name)

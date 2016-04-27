@@ -54,6 +54,7 @@ of its features include:\n"
     install_requires = [
         "simplejson",
         "enum34",
+        "libsass",
         "cocktail>=1.10,<1.11"
     ],
     extras_require = {

@@ -1274,3 +1274,17 @@ def set_block_heading_display(e):
         else:
             block.heading_display = "on"
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Rename Block.inline_styles to Block.embedded_styles")
+
+@when(step.executing)
+def rename_block_inline_styles_to_embedded_styles(e):
+
+    from woost.models import Block
+
+    for block in Block.select():
+        if hasattr(block, "_inline_css_styles"):
+            block.embedded_styles = block._inline_css_styles
+            del block._inline_css_styles
+
