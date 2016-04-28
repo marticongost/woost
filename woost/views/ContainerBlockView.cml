@@ -7,7 +7,19 @@
     <?py-class
     list_type = "div"
     blocks = None
+    background_image = None
+    background_image_factory = None
     ?>
+
+    <py:ready>
+        <?py
+        if self.background_image:
+            element.set_style(
+                "background-image",
+                "url('%s')" % self.background_image.get_image_uri(self.background_image_factory)
+            )
+        ?>
+    </py:ready>
 
     <py:woost.views.BlockList
         py:id="blocks_list"
