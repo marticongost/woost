@@ -23,10 +23,12 @@ from cocktail.controllers import Location
     link_destination = None
     link_parameters = None
     link_opens_in_new_window = False
+    _has_heading = False
 
     alignments_with_text_above = ["column_right", "center_bottom", "bottom_left"]
 
     def insert_heading(self, heading):
+        self._has_heading = True
         if self.heading_alignment == "inside":
             self.text_container.insert(0, heading)
         else:
@@ -49,7 +51,7 @@ from cocktail.controllers import Location
         elif len(self._images) == 1:
             self.add_class("single_image")
 
-        if not self.text:
+        if not self.text and not (self._has_heading and self.heading_alignment == "inside"):
             self.add_class("no_text")
 
         if self._column_layout:
@@ -97,7 +99,9 @@ from cocktail.controllers import Location
                 py:footnotes_visible="@{self.image_footnotes_visible}"
                 py:original_link_visible="@{self.image_original_link_visible}"/>
 
-            <div py:id="text_container" py:visible="@{bool(self.text)}">
+            <div
+                py:id="text_container"
+                py:visible="@{bool(self.text) or (self._has_heading and self.heading_alignment == 'inside')}">
                 @{self.text}
             </div>
 
