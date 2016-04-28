@@ -334,8 +334,13 @@ body {
 
 .BackOfficeLayout .CodeMirror {
     clear: left;
-    width: 45em !important;
-    height: 10em !important;
+    width: 45em;
+    height: 10em;
+}
+
+.BackOfficeLayout .CodeMirror.CodeMirror-fullscreen {
+    width: auto !important;
+    height: auto !important;
 }
 
 .BackOfficeLayout .TreeView .filtered {
@@ -3062,11 +3067,11 @@ a.pickcolor span {
 /* Block edit form
 -----------------------------------------------------------------------------*/
 .BlockFieldsView .embedded_styles_initialization_field .CodeMirror {
-    height: 4em !important;
+    height: 4em;
 }
 
 .BlockFieldsView .embedded_styles_field .CodeMirror {
-    height: 14em !important;
+    height: 14em;
 }
 
 /* Member list
@@ -3356,8 +3361,8 @@ a.pickcolor span {
 }
 
 .Trigger .condition_field .CodeMirror {
-    width: 30em !important;
-    height: 2.5em !important;
+    width: 30em;
+    height: 2.5em;
 }
 
 /* Syndication feed styles
@@ -3366,8 +3371,8 @@ a.pickcolor span {
 .Feed .item_link_expression_field .CodeMirror,
 .Feed .item_publication_date_expression_field .CodeMirror,
 .Feed .item_description_expression_field .CodeMirror {
-    width: 30em !important;
-    height: 2.5em !important;
+    width: 30em;
+    height: 2.5em;
 }
 
 /* Tweaks for custom trigger responses
