@@ -7417,6 +7417,18 @@ translations.define("ContainerBlock.list_type=dl",
     en = u"Definition list"
 )
 
+translations.define("ContainerBlock.background_image",
+    ca = u"Imatge de fons",
+    es = u"Imagen de fondo",
+    en = u"Background image"
+)
+
+translations.define("ContainerBlock.background_image_factory",
+    ca = u"Processat per la imatge de fons",
+    es = u"Procesado para la imagen de fondo",
+    en = u"Processing for the background image"
+)
+
 # SlideShowBlock
 #------------------------------------------------------------------------------
 translations.define("SlideShowBlock",
