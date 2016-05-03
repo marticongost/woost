@@ -32,8 +32,14 @@ from woost.models import Configuration, Publishable
             )
 
     def get_page_title(self):
+
+        custom_title = getattr(self.publishable, "custom_document_title", None)
+        if custom_title:
+            return custom_title
+
         site_title = self.get_site_title()
         main_title = self.get_main_title()
+
         if site_title and main_title:
             return main_title + " | " + site_title
         else:
