@@ -10,6 +10,7 @@ import re
 from warnings import warn
 from decimal import Decimal
 from cocktail.modeling import classgetter
+from cocktail.events import when
 from cocktail.translations import (
     translations,
     require_language,
@@ -17,6 +18,7 @@ from cocktail.translations import (
     set_fallback_languages
 )
 from cocktail import schema
+from cocktail.html.resources import SASS
 from woost import app
 from .item import Item
 from .slot import Slot
@@ -28,6 +30,7 @@ from .rendering.imagefactory import ImageFactory
 from .videoplayersettings import VideoPlayerSettings
 from .trigger import Trigger
 from .metatags import MetaTags
+from .grid import Grid
 
 try:
     from fractions import Fraction
@@ -49,8 +52,9 @@ class Configuration(Item):
         "publication.maintenance",
         "meta",
         "language",
-        "media.images",
-        "media.video",
+        "presentation",
+        "presentation.images",
+        "presentation.video",
         "rendering",
         "services",
         "system",
@@ -61,7 +65,6 @@ class Configuration(Item):
     members_order = [
         "websites",
         "caching_policies",
-        "common_styles_initialization",
         "down_for_maintenance",
         "maintenance_page",
         "maintenance_addresses",
@@ -77,6 +80,8 @@ class Configuration(Item):
         "heed_client_language",
         "backoffice_language",
         "backoffice_language_chain",
+        "grid",
+        "common_styles_initialization",
         "renderers",
         "image_factories",
         "video_player_settings",
@@ -106,11 +111,6 @@ class Configuration(Item):
         items = schema.Reference(type = CachingPolicy),
         integral = True,
         related_end = schema.Reference(),
-        member_group = "publication"
-    )
-
-    common_styles_initialization = schema.CodeBlock(
-        language = "scss",
         member_group = "publication"
     )
 
@@ -265,14 +265,25 @@ class Configuration(Item):
         member_group = "language"
     )
 
-    # media
+    # presentation
     #--------------------------------------------------------------------------
+    grid = schema.Reference(
+        type = Grid,
+        related_end = schema.Collection(),
+        member_group = "presentation"
+    )
+
+    common_styles_initialization = schema.CodeBlock(
+        language = "scss",
+        member_group = "presentation"
+    )
+
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     image_factories = schema.Collection(
@@ -280,7 +291,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     video_player_settings = schema.Collection(
@@ -288,7 +299,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.video"
+        member_group = "presentation.video"
     )
 
     # system
@@ -422,4 +433,13 @@ class Configuration(Item):
         for website in self.websites:
             if "*" in website.hosts:
                 return website
+
+
+@when(SASS.resolving_import)
+def _export_site_grid(e):
+    if e.uri == "woost://settings/grid":
+        config = Configuration.instance
+        grid = config.get_setting("grid")
+        if grid:
+            e.add_code(grid.get_sass_code())
 

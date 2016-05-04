@@ -1288,3 +1288,13 @@ def rename_block_inline_styles_to_embedded_styles(e):
             block.embedded_styles = block._inline_css_styles
             del block._inline_css_styles
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create the default grid")
+
+@when(step.executing)
+def create_default_grid(e):
+    from woost.models import Configuration
+    from woost.models.initialization import SiteInitializer
+    Configuration.instance.grid = SiteInitializer().create_default_grid()
+
