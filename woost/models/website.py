@@ -10,6 +10,7 @@ from woost.models.item import Item
 from woost.models.file import File
 from woost.models.publishable import Publishable
 from woost.models.metatags import MetaTags
+from .grid import Grid
 
 
 class Website(Item):
@@ -24,6 +25,7 @@ class Website(Item):
         "publication.pages",
         "publication.maintenance",
         "publication.https",
+        "presentation",
         "language",
         "services"
     ]
@@ -51,9 +53,6 @@ class Website(Item):
         "email",
         "technical_contact_email",
 
-        # publication
-        "common_styles_initialization",
-
         # publication.pages
         "home",
         "login_page",
@@ -68,6 +67,10 @@ class Website(Item):
         # publication.https
         "https_policy",
         "https_persistence",
+
+        # presentation
+        "grid",
+        "common_styles_initialization",
 
         # meta
         "meta_tags",
@@ -198,11 +201,6 @@ class Website(Item):
 
     # publication.pages
     #--------------------------------------------------------------------------
-    common_styles_initialization = schema.CodeBlock(
-        language = "scss",
-        member_group = "publication"
-    )
-
     home = schema.Reference(
         type = Publishable,
         required = True,
@@ -252,6 +250,19 @@ class Website(Item):
         type = "woost.models.Publishable",
         listed_by_default = False,
         member_group = "publication.maintenance"
+    )
+
+    # presentation
+    #------------------------------------------------------------------------------
+    grid = schema.Reference(
+        type = Grid,
+        related_end = schema.Collection(),
+        member_group = "presentation"
+    )
+
+    common_styles_initialization = schema.CodeBlock(
+        language = "scss",
+        member_group = "presentation"
     )
 
     # meta

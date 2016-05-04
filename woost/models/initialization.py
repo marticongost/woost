@@ -37,6 +37,8 @@ from woost.models import (
     Controller,
     Template,
     Style,
+    Grid,
+    GridSize,
     File,
     UserView,
     Permission,
@@ -297,6 +299,9 @@ class SiteInitializer(object):
         # File deletion trigger
         self.file_deletion_trigger = self.create_file_deletion_trigger()
         self.configuration.triggers.append(self.file_deletion_trigger)
+
+        # Grid
+        self.configuration.grid = self.create_default_grid()
 
         # Templates and controllers
         self.create_controllers()
@@ -577,6 +582,47 @@ class SiteInitializer(object):
                     code = u"from os import remove\n"
                            u"for item in items:\n"
                            u"    remove(item.file_path)"
+                )
+            ]
+        )
+
+    def create_default_grid(self):
+        return self._create(
+            Grid,
+            title = TranslatedValues(),
+            qname = "woost.default_grid",
+            column_count = 12,
+            sizes = [
+                self._create(
+                    GridSize,
+                    identifier = "XL",
+                    min_width = 1389,
+                    column_width = 80
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "L",
+                    min_width = 1159,
+                    column_width = 59
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "M",
+                    min_width = 929,
+                    column_width = 60
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "S",
+                    min_width = 713,
+                    column_width = 42
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "XS",
+                    min_width = 0,
+                    column_width = 32,
+                    column_spacing = 8
                 )
             ]
         )
