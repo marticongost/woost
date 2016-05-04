@@ -8807,3 +8807,11 @@ translations.define(
         )
 )
 
+# SmallScreenNavigation
+#------------------------------------------------------------------------------
+translations.define("woost.views.SmallScreenNavigation.menu_button",
+    ca = u"Mostrar / ocultar menú",
+    es = u"Mostrar / ocultar menú",
+    en = u"Show / hide menu"
+)
+
