@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    data-menu-state="collapsed">
+
+    <?resource cocktail://scripts/jquery.scrollintoview.min.js ?>
+    <?resource woost://scripts/SmallScreenNavigation.js ?>
+
+    <?py-class
+    menu_image = "woost://images/menu-button.png"
+    collapsed_menu_character = u"▶"
+    collapsed_menu_image = None
+    expanded_menu_character = u"▼"
+    expanded_menu_image = None
+    single_branch_expansion = True
+    folder_action = "expand"
+    folder_animation_duration = 400
+
+    def create_expand_menu_button_content(self):
+        if self.collapsed_menu_image:
+            return Element(
+                "img",
+                src = normalize_resource_uri(self.collapsed_menu_image)
+            )
+        else:
+            return self.collapsed_menu_character
+
+    def create_collapse_menu_button_content(self):
+        if self.expanded_menu_image:
+            return Element(
+                "img",
+                src = normalize_resource_uri(self.expanded_menu_image)
+            )
+        else:
+            return self.expanded_menu_character
+    ?>
+
+    <py:ready>
+        <?py
+        self.set_client_param("singleBranchExpansion", self.single_branch_expansion)
+        self.set_client_param("folderAction", self.folder_action)
+        self.set_client_param("folderAnimationDuration", self.folder_animation_duration)
+        ?>
+    </py:ready>
+
+    <button
+        py:id="menu_button"
+        type="button">
+        <img
+            py:id="menu_button_image"
+            src="@{normalize_resource_uri(self.menu_image)}"
+            alt="@{translations('woost.views.SmallScreenNavigation.menu_button')}"/>
+    </button>
+
+    <div py:id="small_screen_popup">
+        <py:woost.views.Menu
+            py:id="small_screen_menu"
+            py:expanded="${True}"
+            py:emphasized_selection="${False}">
+        </py:woost.views.Menu>
+    </div>
+
+    <button
+        py:id="expand_menu_button"
+        type="button"
+        py:client_model="woost.views.SmallScreenNavigation.expandMenuButton">
+        <py:new py:element="self.create_expand_menu_button_content()"/>
+    </button>
+
+    <button
+        py:id="collapse_menu_button"
+        type="button"
+        py:client_model="woost.views.SmallScreenNavigation.collapseMenuButton">
+        <py:new py:element="self.create_collapse_menu_button_content()"/>
+    </button>
+
+</div>
+

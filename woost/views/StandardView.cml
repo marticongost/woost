@@ -86,6 +86,9 @@ from woost import app
         <py:woost.views.Menu
             py:id="menu"
             py:collapsible="${True}"/>
+
+        <py:woost.views.SmallScreenNavigation
+            py:id="small_screen_navigation"/>
     </nav>
 
     <main py:id="main">
