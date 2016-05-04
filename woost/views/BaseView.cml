@@ -179,6 +179,10 @@ from woost.models import Configuration, Publishable
         ?>
     </py:ready>
 
+    <py:cocktail.html.GridRulers
+        py:id="grid_rulers"
+        py:visible="@{Configuration.instance.get_setting('grid')}"/>
+
     <py:woost.views.EditPanel py:id="cms_edit_panel"/>
 
     <div py:id="main_content">
