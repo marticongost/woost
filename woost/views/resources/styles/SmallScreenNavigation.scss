@@ -63,18 +63,11 @@
             }
         }
 
-        &[data-menu-state='collapsed'] {
+        &[data-menu-state=''] {
             .small_screen_popup {
                 @include scripting-enabled {
-                    display: none;
-                }
-            }
-        }
-
-        &[data-menu-state='expanded'] {
-            .small_screen_popup {
-                @include scripting-enabled {
-                    display: block;
+                    height: 0;
+                    overflow: hidden;
                 }
             }
         }
