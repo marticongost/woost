@@ -2,8 +2,7 @@
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates"
-    data-menu-state="collapsed">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?resource cocktail://scripts/jquery.scrollintoview.min.js ?>
     <?resource woost://scripts/SmallScreenNavigation.js ?>
@@ -17,6 +16,7 @@
     single_branch_expansion = True
     folder_action = "expand"
     folder_animation_duration = 400
+    popup_animation_duration = 400
 
     def create_expand_menu_button_content(self):
         if self.collapsed_menu_image:
@@ -42,6 +42,7 @@
         self.set_client_param("singleBranchExpansion", self.single_branch_expansion)
         self.set_client_param("folderAction", self.folder_action)
         self.set_client_param("folderAnimationDuration", self.folder_animation_duration)
+        self.set_client_param("popupAnimationDuration", self.popup_animation_duration)
         ?>
     </py:ready>
 
