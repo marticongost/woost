@@ -13,7 +13,7 @@ from cocktail.iteration import last
 from cocktail.translations import translations, get_language, require_language
 from cocktail import schema
 from cocktail.html import templates, Element
-from cocktail.html.resources import SASS
+from cocktail.html.resources import SASSCompilation
 from cocktail.html.utils import is_sectioning_content
 from cocktail.html.uigeneration import display_factory
 from woost import app
@@ -299,7 +299,7 @@ class Block(Item):
                 )
 
                 try:
-                    css = SASS.compile(string = sass_code)
+                    css = SASSCompilation().compile(string = sass_code)
                 except sass.CompileError, error:
                     sys.stderr.write(
                         (

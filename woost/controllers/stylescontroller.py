@@ -7,7 +7,7 @@
 @since:			January 2010
 """
 import cherrypy
-from cocktail.html.resources import SASS
+from cocktail.html.resources import SASSCompilation
 from woost import app
 from woost.models import Configuration, Style
 from woost.controllers.publishablecontroller import PublishableController
@@ -34,6 +34,6 @@ class StylesController(PublishableController):
                 declarations or ""
             )
 
-            yield SASS.compile(string = sass_code)
+            yield SASSCompilation().compile(string = sass_code)
             yield "\n"
 
