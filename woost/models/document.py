@@ -30,6 +30,7 @@ class Document(Publishable):
         "title",
         "inner_title",
         "template",
+        "custom_document_title",
         "meta_tags",
         "description",
         "keywords",
@@ -61,6 +62,13 @@ class Document(Publishable):
         listed_by_default = False,
         spellcheck = True,
         member_group = "content"
+    )
+
+    custom_document_title = schema.String(
+        translated = True,
+        listed_by_default = False,
+        spellcheck = True,
+        member_group = "meta"
     )
 
     meta_tags = MetaTags(
