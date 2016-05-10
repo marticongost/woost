@@ -7,7 +7,7 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import request_property
 from cocktail.html.uigeneration import display_factory
-from woost.models import Item
+from woost.models import Item, Block
 from woost.models.blockutils import add_block
 from .enabledtranslationseditnode import EnabledTranslationsEditNode
 
