@@ -360,7 +360,7 @@ class SiteInitializer(object):
         self.enable_extensions()
 
     def create_configuration(self):
-        return self._create(
+        config = self._create(
             Configuration,
             qname = "woost.configuration",
             secret_key = random_string(10),
@@ -372,16 +372,17 @@ class SiteInitializer(object):
                     for language in self.languages
                     if language in
                         Configuration.backoffice_language.enumeration
-                ),
-            footer_blocks = OrderedSet([
-                self._create(
-                    CustomBlock,
-                    qname = "woost.vcard",
-                    heading = TranslatedValues(),
-                    view_class = "woost.views.VCard"
                 )
-            ])
         )
+        config.footer_blocks = [
+            self._create(
+                CustomBlock,
+                qname = "woost.vcard",
+                heading = TranslatedValues(),
+                view_class = "woost.views.VCard"
+            )
+        ]
+        return config
 
     def create_administrator(self):
         return self._create(
