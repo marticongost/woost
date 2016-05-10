@@ -18,5 +18,7 @@ from woost import app
         ?>
     </py:with>
 
+    <py:with py:element="self.small_screen_navigation" py:visible="${False}"/>
+
 </py:woost.views.StandardView>
 

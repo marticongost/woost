@@ -3,6 +3,12 @@
 
 @mixin small-screen-navigation {
 
+    .site_navigation > .menu {
+        @include grid(grid-min-size()) {
+            display: none;
+        }
+    }
+
     .SmallScreenNavigation {
 
         @include grid(gt grid-min-size()) {
@@ -63,18 +69,11 @@
             }
         }
 
-        &[data-menu-state='collapsed'] {
+        &[data-menu-state=''] {
             .small_screen_popup {
                 @include scripting-enabled {
-                    display: none;
-                }
-            }
-        }
-
-        &[data-menu-state='expanded'] {
-            .small_screen_popup {
-                @include scripting-enabled {
-                    display: block;
+                    height: 0;
+                    overflow: hidden;
                 }
             }
         }

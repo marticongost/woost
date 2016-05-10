@@ -11,6 +11,7 @@ from woost.models.file import File
 from woost.models.publishable import Publishable
 from woost.models.metatags import MetaTags
 from .grid import Grid
+from .slot import Slot
 
 
 class Website(Item):
@@ -78,7 +79,10 @@ class Website(Item):
         # language
         "published_languages",
         "default_language",
-        "heed_client_language"
+        "heed_client_language",
+
+        # blocks
+        "footer_blocks"
     ]
 
     # website
@@ -309,6 +313,8 @@ class Website(Item):
         listed_by_default = False,
         member_group = "publication.https"
     )
+
+    footer_blocks = Slot()
 
     @event_handler
     def handle_inserted(cls, event):
