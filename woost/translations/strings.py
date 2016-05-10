@@ -925,6 +925,13 @@ translations.define(
 )
 
 translations.define(
+    "woost.initialization.vcard.heading",
+    ca = u"Dades de contacte",
+    es = u"Datos de contacto",
+    en = u"Contact data"
+)
+
+translations.define(
     "woost.initialization.anonymous.title",
     ca = u"Anònim",
     es = u"Anónimo",
@@ -2014,6 +2021,12 @@ translations.define("Configuration.common_blocks",
     en = u"Common blocks"
 )
 
+translations.define("Configuration.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
+)
+
 translations.define("Configuration.websites",
     ca = u"Pàgines web",
     es = u"Páginas web",
@@ -2587,6 +2600,12 @@ translations.define("Website.published_languages-explanation",
          u"disponibles.",
     en = u"Limits publication to the indicated subset of languages. Leave "
          u"blank to allow publishing in any of the available languages."
+)
+
+translations.define("Website.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
 )
 
 translations.define("woost.views.LoginFormView.main",
@@ -3261,6 +3280,31 @@ translations.define("Document.inner_title",
     ca = u"Títol interior",
     es = u"Título interior",
     en = u"Inner title"
+)
+
+translations.define("Document.custom_document_title",
+    ca = u"Títol personalitzat",
+    es = u"Título personalizado",
+    en = u"Custom title"
+)
+
+translations.define("Document.custom_document_title-explanation",
+    ca = u"""
+        Títol del document HTML generat per aquest element (tag
+        <code>&lt;title&gt;</code> de l'element <code>&lt;head&gt;</code>).
+        Si no s'especifica, s'utilitzarà el títol general de l'element.
+        """,
+    es = u"""
+        Título del documento HTML generado para este elemento (tag
+        <code>&lt;title&gt;</code> del elemento <code>&lt;head&gt;</code>).
+        Si no se especifica, se utilitzará el título general del elemento.
+        """,
+    en = u"""
+        Title of the HTML document generated for this element (
+        <code>&lt;title&gt;</code> tag of the <code>&lt;head&gt;</code>
+        element). If not specified, the general title of the item will
+        be used.
+        """
 )
 
 translations.define("Document.meta_tags",

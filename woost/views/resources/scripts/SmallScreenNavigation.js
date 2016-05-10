@@ -11,6 +11,7 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
 
     var initialized = false;
     var $button = $nav.find(".menu_button");
+    var $popup = $nav.find(".small_screen_popup");
     var $menu = $nav.find(".small_screen_menu").first();
 
     this.toggleMenu = function () {
@@ -23,6 +24,17 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
 
     this.setMenuExpanded = function (expanded) {
         $nav.attr("data-menu-state", expanded ? "expanded" : "collapsed");
+
+        if (expanded) {
+            var method = "slideDown";
+        }
+        else {
+            var method = "slideUp";
+        }
+
+        $popup[method]({
+            duration: initialized ? $nav[0].popupAnimationDuration : 0,
+        });
     }
 
     this.toggleMenuEntryExpanded = function ($entry, options /* optional */) {
@@ -106,6 +118,7 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
         $nav[0].setMenuEntryExpanded($entry, $entry.is(".selected"));
     });
 
+    this.setMenuExpanded(false);
     initialized = true;
 });
 

@@ -89,14 +89,14 @@ class Configuration(Item):
         "smtp_host",
         "smtp_user",
         "smtp_password",
-        "triggers"
+        "triggers",
+        "common_blocks",
+        "footer_blocks"
     ]
 
     @classgetter
     def instance(cls):
         return cls.get_instance(qname = "woost.configuration")
-
-    common_blocks = Slot()
 
     # publication
     #--------------------------------------------------------------------------
@@ -339,6 +339,12 @@ class Configuration(Item):
         integral = True,
         member_group = "administration"
     )
+
+    # Blocks
+    #------------------------------------------------------------------------------
+    common_blocks = Slot()
+
+    footer_blocks = Slot()
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
