@@ -372,7 +372,15 @@ class SiteInitializer(object):
                     for language in self.languages
                     if language in
                         Configuration.backoffice_language.enumeration
+                ),
+            footer_blocks = OrderedSet([
+                self._create(
+                    CustomBlock,
+                    qname = "woost.vcard",
+                    heading = TranslatedValues(),
+                    view_class = "woost.views.VCard"
                 )
+            ])
         )
 
     def create_administrator(self):

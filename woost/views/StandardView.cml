@@ -2,6 +2,7 @@
 <?py
 from cocktail.controllers import context
 from woost import app
+from woost.models import Configuration
 ?>
 
 <py:woost.views.BaseView
@@ -118,86 +119,35 @@ from woost import app
     </main>
 
     <footer py:id="site_footer">
-        <address py:id="vcard" py:collapsible="${True}">
-            <py:woost.views.Image
-                py:id="vcard_logo"
-                class="logo"
-                py:image="@{self._site_logo}"
-                style="display:none"/>
-            <a
-                py:id="organization_label"
-                class="fn org url"
-                href="@{self._website.organization_url or self._home.get_uri()}"
-                py:visible="@{self._website.organization_name}">
-                @{self._website.organization_name}
-            </a>
-            <div
-                py:id="vcard_address"
-                class="adr"
-                py:collapsible="${True}">
-                <span
-                    py:id="address_label"
-                    class="street-address"
-                    py:visible="@{self._website.address}">
-                    @{self._website.address}
-                </span>
-                <span class="sep" py:visible="@{self._website.address}">-</span>
-                <span
-                    py:id="postal_code_label"
-                    class="postal-code"
-                    py:visible="@{self._website.postal_code}">
-                    @{self._website.postal_code}
-                </span>
-                <span
-                    py:id="town_label"
-                    class="locality"
-                    py:visible="@{self._website.town}">
-                    @{self._website.town}
-                </span>
-                <span
-                    py:id="region_label"
-                    class="region"
-                    py:visible="@{self._website.region}">
-                    @{self._website.region}
-                    <py:ready>
-                        <?py
-                        if self._website.town == self._website.region:
-                            element.set_style("display", "none")
-                        ?>
-                    </py:ready>
-                </span>
-                <span
-                    py:id="country_label"
-                    class="country-name"
-                    py:visible="@{self._website.country}">
-                    @{self._website.country}
-                </span>
-            </div>
-            <span
-                py:id="phone_label"
-                class="tel"
-                py:visible="@{self._website.phone_number}">
-                <span>${translations("woost.views.StandardView.phone_number")}</span>
-                <span class="value">@{self._website.phone_number}</span>
-            </span>
-            <span class="sep" py:visible="@{self._website.phone_number and self._website.fax_number}">-</span>
-            <span
-                py:id="fax_label"
-                class="tel"
-                py:visible="@{self._website.fax_number}">
-                <span class="type">Fax</span>
-                <span class="value">@{self._website.fax_number}</span>
-            </span>
-            <br/>
-            <a
-                py:id="email_label"
-                class="email"
-                href="mailto:@{self._website.email or ''}"
-                py:visible="@{self._website.email}">
-                @{self._website.email}
-            </a>
-        </address>
+        <py:woost.views.BlockList
+            py:id="site_footer_blocks"
+            py:slot="footer_blocks">
+            <py:binding>
+                <?py
+                website = app.website
+                if website.footer_blocks:
+                    element.container = website
+                else:
+                    element.container = Configuration.instance
+                ?>
+            </py:binding>
+        </py:woost.views.BlockList>
     </footer>
+
+    <py:with py:element="self.cms_edit_panel">
+        <?py
+        @extend(element)
+        def get_slots(edit_panel):
+            website = app.website
+            if website.footer_blocks:
+                container = website
+            else:
+                container = Configuration.instance
+            return call_base() + [
+                (container.__class__.footer_blocks, container)
+            ]
+        ?>
+    </py:with>
 
 </py:woost.views.BaseView>
 
