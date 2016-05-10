@@ -33,7 +33,7 @@ from woost import app
 
     <a
         py:id="organization_label"
-        href="@{self.website.organization_url or self._home.get_uri()}"
+        href="@{self.website.organization_url or self.website.home.get_uri()}"
         py:visible="@{self.website.organization_name}">
         <?py
         element.add_class("fn")
