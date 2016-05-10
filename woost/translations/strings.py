@@ -925,6 +925,13 @@ translations.define(
 )
 
 translations.define(
+    "woost.initialization.vcard.heading",
+    ca = u"Dades de contacte",
+    es = u"Datos de contacto",
+    en = u"Contact data"
+)
+
+translations.define(
     "woost.initialization.anonymous.title",
     ca = u"Anònim",
     es = u"Anónimo",
@@ -2008,6 +2015,12 @@ translations.define("Configuration.common_blocks",
     en = u"Common blocks"
 )
 
+translations.define("Configuration.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
+)
+
 translations.define("Configuration.websites",
     ca = u"Pàgines web",
     es = u"Páginas web",
@@ -2563,6 +2576,12 @@ translations.define("Website.published_languages-explanation",
          u"disponibles.",
     en = u"Limits publication to the indicated subset of languages. Leave "
          u"blank to allow publishing in any of the available languages."
+)
+
+translations.define("Website.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
 )
 
 translations.define("woost.views.LoginFormView.main",
@@ -8830,5 +8849,13 @@ translations.define(
         str(count) + u" " + translations(
             model.name + plural2(count, "", "-plural")
         )
+)
+
+# SmallScreenNavigation
+#------------------------------------------------------------------------------
+translations.define("woost.views.SmallScreenNavigation.menu_button",
+    ca = u"Mostrar / ocultar menú",
+    es = u"Mostrar / ocultar menú",
+    en = u"Show / hide menu"
 )
 
