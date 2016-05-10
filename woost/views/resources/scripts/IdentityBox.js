@@ -8,10 +8,16 @@
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".IdentityBox", function ($box) {
-    if (woost.user && !woost.user.anonymous) {
-        var $boxContent = jQuery(cocktail.instantiate("woost.views.IdentityBox.box"));
-        $boxContent.find(".user_label").html(woost.user.label);
-        $box.append($boxContent);
+    if (woost.user) {
+        if (woost.user.anonymous) {
+            $box.attr("data-woost-auth-state", "anonymous");
+        }
+        else {
+            $box.attr("data-woost-auth-state", "authenticated");
+            var $boxContent = jQuery(cocktail.instantiate("woost.views.IdentityBox.box"));
+            $boxContent.find(".user_label").html(woost.user.label);
+            $box.append($boxContent);
+        }
     }
 });
 
