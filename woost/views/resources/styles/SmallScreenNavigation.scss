@@ -3,6 +3,12 @@
 
 @mixin small-screen-navigation {
 
+    .site_navigation > .menu {
+        @include grid(grid-min-size()) {
+            display: none;
+        }
+    }
+
     .SmallScreenNavigation {
 
         @include grid(gt grid-min-size()) {
