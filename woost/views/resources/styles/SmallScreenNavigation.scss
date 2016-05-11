@@ -1,80 +1,79 @@
 
 @import "cocktail://styles/utils";
+@import "cocktail://styles/grid";
+@import "theme://";
 
-@mixin small-screen-navigation {
+.StandardView .site_navigation > .menu {
+    @include grid(grid-min-size()) {
+        display: none;
+    }
+}
 
-    .site_navigation > .menu {
-        @include grid(grid-min-size()) {
-            display: none;
+.SmallScreenNavigation {
+
+    @include grid(gt grid-min-size()) {
+        display: none;
+    }
+
+    .menu_button {
+        @include transparent-button;
+        display: none;
+    }
+
+    .small_screen_menu {
+        padding-left: 0;
+
+        &, ul {
+            list-style-type: none;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
         }
     }
 
-    .SmallScreenNavigation {
+    .menu_button {
+        display: inline-block;
+    }
 
-        @include grid(gt grid-min-size()) {
-            display: none;
-        }
+    .small_screen_menu {
 
-        .menu_button {
-            @include transparent-button;
-            display: none;
-        }
+        li {
+            clear: left;
+            position: relative;
 
-        .small_screen_menu {
-            padding-left: 0;
-
-            &, ul {
-                list-style-type: none;
+            .expand_menu_button,
+            .collapse_menu_button {
+                @include transparent-button;
+                position: absolute;
+                top: 0;
+                right: 0;
             }
 
-            a {
-                display: block;
-                text-decoration: none;
+            & > ul {
+                overflow: hidden;
             }
-        }
 
-        .menu_button {
-            display: inline-block;
-        }
-
-        .small_screen_menu {
-
-            li {
-                clear: left;
-                position: relative;
-
-                .expand_menu_button,
-                .collapse_menu_button {
-                    @include transparent-button;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
+            &[data-menu-entry-state='collapsed'] {
+                & > .collapse_menu_button {
+                    display: none;
                 }
+            }
 
-                & > ul {
-                    overflow: hidden;
-                }
-
-                &[data-menu-entry-state='collapsed'] {
-                    & > .collapse_menu_button {
-                        display: none;
-                    }
-                }
-
-                &[data-menu-entry-state='expanded'] {
-                    & > .expand_menu_button {
-                        display: none;
-                    }
+            &[data-menu-entry-state='expanded'] {
+                & > .expand_menu_button {
+                    display: none;
                 }
             }
         }
+    }
 
-        &[data-menu-state=''] {
-            .small_screen_popup {
-                @include scripting-enabled {
-                    height: 0;
-                    overflow: hidden;
-                }
+    &[data-menu-state=''] {
+        .small_screen_popup {
+            @include scripting-enabled {
+                height: 0;
+                overflow: hidden;
             }
         }
     }

@@ -53,6 +53,7 @@ from .publishable import (
     user_has_access_level
 )
 from .document import Document
+from .theme import Theme
 from .template import Template
 from .controller import Controller
 from .user import (

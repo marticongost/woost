@@ -1033,6 +1033,13 @@ translations.define("woost.initialization.passwordchangeconfirmation_controller.
 )
 
 translations.define(
+    "woost.initialization.default_theme.title",
+    ca = u"Tema per defecte",
+    es = u"Tema por defecto",
+    en = u"Default theme"
+)
+
+translations.define(
     "woost.initialization.standard_template.title",
     ca = u"Plantilla estàndard",
     es = u"Plantilla estándar",
@@ -2033,24 +2040,10 @@ translations.define("Configuration.caching_policies",
     en = u"Caching policies"
 )
 
-translations.define("Configuration.common_styles_initialization",
-    ca = u"Inicialització d'estils comú",
-    es = u"Inicialización de estilos común",
-    en = u"Common styles initialization"
-)
-
-translations.define("Configuration.common_styles_initialization-explanation",
-    ca = u"Codi SCSS comú a tots els elements de la web que defineixen estils "
-         u"propis. Permet fer importacions o definicions per tal que estiguin "
-         u"automàticament disponibles als camps de definició d'estils dels "
-         u"blocs i dels estils d'usuari.",
-    es = u"Código SCSS común a todos los elementos de la web que definen "
-         u"estilos propios. Permite hacer importaciones o definiciones que "
-         u"estarán disponibles en los campos de definición de estilos de los "
-         u"bloques y los estilos de usuario.",
-    en = u"Common SCSS initialization code that will be made available to all "
-         u"content that provides fields to customize its styles (such as "
-         u"blocks and user styles)."
+translations.define("Configuration.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
 )
 
 translations.define("Configuration.login_page",
@@ -2312,24 +2305,10 @@ translations.define("Website.meta",
     en = u"Metadata"
 )
 
-translations.define("Website.common_styles_initialization",
-    ca = u"Inicialització d'estils comú",
-    es = u"Inicialización de estilos común",
-    en = u"Common styles initialization"
-)
-
-translations.define("Website.common_styles_initialization-explanation",
-    ca = u"Codi SCSS comú a tots els elements de la web que defineixen estils "
-         u"propis. Permet fer importacions o definicions per tal que estiguin "
-         u"automàticament disponibles als camps de definició d'estils dels "
-         u"blocs i dels estils d'usuari.",
-    es = u"Código SCSS común a todos los elementos de la web que definen "
-         u"estilos propios. Permite hacer importaciones o definiciones que "
-         u"estarán disponibles en los campos de definición de estilos de los "
-         u"bloques y los estilos de usuario.",
-    en = u"Common SCSS initialization code that will be made available to all "
-         u"content that provides fields to customize its styles (such as "
-         u"blocks and user styles)."
+translations.define("Website.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
 )
 
 translations.define("Website.language",
@@ -4667,6 +4646,38 @@ translations.define("woost.models.accesslevel.AccessLevel-instance",
             decapitalize(translations(role))
             for role in instance.roles_with_access
         ])
+)
+
+# Theme
+#------------------------------------------------------------------------------
+translations.define("Theme",
+    ca = u"Tema",
+    es = u"Tema",
+    en = u"Theme"
+)
+
+translations.define("Theme-plural",
+    ca = u"Temes",
+    es = u"Temas",
+    en = u"Themes"
+)
+
+translations.define("Theme.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Theme.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("Theme.declarations",
+    ca = u"Declaracions",
+    es = u"Declaraciones",
+    en = u"Declarations"
 )
 
 # Template
