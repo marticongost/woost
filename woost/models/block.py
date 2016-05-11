@@ -13,10 +13,9 @@ from cocktail.iteration import last
 from cocktail.translations import translations, get_language, require_language
 from cocktail import schema
 from cocktail.html import templates, Element
-from cocktail.html.resources import SASS
+from cocktail.html.resources import SASSCompilation
 from cocktail.html.utils import is_sectioning_content
 from cocktail.html.uigeneration import display_factory
-from woost import app
 from .enabledtranslations import auto_enables_translations
 from .item import Item
 from .localemember import LocaleMember
@@ -283,13 +282,7 @@ class Block(Item):
             @view.when_document_ready
             def add_embedded_styles(document):
 
-                from .configuration import Configuration
-
-                config = Configuration.instance
-                website = app.website
-
-                sass_init = config.common_styles_initialization or ""
-                sass_init += website.common_styles_initialization or ""
+                sass_init = "@import 'theme://';\n"
                 sass_init += self.embedded_styles_initialization or ""
 
                 sass_code = "%s#%s {%s}" % (
@@ -299,14 +292,14 @@ class Block(Item):
                 )
 
                 try:
-                    css = SASS.compile(string = sass_code)
+                    css = SASSCompilation().compile(string = sass_code)
                 except sass.CompileError, error:
                     sys.stderr.write(
                         (
-                            "Error compiling SASS for block %r:\n"
-                            "  SASS:\n%s\n"
-                            "  Exception: %s" % (
-                                self,
+                            u"Error compiling SASS for block %s:\n"
+                            u"  SASS:\n%s\n"
+                            u"  Exception: %s" % (
+                                repr(self).decode("utf-8"),
                                 sass_code,
                                 error
                             )

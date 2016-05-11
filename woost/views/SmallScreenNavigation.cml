@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?resource woost://styles/SmallScreenNavigation.scss.css ?>
     <?resource cocktail://scripts/jquery.scrollintoview.min.js ?>
     <?resource woost://scripts/SmallScreenNavigation.js ?>
 
