@@ -24,8 +24,7 @@ class StylesController(PublishableController):
 
             declarations = (backoffice and style.admin_declarations) or style.declarations
 
-            sass_init = config.common_styles_initialization or ""
-            sass_init += website.common_styles_initialization or ""
+            sass_init = "@import 'theme://';"
             sass_init += style.declarations_initialization or ""
 
             sass_code = "%s.%s{\n%s\n}" % (
