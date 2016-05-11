@@ -28,6 +28,7 @@ from .rendering.imagefactory import ImageFactory
 from .videoplayersettings import VideoPlayerSettings
 from .trigger import Trigger
 from .metatags import MetaTags
+from .theme import Theme
 
 try:
     from fractions import Fraction
@@ -61,7 +62,6 @@ class Configuration(Item):
     members_order = [
         "websites",
         "caching_policies",
-        "common_styles_initialization",
         "down_for_maintenance",
         "maintenance_page",
         "maintenance_addresses",
@@ -109,8 +109,9 @@ class Configuration(Item):
         member_group = "publication"
     )
 
-    common_styles_initialization = schema.CodeBlock(
-        language = "scss",
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
         member_group = "publication"
     )
 

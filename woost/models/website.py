@@ -10,6 +10,7 @@ from woost.models.item import Item
 from woost.models.file import File
 from woost.models.publishable import Publishable
 from woost.models.metatags import MetaTags
+from .theme import Theme
 from .slot import Slot
 
 
@@ -53,7 +54,7 @@ class Website(Item):
         "technical_contact_email",
 
         # publication
-        "common_styles_initialization",
+        "theme",
 
         # publication.pages
         "home",
@@ -202,8 +203,10 @@ class Website(Item):
 
     # publication.pages
     #--------------------------------------------------------------------------
-    common_styles_initialization = schema.CodeBlock(
-        language = "scss",
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        listed_by_default = False,
         member_group = "publication"
     )
 
