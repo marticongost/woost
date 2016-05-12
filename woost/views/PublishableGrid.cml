@@ -27,15 +27,13 @@ from woost.views.viewfactory import publishable_grid_view_factory
             py:local_id="publishable_view"
             py:element="self.create_publishable_view(publishable)"/>
 
-        <a py:local_id="publishable_link" href="${self.get_item_uri(publishable)}">
-            <?py
-            if self.links_open_in_new_window:
-                element["target"] = "_blank"
-            ?>
+        <py:new
+            py:local_id="publishable_link"
+            py:element="self.create_publishable_link(publishable)">
             <span py:local_id="title">
                 ${translations(publishable)}
             </span>
-        </a>
+        </py:new>
 
     </li>
 
