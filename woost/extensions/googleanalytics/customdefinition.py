@@ -49,7 +49,6 @@ class GoogleAnalyticsCustomDefinition(Item):
     )
 
     initialization = schema.CodeBlock(
-        required = True,
         language = "python"
     )
 
@@ -57,6 +56,9 @@ class GoogleAnalyticsCustomDefinition(Item):
         return isinstance(publishable, tuple(self.content_types))
 
     def apply(self, publishable, values, index = None, env = None):
+
+        if not self.initialization:
+            return
 
         if index is None:
             from woost.models import Configuration
