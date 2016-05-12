@@ -478,24 +478,26 @@ class Item(PersistentObject):
         include_extension = True,
         host = None
     ):
-        uri = make_uri("/images", self.id)
         ext = None
 
-        if image_factory:
-            if isinstance(image_factory, basestring):
-                pos = image_factory.rfind(".")
-                if pos != -1:
-                    ext = image_factory[pos + 1:]
-                    image_factory = image_factory[:pos]
+        if not image_factory:
+            image_factory = "default"
 
-                from woost.models.rendering import ImageFactory
-                image_factory = \
-                    ImageFactory.require_instance(identifier = image_factory)
+        if isinstance(image_factory, basestring):
+            pos = image_factory.rfind(".")
+            if pos != -1:
+                ext = image_factory[pos + 1:]
+                image_factory = image_factory[:pos]
 
-            uri = make_uri(
-                uri,
-                image_factory.identifier or "factory%d" % image_factory.id
-            )
+            from woost.models.rendering import ImageFactory
+            image_factory = \
+                ImageFactory.require_instance(identifier = image_factory)
+
+        uri = make_uri(
+            "/images",
+            self.id,
+            image_factory.identifier or "factory%d" % image_factory.id
+        )
 
         if include_extension:
             from woost.models.rendering.formats import (

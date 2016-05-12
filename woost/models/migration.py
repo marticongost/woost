@@ -1288,3 +1288,18 @@ def rename_block_inline_styles_to_embedded_styles(e):
             block.embedded_styles = block._inline_css_styles
             del block._inline_css_styles
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create a standard theme")
+
+@when(step.executing)
+def create_standard_theme(e):
+
+    from woost.models import Configuration
+    from woost.models.initialization import SiteInitializer
+
+    config = Configuration.instance
+    init = SiteInitializer()
+    init.languages = config.languages
+    config.theme = init.create_default_theme()
+

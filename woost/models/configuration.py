@@ -28,6 +28,7 @@ from .rendering.imagefactory import ImageFactory
 from .videoplayersettings import VideoPlayerSettings
 from .trigger import Trigger
 from .metatags import MetaTags
+from .theme import Theme
 
 try:
     from fractions import Fraction
@@ -61,7 +62,6 @@ class Configuration(Item):
     members_order = [
         "websites",
         "caching_policies",
-        "common_styles_initialization",
         "down_for_maintenance",
         "maintenance_page",
         "maintenance_addresses",
@@ -84,14 +84,14 @@ class Configuration(Item):
         "smtp_host",
         "smtp_user",
         "smtp_password",
-        "triggers"
+        "triggers",
+        "common_blocks",
+        "footer_blocks"
     ]
 
     @classgetter
     def instance(cls):
         return cls.get_instance(qname = "woost.configuration")
-
-    common_blocks = Slot()
 
     # publication
     #--------------------------------------------------------------------------
@@ -109,8 +109,9 @@ class Configuration(Item):
         member_group = "publication"
     )
 
-    common_styles_initialization = schema.CodeBlock(
-        language = "scss",
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
         member_group = "publication"
     )
 
@@ -328,6 +329,12 @@ class Configuration(Item):
         integral = True,
         member_group = "administration"
     )
+
+    # Blocks
+    #------------------------------------------------------------------------------
+    common_blocks = Slot()
+
+    footer_blocks = Slot()
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)

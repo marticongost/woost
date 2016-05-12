@@ -11,7 +11,7 @@ import sha
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
-from cocktail.stringutils import random_string
+from cocktail.stringutils import random_string, normalize_indentation as ni
 from cocktail.translations import translations
 from cocktail.iteration import first
 from cocktail.persistence import (
@@ -35,6 +35,7 @@ from woost.models import (
     Role,
     URI,
     Controller,
+    Theme,
     Template,
     Style,
     File,
@@ -101,6 +102,7 @@ class SiteInitializer(object):
         Permission,
         CachingPolicy,
         SiteInstallation,
+        Theme,
         Trigger,
         TriggerResponse,
         UserView,
@@ -141,12 +143,14 @@ class SiteInitializer(object):
         "woost.models.configuration.Configuration.renderers",
         "woost.models.configuration.Configuration.image_factories",
         "woost.models.configuration.Configuration.video_player_settings",
+        "woost.models.configuration.Configuration.theme",
         "woost.models.website.Website.hosts",
         "woost.models.website.Website.https_policy",
         "woost.models.website.Website.https_persistence",
         "woost.models.website.Website.published_languages",
         "woost.models.website.Website.default_language",
         "woost.models.website.Website.heed_client_language",
+        "woost.models.website.Website.theme",
         "woost.models.block.Block.initialization"
     ]
 
@@ -298,6 +302,9 @@ class SiteInitializer(object):
         self.file_deletion_trigger = self.create_file_deletion_trigger()
         self.configuration.triggers.append(self.file_deletion_trigger)
 
+        # Standard theme
+        self.configuration.theme = self.create_default_theme()
+
         # Templates and controllers
         self.create_controllers()
         self.standard_template = self.create_standard_template()
@@ -360,7 +367,7 @@ class SiteInitializer(object):
         self.enable_extensions()
 
     def create_configuration(self):
-        return self._create(
+        config = self._create(
             Configuration,
             qname = "woost.configuration",
             secret_key = random_string(10),
@@ -374,6 +381,15 @@ class SiteInitializer(object):
                         Configuration.backoffice_language.enumeration
                 )
         )
+        config.footer_blocks = [
+            self._create(
+                CustomBlock,
+                qname = "woost.vcard",
+                heading = TranslatedValues(),
+                view_class = "woost.views.VCard"
+            )
+        ]
+        return config
 
     def create_administrator(self):
         return self._create(
@@ -619,6 +635,24 @@ class SiteInitializer(object):
             content_expression =
                 """items.add_filter(cls.qname.equal("woost.backoffice"))""",
             authorized = False
+        )
+
+    def create_default_theme(self):
+        return self._create(
+            Theme,
+            qname = "woost.default_theme",
+            title = TranslatedValues(),
+            identifier = "default",
+            declarations = ni("""
+                @import "cocktail://styles/grid";
+                @include define-grid((
+                    XL: (min-width: 1389px, col-width: 80px),
+                    L:  (min-width: 1159px, col-width: 59px),
+                    M:  (min-width: 929px,  col-width: 60px),
+                    S:  (min-width: 713px,  col-width: 42px),
+                    XS: (min-width: 0,      col-width: 32px, col-spacing: 8px)
+                ));
+            """)
         )
 
     def create_standard_template(self):
