@@ -91,6 +91,8 @@ class GoogleAnalyticsExtension(Extension):
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
 
+        self.install()
+
     def _install(self):
         from woost.extensions.googleanalytics import installationstrings
         self._create_default_custom_definitions()
