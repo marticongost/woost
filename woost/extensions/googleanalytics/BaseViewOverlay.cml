@@ -10,8 +10,6 @@
 
     @self.when_document_ready
     def add_ga_page_metadata(document):
-        from cocktail.styled import styled
-        print styled("set source", "slate_blue")
         document.ga_event_source = self.publishable
     ?>
 
