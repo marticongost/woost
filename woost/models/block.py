@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 import sass
 from cocktail.modeling import extend, call_base
-from cocktail.events import when
+from cocktail.events import when, Event
 from cocktail.pkgutils import import_object
 from cocktail.iteration import last
 from cocktail.translations import translations, get_language, require_language
@@ -46,6 +46,15 @@ class Block(Item):
     )
     backoffice_card_view = "woost.views.BlockCard"
     views = []
+
+    initializing_view = Event(
+        """An event triggered when the block initializes the view that
+        represents it.
+
+        :param view: The view to initialize.
+        :type view: `cocktail.html.Element`
+        """
+    )
 
     groups_order = [
         "content",
@@ -231,6 +240,7 @@ class Block(Item):
 
         view = templates.new(view_class)
         self.init_view(view)
+        self.initializing_view(view = view)
 
         if self.controller:
             controller_class = import_object(self.controller)
