@@ -28,6 +28,7 @@ class Link(Element):
     path = None
     content_check = REQUIRE_ACCESSIBLE
     inactive_behavior = HIDE
+    force_download = False
 
     def _ready(self):
 
@@ -75,10 +76,18 @@ class Link(Element):
         if not self.value:
             return None
         else:
+            parameters = self.parameters
+            if self.force_download:
+                if parameters is None:
+                    parameters = {}
+                else:
+                    parameters = parameters.copy()
+                parameters["disposition"] = "attachment"
+
             return self.value.get_uri(
                 language = self.language,
                 host = self.host,
                 path = self.path,
-                parameters = self.parameters
+                parameters = parameters
             )
 

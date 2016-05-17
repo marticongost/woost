@@ -1298,6 +1298,8 @@ def create_standard_theme(e):
     from woost.models import Configuration
     from woost.models.initialization import SiteInitializer
 
+    config = Configuration.instance
     init = SiteInitializer()
-    Configuration.instance.standard_theme = init.create_default_theme()
+    init.languages = config.languages
+    config.theme = init.create_default_theme()
 
