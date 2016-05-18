@@ -3,6 +3,7 @@
 from cocktail.translations import require_language
 from cocktail.html import Content
 from cocktail.controllers import context
+from woost import app
 from woost.models import Configuration, Publishable, get_current_website
 ?>
 
