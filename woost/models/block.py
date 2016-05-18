@@ -265,15 +265,15 @@ class Block(Item):
     def init_view(self, view):
         view.block = self
 
-        if self.element_type:
-            view.tag = self.element_type
-        elif view.tag == "div":
-            if self.heading and self.heading_display != "off":
-                view.tag = "section"
-
         block_proxy = self.get_block_proxy(view)
         block_proxy.set_client_param("blockId", self.id)
         block_proxy.add_class("block")
+
+        if self.element_type:
+            block_proxy.tag = self.element_type
+        elif view.tag == "div":
+            if self.heading and self.heading_display != "off":
+                block_proxy.tag = "section"
 
         if self.html_attributes:
             for line in self.html_attributes.split("\n"):
