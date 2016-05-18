@@ -7050,7 +7050,7 @@ translations.define("Block.heading_type=hidden",
     en = u"Hidden"
 )
 
-translations.define("Block.heading_type=generic",
+translations.define("Block.heading_type=div",
     ca = u"Etiqueta genèrica (div)",
     es = u"Etiqueta genérica (div)",
     en = u"Generic label (div)"
