@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.extensions.attributes.utils import init_element
+?>
 
 <py:overlay
     xmlns="http://www.w3.org/1999/xhtml"
@@ -6,13 +9,9 @@
     py:class="woost.views.BaseView">
 
     <?py
-    self.add_resource("woost://scripts/googleanalytics.js")
-
     @self.when_document_ready
-    def add_ga_page_metadata(document):
-        from cocktail.styled import styled
-        print styled("set source", "slate_blue")
-        document.ga_event_source = self.publishable
+    def add_page_attributes(document):
+        init_element(document, self.publishable, "page")
     ?>
 
 </py:overlay>
