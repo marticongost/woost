@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import context
+from woost import app
+from woost.models import Configuration
+?>
+
+<py:woost.views.BaseView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:tag="div">
+
+    <?py-class
+    def get_site_logo(self):
+        return self._website.logo
+
+    def get_main_heading_title(self):
+        return self.get_main_title()
+    ?>
+
+    <py:ready>
+        <?py
+        self._website = app.website
+        self._home = self._website.home
+        self._site_title = self.get_site_title()
+        self._site_logo = self.get_site_logo()
+
+        if self._site_logo and not self._site_logo.is_accessible():
+            self._site_logo = None
+        ?>
+    </py:ready>
+
+    <header py:id="site_header">
+
+        <h1 py:id="site_title">
+            <py:ready>
+                <?py
+                if not self._site_title and not self._site_logo:
+                    element.visible = False
+                elif not self._site_title:
+                    element.tag = "div"
+                ?>
+            </py:ready>
+            <a py:id="home_link" href="@{self._home.get_uri()}" style="position: relative">
+                <py:woost.views.Image
+                    py:id="logo"
+                    py:image="@{self._site_logo}"
+                    py:accessible_check="${False}"
+                    style="z-index: 1; position: relative;">
+                    <py:ready>
+                        <?py
+                        element["alt"] = self._site_title
+                        ?>
+                    </py:ready>
+                </py:woost.views.Image>
+                <span py:id="site_title_text">
+                    <py:ready>
+                        <?py
+                        if self._site_logo is None and self._site_title:
+                            element.append(self._site_title)
+                        else:
+                            element.visible = False
+                        ?>
+                    </py:ready>
+                </span>
+            </a>
+        </h1>
+
+        <py:woost.views.IdentityBox py:id="identity">
+            <py:ready>
+                <?py
+                if not context.get("show_user_controls", True):
+                    element.visible = False
+                ?>
+            </py:ready>
+        </py:woost.views.IdentityBox>
+
+        <py:woost.views.LanguageSelector py:id="language_selector"/>
+    </header>
+
+    <nav py:id="site_navigation">
+
+        <h1 py:id="site_navigation_heading" style="display:none">
+            ${translations("woost.views.StandardView.site_navigation_title")}
+        </h1>
+
+        <py:woost.views.Menu
+            py:id="menu"
+            py:collapsible="${True}"/>
+
+        <py:woost.views.SmallScreenNavigation
+            py:id="small_screen_navigation"/>
+    </nav>
+
+    <main py:id="main">
+        <article py:id="main_article">
+            <py:ready>
+                <?py
+                if self.rendering_home_page():
+                    element.tag = "div"
+                ?>
+            </py:ready>
+            <h1 py:id="main_heading">
+                <py:ready>
+                    <?py
+                    title = self.get_main_heading_title()
+
+                    if title:
+                        element.append(title)
+                    else:
+                        element.visible = False
+                    ?>
+                </py:ready>
+            </h1>
+            <?py
+            element.append(self.main_content)
+            ?>
+        </article>
+    </main>
+
+    <footer py:id="site_footer">
+        <py:woost.views.BlockList
+            py:id="site_footer_blocks"
+            py:slot="footer_blocks">
+            <py:binding>
+                <?py
+                website = app.website
+                if website.footer_blocks:
+                    element.container = website
+                else:
+                    element.container = Configuration.instance
+                ?>
+            </py:binding>
+        </py:woost.views.BlockList>
+    </footer>
+
+    <py:with py:element="self.cms_edit_panel">
+        <?py
+        @extend(element)
+        def get_slots(edit_panel):
+            website = app.website
+            if website.footer_blocks:
+                container = website
+            else:
+                container = Configuration.instance
+            return call_base() + [
+                (container.__class__.footer_blocks, container)
+            ]
+        ?>
+    </py:with>
+
+</py:woost.views.BaseView>
+
