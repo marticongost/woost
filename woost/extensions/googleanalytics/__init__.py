@@ -91,6 +91,8 @@ class GoogleAnalyticsExtension(Extension):
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
 
+        self.install()
+
     def _install(self):
         from woost.extensions.googleanalytics import installationstrings
         self._create_default_custom_definitions()
@@ -158,6 +160,7 @@ class GoogleAnalyticsExtension(Extension):
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
               %(create_tracker_command)s
+              %(initialization)s
               %(commands)s
             </script>
             """,
@@ -169,6 +172,7 @@ class GoogleAnalyticsExtension(Extension):
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
               %(create_tracker_command)s;
+              %(initialization)s
               ga(function () {
                   %(commands)s
               });
@@ -196,7 +200,7 @@ class GoogleAnalyticsExtension(Extension):
             tracker_parameters = {},
             domain = config.get_setting("google_analytics_domain"),
             template = self.inclusion_code["async" if async else "sync"],
-            values = get_ga_custom_values(publishable),
+            values = {},
             commands = commands or []
         )
 
@@ -219,6 +223,22 @@ class GoogleAnalyticsExtension(Extension):
         if event.values:
             commands.insert(0, ("set", event.values))
 
+        parameters["initialization"] = (
+            "woost.ga.setCustomDefinitions(%s);\n"
+            "ga('set', woost.ga.getEventData(document.documentElement));" % (
+                dumps(
+                    dict(
+                        (custom_def.identifier, {
+                            "index": i + 1,
+                            "type": custom_def.definition_type
+                        })
+                        for i, custom_def
+                        in enumerate(config.google_analytics_custom_definitions)
+                        if custom_def.identifier
+                    )
+                )
+            )
+        )
         parameters["commands"] = self._serialize_commands(commands)
         return event.template % parameters
 
