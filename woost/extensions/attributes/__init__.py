@@ -46,7 +46,8 @@ class AttributesExtension(Extension):
         from woost.extensions.attributes import (
             strings,
             configuration,
-            attribute
+            attribute,
+            element
         )
 
         templates.get_class("woost.extensions.attributes.BaseViewOverlay")

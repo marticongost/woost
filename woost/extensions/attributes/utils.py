@@ -14,11 +14,15 @@ from woost import app
 from woost.models import Configuration, Publishable
 from .attribute import Attribute
 
-def init_element(element, item, scope = "ref"):
-    for attribute, value in iter_attributes(item, scope):
+def init_element(element, item, scope = "ref", env = None):
+    for attribute, value in iter_attributes(
+        item,
+        scope,
+        env
+    ):
         element[attribute.attribute_name] = export_attribute_value(value)
 
-def iter_attributes(item, scope = "ref"):
+def iter_attributes(item, scope = "ref", env = None):
     for attribute in Attribute.select([
         Attribute.enabled.equal(True),
         Attribute.scope.one_of(["any", scope])
@@ -28,7 +32,8 @@ def iter_attributes(item, scope = "ref"):
                 "publishable": item,
                 "scope": scope,
                 "app": app,
-                "value": None
+                "value": None,
+                "env": env or {}
             })
             yield attribute, context.get("value")
 
@@ -53,7 +58,7 @@ def export_attribute_value(value, language = None):
     elif isinstance(value, basestring):
         return escape_string(value)
     elif isinstance(value, bool):
-        return translations(value, language = language)
+        return "1" if value else "0"
     elif isinstance(value, (int, float, Decimal)):
         return str(value)
     elif isinstance(value, type):
