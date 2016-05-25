@@ -31,7 +31,7 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
         this.setCollapsed = function (value, speed /* optional */) {
             collapsed = value;
             jQuery(this).children(".toggle_button").attr(
-                "src", "/resources/images/" + (collapsed ? "collapsed" : "expanded") + ".png"
+                "src", cocktail.normalizeResourceURI("woost://images/" + (collapsed ? 'collapsed' : 'expanded') + ".png")
             );
             jQuery(this).children("ul")[collapsed ? "hide" : "show"](speed);
         }
@@ -41,7 +41,7 @@ cocktail.bind(".ContentTypePicker", function ($picker) {
         if (jQuery(this).children("ul").length) {
             var $img = jQuery("<img>")
                 .addClass("toggle_button")
-                .attr("src", "/resources/images/collapsed.png")
+                .attr("src", cocktail.normalizeResourceURI("woost://images/collapsed.png"))
                 .attr("tabindex", "0")
                 .click(function (e) {
                     jQuery(this).closest("li").get(0).toggle(300);

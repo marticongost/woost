@@ -132,7 +132,7 @@ cocktail.bind(".ImageEffectsEditor", function ($editor) {
             jQuery("<div class='effects_summary_entry'>")
                 .append(
                     jQuery("<img>")
-                        .attr("src", "/resources/images/image-effect-" + imageEffect + ".png")
+                        .attr("src", cocktail.normalizeResourceURI("woost://images/image-effect-" + imageEffect + ".png"))
                         .attr("alt", "")
                 )
                 .append(
