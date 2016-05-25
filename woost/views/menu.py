@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			March 2009
 """
+from cocktail.translations import translations
 from cocktail.html import templates, Element
 from cocktail.controllers import context
 from woost import app
@@ -92,4 +93,7 @@ class Menu(TreeView):
     def should_link(self, item):
         return (self.linked_selection or item is not self.selection) \
             and (self.linked_containers or not item.children)
+
+    def get_item_label(self, item):
+        return item.menu_title or translations(item)
 
