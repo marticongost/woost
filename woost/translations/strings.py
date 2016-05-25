@@ -3146,6 +3146,22 @@ translations.define("Publishable.parent",
     en = u"Parent"
 )
 
+translations.define("Publishable.menu_title",
+    ca = u"Títol pel menú",
+    es = u"Título para el menú",
+    en = u"Menu title"
+)
+
+translations.define("Publishable.menu_title-explanation",
+    ca = u"El títol de l'element quan aparegui als menús de la pàgina. "
+         u"Deixar en blanc per utilitzar el títol general de l'element.",
+    es = u"El título del elemento cuando aparezca en los menús de la "
+         u"página. Dejar en blanco para utilizar el título general del "
+         u"elemento.",
+    en = u"The title used by the element when displayed on page menus. "
+         u"Leave blank to use the element's general title."
+)
+
 translations.define("Publishable.path",
     ca = u"Ruta",
     es = u"Ruta",
