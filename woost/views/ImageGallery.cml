@@ -116,7 +116,7 @@ from woost.models import Publishable
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
-                <img py:local_id="image" src="images://ImageGallery-previous_button.png" alt=""/>
+                <img py:local_id="image" src="${normalize_resource_uri('woost://images/ImageGallery-previous_button.png')}" alt=""/>
             </button>
             <button
                 py:local_id="next_button"
