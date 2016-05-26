@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.events import Event
 from cocktail import schema
 from cocktail.controllers import (
     request_property,
@@ -31,6 +32,15 @@ class NewsListing(Block):
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
+
+    selecting_items = Event(
+        """An event triggered to allow sites and extensions to filter, order or
+        otherwise alter the news included in the listing.
+
+        :param items: The entries included in the listing.
+        :type items: `~woost.models.News` `~cocktail.persistence.Query`
+        """
+    )
 
     members_order = [
         "paginated",
@@ -66,7 +76,8 @@ class NewsListing(Block):
         if not self.paginated and self.page_size:
             news.range = (0, self.page_size)
 
-        return news
+        e = self.selecting_items(items = news)
+        return e.items
 
     @request_property
     def pagination(self):
