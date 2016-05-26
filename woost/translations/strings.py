@@ -4726,6 +4726,12 @@ translations.define("Template.identifier",
     en = u"Identifier"
 )
 
+translations.define("Template.theme",
+    ca = u"Tema",
+    es = u"Tema",
+    en = u"Theme"
+)
+
 translations.define("Template.documents",
     ca = u"Documents",
     es = u"Documentos",
