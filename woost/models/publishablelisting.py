@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail import schema
+from cocktail.events import Event
 from cocktail.controllers import (
     request_property,
     get_parameter,
@@ -30,6 +31,15 @@ class PublishableListing(Block):
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
+
+    selecting_items = Event(
+        """An event triggered to allow sites and extensions to filter, order or
+        otherwise alter the items included in the listing.
+
+        :param items: The entries included in the listing.
+        :type items: `~woost.models.Publishable` `~cocktail.persistence.Query`
+        """
+    )
 
     members_order = [
         "publishables",
@@ -115,7 +125,9 @@ class PublishableListing(Block):
 
         publishables.base_collection = self.publishables
         self._apply_order(publishables)
-        return publishables
+
+        e = self.selecting_items(items = publishables)
+        return e.items
 
     def _apply_order(self, publishables):
         if self.listing_order != "arbitrary":
