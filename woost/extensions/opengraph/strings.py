@@ -40,6 +40,28 @@ translations.define("Publishable.open_graph_type",
     en = u"Object type"
 )
 
+# Extensions to the Configuration and Website models
+#------------------------------------------------------------------------------
+for type_name in "Configuration", "Website":
+
+    translations.define(type_name + ".open_graph_default_image",
+        ca = u"Imatge per defecte per Open Graph",
+        es = u"Imagen por defecto para Open Graph",
+        en = u"Open Graph default image"
+    )
+
+    translations.define(type_name + ".open_graph_default_image-explanation",
+        ca = u"Imatge per defecte que s'utilitzarà en publicar contingut a "
+             u"Facebook i a altres aplicacions Open Graph. En cas de no "
+             u"indicar-ne cap s'utilitzarà el logotip de la pàgina.",
+        es = u"Imagen que se utilizará al publicar contenido en Facebook y "
+             u"otras aplicaciones Open Graph. En caso de no indicar ninguna, "
+             u"se utilizará el logotipo de la página.",
+        en = u"Image that will be used when publishing content in Facebook or "
+             u"other Open Graph applications. If empty, the page logo will be "
+             u"used instead."
+    )
+
 # OpenGraphCategory
 #------------------------------------------------------------------------------
 translations.define("OpenGraphCategory",
