@@ -35,7 +35,6 @@ class EventListing(Block):
     default_view_class = "woost.views.DateLocationTitleEventListing"
 
     members_order = [
-        "element_type",
         "include_expired",
         "listing_order",
         "paginated",
