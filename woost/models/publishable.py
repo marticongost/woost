@@ -71,6 +71,7 @@ class Publishable(Item):
         "resource_type",
         "encoding",
         "parent",
+        "menu_title",
         "path",
         "full_path",
         "hidden",
@@ -143,6 +144,13 @@ class Publishable(Item):
         related_key = "children",
         indexed = True,
         listed_by_default = False,
+        member_group = "navigation"
+    )
+
+    menu_title = schema.String(
+        translated = True,
+        listed_by_default = False,
+        spellcheck = True,
         member_group = "navigation"
     )
 

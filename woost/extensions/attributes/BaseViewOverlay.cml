@@ -11,7 +11,8 @@ from woost.extensions.attributes.utils import init_element
     <?py
     @self.when_document_ready
     def add_page_attributes(document):
-        init_element(document, self.publishable, "page")
+        document.custom_attributes_source = self.publishable
+        document.custom_attributes_scope = "page"
     ?>
 
 </py:overlay>

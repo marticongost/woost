@@ -10,7 +10,7 @@ from woost.extensions.attributes.utils import init_element
 
     <py:ready>
         <?py
-        init_element(self, self.value)
+        self.custom_attributes_source = self.value
         ?>
     </py:ready>
 
