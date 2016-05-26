@@ -296,6 +296,13 @@ class CMSController(BaseCMSController):
         # Check maintenance mode
         self._maintenance_check(publishable)
 
+        # Override visual theme
+        template = getattr(publishable, "template", None)
+        if template:
+            template_theme = template.theme
+            if template_theme:
+                set_theme(template_theme.identifier)
+
         # Controller resolution
         controller = publishable.resolve_controller()
 
