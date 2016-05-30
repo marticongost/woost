@@ -65,7 +65,7 @@
         }
     }
 
-    &[data-menu-state=''] {
+    &:not([data-menu-state='expanded']) {
         .small_screen_popup {
             @include scripting-enabled {
                 height: 0;
