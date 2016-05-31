@@ -61,6 +61,7 @@ def _resolve_import(e):
         theme = Theme.get_instance(identifier = e.theme)
         if theme:
             grid = theme.grid
+            e.add_code("$active-theme: %s;" % e.theme)
             if theme.grid:
                 e.add_code("@import 'cocktail://styles/grid';")
                 e.add_code(grid.get_sass_code())
