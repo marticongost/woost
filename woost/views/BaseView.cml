@@ -200,7 +200,6 @@ from woost.models import Configuration, Publishable
     </py:cocktail.html.GridRulers>
 
     <py:woost.views.EditPanel py:id="cms_edit_panel"/>
-    <py:cocktail.html.GridRulers py:id="grid_rulers"/>
 
     <div py:id="main_content">
         <py:woost.views.BlockList
