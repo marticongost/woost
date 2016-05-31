@@ -44,6 +44,7 @@ from .siteinstallation import SiteInstallation
 from .changesets import ChangeSet, Change, changeset_context
 from .item import Item
 from .userview import UserView
+from .grid import Grid, GridSize
 from .style import Style
 from .publishable import (
     Publishable,
