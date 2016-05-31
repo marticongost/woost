@@ -84,8 +84,6 @@ class GridSize(Item):
 
     identifier = schema.String(
         required = True,
-        indexed = True,
-        unique = True,
         descriptive = True
     )
 
