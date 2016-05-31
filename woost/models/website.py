@@ -26,6 +26,7 @@ class Website(Item):
         "publication.pages",
         "publication.maintenance",
         "publication.https",
+        "presentation",
         "language",
         "services"
     ]
@@ -53,9 +54,6 @@ class Website(Item):
         "email",
         "technical_contact_email",
 
-        # publication
-        "theme",
-
         # publication.pages
         "home",
         "login_page",
@@ -70,6 +68,9 @@ class Website(Item):
         # publication.https
         "https_policy",
         "https_persistence",
+
+        # presentation
+        "theme",
 
         # meta
         "meta_tags",
@@ -203,13 +204,6 @@ class Website(Item):
 
     # publication.pages
     #--------------------------------------------------------------------------
-    theme = schema.Reference(
-        type = Theme,
-        related_end = schema.Collection(),
-        listed_by_default = False,
-        member_group = "publication"
-    )
-
     home = schema.Reference(
         type = Publishable,
         required = True,
@@ -259,6 +253,15 @@ class Website(Item):
         type = "woost.models.Publishable",
         listed_by_default = False,
         member_group = "publication.maintenance"
+    )
+
+    # presentation
+    #------------------------------------------------------------------------------
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        listed_by_default = False,
+        member_group = "publication"
     )
 
     # meta

@@ -11,7 +11,7 @@ import sha
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
-from cocktail.stringutils import random_string, normalize_indentation as ni
+from cocktail.stringutils import random_string
 from cocktail.translations import translations
 from cocktail.iteration import first
 from cocktail.persistence import (
@@ -38,6 +38,8 @@ from woost.models import (
     Theme,
     Template,
     Style,
+    Grid,
+    GridSize,
     File,
     UserView,
     Permission,
@@ -103,6 +105,8 @@ class SiteInitializer(object):
         CachingPolicy,
         SiteInstallation,
         Theme,
+        Grid,
+        GridSize,
         Trigger,
         TriggerResponse,
         UserView,
@@ -597,6 +601,56 @@ class SiteInitializer(object):
             ]
         )
 
+    def create_default_theme(self):
+        return self._create(
+            Theme,
+            qname = "woost.default_theme",
+            title = TranslatedValues(),
+            identifier = "default",
+            grid = self.create_default_grid()
+        )
+
+    def create_default_grid(self):
+        return self._create(
+            Grid,
+            title = TranslatedValues(),
+            qname = "woost.default_grid",
+            column_count = 12,
+            sizes = [
+                self._create(
+                    GridSize,
+                    identifier = "XL",
+                    min_width = 1389,
+                    column_width = 80
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "L",
+                    min_width = 1159,
+                    column_width = 59
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "M",
+                    min_width = 929,
+                    column_width = 60
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "S",
+                    min_width = 713,
+                    column_width = 42
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "XS",
+                    min_width = 0,
+                    column_width = 32,
+                    column_spacing = 8
+                )
+            ]
+        )
+
     def create_controllers(self):
         for controller_name in (
             "Document",
@@ -635,24 +689,6 @@ class SiteInitializer(object):
             content_expression =
                 """items.add_filter(cls.qname.equal("woost.backoffice"))""",
             authorized = False
-        )
-
-    def create_default_theme(self):
-        return self._create(
-            Theme,
-            qname = "woost.default_theme",
-            title = TranslatedValues(),
-            identifier = "default",
-            declarations = ni("""
-                @import "cocktail://styles/grid";
-                @include define-grid((
-                    XL: (min-width: 1389px, col-width: 80px),
-                    L:  (min-width: 1159px, col-width: 59px),
-                    M:  (min-width: 929px,  col-width: 60px),
-                    S:  (min-width: 713px,  col-width: 42px),
-                    XS: (min-width: 0,      col-width: 32px, col-spacing: 8px)
-                ));
-            """)
         )
 
     def create_standard_template(self):

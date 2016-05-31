@@ -9,7 +9,6 @@ u"""
 import cherrypy
 from cocktail.translations import get_language, translations
 from cocktail.modeling import cached_getter
-from cocktail.html.resources import set_theme
 from cocktail.controllers import get_state
 from woost import app
 from woost.controllers.publishablecontroller import PublishableController
@@ -73,7 +72,7 @@ class DocumentController(PublishableController):
         if template:
             template_theme = template.theme
             if template_theme:
-                set_theme(template_theme.identifier)
+                app.theme = template_theme
 
         # No redirection, serve the document normally
         return PublishableController.__call__(self)

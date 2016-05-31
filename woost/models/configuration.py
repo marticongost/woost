@@ -50,8 +50,9 @@ class Configuration(Item):
         "publication.maintenance",
         "meta",
         "language",
-        "media.images",
-        "media.video",
+        "presentation",
+        "presentation.images",
+        "presentation.video",
         "rendering",
         "services",
         "system",
@@ -106,12 +107,6 @@ class Configuration(Item):
         items = schema.Reference(type = CachingPolicy),
         integral = True,
         related_end = schema.Reference(),
-        member_group = "publication"
-    )
-
-    theme = schema.Reference(
-        type = Theme,
-        related_end = schema.Collection(),
         member_group = "publication"
     )
 
@@ -266,14 +261,20 @@ class Configuration(Item):
         member_group = "language"
     )
 
-    # media
+    # presentation
     #--------------------------------------------------------------------------
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        member_group = "publication"
+    )
+
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     image_factories = schema.Collection(
@@ -281,7 +282,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     video_player_settings = schema.Collection(
@@ -289,7 +290,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.video"
+        member_group = "presentation.video"
     )
 
     # system
@@ -429,4 +430,3 @@ class Configuration(Item):
         for website in self.websites:
             if "*" in website.hosts:
                 return website
-
