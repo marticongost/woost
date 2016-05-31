@@ -8969,6 +8969,12 @@ translations.define("GridSize.grid",
     en = u"Grid"
 )
 
+translations.define("GridSize.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
 translations.define("GridSize.min_width",
     ca = u"Mida mínima",
     es = u"Tamaño mínimo",
