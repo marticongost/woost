@@ -61,7 +61,10 @@ class Grid(Item):
                 )
             )
 
-        return "@include define_grid((%s));" % ", ".join(size_defs)
+        return "@include define_grid((%s), $col-count: %d);" % (
+            ", ".join(size_defs),
+            self.column_count
+        )
 
 
 class GridSize(Item):
