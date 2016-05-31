@@ -28,7 +28,6 @@ from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
 from cocktail.events import Event, event_handler
 from cocktail.translations import translations, get_language, set_language
-from cocktail.html.resources import set_theme
 from cocktail.controllers import (
     Dispatcher,
     Location,
@@ -489,8 +488,7 @@ class CMSController(BaseCMSController):
         cms._establish_active_website()
 
         # Set the visual theme
-        theme = Configuration.instance.get_setting("theme")
-        set_theme(theme and theme.identifier)
+        app.theme = Configuration.instance.get_setting("theme")
 
         # Set the default language
         language = app.language.infer_language()

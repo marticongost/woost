@@ -9,7 +9,7 @@ from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod
 from cocktail.caching import Cache
 from cocktail.controllers import context, folder_publisher
-from cocktail.html.resources import resource_repositories
+from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
 
 class Application(object):
@@ -282,6 +282,24 @@ http://woost.info
         used outside a web request/response cycle.
 
         .. type:: `woost.models.navigation_point`
+        """
+    )
+
+    # Active theme
+    def _get_theme(self):
+        return getattr(self._thread_data, "theme", None)
+
+    def _set_theme(self, theme):
+        self._thread_data.theme = theme
+        set_theme(theme and theme.identifier or None)
+
+    theme = property(_get_theme, _set_theme, doc =
+        """Gets or sets the active theme for the current context.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: `woost.models.Theme`
         """
     )
 

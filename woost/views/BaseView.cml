@@ -188,6 +188,17 @@ from woost.models import Configuration, Publishable
         ?>
     </py:ready>
 
+    <py:cocktail.html.GridRulers py:id="grid_rulers">
+        <py:binding>
+            <?py
+            if app.theme.grid:
+                element.column_count = app.theme.grid.column_count
+            else:
+                element.visible = False
+            ?>
+        </py:binding>
+    </py:cocktail.html.GridRulers>
+
     <py:woost.views.EditPanel py:id="cms_edit_panel"/>
     <py:cocktail.html.GridRulers py:id="grid_rulers"/>
 
