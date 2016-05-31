@@ -7,6 +7,7 @@ from cocktail.events import when
 from cocktail import schema
 from cocktail.html.resources import SASSCompilation
 from .item import Item
+from .grid import Grid
 
 
 class Theme(Item):
@@ -16,6 +17,7 @@ class Theme(Item):
     members_order = [
         "title",
         "identifier",
+        "grid",
         "declarations"
     ]
 
@@ -37,6 +39,11 @@ class Theme(Item):
         listed_by_default = False
     )
 
+    grid = schema.Reference(
+        type = Grid,
+        related_end = schema.Collection()
+    )
+
     declarations = schema.CodeBlock(
         language = "scss",
         listed_by_default = False
@@ -53,5 +60,9 @@ def _resolve_import(e):
     if e.uri == "theme://":
         theme = Theme.get_instance(identifier = e.theme)
         if theme:
+            grid = theme.grid
+            if theme.grid:
+                e.add_code("@import 'cocktail://styles/grid';")
+                e.add_code(grid.get_sass_code())
             e.add_code(theme.declarations)
 

@@ -972,6 +972,12 @@ translations.define("woost.initialization.file_deletion_trigger.title",
     en = u"Erase files from disc when their item is deleted"
 )
 
+translations.define("woost.initialization.default_grid.title",
+    ca = u"Graella estàndard",
+    es = u"Matriz estándar",
+    en = u"Default grid"
+)
+
 translations.define("woost.initialization.document_controller.title",
     ca = u"Controlador de document",
     es = u"Controlador de documento",
@@ -1974,19 +1980,19 @@ translations.define("Configuration.meta",
     en = u"Metadata"
 )
 
-translations.define("Configuration.media",
-    ca = u"Multimèdia",
-    es = u"Multimedia",
-    en = u"Media"
+translations.define("Configuration.presentation",
+    ca = u"Presentació",
+    es = u"Presentación",
+    en = u"Presentation"
 )
 
-translations.define("Configuration.media.images",
+translations.define("Configuration.presentation.images",
     ca = u"Imatges",
     es = u"Imagenes",
     en = u"Images"
 )
 
-translations.define("Configuration.media.video",
+translations.define("Configuration.presentation.video",
     ca = u"Vídeo",
     es = u"Video",
     en = u"Video"
@@ -2297,6 +2303,12 @@ translations.define("Website.publication.https",
     ca = u"HTTPS",
     es = u"HTTPS",
     en = u"HTTPS"
+)
+
+translations.define("Website.presentation",
+    ca = u"Presentació",
+    es = u"Presentación",
+    en = u"Presentation"
 )
 
 translations.define("Website.meta",
@@ -4694,6 +4706,12 @@ translations.define("Theme.declarations",
     ca = u"Declaracions",
     es = u"Declaraciones",
     en = u"Declarations"
+)
+
+translations.define("Theme.grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
 )
 
 # Template
@@ -8897,5 +8915,81 @@ translations.define("woost.views.SmallScreenNavigation.menu_button",
     ca = u"Mostrar / ocultar menú",
     es = u"Mostrar / ocultar menú",
     en = u"Show / hide menu"
+)
+
+# Grid
+#-------------------------------------------------------------------------------
+translations.define("Grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
+)
+
+translations.define("Grid-plural",
+    ca = u"Graelles",
+    es = u"Matrices",
+    en = u"Grids"
+)
+
+translations.define("Grid.title",
+    ca = "Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Grid.column_count",
+    ca = u"Número de columnes",
+    es = u"Número de columnas",
+    en = u"Column size"
+)
+
+translations.define("Grid.sizes",
+    ca = u"Mides",
+    es = u"Tamaños",
+    en = u"Sizes"
+)
+
+# GridSize
+#-------------------------------------------------------------------------------
+translations.define("GridSize",
+    ca = u"Mida de graella",
+    es = u"Tamaño de matriz",
+    en = u"Grid size"
+)
+
+translations.define("GridSize-plural",
+    ca = u"Mides de graella",
+    es = u"Tamaños de matriz",
+    en = u"Grid sizes"
+)
+
+translations.define("GridSize.grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
+)
+
+translations.define("GridSize.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("GridSize.min_width",
+    ca = u"Mida mínima",
+    es = u"Tamaño mínimo",
+    en = u"Minimum size"
+)
+
+translations.define("GridSize.column_width",
+    ca = u"Amplada de columna",
+    es = u"Ancho de columna",
+    en = u"Column width"
+)
+
+translations.define("GridSize.column_spacing",
+    ca = u"Separació entre columnes",
+    es = u"Separación entre columnas",
+    en = u"Column spacing"
 )
 

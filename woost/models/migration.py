@@ -1303,3 +1303,20 @@ def create_standard_theme(e):
     init.languages = config.languages
     config.theme = init.create_default_theme()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create the default grid")
+
+@when(step.executing)
+def create_default_grid(e):
+
+    from woost.models import Configuration, Theme
+    from woost.models.initialization import SiteInitializer
+
+    init = SiteInitializer()
+    init.languages = Configuration.instance.languages
+    grid = init.create_default_grid()
+
+    for theme in Theme.select():
+        theme.grid = grid
+
