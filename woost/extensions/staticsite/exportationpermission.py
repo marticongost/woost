@@ -37,8 +37,9 @@ class ExportationPermission(Permission):
     def match(self, user, destination, verbose = False):
 
         if self.destination and destination is not self.destination:
-            print permission_doesnt_match_style("destination doesn't match")
+            if verbose:
+                print permission_doesnt_match_style("destination doesn't match")
             return False
 
-        return Permission.match(self, user, verbose)
+        return Permission.match(self, user = user, verbose = verbose)
 
