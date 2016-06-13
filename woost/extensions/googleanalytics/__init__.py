@@ -17,23 +17,7 @@ from woost.models import (
     Publishable
 )
 
-translations.define("GoogleAnalyticsExtension",
-    ca = u"Google Analytics",
-    es = u"Google Analytics",
-    en = u"Google Analytics"
-)
-
-translations.define("GoogleAnalyticsExtension-plural",
-    ca = u"Google Analytics",
-    es = u"Google Analytics",
-    en = u"Google Analytics"
-)
-
-translations.define("GoogleAnalyticsExtension.account",
-    ca = u"Compte",
-    es = u"Cuenta",
-    en = u"Account"
-)
+translations.load_bundle("woost.extensions.googleanalytics.package")
 
 
 class GoogleAnalyticsExtension(Extension):
@@ -57,7 +41,6 @@ class GoogleAnalyticsExtension(Extension):
     def _load(self):
 
         from woost.extensions.googleanalytics import (
-            strings,
             configuration,
             website,
             document,
@@ -94,12 +77,12 @@ class GoogleAnalyticsExtension(Extension):
         self.install()
 
     def _install(self):
-        from woost.extensions.googleanalytics import installationstrings
         self._create_default_custom_definitions()
 
     def _create_default_custom_definitions(self):
 
         from .customdefinition import GoogleAnalyticsCustomDefinition
+        translations.load_bundle("woost.extensions.googleanalytics.installation")
 
         Configuration.instance.google_analytics_custom_definitions.extend([
             self._create_asset(

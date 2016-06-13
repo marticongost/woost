@@ -1,0 +1,25 @@
+
+[woost.actions.translation_workflow_transition]
+ca: Canviar estat
+es: Cambiar estado
+en: Change state
+
+[woost.extensions.translationworkflow.transitionaction]
+
+    [TranslationWorkflowTransitionAction.instance(action)]
+    *: t{action.transition}
+
+    [TranslationWorkflowInvalidTextError.instance(error)]
+    ca:
+        <em>t{error.request}</em> conté errors que impedeixen passar-la a l'estat
+        <em>${translations(error.transition.target_state).lower()}</em>
+        (t{error.error})
+    es:
+        <em>t{error.request}</em> contiene errores que impiden pasarla al estado
+        <em>${translations(error.transition.target_state).lower()}</em>
+        (t{error.error})
+    en:
+        <em>t{error.request}</em> contains errors that prevent its transition to the
+        <em>${translations(error.transition.target_state).lower()}</em> state
+        (t{error.error})
+

@@ -9,6 +9,8 @@ from woost.models import User, LocaleMember
 from .path import TranslationWorkflowPath
 from .translationagency import TranslationAgency
 
+translations.load_bundle("woost.extensions.translationworkflow.user")
+
 User.members_order += [
     "managed_translation_agency",
     "translation_agency",

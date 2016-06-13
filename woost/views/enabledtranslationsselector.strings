@@ -1,0 +1,27 @@
+
+[woost.views.EnabledTranslationsSelector]
+
+    [selected_items_panel]
+
+        [heading]
+        ca: Traduccions actives
+        es: Traducciones activas
+        en: Enabled translations
+
+        [toggle_button]
+        ca: Desactivar
+        es: Desactivar
+        en: Disable
+
+    [eligible_items_panel]
+
+        [heading]
+        ca: Traduccions inactives
+        es: Traducciones inactivas
+        en: Disabled translations
+
+        [toggle_button]
+        ca: Activar
+        es: Activar
+        en: Enable
+

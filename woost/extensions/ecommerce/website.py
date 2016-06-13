@@ -11,17 +11,13 @@ from woost.extensions.ecommerce.ecommercebillingconcept \
 from woost.extensions.payments import PaymentsExtension
 from woost.extensions.payments.paymentgateway import PaymentGateway
 
+translations.load_bundle("woost.extensions.ecommerce.website")
 
 Website.add_member(
     schema.Collection(
         "ecommerce_payment_types",
         items = schema.String(
-            enumeration = ("payment_gateway", "transfer", "cash_on_delivery"),
-            translate_value = lambda value, language = None, **kwargs:
-                translations(
-                    "Website.ecommerce_payment_types=%s" % value,
-                    language = language
-                ),
+            enumeration = ("payment_gateway", "transfer", "cash_on_delivery")
         ),
         min = 1,
         listed_by_default = False,

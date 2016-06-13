@@ -1,0 +1,33 @@
+
+[woost.extensions.payments.paymentgateway.PaymentGateway]
+ca: Passarel·la de pagaments
+es: Pasarela de pagos
+en: Payment gateway
+
+    [plural]
+    ca: Passarel·les de pagaments
+    es: Pasarelas de pagos
+    en: Payment gateways
+
+    [members]
+
+        [label]
+        ca: Etiqueta
+        es: Etiqueta
+        en: Label
+
+            [explanation]
+            ca: Etiqueta utilitzada per mostrar als usuaris
+            es: Etiqueta utilizada para mostrar a los usuarios
+            en: Label showed to the users
+
+        [test_mode]
+        ca: Mode de proves
+        es: Modo de pruebas
+        en: Test mode
+
+        [currency]
+        ca: Divisa
+        es: Divisa
+        en: Currency
+

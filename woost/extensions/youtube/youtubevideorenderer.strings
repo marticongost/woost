@@ -1,0 +1,11 @@
+
+[woost.extensions.youtube.youtubevideorenderer.YouTubeVideoRenderer]
+ca: Pintador de fotogrames pels vídeos de YouTube
+es: Pintador de fotogramas para los videos de YouTube
+en: YouTube videos still renderer
+
+    [plural]
+    ca: Pintadors de fotogrames pels vídeos de YouTube
+    es: Pintadores de fotogramas para los videos de YouTube
+    en: YouTube videos still renderers
+

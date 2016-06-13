@@ -86,6 +86,17 @@ class Block(Item):
     view_class = schema.String(
         required = True,
         text_search = False,
+        translate_value = (lambda value, language = None, **kwargs:
+            "" if not value
+            else (
+                translations(
+                    "woost.models.block.Block.members.view_class.values." + value,
+                    language,
+                    **kwargs
+                )
+                or value
+            )
+        ),
         member_group = "content"
     )
 
@@ -531,10 +542,13 @@ def setup_translation_of_default_values_for_block_type(block_type):
 
     def setup_translation_of_default_values_for_member(member):
         @extend(member)
-        def __translate__(member, language, **kwargs):
-            trans = call_base(language, **kwargs)
-            if not trans and kwargs.get("suffix") == "=none":
-                return translations("Block.default_value", language)
+        def translate_value(member, value, language = None, **kwargs):
+            trans = call_base(value, language = language, **kwargs)
+            if not trans and value is None:
+                return translations(
+                    "woost.models.block.Block.default_value",
+                    language
+                )
             return trans
 
     for member in block_type.iter_members(recursive = False):

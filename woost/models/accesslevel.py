@@ -38,16 +38,19 @@ class AccessLevel(Item):
         editable = schema.NOT_EDITABLE
     )
 
-    def __translate__(self, language, **kwargs):
 
-        if self.title:
-            return self.title
+@translations.instances_of(AccessLevel)
+def translate_access_level(access_level, **kwargs):
 
-        if self.roles_with_access:
-            return translations(
-                "woost.models.accesslevel.AccessLevel-instance",
-                instance = self
-            )
+    if access_level.title:
+        return access_level.title
 
-        return Item.__translate__(self, language, **kwargs)
+    if access_level.roles_with_access:
+        return translations(
+            "woost.models.accesslevel.AccessLevel."
+            "default_instance_translation",
+            access_level = access_level
+        )
+
+    return None
 

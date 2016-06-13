@@ -1,0 +1,13 @@
+
+[woost.extensions.googleanalytics.LanguageSelectorOverlay]
+
+    [ga_event_category]
+    ca: selector-idiomes
+    es: selector-de-idiomas
+    en: language-selector
+
+    [ga_event_action]
+    ca: seleccionar-idioma
+    es: seleccionar-idioma
+    en: select-language
+

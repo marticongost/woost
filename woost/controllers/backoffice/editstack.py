@@ -53,6 +53,8 @@ from woost.models import (
 )
 from woost.controllers.notifications import Notification
 
+translations.load_bundle("woost.controllers.backoffice.editstack")
+
 
 class EditStacksManager(object):
     """A class that manages the loading and persistence of
@@ -614,12 +616,6 @@ class EditNode(StackNode):
         self.form_data = {}
         self.export_form_data(item, self.form_data)
 
-    def __translate__(self, language, **kwargs):
-        if self.item.is_inserted:
-            return translations(self.item)
-        else:
-            return translations("creating", content_type = self.content_type)
-
     def uri(self, **params):
 
         if "edit_stack" not in params:
@@ -1093,13 +1089,6 @@ class SelectionNode(StackNode):
     content_type = None
     selection_parameter = None
 
-    def __translate__(self, language, **kwargs):
-        return translations(
-            "woost.views.BackOfficeLayout edit stack select",
-            relation = self.parent_node and self.parent_node.member,
-            type = self.content_type
-        )
-
     def uri(self, **params):
 
         if "edit_stack" not in params:
@@ -1118,18 +1107,6 @@ class RelationNode(StackNode):
         or L{Reference<cocktail.schema.schemareference.Reference>}
     """
     member = None
-
-    def __translate__(self, language, **kwargs):
-        if isinstance(self.member, schema.Collection):
-            return translations(
-                "woost.views.BackOfficeLayout edit stack add",
-                relation = self.member
-            )
-        else:
-            return translations(
-                "woost.views.BackOfficeLayout edit stack select",
-                relation = self.member
-            )
 
     def uri(self, **params):
 

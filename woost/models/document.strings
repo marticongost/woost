@@ -1,0 +1,139 @@
+
+[woost.models.document.Document]
+ca: Document
+es: Documento
+en: Document
+
+    [plural]
+    ca: Documents
+    es: Documentos
+    en: Documents
+
+    [backoffice.menu_label]
+    ca: Tots els documents
+    es: Todos los documentos
+    en: All documents
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+        [meta.robots]
+        ca: Robots
+        es: Robots
+        en: Robots
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [inner_title]
+        ca: Títol interior
+        es: Título interior
+        en: Inner title
+
+        [custom_document_title]
+        ca: Títol personalitzat
+        es: Título personalizado
+        en: Custom title
+
+            [explanation]
+            ca:
+                Títol del document HTML generat per aquest element (tag
+                <code>&lt;title&gt;</code> de l'element <code>&lt;head&gt;</code>).
+                Si no s'especifica, s'utilitzarà el títol general de l'element.
+            es:
+                Título del documento HTML generado para este elemento (tag
+                <code>&lt;title&gt;</code> del elemento <code>&lt;head&gt;</code>).
+                Si no se especifica, se utilitzará el título general del elemento.
+            en:
+                Title of the HTML document generated for this element
+                (<code>&lt;title&gt;</code> tag of the <code>&lt;head&gt;</code>
+                element). If not specified, the general title of the item will
+                be used.
+
+        [meta_tags]
+        ca: Meta tags
+        es: Meta tags
+        en: Meta tags
+
+        [description]
+        ca: Descripció
+        es: Descripción
+        en: Description
+
+        [keywords]
+        ca: Paraules clau
+        es: Palabras clave
+        en: Keywords
+
+        [template]
+        ca: Plantilla
+        es: Plantilla
+        en: Template
+
+        [children]
+        ca: Pàgines filles
+        es: Páginas hijas
+        en: Child pages
+
+        [redirection_mode]
+        ca: Modalitat de redirecció
+        es: Modalidad de redirección
+        en: Redirection mode
+
+            [values]
+
+                [first_child]
+                ca: Redirigir al primer fill accessible
+                es: Redirigir al primer hijo accesible
+                en: Redirect to the first accessible child
+
+                [custom_target]
+                ca: Redirigir a un element concret
+                es: Redirigir a un elemento concreto
+                en: Redirect to a custom target
+
+        [redirection_target]
+        ca: Destí de la redirecció
+        es: Destino de la redirección
+        en: Redirection target
+
+        [redirection_method]
+        ca: Mètode de redirecció
+        es: Método de redirección
+        en: Redirection method
+
+            [values]
+
+                [temp]
+                ca: Temporal
+                es: Temporal
+                en: Temporary
+
+                [perm]
+                ca: Permanent
+                es: Permanente
+                en: Permanent
+
+                [client]
+                ca: Client
+                es: Cliente
+                en: Client
+
+        [robots_should_index]
+        ca: Contingut indexable
+        es: Contenido indexable
+        en: Indexable content
+
+        [robots_should_follow]
+        ca: Seguir els enllaços
+        es: Seguir los enlaces
+        en: Follow links
+

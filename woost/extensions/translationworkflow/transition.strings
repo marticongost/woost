@@ -1,0 +1,68 @@
+[woost.extensions.translationworkflow.transition.TranslationWorkflowTransition]
+ca: Transició del circuït de traducció
+es: Transición del circuito de traducción
+en: Translation workflow transition
+
+    [plural]
+    ca: Transicions del circuït de traducció
+    es: Transiciones del circuito de traducción
+    en: Translation workflow transitions
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [source_states]
+        ca: Estat origen
+        es: Estado origen
+        en: Source state
+
+            [explanation]
+            ca:
+                Els estats on comença la transició. Deixar en blanc per definir
+                una transició aplicable a tots els estats.
+            es:
+                Los estados desde los que parte la transición. Dejar en blanco
+                para definir una transición aplicable a todos los estados.
+            en:
+                The starting states for the transition. Leave blank to define a
+                transition that can be applied to any state.
+
+        [target_state]
+        ca: Estat destí
+        es: Estado destino
+        en: Target state
+
+        [icon]
+        ca: Icona
+        es: Icono
+        en: Icon
+
+        [relative_order]
+        ca: Ordre relatiu
+        es: Orden relativo
+        en: Relative order
+
+        [requires_valid_text]
+        ca: Requereix validació del text
+        es: Requiere validación del texto
+        en: Requires text validation
+
+        [requires_different_state]
+        ca: Deshabilitar per peticions a l'estat destí
+        es: Deshabilitar para peticiones en el estado destino
+        en: Disable for requests in the target state
+
+        [transition_setup_class]
+        ca: Codi de preparació de la transició
+        es: Código de preparación de la transición
+        en: Transition setup code
+
+        [transition_code]
+        ca: Codi de transició
+        es: Código de transición
+        en: Transition code
+

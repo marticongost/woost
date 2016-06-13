@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from woost.models import Extension, Configuration
 from woost.models.rendering import ChainRenderer
 
-
-translations.define("YouTubeExtension",
-    ca = u"YouTube",
-    es = u"YouTube",
-    en = u"YouTube"
-)
-
-translations.define("YouTubeExtension-plural",
-    ca = u"YouTube",
-    es = u"YouTube",
-    en = u"YouTube"
-)
+translations.load_bundle("woost.extensions.youtube.package")
 
 
 class YouTubeExtension(Extension):
@@ -41,7 +30,6 @@ class YouTubeExtension(Extension):
 
     def _load(self):
         from woost.extensions.youtube import (
-            strings,
             youtubevideo,
             videoplayersettings
         )

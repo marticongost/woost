@@ -11,17 +11,7 @@ from cocktail import schema
 from cocktail.controllers.location import Location
 from woost.models import Extension
 
-translations.define("PaymentsExtension",
-    ca = u"Pagaments",
-    es = u"Pagos",
-    en = u"Payments"
-)
-
-translations.define("PaymentsExtension-plural",
-    ca = u"Pagaments",
-    es = u"Pagos",
-    en = u"Payments"
-)
+translations.load_bundle("woost.extensions.payments.package")
 
 
 class PaymentsExtension(Extension):
@@ -47,7 +37,6 @@ class PaymentsExtension(Extension):
         # Import the extension's models
         from woost.extensions.payments.paymentgateway import PaymentGateway
         from woost.extensions.payments import (
-            strings,
             dummypaymentgateway,
             pasat4b,
             sis,

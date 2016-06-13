@@ -55,9 +55,6 @@ class PaymentGateway(Item):
         text_search = False
     )
 
-    def __translate__(self, language, **kwargs):
-        return translations(self.__class__.name, language)
-
     def initiate_payment(self, payment_id):
         """Begin a payment transaction, redirecting the user to the payment
         gateway.
@@ -94,4 +91,9 @@ class PaymentGateway(Item):
     @property
     def notification_url(self):
         return self.get_payment_url("notification")
+
+
+@translations.instances_of(PaymentGateway)
+def translate_gateway(gw, **kwargs):
+    return translations(gw.__class__)
 

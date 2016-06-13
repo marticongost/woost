@@ -70,7 +70,8 @@ class RenderPreviewController(BaseBackOfficeController):
                 class_name = "preview-error-box",
                 children = [
                     translations(
-                        "woost.backoffice invalid item preview",
+                        "woost.backoffice.renderpreviewcontroller."
+                        "validation_error",
                         preview_language
                     ),
                     error_box

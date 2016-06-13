@@ -12,7 +12,5 @@ in python.
 __version__ = "2.10"
 
 from woost.application import Application
-from woost.translations import strings
-
 app = Application()
 

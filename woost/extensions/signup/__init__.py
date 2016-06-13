@@ -27,6 +27,8 @@ translations.define("SignUpExtension-plural",
 
 class SignUpExtension(Extension):
 
+    visible = False
+
     # To indicate if the extension was loaded at least one time
     # will be set to True at the end of the first load
     initialized = False

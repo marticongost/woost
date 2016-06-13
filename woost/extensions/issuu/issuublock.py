@@ -16,11 +16,11 @@ class IssuuBlock(Block):
     views = ["woost.extensions.issuu.IssuuBlockView"]
     block_display = "woost.extensions.issuu.IssuuBlockDisplay"
 
-    members_order = ["element_type", "issuu_document", "width", "height"]
-
-    element_type = ElementType(
-        member_group = "content"
-    )
+    members_order = [
+        "issuu_document",
+        "width",
+        "height"
+    ]
 
     issuu_document = schema.Reference(
         type = IssuuDocument,
