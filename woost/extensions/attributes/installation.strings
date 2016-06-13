@@ -1,0 +1,33 @@
+
+[woost.extensions.attributes.default_attributes]
+
+    [publishable.title]
+    ca: Element
+    es: Elemento
+    en: Item
+
+    [type.title]
+    ca: Tipus
+    es: Tipo
+    en: Type
+
+    [path.title]
+    ca: Camí
+    es: Camino
+    en: Path
+
+    [locale.title]
+    ca: Idioma
+    es: Idioma
+    en: Language
+
+    [role.title]
+    ca: Rols de l'usuari
+    es: Roles del usuario
+    en: User roles
+
+    [user.title]
+    ca: Usuari
+    es: Usuario
+    en: User
+

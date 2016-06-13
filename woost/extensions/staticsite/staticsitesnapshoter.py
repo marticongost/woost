@@ -144,12 +144,7 @@ class WgetSnapShoter(StaticSiteSnapShoter):
         required = True,
         default = "unix",
         text_search = False,
-        enumeration = frozenset(("unix", "windows")),
-        translate_value = lambda value, **kwargs:
-            u"" if not value else translations(
-                "woost.extensions.staticsite.staticsitesnapshoter.WgetSnapShoter.file_names_mode " + value,
-                **kwargs
-            )
+        enumeration = frozenset(("unix", "windows"))
     )
 
     @getter

@@ -1,0 +1,96 @@
+
+[woost.extensions.ecommerce.ecommerceproductlisting.ECommerceProductListing]
+ca: Llistat de productes
+es: Listado de productos
+en: Product listing
+
+    [plural]
+    ca: Llistats de productes
+    es: Listados de productos
+    en: Product listings
+
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
+    [members]
+
+        [products]
+        ca: Productes
+        es: Productos
+        en: Products
+
+        [item_accessibility]
+        ca: Control d'estat dels elements
+        es: Control de estado de los elementos
+        en: Item accessibility check
+
+            [values]
+
+                [accessible]
+                ca: Productes publicats i amb drets de lectura
+                es: Productos publicados y con derechos de lectura
+                en: Published products with read privileges
+
+                [published]
+                ca: Productes publicats, tinguin o no drets de lectura
+                es: Productos publicados, tengan o no derechos de lectura
+                en: Published products, regardless of read privileges
+
+                [any]
+                ca: Qualsevol element
+                es: Cualquier elemento
+                en: Any item
+
+        [listing_order]
+        ca: Ordenació
+        es: Ordenación
+        en: Order
+
+            [values]
+
+                [arbitrary]
+                ca: Arbitrària
+                es: Arbitraria
+                en: Arbitrary
+
+                [-last_update_time]
+                ca: Última modificació
+                es: Última modificación
+                en: Last update
+
+                [price]
+                ca: Preu: de més baix a més alt
+                es: Precio: de más bajo a más alto
+                en: Price: low to high
+
+                [-price]
+                ca: Preu: de més alt a més baix
+                es: Precio: de más alto a más bajo
+                en: Price: high to low
+
+        [paginated]
+        ca: Paginar els resultats
+        es: Paginar los resultados
+        en: Paginate results
+
+        [page_size]
+        ca: Mida del llistat
+        es: Tamaño del listado
+        en: Listing size
+
+[woost.models.block.Block.view_class.values]
+
+    [woost.extensions.ecommerce.CompactProductListing]
+    ca: Compacta
+    es: Compacta
+    en: Compact
+
+    [woost.extensions.ecommerce.TextAndImageProductListing]
+    ca: Text i imatge
+    es: Texto e imagen
+    en: Text and image
+

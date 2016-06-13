@@ -1,0 +1,70 @@
+
+[woost.extensions.payments.sis.SISPaymentGateway]
+ca: SIS/Sermepa
+es: SIS/Sermepa
+en: SIS/Sermepa
+
+    [plural]
+    ca: SIS/Sermepa
+    es: SIS/Sermepa
+    en: SIS/Sermepa
+
+    [members]
+
+        [merchant_code]
+        ca: Codi de comerç
+        es: Código de comercio
+        en: Merchant code
+
+        [merchant_name]
+        ca: Nom del comerç
+        es: Nombre del comercio
+        en: Merchant name
+
+        [merchant_terminal]
+        ca: Número de terminal
+        es: Número de terminal
+        en: Terminal number
+
+        [merchant_secret_key]
+        ca: Clau secreta
+        es: Clave secreta
+        en: Secret key
+
+        [pay_methods]
+        ca: Tipus de pagament acceptats
+        es: Formas de pago aceptadas
+        en: Allowed payment methods
+
+            [items.values]
+
+                [T]
+                ca: Targeta de crèdit
+                es: Tarjeta de crédito
+                en: Credit card
+
+                [D]
+                ca: Domiciliació bancària
+                es: Domiciliación bancaria
+                en: Direct debit
+
+                [R]
+                ca: Transferència
+                es: Transferencia
+                en: Transfer
+
+        [payment_successful_page]
+        ca: Pàgina de confirmació de pagament
+        es: Página de confirmación de pago
+        en: Payment successful page
+
+        [payment_failed_page]
+        ca: Pàgina de pagament fallit
+        es: Página de pago fallido
+        en: Payment failed page
+
+        [label default]
+        ca: Targeta de crèdit
+        es: Tarjeta de crédito
+        en: Credit card
+

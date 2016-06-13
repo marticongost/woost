@@ -37,6 +37,8 @@ from woost.controllers.backoffice.editstack import (
     WrongEditStackError
 )
 
+translations.load_bundle("woost.controllers.backoffice.basebackofficecontroller")
+
 
 class BaseBackOfficeController(BaseCMSController):
     """Base class for all backoffice controllers."""

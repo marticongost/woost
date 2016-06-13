@@ -1,0 +1,11 @@
+
+[woost.extensions.notices.NoticesExtension]
+ca: Avisos
+es: Avisos
+en: Notices
+
+    [plural]
+    ca: Avisos
+    es: Avisos
+    en: Notices
+

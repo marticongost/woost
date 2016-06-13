@@ -10,24 +10,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Extension
 
-
-translations.define("PDFExtension",
-    ca = u"Exportació de documents PDF",
-    es = u"Exportación de documentos PDF",
-    en = u"PDF rendering"
-)
-
-translations.define("PDFExtension-plural",
-    ca = u"Exportació de documents PDF",
-    es = u"Exportación de documentos PDF",
-    en = u"PDF rendering"
-)
-
-translations.define("PDFExtension.command",
-    ca = u"Comanda",
-    es = u"Comando",
-    en = u"Command"
-)
+translations.load_bundle("woost.extensions.pdf.package")
 
 
 class PDFExtension(Extension):

@@ -1,0 +1,80 @@
+[woost.views.BlockDisplay]
+
+    [common_status]
+
+        [label]
+        ca: Comú
+        es: Común
+        en: Common
+
+        [title]
+        ca:
+            Aquest bloc resideix a la llibreria de blocs comuns, i pot
+            aparèixer a més d'una pàgina
+        es:
+            Este bloque reside en la libreria de bloques comunes, pudiendo
+            aparecer en más de una página
+        en:
+            This block resides within the site's common blocks gallery, and
+            it may appear in more than one page"
+
+    [disabled_status]
+
+        [label]
+        ca: Inactiu
+        es: Inactivo
+        en: Disabled
+
+        [title]
+        ca: Aquest bloc està deshabilitat, no s'inclourà a la pàgina
+        es: Este bloque está deshabilitado, no se incluirá en la página
+        en: This block is disabled and won't be displayed in the page
+
+    [expired_status]
+
+        [label]
+        ca: Expirat
+        es: Expirado
+        en: Expired
+
+        [title]
+        ca:
+            Aquest bloc ha assolit la seva data d'expiració i ha deixat
+            d'estar visible
+        es:
+            Este bloque ha alcanzado su fecha de expiración y ha dejado
+            de estar visible
+        en:
+            This block has reached its expiration date and is no longer
+            visible
+
+    [awaiting_publication_status]
+
+        [label]
+        ca: Esperant inici de publicació
+        es: Esperando inicio de publicación
+        en: Awaiting start of publication
+
+        [title]
+        ca:
+            Aquest bloc no ha assolit la seva data d'inici de publicació i
+            encara no és visible
+        es:
+            Este bloque no ha alcanzado su fecha de inicio de publicación y
+            todavía no es visible
+        en:
+            This block has not reached its publication date and is not
+            visible yet"
+
+    [temporary_status]
+
+        [label]
+        ca: Temporal
+        es: Temporal
+        en: Temporary
+
+        [title]
+        ca: Aquest bloc es publica només durant una finestra de temps
+        es: Este bloque solo se publicada durante una ventana de tiempo
+        en: This block is only published during a certain time window
+

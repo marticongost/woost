@@ -1,0 +1,209 @@
+
+[woost.extensions.translationworkflow]
+
+    [states]
+
+        [pending]
+
+            [title]
+            ca: Pendent d'avaluar
+            es: Pendiente de evaluar
+            en: Evaluation pending
+
+            [plural_title]
+            ca: Pendents d'avaluar
+            es: Pendientes de evaluar
+            en: Evaluation pending
+
+        [ignored]
+
+            [title]
+            ca: Ignorada
+            es: Ignorada
+            en: Ignored
+
+            [plural_title]
+            ca: Ignorades
+            es: Ignoradas
+            en: Ignored
+
+        [silenced]
+
+            [title]
+            ca: Silenciada
+            es: Silenciada
+            en: Silenced
+
+            [plural_title]
+            ca: Silenciades
+            es: Silenciadas
+            en: Silenced
+
+        [selected]
+
+            [title]
+            ca: Seleccionada
+            es: Seleccionada
+            en: Selected
+
+            [plural_title]
+            ca: Seleccionades
+            es: Seleccionadas
+            en: Selected
+
+        [sent_to_agency]
+
+            [title]
+            ca: Enviada a agència
+            es: Enviada a agencia
+            en: Sent to agency
+
+            [plural_title]
+            ca: Enviades a agència
+            es: Enviadas a agencia
+            en: Sent to agency
+
+        [in_translation]
+
+            [title]
+            ca: En curs
+            es: En curso
+            en: In translation
+
+            [plural_title]
+            ca: En curs
+            es: En curso
+            en: In translation
+
+        [proposed]
+
+            [title]
+            ca: Proposada
+            es: Propuesta
+            en: Proposed
+
+            [plural_title]
+            ca: Proposades
+            es: Propuestas
+            en: Proposed
+
+        [applied]
+
+            [title]
+            ca: Aplicada
+            es: Aplicada
+            en: Applied
+
+            [plural_title]
+            ca: Aplicades
+            es: Aplicadas
+            en: Applied
+
+
+    [transitions]
+
+        [ignore.title]
+        ca: Ignorar
+        es: Ignorar
+        en: Ignore
+
+        [silence.title]
+        ca: Silenciar
+        es: Silenciar
+        en: Silence
+
+        [select.title]
+        ca: Seleccionar
+        es: Seleccionar
+        en: Select
+
+        [reject_selection.title]
+        ca: Rebutjar
+        es: Rechazar
+        en: Reject
+
+        [assign.title]
+        ca: Assignar
+        es: Asignar
+        en: Assign
+
+        [propose.title]
+        ca: Proposar traducció
+        es: Proponer traducción
+        en: Propose translation
+
+        [cancel_proposal.title]
+        ca: Anul·lar proposta
+        es: Anular propuesta
+        en: Cancel proposal
+
+        [reject.title]
+        ca: Rebutjar
+        es: Rechazar
+        en: Reject
+
+        [accept.title]
+        ca: Acceptar
+        es: Aceptar
+        en: Accept
+
+    [icons]
+
+        [ignore.title]
+        ca: Icona per la transició 'Ignorar' del circuït de traduccions
+        es: Icono para la transición 'Ignorar' del circuito de traducciones
+        en: Icon for the 'Ignore' transition of the translation workflow
+
+        [silence.title]
+        ca: Icona per la transició 'Silenciar' del circuït de traduccions
+        es: Icono para la transición 'Silenciar' del circuito de traducciones
+        en: Icon for the 'Silence' transition of the translation workflow
+
+        [forward.title]
+        ca: Icona per les transicions positives del circuït de traduccions
+        es: Icono para las transiciones positivas del circuito de traducciones
+        en: Icon for the positive transitions of the translation workflow
+
+        [backward.title]
+        ca: Icona per les transicions negatives del circuït de traduccions
+        es: Icono para las transiciones negativas del circuito de traducciones
+        en: Icon for the negative transitions of the translation workflow
+
+
+    [roles]
+
+        [coordinators.title]
+        ca: Coordinadors de traducció
+        es: Coordinadores de traducción
+        en: Translation coordinators
+
+        [translators.title]
+        ca: Traductors
+        es: Traductores
+        en: Translators
+
+
+    [permissions]
+
+        [translators]
+
+            [modify_assigned_requests.subject_description]
+            ca: peticions assignades al traductor en estat de traducció
+            es: peticiones asignadas al traductor en estado de traducción
+            en: requests assigned to the translator and in translation
+
+            [read_requests.subject_description]
+            ca: peticions assignades al traductor
+            es: peticiones asignadas al traductor
+            en: requests assigned to the translator
+
+            [read_comments.subject_description]
+            ca: comentaris de peticions assignades al traductor
+            es: comentarios de peticiones asignadas al traductor
+            en: comments for requests assigned to the translator
+
+            [write_comments.subject_description]
+            ca: comentaris de peticions assignades al traductor
+            es: comentarios de peticiones asignadas al traductor
+            en: comments for requests assigned to the translator
+

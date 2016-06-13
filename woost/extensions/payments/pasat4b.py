@@ -17,7 +17,10 @@ class Pasat4bPaymentGateway(PaymentGateway, Implementation):
     instantiable = True
 
     default_label = schema.DynamicDefault(
-        lambda: translations("Pasat4bPaymentGateway.label default")
+        lambda: translations(
+            "woost.extensions.payments.pasat4b.Pasat4bPaymentGateway."
+            "default_label"
+        )
     )
 
     merchant_code = schema.String(

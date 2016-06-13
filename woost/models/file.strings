@@ -1,0 +1,50 @@
+
+[woost.models.file.File]
+ca: Fitxer
+es: Fichero
+en: File
+
+    [plural]
+    ca: Fitxers
+    es: Ficheros
+    en: Files
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [file_name]
+        ca: Nom del fitxer
+        es: Nombre del fichero
+        en: File name
+
+        [file_hash]
+        ca: Sumatori del contingut del fitxer
+        es: Sumatorio del contenido del fichero
+        en: Checksum
+
+        [file_size]
+        ca: Mida del fitxer
+        es: Tamaño de fichero
+        en: File size
+
+        [local_path]
+        ca: Fitxer local
+        es: Fichero local
+        en: Local file
+
+        [upload]
+        ca: Càrrega de fitxer
+        es: Carga de fichero
+        en: File upload
+

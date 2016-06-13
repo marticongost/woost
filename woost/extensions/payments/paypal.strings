@@ -1,0 +1,33 @@
+
+[woost.extensions.payments.paypal.PayPalPaymentGateway]
+ca: PayPal
+es: PayPal
+en: PayPal
+
+    [plural]
+    ca: PayPal
+    es: PayPal
+    en: PayPal
+
+    [default_label]
+    ca: Targeta de crèdit / PayPal
+    es: Tarjeta de crédito / PayPal
+    en: Credit card / PayPal
+
+    [members]
+
+        [business]
+        ca: Compte de PayPal
+        es: Cuenta de PayPal
+        en: PayPal account
+
+        [payment_successful_page]
+        ca: Pàgina de confirmació de pagament
+        es: Página de confirmación de pago
+        en: Payment successful page
+
+        [payment_failed_page]
+        ca: Pàgina de pagament fallit
+        es: Página de pago fallido
+        en: Payment failed page
+

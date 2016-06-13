@@ -1,0 +1,15 @@
+
+[woost.extensions.campaign3.subscriber.Subscriber]
+
+    [members]
+
+        [subscriber_name]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [subscriber_email]
+        ca: Correu electrònic
+        es: Correo electrónico
+        en: Email
+

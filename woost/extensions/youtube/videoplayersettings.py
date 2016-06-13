@@ -3,10 +3,12 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import VideoPlayerSettings
 from woost.extensions.youtube.youtubevideo import YouTubeVideo
 
+translations.load_bundle("woost.extensions.youtube.videoplayersettings")
 
 VideoPlayerSettings.members_order = VideoPlayerSettings.members_order + [
         "youtube_allow_fullscreen",

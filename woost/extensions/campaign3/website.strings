@@ -1,0 +1,16 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [services.campaign_monitor]
+        @reuse "woost.models.configuration.Configuration.groups.services.campaign_monitor"
+
+    [members]
+
+        [campaign_monitor_api_key]
+        @reuse "woost.models.configuration.Configuration.members.campaign_monitor_api_key"
+
+        [campaign_monitor_client_id]
+        @reuse "woost.models.configuration.Configuration.members.campaign_monitor_client_id"
+

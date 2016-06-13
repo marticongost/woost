@@ -1,0 +1,77 @@
+
+[woost.models.role.Role]
+ca: Rol
+es: Rol
+en: Role
+
+    [plural]
+    ca: Rols
+    es: Roles
+    en: Roles
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [users]
+        ca: Usuaris
+        es: Usuarios
+        en: Users
+
+        [user_views]
+        ca: Vistes d'usuari
+        es: Vistas de usuario
+        en: User views
+
+        [permissions]
+        ca: Permisos
+        es: Permisos
+        en: Permissions
+
+        [base_roles]
+        ca: Rols base
+        es: Roles base
+        en: Base roles
+
+        [child_roles]
+        ca: Rols derivats
+        es: Roles derivados
+        en: Derived roles
+
+        [default_content_type]
+        ca: Tipus per defecte
+        es: Tipo por defecto
+        en: Default content type
+
+        [hidden_content_types]
+        ca: Tipus ocults
+        es: Tipos ocultos
+        en: Hidden content types
+
+            [explanation]
+            ca:
+                Una llista de tipus de contingut que no es mostraran a
+                l'usuari. Utilitzat per filtrar les entrades del menú
+                principal del gestor.
+            es:
+                Una lista de tipos de contenido que no se mostrarán al
+                usuario. Utilizado para filtrar las entradas del menú
+                principal del gestor.
+            en:
+                A list of content types that will be hidden from the user.
+                Used to filter the visible entries in the main menu for the
+                back office interface.
+
+        [implicit]
+        ca: Implícit
+        es: Implícito
+        en: Implicit
+
+        [access_levels]
+        ca: Nivells d'accés
+        es: Niveles de acceso
+        en: Access levels
+

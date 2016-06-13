@@ -1,0 +1,38 @@
+
+[woost.models.rendering.imagefilerenderer.ImageFileRenderer]
+ca: Pintador de fitxers d'imatge
+es: Pintador de ficheros de imagen
+en: Image file renderer
+
+    [plural]
+    ca: Pintadors de fitxers d'imatge
+    es: Pintadores de ficheros de imagen
+    en: Image file renderers
+
+    [members]
+
+        [max_size]
+        ca: Mida màxima
+        es: Tamaño máximo
+        en: Max size
+
+            [explanation]
+            ca:
+                Evita que el servidor processi imatges amb una mida excessiva.
+                La mida màxima a processar s'ha d'indicar amb dos valors
+                enters, separats per un caràcter 'x' (per exemple, 2000 x
+                1500). Les mides es validaran en orientació vertical o
+                horitzontal, indistintament.
+            es:
+                Evita que el servidor procese imágenes con un tamaño
+                excesivo. El tamaño máximo admisible debe indicarse con dos
+                valores enteros, separados por un carácter 'x' (por ejemplo,
+                2000 x 1500). El tamaño se validará en orientación vertical
+                o horizontal, indistintamente.
+            en:
+                Prevents the server from processing excessively large images.
+                The maximum image size allowed has to be indicated as a tuple
+                of two integers, separated by an 'x' character (ie. 2000 x
+                1500). Images will be validated against this size constraint
+                in both landscape and portrait orientations.
+

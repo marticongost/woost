@@ -18,21 +18,12 @@ class ExportationPermission(Permission):
 
     instantiable = True
 
-    def _destination_edit_control(parent, obj, member):
-        display = templates.new("cocktail.html.DropdownSelector")
-        display.empty_label = translations(
-            "woost.extensions.staticsite any destination"
-        )
-        return display
-
     destination = schema.Reference(
         type = "woost.extensions.staticsite.staticsitedestination.StaticSiteDestination",
         related_key = "destination_permissions",
         bidirectional = True,
-        edit_control = _destination_edit_control
+        edit_control = "cocktail.html.DropdownSelector"
     )
-
-    del _destination_edit_control
 
     def match(self, user, destination, verbose = False):
 

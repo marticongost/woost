@@ -1,0 +1,36 @@
+
+[woost.actions]
+
+    [send_email]
+    ca: Enviar
+    es: Enviar
+    en: Send
+
+    [create_mailing]
+    ca: Enviar per correu
+    es: Enviar por correo
+    en: Send by e-mail
+
+[woost.models.template.Template]
+
+    [members]
+
+        [per_user_customizable]
+        ca: Personalitzable per usuari
+        es: Personalizable por usuario
+        en: Per user customizable
+
+[woost.models.user.User]
+
+    [members]
+
+        [mailing_lists]
+        ca: Llistes de correu
+        es: Listas de correo
+        en: Mailing lists
+
+[woost.extensions.mailer.users]
+ca: usuaris
+es: usuarios
+en: usuarios
+

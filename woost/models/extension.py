@@ -128,9 +128,6 @@ class Extension(Item):
     def instance(cls):
         return first(cls.select())
 
-    def __translate__(self, language, **kwargs):
-        return translations(self.__class__.name)
-
     def load(self):
         with _extensions_lock:
             if self.__class__ not in _loaded_extensions:

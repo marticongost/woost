@@ -1,0 +1,33 @@
+
+[woost.models.controller.Controller]
+ca: Controlador
+es: Controlador
+en: Controller
+
+    [plural]
+    ca: Controladors
+    es: Controladores
+    en: Controllers
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [python_name]
+        ca: Implementació
+        es: Implementación
+        en: Implementation
+
+            [explanation]
+            ca: Nom qualificat de la implementació del controlador en Python
+            es: Nombre cualificado de la implementación del controlador en Python
+            en: Qualified name of the Python implementation for the controller
+
+        [published_items]
+        ca: Elements publicats
+        es: Elementos publicados
+        en: Published elements
+

@@ -1,0 +1,19 @@
+
+[woost.extensions.campaign3.campaignmonitorlisteditnode]
+
+    [synchronization_success(item)]
+    ca:
+        Canvis a <strong>t{item}</strong> sincronitzats
+    es:
+        Cambios en <strong>t{item}</strong> sincronizados
+    en:
+        Synchronized changes to <strong>t{item}</strong>
+
+    [synchronization_failed]
+    ca:
+        Sincronització <strong>${ca_possessive(translations(item))}</strong> fallida
+    es:
+        Sincronización de <strong>t{item}</strong> fallida
+    en:
+        Synchronization of <strong>t{item}</strong> failed
+

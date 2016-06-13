@@ -5,6 +5,7 @@ u"""
 """
 import cherrypy
 from createsend import CreateSend, Subscriber, BadRequest
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.pkgutils import import_object
 from cocktail.controllers import (
@@ -14,6 +15,8 @@ from cocktail.controllers import (
     request_property
 )
 from woost.models import Configuration
+
+translations.load_bundle("woost.extensions.campaign3.subscriptioncontroller")
 
 
 class SubscriptionController(FormProcessor, Controller):

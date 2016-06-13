@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension
 
-
-translations.define("IdentityExtension",
-    ca = u"Identitat",
-    es = u"Identidad",
-    en = u"Identity"
-)
-
-translations.define("IdentityExtension-plural",
-    ca = u"Identitat",
-    es = u"Identidad",
-    en = u"Identity"
-)
+translations.load_bundle("woost.extensions.identity.package")
 
 
 class IdentityExtension(Extension):
@@ -51,7 +40,6 @@ class IdentityExtension(Extension):
     def _load(self):
 
         from woost.extensions.identity import (
-            strings,
             configuration,
             identityprovider,
             facebook,

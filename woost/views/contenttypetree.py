@@ -40,9 +40,9 @@ class ContentTypeTree(TreeView):
 
     def get_item_label(self, content_type):
         if self.plural_labels:
-            return translations(content_type.__name__ + "-plural")
+            return translations(content_type, suffix = ".plural")
         else:
-            return translations(content_type.__name__)
+            return translations(content_type)
 
     def get_child_items(self, content_type):
         return sorted(
@@ -52,7 +52,7 @@ class ContentTypeTree(TreeView):
                 in content_type.derived_schemas(recursive = False)
                 if not getattr(derived_schema, "translation_source", None)
             ],
-            key = lambda ct: translations(ct.__name__)
+            key = translations
         )
 
     def filter_item(self, content_type):
