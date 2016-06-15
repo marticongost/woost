@@ -69,12 +69,6 @@ translations.define("IssuuBlock-plural",
     en = u"Issuu documents"
 )
 
-translations.define("IssuuBlock.element_type",
-    ca = u"Tipus d'element",
-    es = u"Tipo de elemento",
-    en = u"Element type"
-)
-
 translations.define("IssuuBlock.issuu_document",
     ca = u"Document Issuu",
     es = u"Documento Issuu",
