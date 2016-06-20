@@ -3,15 +3,17 @@
 @import "cocktail://styles/grid";
 @import "theme://";
 
+$small-screen-navigation-max-size: grid-min-size() !default;
+
 .StandardView .site_navigation > .menu {
-    @include grid(grid-min-size()) {
+    @include grid($small-screen-navigation-max-size) {
         display: none;
     }
 }
 
 .SmallScreenNavigation {
 
-    @include grid(gt grid-min-size()) {
+    @include grid(gt $small-screen-navigation-max-size) {
         display: none;
     }
 
