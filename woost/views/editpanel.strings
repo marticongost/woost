@@ -1,0 +1,18 @@
+
+[woost.views.EditPanel]
+
+    [show_panel_button]
+    ca: Mostrar panell d'edició
+    es: Mostrar panel de edición
+    en: Show edit panel
+
+    [close_panel_button]
+    ca: Ocultar panell d'edició
+    es: Ocultar panel de edición
+    en: Close edit panel
+
+    [actions_title]
+    ca: Accions
+    es: Acciones
+    en: Actions
+

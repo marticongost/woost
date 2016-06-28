@@ -1,0 +1,4 @@
+
+[woost.extensions.forms.formcontroller.form_agreement(member, **kwargs)]
+*: ${member.text}
+

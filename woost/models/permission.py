@@ -7,6 +7,7 @@
 @since:			July 2009
 """
 from contextlib import contextmanager
+from cocktail.stringutils import decapitalize
 from cocktail.modeling import InstrumentedSet
 from cocktail.events import when
 from cocktail.pkgutils import import_object
@@ -45,14 +46,6 @@ class Permission(Item):
         @rtype: bool
         """
         return True
-
-    def __translate__(self, language, **kwargs):
-        return translations(
-            self.__class__.full_name + "-instance",
-            language,
-            instance = self,
-            **kwargs
-        ) or Item.__translate__(self, language, **kwargs)
 
     @classmethod
     def permission_not_found(cls, user, verbose = False, **context):
@@ -541,4 +534,316 @@ class DebugPermission(Permission):
     """Permission to obtain technical details about exceptions and the site's
     internal state.
     """
+
+
+# Translation
+#------------------------------------------------------------------------------
+def permission_translation_factory(language, predicate):
+
+    def translate_permission(instance, **kwargs):
+        return translations(
+            "woost.models.permission",
+            language,
+            authorized = instance.authorized,
+            predicate = predicate(instance, **kwargs)
+        )
+
+    return translate_permission
+
+def content_permission_translation_factory(language, predicate):
+
+    def predicate_factory(instance, **kwargs):
+
+        subject = instance.get("subject_description", language)
+
+        if not subject:
+            if instance.content_type is None:
+                subject = u"?"
+            else:
+                try:
+                    query = instance.select_items()
+                except:
+                    subject = (
+                        decapitalize(
+                            translations(
+                                instance.content_type,
+                                suffix = ".plural"
+                            )
+                        )
+                        + " "
+                        + translations(
+                            "woost.models.permission.ContentPermission"
+                            ".content_expression_error",
+                            language
+                        )
+                    )
+                else:
+                    subject = decapitalize(translations(query, language))
+
+        if hasattr(predicate, "__call__"):
+            return predicate(instance, subject, **kwargs)
+        else:
+            return predicate % subject
+
+    return permission_translation_factory(
+        language,
+        predicate_factory
+    )
+
+MEMBER_PERMISSION_ABBR_THRESHOLD = 4
+
+def member_permission_translation_factory(
+    language,
+    predicate,
+    enum,
+    abbr,
+    any_predicate
+):
+    def predicate_factory(instance, **kwargs):
+
+        members = list(instance.iter_matching_members(ignore_invalid = True))
+
+        if not members:
+            target = any_predicate
+
+        elif len(members) >= MEMBER_PERMISSION_ABBR_THRESHOLD:
+            counter = OrderedDict()
+
+            for member in members:
+                counter[member.schema] = counter.get(member.schema, 0) + 1
+
+            target = u", ".join(
+                abbr(count, content_type)
+                for content_type, count in counter.iteritems()
+            )
+        else:
+            subject = u", ".join(
+                translations(member, language, qualified = True)
+                for member in members
+            )
+
+            if hasattr(enum, "__call__"):
+                target = enum(instance, subject, **kwargs)
+            else:
+                target = enum % subject
+
+        return predicate % target
+
+    return permission_translation_factory(
+        language,
+        predicate_factory
+    )
+
+def language_permission_translation_factory(language, predicate, any_predicate):
+
+    def predicate_factory(instance, **kwargs):
+
+        if not instance.matching_languages:
+            return any_predicate
+
+        subject = u", ".join(
+            translations(perm_lang, language)
+            for perm_lang in instance.matching_languages
+        )
+
+        if hasattr(predicate, "__call__"):
+            return predicate(instance, subject, **kwargs)
+        else:
+            return predicate % subject
+
+    return permission_translation_factory(
+        language,
+        predicate_factory
+    )
+
+translations.define("woost.models.permission",
+    ca = lambda authorized, predicate:
+        u"Permís per " + predicate
+        if authorized
+        else u"Prohibició " + ca_possessive(predicate),
+    es = lambda authorized, predicate:
+        (u"Permiso para " if authorized else u"Prohibición de ") + predicate,
+    en = lambda authorized, predicate:
+        (u"Permission to " if authorized else u"Prohibition to ") + predicate,
+)
+
+translations.define(
+    "woost.models.permission.ReadPermission.instance",
+    ca = content_permission_translation_factory("ca", u"llegir %s"),
+    es = content_permission_translation_factory("es", u"leer %s"),
+    en = content_permission_translation_factory("en", u"read %s")
+)
+
+translations.define(
+    "woost.models.permission.CreatePermission.instance",
+    ca = content_permission_translation_factory("ca", u"crear %s"),
+    es = content_permission_translation_factory("es", u"crear %s"),
+    en = content_permission_translation_factory("en", u"create %s")
+)
+
+translations.define(
+    "woost.models.permission.ModifyPermission.instance",
+    ca = content_permission_translation_factory("ca", u"modificar %s"),
+    es = content_permission_translation_factory("es", u"modificar %s"),
+    en = content_permission_translation_factory("en", u"modify %s")
+)
+
+translations.define(
+    "woost.models.permission.DeletePermission.instance",
+    ca = content_permission_translation_factory("ca", u"eliminar %s"),
+    es = content_permission_translation_factory("es", u"eliminar %s"),
+    en = content_permission_translation_factory("en", u"delete %s")
+)
+
+translations.define(
+    "woost.models.permission.RenderPermission.instance",
+    ca = content_permission_translation_factory(
+        "ca",
+        lambda permission, subject, **kwargs:
+            u"generar imatges " + ca_possessive(subject)
+    ),
+    es = content_permission_translation_factory(
+        "es",
+        u"generar imágenes de %s"
+    ),
+    en = content_permission_translation_factory("en", u"render %s")
+)
+
+translations.define(
+    "woost.models.permission.ReadMemberPermission.instance",
+    ca = member_permission_translation_factory("ca",
+        u"llegir %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"el membre %s",
+                u"els membres %s"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type)),
+        u"qualsevol membre"
+    ),
+    es = member_permission_translation_factory("es",
+        u"leer %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"el miembro %s",
+                u"los miembros %s"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type)),
+        u"cualquier miembro"
+    ),
+    en = member_permission_translation_factory("en",
+        u"read %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"the %s member",
+                u"the %s members"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type)),
+        u"any member"
+    )
+)
+
+translations.define(
+    "woost.models.permission.ModifyMemberPermission.instance",
+    ca = member_permission_translation_factory("ca",
+        u"modificar %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"el membre %s",
+                u"els membres %s"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 membre ", u"%d membres " % count)
+            + ca_possessive(translations(content_type)),
+        u"qualsevol membre"
+    ),
+    es = member_permission_translation_factory("es",
+        u"modificar %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"el miembro %s",
+                u"los miembros %s"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 miembro", u"%d miembros" % count)
+            + u" de " + (translations(content_type)),
+        u"cualquier miembro"
+    ),
+    en = member_permission_translation_factory("en",
+        u"modify %s",
+        lambda instance, subject, **kwargs:
+            plural2(
+                len(instance.matching_members),
+                u"the %s member",
+                u"the %s members"
+            ) % subject,
+        lambda count, content_type, **kwargs:
+            plural2(count, u"1 member", u"%d members" % count)
+            + u" of " + (translations(content_type)),
+        u"any member"
+    )
+)
+
+translations.define(
+    "woost.models.permission.ReadTranslationPermission.instance",
+    ca = language_permission_translation_factory("ca",
+        u"llegir traduccions: %s", u"llegir qualsevol traducció"
+    ),
+    es = language_permission_translation_factory("es",
+        u"leer traducciones: %s", u"leer cualquier traducción"
+    ),
+    en = language_permission_translation_factory("en",
+        u"read translations: %s", u"read any translation"
+    )
+)
+
+translations.define(
+    "woost.models.permission.CreateTranslationPermission.instance",
+    ca = language_permission_translation_factory("ca",
+        u"crear traduccions: %s", u"crear qualsevol traducció"
+    ),
+    es = language_permission_translation_factory("es",
+        u"crear traducciones: %s", u"crear cualquier traducción"
+    ),
+    en = language_permission_translation_factory("en",
+        u"create translations: %s", u"create any translation"
+    )
+)
+
+translations.define(
+    "woost.models.permission.ModifyTranslationPermission.instance",
+    ca = language_permission_translation_factory("ca",
+        u"modificar traduccions: %s", u"modificar qualsevol traducció"
+    ),
+    es = language_permission_translation_factory("es",
+        u"modificar traducciones: %s", u"modificar cualquier traducción"
+    ),
+    en = language_permission_translation_factory("en",
+        u"modify translations: %s", u"modify any translation"
+    )
+)
+
+translations.define(
+    "woost.models.permission.DeleteTranslationPermission.instance",
+    ca = language_permission_translation_factory("ca",
+        u"eliminar traduccions: %s", u"eliminar qualsevol traducció"
+    ),
+    es = language_permission_translation_factory("es",
+        u"eliminar traducciones: %s", u"eliminar cualquier traducción"
+    ),
+    en = language_permission_translation_factory("en",
+        u"delete translations: %s", u"delete any translation"
+    )
+)
 

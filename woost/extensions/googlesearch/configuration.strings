@@ -1,0 +1,22 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.google_cse]
+        ca: Google CSE
+        es: Google CSE
+        en: Google CSE
+
+    [members]
+
+        [google_search_engine_id]
+        ca: Identificador del cercador
+        es: Indentificador del buscador
+        en: Search engine id
+
+        [google_search_results_page]
+        ca: Pàgina de resultats de cerca
+        es: Página de resultados de búsqueda
+        en: Search results page
+

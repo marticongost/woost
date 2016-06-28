@@ -8,18 +8,7 @@ from cocktail import schema
 from woost.models import Extension, Controller, Configuration
 from woost.models.rendering import ChainRenderer
 
-
-translations.define("CampaignMonitor3Extension",
-    ca = u"Campaign Monitor v3",
-    es = u"Campaign Monitor v3",
-    en = u"Campaign Monitor v3"
-)
-
-translations.define("CampaignMonitor3Extension-plural",
-    ca = u"Campaign Monitor v3",
-    es = u"Campaign Monitor v3",
-    en = u"Campaign Monitor v3"
-)
+translations.load_bundle("woost.extensions.campaign3.package")
 
 
 class CampaignMonitor3Extension(Extension):
@@ -43,7 +32,6 @@ class CampaignMonitor3Extension(Extension):
     def _load(self):
 
         from woost.extensions.campaign3 import (
-            strings,
             configuration,
             website,
             campaignmonitorlist,

@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension, extension_translations
 
-
-translations.define("AttributesExtension",
-    ca = u"Atributs",
-    es = u"Atributos",
-    en = u"Attributes"
-)
-
-translations.define("AttributesExtension-plural",
-    ca = u"Atributs",
-    es = u"Atributos",
-    en = u"Attributes"
-)
+translations.load_bundle("woost.extensions.attributes.package")
 
 
 class AttributesExtension(Extension):
@@ -44,7 +33,6 @@ class AttributesExtension(Extension):
     def _load(self):
 
         from woost.extensions.attributes import (
-            strings,
             configuration,
             attribute,
             element
@@ -61,6 +49,7 @@ class AttributesExtension(Extension):
     def create_default_attributes(self):
 
         from woost.extensions.attributes.attribute import Attribute
+        translations.load_bundle("woost.extensions.attributes.installation")
 
         self._create_asset(
             Attribute,

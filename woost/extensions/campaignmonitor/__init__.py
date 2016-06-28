@@ -37,6 +37,7 @@ translations.define("CampaignMonitorExtension-plural",
 class CampaignMonitorExtension(Extension):
 
     initialized = False
+    visible = False
 
     def __init__(self, **values):
         Extension.__init__(self, **values)

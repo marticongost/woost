@@ -1,0 +1,180 @@
+
+[woost.models.rendering.imagefactory.ImageFactory]
+ca: Processador d'imatges
+es: Procesador de imágenes
+en: Image factory
+
+    [plural]
+    ca: Processadors d'imatges
+    es: Procesadores de imágenes
+    en: Image factories
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+            [explanation]
+            ca:
+                Un valor únic que permet accedir al processador
+                programàticament
+            es:
+                Un valor único que permite acceder al procesador
+                programáticamente
+            en:
+                A unique value that makes it possible to access
+                the image factory programmatically
+
+        [renderer]
+        ca: Pintador
+        es: Pintador
+        en: Renderer
+
+            [explanation]
+            ca: Especifica la manera en que s'obté la imatge
+            es: Especifica la manera en que se obtiene la imagen
+            en: Determines the source of produced images
+
+        [default_format]
+        ca: Format d'imatge
+        es: Formato de imagen
+        en: Image format
+
+        [effects]
+        ca: Efectes
+        es: Efectos
+        en: Effects
+
+        [options_code]
+        ca: Opcions
+        es: Opciones
+        en: Options
+
+            [explanation]
+            ca:
+                <p>
+                    Fragment de codi Python que permet passar paràmetres al mètode save
+                    de PIL.
+                </p>
+                <details>
+                    <summary>Detalls</summary>
+                    <p>
+                        Es proporcionen les variables següents:
+                    </p>
+                    <dl>
+                        <dt>options</dt>
+                        <dd>Diccionari amb els paràmetres que es passaran al mètode save.
+                            Documentació:
+                            <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                                JPEG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-png.htm'>
+                                PNG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                                GIF
+                            </a>
+                        </dd>
+                        <dt>format</dt>
+                        <dd>JPEG | PNG | GIF.</dd>
+                        <dt>factory</dt>
+                        <dd>El processador d'imatge.</dd>
+                        <dt>image</dt>
+                        <dd>Referència a l'element que s'està pintant.</dd>
+                    </dl>
+                </details>
+            es:
+                <p>
+                    Fragmento de código Python que permite pasar parámetros al método
+                    save de PIL.
+                </p>
+                <details>
+                    <summary>Detalles</summary>
+                    <p>
+                        Se proporcionan las variables siguientes:
+                    </p>
+                    <dl>
+                        <dt>options</dt>
+                        <dd>Diccionario con los parámetros que se pasaran al método save.
+                            Documentación:
+                            <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                                JPEG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-png.htm'>
+                                PNG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                                GIF
+                            </a>
+                        </dd>
+                        <dt>format</dt>
+                        <dd>JPEG | PNG | GIF.</dd>
+                        <dt>factory</dt>
+                        <dd>El procesador de imagen.</dd>
+                        <dt>image</dt>
+                        <dd>Referencia al elemento que se está pintando.</dd>
+                    </dl>
+                </details>
+            en:
+                <p>
+                    A Python code snippet to pass parameters to PIL's save method.
+                </p>
+                <details>
+                    <summary>Details</summary>
+                    <p>
+                        The code snippet will have access to the following variables:
+                    </p>
+                    <dl>
+                        <dt>options</dt>
+                        <dd>A dictionary containing the parameters to be passed to the save method.
+                            Documentation:
+                            <a href='http://effbot.org/imagingbook/format-jpeg.htm'>
+                                JPEG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-png.htm'>
+                                PNG
+                            </a>,
+                            <a href='http://effbot.org/imagingbook/format-gif.htm'>
+                                GIF
+                            </a>
+                        </dd>
+                        <dt>format</dt>
+                        <dd>JPEG | PNG | GIF.</dd>
+                        <dt>factory</dt>
+                        <dd>The image processor.</dd>
+                        <dt>image</dt>
+                        <dd>A reference to the element.</dd>
+                    </dl>
+                </details>
+
+        [fallback]
+        ca: Processador alternatiu
+        es: Procesador alternativo
+        en: Fallback
+
+            [explanation]
+            ca:
+                Si el processador és incapaç de produïr una imatge,
+                es provarà d'obtenir una imatge substitutiva utilitzant
+                el processador alternatiu indicat
+            es:
+                Si el procesador es incapaz de producir una imagen, se
+                intentará obtener una imagen sustitutiva utilizando el
+                procesador alternativo indicado
+            en:
+                If the image factory fails to produce an image, it will
+                try to fall back to the indicated factory to produce an
+                alternative image
+
+        [applicable_to_blocks]
+        ca: Aplicable a blocs
+        es: Aplicable a bloques
+        en: Applicable to blocks
+

@@ -1,0 +1,15 @@
+
+[woost.models.configuration.Configuration]
+
+    [members]
+
+        [translation_workflow_paths]
+        ca: Camins de traducció
+        es: Caminos de traducción
+        en: Translation paths
+
+            [explanation]
+            ca: Emparellaments d'idiomes per generar peticions de traducció.
+            es: Emparejamientos de idiomas para generar peticiones de traducción.
+            en: Language pairings to generate translation requests.
+

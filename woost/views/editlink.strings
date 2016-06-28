@@ -1,0 +1,32 @@
+
+[woost.views.EditLink]
+
+    [publishable_target]
+    ca: aquesta pàgina
+    es: esta página
+    en: this page
+
+    [create(target_desc = None)]
+    ca:
+        Crear ${target_desc or "element"}
+    es:
+        Crear ${target_desc or "elemento"}
+    en:
+        Create ${target_desc or "element"}
+
+    [modify(target_desc = None)]
+    ca:
+        Editar ${target_desc or "això"}
+    es:
+        Editar ${target_desc or "esto"}
+    en:
+        Edit ${target_desc or "this"}
+
+    [delete(target_desc = None)]
+    ca:
+        Eliminar ${target_desc or "element"}
+    es:
+        Eliminar ${target_desc or "elemento"}
+    en:
+        Delete ${target_desc or "element"}
+

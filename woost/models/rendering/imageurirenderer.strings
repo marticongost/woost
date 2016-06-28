@@ -1,0 +1,11 @@
+
+[woost.models.rendering.imageurirenderer.ImageURIRenderer]
+ca: Pintador d'imatges remotes
+es: Pintador de imágenes remotas
+en: Image URI renderer
+
+    [plural]
+    ca: Pintadors d'imatges remotes
+    es: Pintadores de imágenes remotas
+    en: Image URI renderers
+

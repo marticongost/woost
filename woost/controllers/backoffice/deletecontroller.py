@@ -21,6 +21,8 @@ from woost.controllers.backoffice.editstack import EditNode
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
+translations.load_bundle("woost.controllers.backoffice.deletecontroller")
+
 
 class DeleteController(BaseBackOfficeController):
 
@@ -108,7 +110,7 @@ class DeleteController(BaseBackOfficeController):
 
                 Notification(
                     translations(
-                        "woost.controllers.DeleteController."
+                        "woost.controllers.backoffice.deletecontroller."
                         "node_deleted_notice"
                     ),
                     category = "error"
