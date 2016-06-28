@@ -65,5 +65,5 @@ def _resolve_import(e):
             if theme.grid:
                 e.add_code("@import 'cocktail://styles/grid';")
                 e.add_code(grid.get_sass_code())
-            e.add_code(theme.declarations)
+            e.add_code(theme.declarations or "")
 
