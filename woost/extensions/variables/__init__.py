@@ -7,17 +7,7 @@ import re
 from cocktail.translations import translations
 from woost.models import Extension
 
-translations.define("VariablesExtension",
-    ca = u"Variables",
-    es = u"Variables",
-    en = u"Variables"
-)
-
-translations.define("StaticPubExtension-plural",
-    ca = u"Variables",
-    es = u"Variables",
-    en = u"Variables"
-)
+translations.load_bundle("woost.extensions.variables.package")
 
 variable_regex = re.compile("{{([a-z0-9A-Z.-_]+)}}")
 
@@ -43,7 +33,6 @@ class VariablesExtension(Extension):
     def _load(self):
 
         from woost.extensions.variables import (
-            strings,
             variable,
             migration
         )

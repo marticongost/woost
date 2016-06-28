@@ -1,0 +1,11 @@
+
+[woost.extensions.issuu.IssuuExtension]
+ca: Documents Issuu
+es: Documentos Issuu
+en: Issuu documents
+
+    [plural]
+    ca: Documents Issuu
+    es: Documentos Issuu
+    en: Issuu documents
+

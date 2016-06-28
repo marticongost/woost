@@ -1,0 +1,45 @@
+[woost.models.extension.Extension]
+ca: Extensió
+es: Extensión
+en: Extension
+
+    [instance(extension, **kwargs)]
+    *: t{extension.__class__}
+
+    [plural]
+    ca: Extensions
+    es: Extensiones
+    en: Extensions
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [description]
+        ca: Descripció
+        es: Descripción
+        en: Description
+
+        [extension_author]
+        ca: Autor de l'extensió
+        es: Autor de la extensión
+        en: Extension author
+
+        [license]
+        ca: Llicència
+        es: Licencia
+        en: License
+
+        [web_page]
+        ca: Pàgina web
+        es: Página web
+        en: Web page
+
+        [enabled]
+        ca: Activada
+        es: Activada
+        en: Enabled
+

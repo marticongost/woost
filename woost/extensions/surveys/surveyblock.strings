@@ -1,0 +1,32 @@
+
+[woost.extensions.surveys.surveyblock.SurveyBlock]
+ca: Formulari d'enquesta
+es: Formulario de encuesta
+en: Survey form
+
+    [plural]
+    ca: Formularis d'enquesta
+    es: Formularios de encuesta
+    en: Survey forms
+
+    [members]
+
+        [survey]
+        ca: Enquesta
+        es: Encuesta
+        en: Survey
+
+        [redirection]
+        ca: Redirecció
+        es: Redirección
+        en: Redirection
+
+            [explanation]
+            ca:
+                La pàgina on es rediregeix als usuaris que completin l'enquesta
+            es:
+                La página donde se redirige a los usuarios que completen la
+                encuesta
+            en:
+                The page where users who complete the survey will be redirected
+

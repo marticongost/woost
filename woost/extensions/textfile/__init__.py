@@ -6,11 +6,7 @@ u"""
 from cocktail.translations import translations
 from woost.models import Extension
 
-translations.define("TextFileExtension",
-    ca = u"Fitxers de text",
-    es = u"Ficheros de texto",
-    en = u"Text files"
-)
+translations.load_bundle("woost.extensions.textfile.package")
 
 
 class TextFileExtension(Extension):
@@ -32,12 +28,13 @@ class TextFileExtension(Extension):
         )
 
     def _load(self):
-        from woost.extensions.textfile import textfile, strings
+        from woost.extensions.textfile import textfile
         self.install()
 
     def _install(self):
 
         from woost.models import Controller, extension_translations
+        translations.load_bundle("woost.extensions.textfile.installation")
 
         controller = self._create_asset(
             Controller,

@@ -1,0 +1,28 @@
+
+[woost.extensions.mailer.mailinglist.MailingList]
+ca: Llista de correu
+es: Lista de correo
+en: Mailing list
+
+    [plural]
+    ca: Llistes de correu
+    es: Listas de correo
+    en: Mailing lists
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [mailings]
+        ca: Enviaments
+        es: Envios
+        en: Mailings
+
+        [users]
+        ca: Usuaris
+        es: Usuarios
+        en: Users
+

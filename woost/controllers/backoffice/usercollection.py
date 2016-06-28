@@ -8,6 +8,7 @@
 """
 from cocktail.modeling import cached_getter, ListWrapper
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.html import TranslatedValue
 from cocktail.html.uigeneration import display_factory
 from cocktail.controllers import UserCollection
@@ -15,6 +16,8 @@ from cocktail.controllers.userfilter import GlobalSearchFilter
 from woost import app
 from woost.models import ReadMemberPermission
 from woost.controllers.backoffice.contentviews import global_content_views
+
+translations.load_bundle("woost.controllers.backoffice.usercollection")
 
 
 class BackOfficeUserCollection(UserCollection):
@@ -97,7 +100,9 @@ class BackOfficeUserCollection(UserCollection):
 
         if content_schema is not self.type:
 
-            content_schema.name = "BackOfficeContentView"
+            content_schema.name = \
+                "woost.controllers.backoffice.BackOfficeUserCollection"
+
             extra_members = []
 
             if self.content_view.content_view_id == "tree":

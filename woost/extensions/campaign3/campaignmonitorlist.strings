@@ -1,0 +1,83 @@
+
+[woost.extensions.campaign3.CampaignMonitorList]
+ca: Llista de subscripció
+es: Lista de suscripción
+en: Subscription list
+
+    [plural]
+    ca: Llistes de subscripció
+    es: Listas de suscripción
+    en: Subscription lists
+
+    [members]
+
+        [list_id]
+        ca: Id de llista
+        es: Id de lista
+        en: List id
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [confirmation_page]
+        ca: Pàgina de confirmació inicial
+        es: Página de confirmación inicial
+        en: Initial confirmation page
+
+            [explanation]
+            ca:
+                Pàgina que es mostrarà després de completar el formulari de
+                subscripció. Si no s'especifica una pàgina, es mostrarà una
+                pàgina genèrica amb instruccions.
+            es:
+                Página que se mostrará después de completar el formulario de
+                suscripción. Si no se especifica una página, se mostrará una
+                página genérica con instrucciones.
+            en:
+                The page that will be displayed after someone completes the
+                subscribe form. If you don't specify a page, a generic page
+                with instructions will be displayed to the subscriber.
+
+        [confirmation_success_page]
+        ca: Pàgina de confirmació d'alta
+        es: Página de confirmación de alta
+        en: Confirmation success page
+
+            [explanation]
+            ca:
+                Pàgina que es mostrarà després que un subscriptor faci clic a
+                l'enllaç de confirmació en el correu de verificació. Si no
+                s'especifica una pàgina, es mostrarà una pàgina de gràcies
+                genèrica.
+            es:
+                Página que se mostrará después de que un suscriptor haga clic
+                en el enlace de confirmación en el correo de verificación. Si
+                no se especifica una página, se mostrará una página de gracias
+                genérica.
+            en:
+                Page that will be displayed after the subscriber clicks the
+                confirmation link in the verification email. If no page is
+                specified, a generic thank you page will be displayed to the
+                subscriber.
+
+        [unsubscribe_page]
+        ca: Pàgina de baixa
+        es: Página de baja
+        en: Unsubscribe page
+
+            [explanation]
+            ca:
+                Pàgina que es mostrarà després que un subscriptor faci clic a
+                l'enllaç de baixa en un correu. Si no s'especifica una pàgina,
+                es mostrarà una pàgina de confirmació generica.
+            es:
+                Página que se mostrará después de que un suscriptor haga clic
+                en el enlace de baja en un correo. Si no se especifica una
+                página, se mostrará una pàgina de confirmación generica.
+            en:
+                Page that will be displayed after someone clicks an unsubscribe
+                link in your email. If no page is specified, a generic
+                confirmation page will be displayed to the subscriber.
+

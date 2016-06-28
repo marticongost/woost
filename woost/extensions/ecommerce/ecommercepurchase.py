@@ -103,27 +103,6 @@ class ECommercePurchase(Item):
         editable = schema.READ_ONLY
     )
 
-    def __translate__(self, language, **kwargs):
-
-        desc = u"%d x %s" % (
-            self.quantity,
-            translations(self.product, language)
-        )
-
-        options = []
-        for member in self.get_options():
-            if member is ECommercePurchase.quantity:
-                continue
-            options.append("%s: %s" % (
-                translations(member, language),
-                member.translate_value(self.get(member), language)
-            ))
-
-        if options:
-            desc += u" (%s)" % u", ".join(options)
-
-        return desc
-
     def calculate_costs(self,
         apply_pricing = True,
         apply_shipping_costs = True,
@@ -226,4 +205,26 @@ class ECommercePurchase(Item):
                 )
             ):
                 yield member
+
+@translations.instances_of(ECommercePurchase)
+def translate_ecommerce_purchase(self, language, **kwargs):
+
+    desc = u"%d x %s" % (
+        self.quantity,
+        translations(self.product, language)
+    )
+
+    options = []
+    for member in self.get_options():
+        if member is ECommercePurchase.quantity:
+            continue
+        options.append("%s: %s" % (
+            translations(member, language),
+            member.translate_value(self.get(member), language)
+        ))
+
+    if options:
+        desc += u" (%s)" % u", ".join(options)
+
+    return desc
 

@@ -1,0 +1,10 @@
+
+[woost.models.user.User]
+
+    [members]
+
+        [google_user_id]
+        ca: Id de Google
+        es: Id de Google
+        en: Google ID
+

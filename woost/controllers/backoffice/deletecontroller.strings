@@ -1,0 +1,8 @@
+
+[woost.controllers.backoffice.deletecontroller]
+
+    [node_deleted_notice]
+    ca: L'element que estaves editant ha estat eliminat.
+    es: El elemento que estabas editando ha sido eliminado.
+    en: The item you were editing has been deleted
+

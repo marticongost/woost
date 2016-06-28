@@ -24,6 +24,8 @@ from woost.extensions.ecommerce.orderstepcontroller import (
     ProceedForm
 )
 
+translations.load_bundle("woost.extensions.ecommerce.basketcontroller")
+
 
 class BasketController(FormProcessor, Controller):
 
@@ -56,7 +58,8 @@ class BasketController(FormProcessor, Controller):
             def translate_error(member, error, language = None, **kwargs):
                 if isinstance(error, schema.exceptions.MinValueError):
                     return translations(
-                        "SetQuantitiesForm-MinValueError",
+                        "woost.extensions.ecommerce.basketcontroller."
+                        "min_quantity_error"
                         language,
                         **kwargs
                     )
@@ -78,8 +81,10 @@ class BasketController(FormProcessor, Controller):
 
         def after_submit(self):
             Notification(
-                translations("woost.extensions.ecommerce."
-                             "set_quantities_notice"),
+                translations(
+                    "woost.extensions.ecommerce.basketcontroller."
+                    "set_quantities"
+                ),
                 category = "success"
             ).emit()
 
@@ -116,7 +121,8 @@ class BasketController(FormProcessor, Controller):
             purchase = self.instance["purchase"]
             notify_user(
                 translations(
-                    "woost.extensions.ecommerce.delete_purchase_notice",
+                    "woost.extensions.ecommerce.basketcontroller."
+                    "delete_purchase",
                     product = self.deleted_product
                 ),
                 category = "success"
@@ -133,8 +139,10 @@ class BasketController(FormProcessor, Controller):
 
         def after_submit(self):
             notify_user(
-                translations("woost.extensions.ecommerce."
-                             "empty_basket_notice"),
+                translations(
+                    "woost.extensions.ecommerce.basketcontroller."
+                    "empty_basket"
+                ),
                 category = "success"
             )
             Location.get_current().go("GET")

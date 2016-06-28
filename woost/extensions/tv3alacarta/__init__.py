@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from woost.models import Extension, Configuration
 from woost.models.rendering import ChainRenderer
 
-
-translations.define("TV3ALaCartaExtension",
-    ca = u"TV3 a la carta",
-    es = u"TV3 a la carta",
-    en = u"TV3 a la carta"
-)
-
-translations.define("TV3ALaCartaExtension-plural",
-    ca = u"TV3 a la carta",
-    es = u"TV3 a la carta",
-    en = u"TV3 a la carta"
-)
+translations.load_bundle("woost.extensions.tv3alacarta.package")
 
 
 class TV3ALaCartaExtension(Extension):
@@ -41,7 +30,6 @@ class TV3ALaCartaExtension(Extension):
 
     def _load(self):
         from woost.extensions.tv3alacarta import (
-            strings,
             tv3alacartavideo,
             videoplayersettings
         )

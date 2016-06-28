@@ -1,0 +1,9 @@
+
+[woost.controllers.backoffice.usereditnode]
+
+    [PasswordConfirmationError.instance]
+    ca: Les contrasenyes no coincideixen
+    es: Las contraseñas no coinciden
+    en: Passwords don't match
+    pt: As palavras-passe não são iguais
+

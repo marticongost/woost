@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.stringutils import normalize
-from cocktail.translations import translations
+from cocktail.translations import translate_locale
 from cocktail import schema
 
 
@@ -24,17 +24,12 @@ class LocaleMember(schema.String):
                 **kwargs
             )
         else:
-            return translations(
-                "locale",
-                locale = value,
-                language = language,
-                **kwargs
-            )
+            return translate_locale(value, language = language)
 
 def _locales_enumeration(ctx):
     from woost.models.configuration import Configuration
     return sorted(
         Configuration.instance.languages,
-        key = lambda locale: normalize(translations("locale", locale = locale))
+        key = lambda locale: normalize(translate_locale(locale))
     )
 

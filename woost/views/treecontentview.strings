@@ -1,0 +1,18 @@
+
+[woost.views.TreeContentView]
+
+    [expansion_controls]
+    ca: Arbre:
+    es: Árbol:
+    en: Tree:
+
+    [expand_all]
+    ca: Desplegar
+    es: Expandir
+    en: Unfold
+
+    [collapse_all]
+    ca: Plegar
+    es: Contraer
+    en: Fold
+

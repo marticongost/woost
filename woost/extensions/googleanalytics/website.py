@@ -3,9 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Website, LocaleMember
 from .customdefinition import GoogleAnalyticsCustomDefinition
+
+translations.load_bundle("woost.extensions.googleanalytics.configuration")
+translations.load_bundle("woost.extensions.googleanalytics.website")
 
 Website.add_member(
     schema.String("google_analytics_account",

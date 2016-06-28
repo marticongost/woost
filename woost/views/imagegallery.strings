@@ -1,0 +1,28 @@
+
+[woost.views.ImageGallery]
+
+    [close_button]
+    ca: Tancar la imatge
+    es: Cerrar la imagen
+    en: Close image
+
+    [next_button]
+    ca: Següent
+    es: Siguiente
+    en: Next
+
+    [previous_button]
+    ca: Anterior
+    es: Anterior
+    en: Previous
+
+    [loading_sign]
+    ca: Carregant la imatge
+    es: Cargando la imagen
+    en: Loading image
+
+    [original_image_link]
+    ca: Descarregar l'original
+    es: Descargar el original
+    en: Download the original
+

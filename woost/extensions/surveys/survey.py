@@ -94,11 +94,11 @@ class SurveyQuestion(Item):
         if "name" not in member_kwargs:
             member_kwargs["name"] = "question%d" % self.id
 
-        if "translate_value" not in member_kwargs:
-            member_kwargs["__translate__"] = (
-                lambda language, **kwargs: translations(self, **kwargs)
-            )
-
+        member_kwargs["question"] = self
+        member_kwargs.setdefault(
+            "custom_translation_key",
+            "woost.extensions.surveys.survey.survey_field"
+        )
         return member_type(**member_kwargs)
 
     def create_results_view(self):

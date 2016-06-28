@@ -1,0 +1,11 @@
+
+[woost.extensions.vimeo.vimeovideorenderer.VimeoVideoRenderer]
+ca: Pintador de fotogrames pels vídeos de Vimeo
+es: Pintador de fotogramas para los videos de Vimeo
+en: Vimeo videos still renderer
+
+    [plural]
+    ca: Pintadors de fotogrames pels vídeos de Vimeo
+    es: Pintadores de fotogramas para los videos de Vimeo
+    en: Vimeo videos still renderers
+

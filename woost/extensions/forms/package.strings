@@ -1,0 +1,28 @@
+
+[woost.extensions.forms.FormsExtension]
+ca: Formularis personalitzats
+es: Formularios personalizados
+en: Custom forms
+
+    [plural]
+    ca: Formularis personalitzats
+    es: Formularios personalizados
+    en: Custom forms
+
+
+[woost]
+
+    [type_groups]
+
+        [custom_forms]
+        ca: Formularis personalitzats
+        es: Formularios personalizados
+        en: Custom forms
+
+    [actions]
+
+        [export_form_data]
+        ca: Exportar les respostes
+        es: Exportar las respuestas
+        en: Download the answers
+

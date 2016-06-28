@@ -1,0 +1,36 @@
+
+[woost.models.template.Template]
+ca: Plantilla
+es: Plantilla
+en: Template
+
+    [plural]
+    ca: Plantilles
+    es: Plantillas
+    en: Templates
+
+    [none]
+    es: Ninguna
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+        [theme]
+        ca: Tema
+        es: Tema
+        en: Theme
+
+        [documents]
+        ca: Documents
+        es: Documentos
+        en: Documents
+

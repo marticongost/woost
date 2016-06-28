@@ -1,0 +1,25 @@
+
+[woost.views.LoginBlockView]
+
+    [form]
+
+        [members]
+
+            [user]
+            ca: Usuari
+            es: Usuario
+            en: User
+            pt: Usuário
+
+            [password]
+            ca: Contrasenya
+            es: Contraseña
+            en: Password
+            pt: Chave de acesso
+
+    [submit_button]
+    ca: Entrar
+    es: Entrar
+    en: Login
+    pt: Entrar
+

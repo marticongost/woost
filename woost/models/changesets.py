@@ -14,6 +14,7 @@ from cocktail.modeling import classgetter
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.translations import translations
+from cocktail.translations.helpers import ca_possessive
 from cocktail.persistence import PersistentObject, datastore
 
 CHANGES_INDEX_KEY = "woost.models.changesets.ChangeSet.changes-index"
@@ -224,13 +225,6 @@ class Change(PersistentObject):
             language_subset = language_subset
         )
 
-    def __translate__(self, language, **kwargs):
-        return translations(
-            "woost.models.changesets.Change description",
-            action = self.action,
-            target = self.target
-        ) or PersistentObject.__translate__(self, language, **kwargs)
-
     @event_handler
     def handle_changed(cls, e):
         change = e.source
@@ -316,4 +310,87 @@ class ChangeSetHasChangeExpression(schema.expressions.Expression):
             return dataset
 
         return ((0, 0), impl)
+
+
+# Translation
+#------------------------------------------------------------------------------
+
+def _translate_change_ca(action, target):
+
+    if isinstance(target, int):
+        target_desc = "%d elements" % target
+        apostrophe = False
+    else:
+        target_desc = translations(target)
+
+        if not target_desc:
+            return ""
+
+        target_desc = u"<em>" + target_desc + u"</em>"
+
+    if action == "edit":
+        action_desc = u"Edició"
+    elif action == "create":
+        action_desc = u"Creació"
+    elif action == "delete":
+        action_desc = u"Eliminació"
+    else:
+        return ""
+
+    return action_desc + ca_possessive(target_desc)
+
+def _translate_change_es(action, target):
+
+    if isinstance(target, int):
+        target_desc = "%d elementos" % target
+    else:
+        target_desc = translations(target)
+
+        if not target_desc:
+            return ""
+
+        target_desc = u"<em>" + target_desc + u"</em>"
+
+    if action == "edit":
+        action_desc = u"Edición"
+    elif action == "create":
+        action_desc = u"Creación"
+    elif action == "delete":
+        action_desc = u"Eliminación"
+    else:
+        return ""
+
+    return action_desc + u" de " + target_desc
+
+def _translate_change_en(action, target):
+
+    if isinstance(target, int):
+        target_desc = "%d items" % target
+    else:
+        target_desc = translations(target, "ca")
+
+        if not target_desc:
+            return ""
+
+        target_desc = u"<em>" + target_desc + u"</em>"
+
+    if action == "edit":
+        action_desc = u"modified"
+    elif action == "create":
+        action_desc = u"created"
+    elif action == "delete":
+        action_desc = u"deleted"
+    else:
+        return ""
+
+    return target_desc + u" " + action_desc
+
+translations.define("woost.models.changesets.Change.instance",
+    ca = lambda change, **kwargs:
+        _translate_change_ca(change.action, change.target),
+    es = lambda change, **kwargs:
+        _translate_change_es(change.action, change.target),
+    en = lambda change, **kwargs:
+        _translate_change_en(change.action, change.target)
+)
 

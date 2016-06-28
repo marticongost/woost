@@ -4,8 +4,10 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from cocktail.schema.exceptions import SchemaIntegrityError
 from cocktail.translations import translations
+from cocktail.schema.exceptions import SchemaIntegrityError
+
+translations.load_bundle("woost.extensions.annotations.annotations")
 
 schema.Member._special_copy_keys.add("_annotation")
 _base_deep_copy = schema.Member.__deepcopy__
@@ -59,14 +61,6 @@ class Annotation(schema.String):
     _annotation_target = None
     listed_by_default = False
     edit_control = "cocktail.html.TextArea"
-
-    def __translate__(self, language, **kwargs):
-        return translations(
-            "woost.extensions.annotations.Annotation-instance",
-            instance = self,
-            language = language,
-            **kwargs
-        )
 
     _special_copy_keys = set(schema.String._special_copy_keys)
     _special_copy_keys.add("_annotation_target")
