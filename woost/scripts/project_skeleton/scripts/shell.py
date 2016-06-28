@@ -5,5 +5,7 @@ with the -i flag, to have quick access to the project's data.
 """
 from woost.scripts.shell import *
 from --SETUP-PACKAGE--.models import *
+import --SETUP-PACKAGE--.views
+import --SETUP-PACKAGE--.controllers
 setup_shell(locals())
 
