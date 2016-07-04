@@ -47,12 +47,7 @@ class VimeoVideo(Publishable):
         member_group = "content"
     )
 
-    def get_uri(self,
-        path = None,
-        parameters = None,
-        language = None,
-        host = None,
-        encode = True):
+    def get_uri(self, **kwargs):
         return self.uri_pattern % (self.video_id,)
 
     def is_internal_content(self, language = None):

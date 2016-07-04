@@ -12,7 +12,7 @@ from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail.translations import iter_language_chain
 from cocktail import schema
-from cocktail.controllers import get_parameter, view_state, Location
+from cocktail.controllers import get_parameter, view_state
 from woost import app
 from woost.models import (
     ReadPermission,

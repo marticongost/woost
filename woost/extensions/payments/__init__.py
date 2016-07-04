@@ -8,7 +8,6 @@
 """
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.controllers.location import Location
 from woost.models import Extension
 
 translations.define("PaymentsExtension",

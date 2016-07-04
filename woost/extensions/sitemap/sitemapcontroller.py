@@ -7,7 +7,6 @@
 @since:			February 2010
 """
 from cocktail.modeling import cached_getter
-from cocktail.controllers import Location
 from woost.models import Publishable
 from woost.controllers import BaseCMSController
 
@@ -30,14 +29,11 @@ class SitemapController(BaseCMSController):
         write(u"<?xml version='1.0' encoding='utf-8'?>")
         write(u"<urlset xmlns='%s'>" % self.namespace)
 
-        base_url = str(Location.get_current_host()).rstrip(u"/")
         uri = self.context["cms"].uri
 
         for item in self.items:
             write(u"\t<url>")
-
-            item_uri = base_url + u"/" + uri(item).lstrip(u"/")
-            write(u"\t\t<loc>%s</loc>" % item_uri)
+            write(u"\t\t<loc>%s</loc>" % item.get_uri(host = "!"))
 
             date = item.last_update_time.strftime("%Y-%m-%d")
             write(u"\t\t<lastmod>%s</lastmod>" % date)

@@ -506,3 +506,24 @@ def paste_from_clipboard(**kwargs):
     json = clipboard.paste().decode("utf-8")
     import_json(json, **kwargs)
 
+def get_matching_website(item):
+
+    current_website = app.website
+    acceptable_websites = getattr(item, "websites", None)
+
+    if current_website is not None and (
+        not acceptable_websites
+        or current_website in acceptable_websites
+    ):
+        return current_website
+
+    config_websites = Configuration.instance.websites
+    for possible_website in config_websites:
+        if (
+            not acceptable_websites
+            or possible_website in acceptable_websites
+        ):
+            return possible_website
+
+    return None
+

@@ -23,19 +23,11 @@ class LanguageScheme(object):
 
     cookie_duration = 60 * 60 * 24 * 15 # 15 days
 
-    def process_request(self, path):
+    def process_request(self):
 
+        url_resolution = app.url_resolution
+        language = url_resolution and url_resolution.language
         self.setup_language_fallback_policy()
-
-        if path:
-            language = self.uri_component_to_language(path[0])
-            if language in Configuration.instance.languages:
-                path.pop(0)
-            else:
-                language = None
-        else:
-            language = None
-
         cherrypy.request.language_specified = (language is not None)
 
         if language is None:
@@ -101,54 +93,6 @@ class LanguageScheme(object):
 
         # Fall back to the site's default language
         return config.get_setting("default_language")
-
-    def translate_uri(self, path = None, language = None):
-
-        current_language = get_language()
-
-        if language is None:
-            language = current_language
-
-        if path is None:
-            is_current_publishable = True
-            path = cherrypy.request.path_info
-            qs = cherrypy.request.query_string
-        else:
-            is_current_publishable = False
-            qs = u""
-
-        if isinstance(path, str):
-            path = try_decode(path)
-
-        if isinstance(qs, str):
-            qs = try_decode(qs)
-
-        if is_current_publishable and language != current_language:
-            publishable = app.original_publishable or app.publishable
-            current_uri = publishable.get_uri(
-                language = current_language,
-                encode = False
-            )
-            translation_uri = publishable.get_uri(language = language)
-            path = path.replace(current_uri, translation_uri)
-        else:
-            path_components = path.strip("/").split("/")
-            if (
-                path_components
-                and path_components[0] in Configuration.instance.languages
-            ):
-                path_components.pop(0)
-
-            path_components.insert(0, self.language_to_uri_component(language))
-            path = u"/" + u"/".join(path_components)
-
-        return path + (u"?" + qs if qs else u"")
-
-    def language_to_uri_component(self, language):
-        return language
-
-    def uri_component_to_language(self, uri_component):
-        return uri_component
 
     def setup_language_fallback_policy(self):
         clear_fallback_languages()

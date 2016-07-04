@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <?py
-from cocktail.controllers import context, Location
+from cocktail.controllers import get_request_url
 from woost import app
 from woost.models import (
     Publishable,
@@ -35,25 +34,23 @@ from woost.models import (
 
     def get_uri(self):
         backoffice = Publishable.get_instance(qname = "woost.backoffice")
+        parameters = self.edit_parameters.copy()
         if self.action == "create":
-            return context["cms"].uri(
-                backoffice,
-                "content", "new", "fields",
-                item_type = self.target.full_name,
-                **self.edit_parameters
+            parameters["item_type"] = self.target.full_name
+            return backoffice.get_uri(
+                path = ["content", "new", "fields"],
+                parameters = parameters
             )
         elif self.action == "modify":
-            return context["cms"].uri(
-                backoffice,
-                "content", self.target.id, "fields",
-                **self.edit_parameters
+            return backoffice.get_uri(
+                path = ["content", str(self.target.id), "fields"],
+                parameters = parameters
             )
         elif self.action == "delete":
-            return context["cms"].uri(
-                backoffice,
-                "delete",
-                selection = self.target.id,
-                **self.edit_parameters
+            parameters["selection"] = str(self.target.id)
+            return backoffice.get_uri(
+                path = ["delete"],
+                parameters = parameters
             )
     ?>
 
@@ -72,7 +69,7 @@ from woost.models import (
                 self.target_desc = translations(self.target)
 
         if "root_url" not in self.edit_parameters:
-            self.edit_parameters["root_url"] = unicode(Location.get_current())
+            self.edit_parameters["root_url"] = get_request_url()
 
         if not self.is_permitted():
             self.visible = False

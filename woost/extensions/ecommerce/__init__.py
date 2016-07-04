@@ -314,7 +314,7 @@ if logo:
                 template.subject = template.title
                 template.body = """
 <%
-from cocktail.controllers import Location
+from cocktail.controllers import get_request_root_url
 from cocktail.html import templates
 
 order = items[0]
@@ -324,7 +324,7 @@ order_summary.order = order
 
 <html>
     <head>
-        <base href="@{unicode(Location.get_current_host())}"/>
+        <base href="@{get_request_root_url()}"/>
     </head>
     <body>
         ${order_summary.render()}
@@ -370,7 +370,7 @@ from woost.models import Publishable
 
 order = items[0]
 bo = Publishable.require_instance(qname = "woost.backoffice")
-edit_url = bo.get_uri(host = ".", path = ["content", str(order.id)])
+edit_url = bo.get_uri(host = "!", path = ["content", str(order.id)])
 %>
 
 <html>

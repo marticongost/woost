@@ -8,7 +8,7 @@ import urllib
 import urllib2
 from cocktail.styled import styled
 from cocktail import schema
-from cocktail.controllers import Location
+from cocktail.controllers import get_request_url
 from woost import app
 from woost.models import Configuration
 from woost.extensions.identity.identityprovider import IdentityProvider
@@ -54,9 +54,7 @@ class GoogleIdentityProvider(IdentityProvider):
             "/google_oauth/%d/step1?%s" % (
                 self.id,
                 urllib.urlencode({
-                    "target_url": target_url
-                                  or unicode(
-                        Location.get_current(relative=False)).encode("utf-8")
+                    "target_url": target_url or str(get_request_url())
                 })
             )
         )

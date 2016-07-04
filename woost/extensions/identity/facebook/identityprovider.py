@@ -6,7 +6,7 @@ u"""
 from urllib import urlencode
 
 from cocktail import schema
-from cocktail.controllers import Location
+from cocktail.controllers import get_request_url
 from woost.extensions.identity.identityprovider import IdentityProvider
 
 
@@ -41,11 +41,8 @@ class FacebookIdentityProvider(IdentityProvider):
             "/facebook_oauth/%d/step1?%s" % (
                 self.id,
                 urlencode({
-                    "target_url":
-                        target_url
-                        or unicode(
-                            Location.get_current(relative=False)).encode(
-                            "utf-8")
+                    "target_url": target_url or get_request_url()
                 })
             )
         )
+

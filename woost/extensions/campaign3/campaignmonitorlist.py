@@ -5,6 +5,7 @@ u"""
 """
 from cocktail import schema
 from cocktail.translations import translations
+from cocktail.urls import URL
 from woost.models import Configuration, Item
 from createsend import CreateSend, List
 
@@ -57,14 +58,16 @@ class CampaignMonitorList(Item):
         details = list.details()
 
         if self.confirmation_success_page:
-            confirmation_success_page = self.confirmation_success_page.get_uri(
-                host = "."
-            )
+            confirmation_success_page = \
+                self.confirmation_success_page.get_uri(host = "!")
         else:
             confirmation_success_page = None
 
         if self.unsubscribe_page:
-            unsubscribe_page = self.unsubscribe_page.get_uri(host = ".") + "?email=[email]"
+            unsubscribe_page = (
+                self.unsubscribe_page.get_uri(host = "!")
+                .merge(URL(query = {"email": "[email]"}))
+            )
         else:
             unsubscribe_page = None
 

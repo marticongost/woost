@@ -236,7 +236,7 @@ class OpenGraphExtension(Extension):
 
         logo = config.get_setting("logo")
         if logo:
-            properties["og:image"] = logo.get_uri(host = ".")
+            properties["og:image"] = logo.get_uri(host = "!")
 
         email = config.get_setting("email")
         if email:

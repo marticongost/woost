@@ -99,7 +99,7 @@ from woost.models import Configuration, Publishable
                         Element("link",
                             rel = "alternate",
                             title = translations("woost.views.BaseView alternate language link", language = trans_lang, lang = trans_lang),
-                            href = app.language.translate_uri(language = trans_lang),
+                            href = app.url_mapping.transform_request_url(language = trans_lang),
                             lang = trans_lang,
                             hreflang = trans_lang
                         )

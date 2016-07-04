@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from cocktail import schema
-from cocktail.controllers import Location
 from woost.models import Configuration
 ?>
 
