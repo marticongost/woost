@@ -5,7 +5,9 @@ u"""Defines the `Location` class.
 """
 from warnings import warn
 from cocktail.iteration import first
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
+from cocktail.translations.localetranslations \
+    import translate_locale_component as base_translate_locale_component
 from cocktail import schema
 from woost.models import Item
 from woost.models.objectio import get_object_ref, resolve_object_ref
@@ -253,7 +255,6 @@ global_content_views.add(
     }
 )
 
-
 @get_object_ref.implementation_for(Location)
 def get_location_ref(location):
 
@@ -281,4 +282,41 @@ def resolve_location_ref(cls, ref):
             obj = cls.by_abs_path(path)
 
     return obj
+
+# Translation
+#------------------------------------------------------------------------------
+
+# Override the translation for locale components to replace country ISO codes
+# with human readable descriptions
+def translate_locale_component(locale, component, index, language = None):
+
+    if index == 1:
+        language = language or get_language()
+
+        location = first(
+            Location.select({
+                "location_type": "country",
+                "code": component
+            })
+        )
+        if location is not None:
+            location_name = translations(
+                location,
+                language = language,
+                discard_generic_translation = True
+            )
+
+            if not location_name and language != "en":
+                location_name = translations(
+                    location,
+                    "en",
+                    discard_generic_translation = True
+                )
+
+            return u" - " + location_name
+
+    return base_translate_locale_component(locale, component, index)
+
+translations.definitions["cocktail.locale_component"] = \
+    translate_locale_component
 

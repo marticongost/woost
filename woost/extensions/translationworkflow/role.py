@@ -3,10 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Role
 from .state import TranslationWorkflowState
 from .transition import TranslationWorkflowTransition
+
+translations.load_bundle("woost.extensions.translationworkflow.role")
 
 Role.add_member(
     schema.Collection("translation_workflow_relevant_states",

@@ -71,6 +71,8 @@ from woost.models import (
     load_extensions
 )
 
+translations.load_bundle("woost.models.initialization")
+
 
 class TranslatedValues(object):
 

@@ -15,6 +15,8 @@ from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
 from woost.extensions.ecommerce.basket import Basket
 
+translations.load_bundle("woost.extensions.ecommerce.productcontroller")
+
 
 class ProductController(FormProcessor, PublishableController):
 
@@ -54,7 +56,8 @@ class ProductController(FormProcessor, PublishableController):
 
             Notification(
                 translations(
-                    "woost.extensions.ecommerce.product_added_notice",
+                    "woost.extensions.ecommerce.productcontroller."
+                    "product_added_notice",
                     product = self.product
                 ),
                 "product_added",

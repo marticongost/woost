@@ -24,7 +24,6 @@ class Basket(object):
         @type basket: L{Basket}
         """)
 
-
     @classmethod
     def get(cls, create_new = True):
         """Obtains the shop order for the current user session.

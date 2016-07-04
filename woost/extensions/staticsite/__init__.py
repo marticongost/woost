@@ -13,24 +13,7 @@ from cocktail.translations import translations
 from cocktail.controllers import context
 from woost.models import Extension
 
-
-translations.define("StaticSiteExtension",
-    ca = u"Lloc web estàtic",
-    es = u"Sitio web estático",
-    en = u"Static website"
-)
-
-translations.define("StaticSiteExtension-plural",
-    ca = u"Lloc web estàtic",
-    es = u"Sitio web estático",
-    en = u"Static website"
-)
-
-translations.define("StaticSiteExtension.file_extension",
-    ca = u"Extensió de fitxer",
-    es = u"Extensión de fichero",
-    en = u"File extension"
-)
+translations.load_bundle("woost.extensions.staticsite.package")
 
 def generating_static_site():
     return bool(cherrypy.request.headers.get("X-Woost-StaticSiteSnapShoter"))
@@ -61,7 +44,6 @@ class StaticSiteExtension(Extension):
 
         from woost.extensions.staticsite import (
             useraction,
-            strings,
             staticsitesnapshoter,
             exportationpermission,
             exportstaticsitecontroller

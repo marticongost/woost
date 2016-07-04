@@ -33,17 +33,7 @@ from woost.models.rendering import ImageFactory, Thumbnail
 from woost.models.triggerresponse import SendEmailTriggerResponse
 from woost.controllers import CMSController
 
-translations.define("ECommerceExtension",
-    ca = u"Comerç online",
-    es = u"Comercio online",
-    en = u"E-commerce"
-)
-
-translations.define("ECommerceExtension-plural",
-    ca = u"Comerç online",
-    es = u"Comercio online",
-    en = u"E-commerce"
-)
+translations.load_bundle("woost.extensions.ecommerce.package")
 
 
 class ECommerceExtension(Extension):
@@ -67,7 +57,6 @@ class ECommerceExtension(Extension):
     def _load(self):
 
         from woost.extensions.ecommerce import (
-            strings,
             typegroups,
             website,
             ecommerceproduct,
@@ -221,6 +210,8 @@ class ECommerceExtension(Extension):
     def _install(self):
 
         from woost.extensions.ecommerce.ecommerceproductlisting import ECommerceProductListing
+
+        translations.load_bundle("woost.extensions.ecommerce.installation")
 
         website = Configuration.instance.websites[0]
 

@@ -7,17 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension, extension_translations
 
-translations.define("FormsExtension",
-    ca = u"Formularis personalitzats",
-    es = u"Formularios personalizados",
-    en = u"Custom forms"
-)
-
-translations.define("FormsExtension-plural",
-    ca = u"Formularis personalitzats",
-    es = u"Formularios personalizados",
-    en = u"Custom forms"
-)
+translations.load_bundle("woost.extensions.forms.package")
 
 
 class FormsExtension(Extension):
@@ -41,7 +31,6 @@ class FormsExtension(Extension):
     def _load(self):
 
         from woost.extensions.forms import (
-            strings,
             formblock,
             formagreement,
             fields,
@@ -63,7 +52,7 @@ class FormsExtension(Extension):
     def create_default_email_notification(self):
 
         from woost.models import EmailTemplate, Configuration
-        from woost.extensions.forms import installationstrings
+        translations.load_bundle("woost.extensions.forms.installation")
 
         try:
             default_host = Configuration.instance.websites[0].hosts[0]

@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.modeling import cached_getter
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.html import templates
 from cocktail.html.uigeneration import display_factory
@@ -11,6 +12,8 @@ from cocktail.html.readonlydisplay import read_only_display
 from woost.models import Item
 from .path import TranslationWorkflowPath
 from .transitionsetup import TranslationWorkflowTransitionSetup
+
+translations.load_bundle("woost.extensions.translationworkflow.assigntransitionsetup")
 
 
 class TranslationWorkflowAssignTransitionSetup(

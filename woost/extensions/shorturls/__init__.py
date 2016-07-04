@@ -8,18 +8,7 @@ from cocktail import schema
 from cocktail.caching import Cache
 from woost.models import Extension
 
-
-translations.define("ShortURLsExtension",
-    ca = u"URLs curtes",
-    es = u"URLs cortas",
-    en = u"Short URLs"
-)
-
-translations.define("ShortURLsPublicationExtension-plural",
-    ca = u"URLs curtes",
-    es = u"URLs cortas",
-    en = u"Short URLs"
-)
+translations.load_bundle("woost.extensions.shorturls.package")
 
 
 class ShortURLsExtension(Extension):
@@ -45,7 +34,6 @@ class ShortURLsExtension(Extension):
     def _load(self):
 
         from woost.extensions.shorturls import (
-            strings,
             configuration,
             urlshortener,
             bitlyurlshortener

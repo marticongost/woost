@@ -1,0 +1,67 @@
+
+@init
+from cocktail.stringutils import decapitalize
+@end
+
+[woost.views.BackOfficeInstallationSyncView]
+
+    [incomming_section]
+    ca: Contingut nou
+    es: Contenido nuevo
+    en: New content
+
+    [modified_section]
+    ca: Contingut modificat
+    es: Contenido modificado
+    en: Modified content
+
+    [remote_value(installation)]
+    ca: Valor a ${decapitalize(translations(installation))}
+    es: Valor en ${decapitalize(translations(installation))}
+    en: Value at ${decapitalize(translations(installation))}
+
+    [local_value]
+    ca: Valor local
+    es: Valor local
+    en: Local value
+
+    [diff_dialog_button]
+    ca: Detalls
+    es: Detalles
+    en: Details
+
+    [sync_request_error(error)]
+    ca:
+        S'ha produït un error en intentar accedir a la instal·lació
+        remota (t{error})
+    es:
+        Se ha producido un error al intentar acceder a la instalación
+        remota (t{error})
+    en:
+        Error connecting to the remote installation (t{error})
+
+    [no_changes_notice]
+    ca: No hi ha cap canvi a importar.
+    es: No hay cambios a importar.
+    en: There are no changes to import.
+
+    [sync_button]
+    ca: Importar els canvis seleccionats
+    es: Importar los cambios seleccionados
+    en: Import selected content
+
+    [select_all_button]
+    ca: Seleccionar-ho tot
+    es: Seleccionarlo todo
+    en: Select all
+
+    [select_none_button]
+    ca: Buidar la selecció
+    es: Vaciar la selección
+    en: Empty selection
+
+    [file_hash_diff_heading]
+    ca: Fitxer
+    es: Fichero
+    en: File
+

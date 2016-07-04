@@ -1,0 +1,28 @@
+
+[woost.models.rendering.pdfrenderer.PDFRenderer]
+ca: Pintador de documents PDF
+es: Pintador de documentos PDF
+en: PDF renderer
+
+    [plural]
+    ca: Pintadors de documents PDF
+    es: Pintadores de documentos PDF
+    en: PDF renderers
+
+    [members]
+
+        [command]
+        ca: Comanda
+        es: Comando
+        en: Command
+
+        [timeout]
+        ca: Temps màxim d'execució
+        es: Tiempo máximo de ejecución
+        en: Timeout
+
+        [timeout_size_factor]
+        ca: Temps de gràcia segons la mida del fitxer
+        es: Tiempo de gracia según el tamaño del fichero
+        en: Timeout file size factor
+

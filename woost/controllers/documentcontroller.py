@@ -58,9 +58,9 @@ class DocumentController(PublishableController):
                 """ % (
                     get_language(),
                     uri,
-                    translations("woost.controllers.DocumentController.redirection_title"),
+                    translations("woost.controllers.documentcontroller.redirection_title"),
                     translations(
-                        "woost.controllers.DocumentController.redirection_explanation",
+                        "woost.controllers.documentcontroller.redirection_explanation",
                         uri = uri
                     )
                 )

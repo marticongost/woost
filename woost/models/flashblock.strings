@@ -1,0 +1,48 @@
+
+[woost.models.flashblock.FlashBlock]
+ca: Animació Flash
+es: Animación Flash
+en: Flash animation
+
+    [plural]
+    ca: Animacions Flash
+    es: Animaciones Flash
+    en: Flash animations
+
+    [members]
+
+        [swf_file]
+        ca: Fitxer Flash
+        es: Fichero Flash
+        en: Flash file
+
+        [width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [height]
+        ca: Alçada
+        es: Alto
+        en: Height
+
+        [flash_version]
+        ca: Versió del reproductor Flash
+        es: Versión del reproductor Flash
+        en: Flash player version
+
+        [flash_vars]
+        ca: Variables Flash
+        es: Variables Flash
+        en: Flash variables
+
+        [flash_params]
+        ca: Paràmetres Flash
+        es: Parámetros Flash
+        en: Flash parameters
+
+        [flash_attributes]
+        ca: Atributs Flash
+        es: Atributos Flash
+        en: Flash attributes
+

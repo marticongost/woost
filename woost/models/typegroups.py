@@ -5,6 +5,8 @@ u"""
 """
 from cocktail.translations import translations
 
+translations.load_bundle("woost.models.typegroups")
+
 _undefined = object()
 
 
@@ -19,9 +21,6 @@ class TypeGroup(object):
 
     def __repr__(self):
         return "TypeGroup(%r)" % self.id
-
-    def __translate__(self, language, **kwargs):
-        return translations("woost.type_groups." + self.id, language, **kwargs)
 
     def append(self, child):
         self.__children.append(child)
@@ -92,6 +91,11 @@ class TypeGroup(object):
 
     def __delitem__(self, child):
         self.remove(child)
+
+
+@translations.instances_of(TypeGroup)
+def translate_type_group(type_group, **kwargs):
+    return translations("woost.type_groups." + type_group.id, **kwargs)
 
 type_groups = TypeGroup("global", [
     TypeGroup("publishable", [

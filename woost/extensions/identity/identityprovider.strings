@@ -1,0 +1,28 @@
+
+[woost.extensions.identity.identityprovider.IdentityProvider]
+ca: Servei d'autenticació d'usuaris
+es: Servicio de autenticación de usuarios
+en: User authentication service
+
+    [plural]
+    ca: Serveis d'autenticació d'usuaris
+    es: Servicios de autenticación de usuarios
+    en: User authentication services
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [hidden]
+        ca: Ocult
+        es: Oculto
+        en: Hidden
+
+        [debug_mode]
+        ca: Mostrar informació per desenvolupadors
+        es: Mostrar información para desarrolladores
+        en: Enable debugging
+

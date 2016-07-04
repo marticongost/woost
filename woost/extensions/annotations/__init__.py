@@ -5,20 +5,10 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import templates
+from cocktail.translations import translations
 from woost.models import Extension
 
-
-translations.define("AnnotationsExtension",
-    ca = u"Annotacions",
-    es = u"Anotaciones",
-    en = u"Annotations"
-)
-
-translations.define("AnnotationsExtension-plural",
-    ca = u"Annotacions",
-    es = u"Anotaciones",
-    en = u"Annotations"
-)
+translations.load_bundle("woost.extensions.annotations.package")
 
 
 class AnnotationsExtension(Extension):
@@ -40,11 +30,6 @@ class AnnotationsExtension(Extension):
         )
 
     def _load(self):
-
-        from woost.extensions.annotations import (
-            strings,
-            annotations
-        )
-
+        from woost.extensions.annotations import annotations
         templates.get_class("woost.extensions.annotations.BackOfficeFieldsViewOverlay")
 

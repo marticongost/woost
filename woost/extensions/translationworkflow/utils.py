@@ -9,6 +9,8 @@ from woost.models import Item, Configuration
 from woost.controllers.notifications import Notification
 from .state import TranslationWorkflowState
 
+translations.load_bundle("woost.extensions.translationworkflow.utils")
+
 def get_models_included_in_translation_workflow(root_model = Item):
     return tuple(
         model

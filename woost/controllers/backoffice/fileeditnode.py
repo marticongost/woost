@@ -124,10 +124,3 @@ class ImportUploadInfo(schema.Rule):
             context.set("file_size", schema.get(upload, "file_size"))
             context.set("file_hash", schema.get(upload, "file_hash"))
 
-
-class FileRequiredError(ValidationError):
-
-    @property
-    def invalid_members(self):
-        return self.member["upload"]
-

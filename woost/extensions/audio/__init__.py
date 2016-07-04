@@ -6,18 +6,7 @@ u"""
 from cocktail.translations import translations
 from woost.models import Extension, Configuration
 
-
-translations.define("AudioExtension",
-    ca = u"Àudio",
-    es = u"Audio",
-    en = u"Audio"
-)
-
-translations.define("AudioExtension-plural",
-    ca = u"Àudio",
-    es = u"Audio",
-    en = u"Audio"
-)
+translations.load_bundle("woost.extensions.audio.package")
 
 
 class AudioExtension(Extension):
@@ -44,7 +33,6 @@ class AudioExtension(Extension):
     def _load(self):
 
         from woost.extensions.audio import (
-            strings,
             configuration,
             audiodecoder,
             audioencoder

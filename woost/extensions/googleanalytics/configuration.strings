@@ -1,0 +1,71 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.google_analytics]
+        ca: Google Analytics
+        es: Google Analytics
+        en: Google Analytics
+
+    [members]
+
+        [google_analytics_account]
+        ca: Compte de Google Analytics
+        es: Cuenta de Google Analytics
+        en: Google Analytics account
+
+        [google_analytics_domain]
+        ca: Domini per Google Analytics
+        es: Dominio para Google Analytics
+        en: Domain for Google Analytics
+
+        [google_analytics_language]
+        ca: Idioma pels literals enviats a Google Analytics
+        es: Idioma para los literales enviados a Google Analytics
+        en: Language of text fragments sent to Google Analytics
+
+            [explanation]
+            ca:
+                Algunes funcionalitats, com ara la generació automàtica
+                d'esdeveniments pels clics a blocs de text i imatge, poden
+                inserir textos a les estadístiques de Google Analytics (per
+                exemple, el nom del bloc on s'ha fet el clic). Aquesta opció
+                determina l'idioma que s'hauria d'utilitzar per obtenir
+                aquests textos.
+            es:
+                Algunas funcionalidades, como la generación automática de
+                eventos para los clics en bloques de texto e imagen, pueden
+                insertar textos en las estadísticas de Google Analytics (por
+                ejemplo, el nombre del bloque donde se ha hecho el clic). Esta
+                opción determina el idioma que debería utilizarse para obtener
+                estos textos.
+            en:
+                Some features, such as the automatic generation of events for
+                clicks on text + image blocks, can insert text literals into
+                Google Analytics statistics (for example, the name of the
+                block that received the click). This option controls the
+                language that should be used to obtain those texts.
+
+        [google_analytics_custom_definitions]
+        ca: Definicions personalitzades
+        es: Definiciones personalizadas
+        en: Custom definitions
+
+            [explanation]
+            ca:
+                Afegeix dimensions o mètriques personalitzades a les
+                estadístiques. Important: s'han de replicar les definicions
+                manualment a la configuració de la propietat de Google Analytics,
+                en el mateix ordre en que es defineixin aquí.
+            es:
+                Añade dimensiones o métricas personalizadas a las estadísticas.
+                Importante: las definiciones deben replicarse manualmente en la
+                configuración de la propiedad de Google Analytics, en el mismo
+                orden en que se definan aquí.
+            en:
+                Adds custom dimensions or metrics to the page hit / event
+                statistics. Important: all definitions must be manually replicated
+                on the configuration of the Google Analytics property, in the same
+                order they are defined here.
+
