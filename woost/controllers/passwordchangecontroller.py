@@ -6,6 +6,7 @@ u"""Defines the `PasswordChangeController` class.
 import hashlib
 import cherrypy
 from cocktail import schema
+from cocktail.translations import translations
 from cocktail.schema.exceptions import ValidationError
 from cocktail.controllers import (
     request_property,
@@ -16,6 +17,8 @@ from cocktail.controllers import (
 from woost.models.emailtemplate import EmailTemplate
 from woost.models import Configuration, User, Publishable
 from woost.controllers.documentcontroller import DocumentController
+
+translations.load_bundle("woost.controllers.passwordchangecontroller")
 
 
 class UserIdentifierNotRegisteredError(ValidationError):
@@ -55,9 +58,11 @@ class PasswordChangeController(FormProcessor, DocumentController):
                 if self.user is not None and not self.user.email:
                     yield UserEmailMissingError(context)
 
-            return schema.Schema("PasswordChangeRequestForm", members = [
-                user_id_member
-            ])
+            return schema.Schema(
+                "woost.controllers.passwordchangecontroller."
+                "PasswordChangeRequestForm",
+                members = [user_id_member]
+            )
 
         @request_property
         def identifier_member(self):

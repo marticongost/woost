@@ -11,17 +11,7 @@ from cocktail.translations import translations, get_language
 from cocktail import schema
 from woost.models import Extension, Configuration
 
-translations.define("GoogleSearchExtension",
-    ca = u"Cercador de Google",
-    es = u"Buscador de Google",
-    en = u"Google search"
-)
-
-translations.define("GoogleSearchExtension-plural",
-    ca = u"Cercadors de Google",
-    es = u"Buscadores de Google",
-    en = u"Google search"
-)
+translations.load_bundle("woost.extensions.googlesearch.package")
 
 
 class GoogleSearchExtension(Extension):
@@ -46,7 +36,6 @@ class GoogleSearchExtension(Extension):
 
     def _load(self):
         from woost.extensions.googlesearch import (
-            strings,
             configuration,
             website
         )

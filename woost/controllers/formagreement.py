@@ -9,6 +9,8 @@ from cocktail.schema.exceptions import ValidationError
 from woost import app
 from woost.models import Publishable
 
+translations.load_bundle("woost.controllers.formagreement")
+
 default_document = object()
 
 def requires_agreement(form, name = "terms", document = default_document):
@@ -48,17 +50,6 @@ class FormAgreement(schema.Boolean):
     def _default_validation(self, context):
         if not context.value:
             yield ConsentNotGivenError(context)
-
-    def __translate__(self, language, **kwargs):
-        return (
-            schema.Boolean.__translate__(self, language, **kwargs)
-            or translations(
-                "woost.controllers.formagreement.%s" % self.name,
-                member = self
-            )
-            or translations("woost.controllers.formagreement", member =
-                self)
-        )
 
     def parse_request_value(self, reader, value):
         return schema.Boolean.parse_request_value(self, reader, value) or False

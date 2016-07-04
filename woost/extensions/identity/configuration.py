@@ -3,9 +3,12 @@ u"""
 
 .. moduleauthor:: Pepe Osca <pepe.osca@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Configuration
 from .identityprovider import IdentityProvider
+
+translations.load_bundle("woost.extensions.identity.configuration")
 
 Configuration.add_member(
     schema.Collection("identity_providers",

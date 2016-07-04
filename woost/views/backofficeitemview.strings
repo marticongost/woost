@@ -1,0 +1,14 @@
+
+[woost.views.BackOfficeItemView]
+
+    [pending_changes_warning]
+    ca:
+        Hi ha canvis pendents de desar. Si abandones el formulari d'edició
+        els canvis es perdran.
+    es:
+        Hay cambios pendientes de guardar. Si abandonas el formulario de
+        edición los cambios se perderán.
+    en:
+        There are unsaved changes. If you navigate away from the edit form
+        your modifications will be lost.
+

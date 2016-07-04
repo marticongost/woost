@@ -58,8 +58,16 @@ class SISPaymentGateway(PaymentGateway, Implementation):
         shadows_attribute = True,
         items = schema.String(
             enumeration = ["T", "D", "R"],
-            translate_value = lambda value, language = None, **kwargs: \
-                translations("SISPaymentGateway.pay_methods=%s" % (value,))
+            translate_value = (
+                lambda value, language = None, **kwargs:
+                    "" if not value
+                    else translations(
+                        "woost.extensions.payments.sis.SISPaymentGateway."
+                        "members.pay_methods.items.values.%s"
+                        % value,
+                        language
+                    )
+            )
         ),
         edit_control = "cocktail.html.CheckList"
     )

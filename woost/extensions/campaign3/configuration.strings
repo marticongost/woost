@@ -1,0 +1,22 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.campaign_monitor]
+        ca: Campaign Monitor
+        es: Campaign Monitor
+        en: Campaign Monitor
+
+    [members]
+
+        [campaign_monitor_api_key]
+        ca: Clau d'API
+        es: Clave de API
+        en: API key
+
+        [campaign_monitor_client_id]
+        ca: ID de client
+        es: ID de cliente
+        en: Client ID
+

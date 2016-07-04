@@ -1,0 +1,10 @@
+
+[woost.models.website.Website]
+
+    [members]
+
+        [external_files_host]
+        ca: Domini fitxers externs
+        es: Dominio ficheros externos
+        en: External files host
+

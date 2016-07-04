@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.events import when
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Item, Configuration
 from woost.extensions.translationworkflow.request \
@@ -13,6 +14,8 @@ from .utils import (
     object_is_included_in_translation_workflow,
     member_is_included_in_translation_workflow
 )
+
+translations.load_bundle("woost.extensions.translationworkflow.item")
 
 Item.translation_workflow_request_class = TranslationWorkflowRequest
 

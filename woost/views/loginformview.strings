@@ -1,0 +1,14 @@
+
+[woost.views.LoginFormView]
+
+    [main]
+    ca:
+        L'accés a aquesta secció del web està restringit. Per favor,
+        introdueix les teves credencials d'usuari per continuar.
+    es:
+        El acceso a esta sección del sitio está restringido. Por favor,
+        introduce tus credenciales de usuario para continuar.
+    en:
+        Access to this part of the website is restricted. Please, introduce
+        your user credentials to proceed.
+

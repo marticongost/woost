@@ -1,0 +1,8 @@
+
+[woost.extensions.translationworkflow.transitionnode]
+
+    [TranslationWorkflowTransitionNode.instance(node)]
+    ca: ${node.transition.title} peticions de traducció
+    es: ${node.transition.title} peticiones de traducción
+    en: ${node.transition.title} translation requests
+

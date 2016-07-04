@@ -1,0 +1,8 @@
+
+[woost.views.Dialog]
+
+    [close_dialog_button]
+    ca: Tancar la finestra
+    es: Cerrar la ventana
+    en: Close this window
+

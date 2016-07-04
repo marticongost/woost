@@ -1,0 +1,15 @@
+
+[woost.extensions.ecommerce.AddProductForm]
+
+    [title]
+    ca: Afegir a la cistella
+    es: Añadir a la cesta
+    en: Add to basket
+	fr: Ajouter au panier
+
+    [submit_button]
+    ca: Afegir
+    es: Añadir
+    en: Add
+	fr: Ajouter
+

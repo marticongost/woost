@@ -19,6 +19,8 @@ from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 
+translations.load_bundle("woost.controllers.backoffice.dragandropcontroller")
+
 
 class DragAndDropController(BaseBackOfficeController):
 

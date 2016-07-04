@@ -1,0 +1,23 @@
+
+[woost.extensions.campaign3.subscriptionformblock.SubscriptionFormBlock]
+ca: Formulari de subscripció
+es: Formulario de suscripción
+en: Subscription form
+
+    [plural]
+    ca: Formulari de subscripció
+    es: Formulario de suscripción
+    en: Subscription form
+
+    [members]
+
+        [subscriber_model]
+        ca: Model de subscriptor
+        es: Modelo de suscriptor
+        en: Subscription model
+
+        [lists]
+        ca: Llistes
+        es: Listas
+        en: Lists
+

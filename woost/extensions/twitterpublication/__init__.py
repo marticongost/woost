@@ -23,6 +23,8 @@ translations.define("TwitterPublicationExtension-plural",
 
 class TwitterPublicationExtension(Extension):
 
+    visible = False
+
     def __init__(self, **values):
         Extension.__init__(self, **values)
         self.extension_author = u"Whads/Accent SL"

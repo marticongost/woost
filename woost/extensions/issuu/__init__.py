@@ -8,18 +8,7 @@ from cocktail import schema
 from woost.models import Extension, Controller, Configuration
 from woost.models.rendering import ChainRenderer
 
-
-translations.define("IssuuExtension",
-    ca = u"Documents Issuu",
-    es = u"Documentos Issuu",
-    en = u"Issuu documents"
-)
-
-translations.define("IssuuExtension-plural",
-    ca = u"Documents Issuu",
-    es = u"Documentos Issuu",
-    en = u"Issuu documents"
-)
+translations.load_bundle("woost.extensions.issuu.package")
 
 
 class IssuuExtension(Extension):
@@ -42,7 +31,6 @@ class IssuuExtension(Extension):
 
     def _load(self):
         from woost.extensions.issuu import (
-            strings,
             issuudocument,
             issuublock,
         )
@@ -50,6 +38,8 @@ class IssuuExtension(Extension):
         self.register_view_factory()
 
     def _install(self):
+
+        translations.load_bundle("woost.extensions.issuu.installation")
 
         # Create the product controller
         controller = Controller()

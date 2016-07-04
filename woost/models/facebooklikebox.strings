@@ -1,0 +1,72 @@
+
+[woost.models.facebooklikebox.FacebookLikeBox]
+ca: Caixa de "M'agrada" de Facebook
+es: Caja de "Me gusta" de Facebook
+en: Facebook Like Box
+
+    [plural]
+    ca: Caixes de "M'agrada" per pàgines de Facebook
+    es: Cajas de "Me gusta" para páginas de Facebook
+    en: Facebook Like Boxes
+
+    [groups]
+
+        [appearence]
+        ca: Aparença
+        es: Apariencia
+        en: Appearence
+
+    [members]
+
+        [fb_href]
+        ca: Pàgina de Facebook
+        es: Página de Facebook
+        en: Facebook page
+
+        [fb_show_faces]
+        ca: Mostrar cares
+        es: Mostrar caras
+        en: Show faces
+
+        [fb_stream]
+        ca: Mostrar entrades del mur
+        es: Mostrar entradas del muro
+        en: Show stream
+
+        [fb_header]
+        ca: Mostrar el logo de Facebook
+        es: Mostrar el logo de Facebook
+        en: Show Facebook's logo
+
+        [fb_width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [fb_height]
+        ca: Alçada
+        es: Alto
+        en: Height
+
+        [fb_border_color]
+        ca: Color de la vora
+        es: Color del borde
+        en: Border color
+
+        [fb_colorscheme]
+        ca: Esquema de colors
+        es: Esquema de colores
+        en: Colorscheme
+
+            [values]
+
+                [light]
+                ca: Clar
+                es: Claro
+                en: Light
+
+                [dark]
+                ca: Fosc
+                es: Oscuro
+                en: Dark
+

@@ -13,7 +13,7 @@ from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail.modeling import ListWrapper, SetWrapper
 from cocktail import schema
-from cocktail.translations import get_language, translations
+from cocktail.translations import get_language, translations, translate_locale
 from cocktail import schema
 from cocktail.schema.expressions import Self
 from cocktail.persistence import (
@@ -430,7 +430,7 @@ def show_translation_coverage(
     longest_label_length = 0
 
     for lang, n in results:
-        label = translations("locale", locale = lang)
+        label = translate_locale(lang)
         longest_label_length = max(longest_label_length, len(label))
         percent = float(n) / total * 100
         table.append((label, percent))

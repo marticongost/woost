@@ -1,0 +1,18 @@
+
+[woost.views.BackOfficeChangeLogView]
+
+    [title]
+    ca: Històric
+    es: Histórico
+    en: Changelog
+
+    [collapsed]
+    ca: %(count)s canvis
+    es: %(count)s cambios
+    en: %(count)s changes
+
+    [expanded]
+    ca: Tornar a ocultar
+    es: Volver a ocultar
+    en: Fold
+

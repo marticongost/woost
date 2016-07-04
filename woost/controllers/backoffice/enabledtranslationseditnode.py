@@ -8,7 +8,7 @@ u"""
 """
 from cocktail.modeling import cached_getter
 from cocktail.stringutils import normalize
-from cocktail.translations import translations, descend_language_tree
+from cocktail.translations import translate_locale, descend_language_tree
 from cocktail.html.datadisplay import display_factory
 from woost.models import Configuration
 from woost.models.enabledtranslations import (
@@ -48,7 +48,7 @@ class EnabledTranslationsEditNode(EditNode):
         return sorted(
             list(eligible_languages),
             key = lambda language:
-                normalize(translations("locale", locale = language))
+                normalize(translate_locale(language))
         )
 
     def add_translation(self, language):

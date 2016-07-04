@@ -5,6 +5,7 @@ u"""
 """
 import cherrypy
 from datetime import datetime
+from cocktail.translations import translations
 from cocktail.modeling import extend, call_base
 from cocktail.controllers import (
     Controller,
@@ -15,6 +16,8 @@ from cocktail.controllers import (
 from woost import app
 from woost.controllers.uploadform import UploadForm
 from woost.controllers.formagreement import requires_agreement
+
+translations.load_bundle("woost.extensions.forms.formcontroller")
 
 
 class FormController(FormProcessor, Controller):
@@ -32,12 +35,8 @@ class FormController(FormProcessor, Controller):
                     document = agreement.document
                 )
                 if agreement.text:
-                    if agreement.text:
-                        @extend(agreement_member)
-                        def __translate__(agreement_member, language, **kwargs):
-                            if not kwargs.get("suffix"):
-                                return agreement.text
-                            return call_base(language, **kwargs)
+                    agreement.custom_translation_key = \
+                        "woost.extensions.forms.formcontroller.form_agreement"
 
         @property
         def model(self):

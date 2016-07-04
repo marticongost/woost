@@ -6,18 +6,7 @@ u"""
 from cocktail.translations import translations
 from woost.models import Extension, Configuration, Website
 
-
-translations.define("ExternalFilesExtension",
-    ca = u"Fitxers externs",
-    es = u"Ficheros externos",
-    en = u"External files"
-)
-
-translations.define("ExternalFilesExtension-plural",
-    ca = u"Fitxers externs",
-    es = u"Ficheros externos",
-    en = u"External files"
-)
+translations.load_bundle("woost.extensions.externalfiles.package")
 
 
 class ExternalFilesExtension(Extension):
@@ -40,7 +29,6 @@ class ExternalFilesExtension(Extension):
 
     def _load(self):
         from woost.extensions.externalfiles import (
-            strings,
             configuration,
             website,
             item,

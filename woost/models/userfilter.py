@@ -27,9 +27,11 @@ from cocktail.controllers.userfilter import (
 )
 from woost import app
 from .item import Item
-from .changesets import ChangeSet, ChangeSetHasChangeExpression
+from .changesets import ChangeSet, Change, ChangeSetHasChangeExpression
 from .publishable import Publishable, IsPublishedExpression
 from .document import Document
+
+translations.load_bundle("woost.models.userfilter")
 
 
 class IsPublishedFilter(UserFilter):
@@ -103,32 +105,17 @@ class ChangeSetHasChangeFilter(UserFilter):
 
     @cached_getter
     def schema(self):
-        return schema.Schema("ChangeSetHasChangeFilter", members = [
-            schema.Reference(
-                "target",
-                type = Item
-            ),
-            schema.Reference(
-                "target_type",
-                class_family = Item
-            ),
-            schema.String(
-                "action",
-                enumeration = ["create", "modify", "delete"],
-                translate_value = lambda value, language = None, **kwargs:
-                    translations(
-                        "ChangeSetHasChangeFilter.action=none",
-                        language,
-                        **kwargs
-                    )
-                    if not value
-                    else translations(
-                        "woost %s action" % value,
-                        language,
-                        **kwargs
-                    )
-            )
-        ])
+        return schema.Schema(
+            "woost.models.userfilter.ChangeSetHasChangeFilter",
+            members = [
+                Change.target.copy(bidirectional = False),
+                schema.Reference(
+                    "target_type",
+                    class_family = Item
+                ),
+                Change.action.copy(bidirectional = False)
+            ]
+        )
 
     @getter
     def expression(self):

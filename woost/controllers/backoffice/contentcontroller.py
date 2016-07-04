@@ -386,7 +386,7 @@ class ContentController(BaseBackOfficeController):
 
         content_type = mimetypes.types_map.get(".xls")
         cd = 'attachment; filename="%s"' % (
-            translations(self.user_collection.type.name + "-plural") + ".xls"
+            translations(self.user_collection.type, suffix = ".plural") + ".xls"
         )
         cherrypy.response.headers['Content-Type'] = content_type
         cherrypy.response.headers["Content-Disposition"] = cd

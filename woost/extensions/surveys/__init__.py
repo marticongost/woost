@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension
 
-
-translations.define("SurveysExtension",
-    ca = u"Enquestes",
-    es = u"Encuestas",
-    en = u"Surveys"
-)
-
-translations.define("SurveysExtension-plural",
-    ca = u"Enquestes",
-    es = u"Encuestas",
-    en = u"Surveys"
-)
+translations.load_bundle("woost.extensions.surveys.package")
 
 
 class SurveysExtension(Extension):
@@ -41,7 +30,6 @@ class SurveysExtension(Extension):
 
     def _load(self):
         from woost.extensions.surveys import (
-            strings,
             survey,
             surveyblock,
             surveyresultsaction
