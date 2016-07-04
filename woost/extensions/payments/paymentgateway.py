@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 @author:		Martí Congost
@@ -11,7 +10,7 @@ from cocktail.modeling import OrderedDict
 from cocktail.events import Event
 from cocktail.translations import translations, get_language
 from cocktail import schema
-from cocktail.controllers import Location
+from cocktail.controllers import post_redirection
 from woost import app
 from woost.models import Item
 
@@ -65,27 +64,13 @@ class PaymentGateway(Item):
         @param payment_id: The identifier of the payment to execute.
         """
         url, params = self.get_payment_form_data(payment_id, get_language())
-
-        location = Location(url)
-        location.method = "POST"
-        location.form_data = OrderedDict(params)
-        location.go()
+        post_redirection(url, OrderedDict(params))
 
     def get_payment_url(self, *args, **kwargs):
-
-        website = app.website
-        location = Location()
-        location.relative = False
-
-        if website.https_policy != "never":
-            location.scheme = "https"
-
-        location.host = website.hosts[0]
-        location.path_info = "payments/" + str(self.id)
-        location.join_path(*args)
-        location.query_string.update(kwargs)
-
-        return unicode(location)
+        return app.url_mapping.get_url(
+            path = ["payments", str(self.id)] + list(args),
+            parameters = kwargs
+        )
 
     @property
     def handshake_url(self):

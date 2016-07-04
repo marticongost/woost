@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 from cocktail import schema
-from cocktail.controllers import Location
+from cocktail.urls import URL
 from woost.models import Publishable, url_importer
 
 
@@ -12,8 +12,7 @@ def extract_video_id(string):
 
     try:
         if string.startswith("http"):
-            location = Location(string)
-            return location.query_string["v"][0]
+            return URL(string).query.get_value("v")
     except:
         pass
 
@@ -54,12 +53,7 @@ class YouTubeVideo(Publishable):
         member_group = "content"
     )
 
-    def get_uri(self,
-        path = None,
-        parameters = None,
-        language = None,
-        host = None,
-        encode = True):
+    def get_uri(self, **kwargs):
         return self.uri_pattern % (self.video_id,)
 
     def is_internal_content(self, language = None):

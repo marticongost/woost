@@ -92,7 +92,7 @@ class FacebookLikeButton(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.href = self.fb_href and self.fb_href.get_uri(host = ".")
+        view.href = self.fb_href and self.fb_href.get_uri(host = "!")
         view.send = self.fb_send
         view.layout = self.fb_layout
         view.show_faces = self.fb_show_faces

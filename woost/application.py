@@ -125,25 +125,48 @@ http://woost.info
     cache = Cache()
 
     # URLs
-    __url_resolver = None
+    __url_mapping = None
 
-    def _get_url_resolver(self):
-        if self.__url_resolver is None:
-            from woost.urlresolver import (
-                URLResolver,
-                HierarchicalURLScheme,
-                DescriptiveIdURLScheme
-            )
-            url_resolver = URLResolver()
-            url_resolver.add_url_scheme(HierarchicalURLScheme())
-            url_resolver.add_url_scheme(DescriptiveIdURLScheme())
-            self.__url_resolver = url_resolver
-        return self.__url_resolver
+    def _get_url_mapping(self):
 
-    def _set_url_resolver(self, url_resolver):
-        self.__url_resolver = url_resolver
+        if self.__url_mapping is None:
+            from woost import urlmapping as um
+            url_mapping = um.URLMapping([
+                um.Sequence([
+                    um.Optional(um.WebsiteInHostname()),
+                    um.Optional(um.LocaleInPath()),
+                    um.Optional(
+                        um.OneOf([
+                            um.Home(),
+                            um.HierarchyInPath(),
+                            um.DescriptiveIdInPath(),
+                            um.IdInPath()
+                        ])
+                    )
+                ])
+            ])
+            self.__url_mapping = url_mapping
 
-    url_resolver = property(_get_url_resolver, _set_url_resolver)
+        return self.__url_mapping
+
+    def _set_url_mapping(self, url_mapping):
+        self.__url_mapping = url_mapping
+
+    url_mapping = property(_get_url_mapping, _set_url_mapping)
+
+    # URL resolution
+    def _get_url_resolution(self):
+        return getattr(self._thread_data, "url_resolution", None)
+
+    def _set_url_resolution(self, url_resolution):
+        self._thread_data.url_resolution = url_resolution
+
+    url_resolution = property(_get_url_resolution, _set_url_resolution, doc =
+        """Gets or sets the URL resolution for the current request.
+
+        .. type:: `~woost.urlmapping.URLResolution`
+        """
+    )
 
     # Last error
     def _get_error(self):

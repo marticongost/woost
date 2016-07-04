@@ -8,7 +8,7 @@ from cocktail.translations import translations
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.persistence import transaction
-from cocktail.controllers import request_property, context, Location
+from cocktail.controllers import request_property, context, reload_request_url
 from woost import app
 from woost.models import changeset_context, ModifyPermission
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -139,7 +139,7 @@ class TranslationWorkflowTransitionAction(UserAction):
 
         changeset = transaction(execute_transition)
         notify_translation_request_changes(changeset)
-        Location.get_current().go("GET")
+        reload_request_url()
 
     def get_errors(self, controller, selection):
 

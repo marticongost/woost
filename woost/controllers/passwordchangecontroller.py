@@ -91,7 +91,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
                 qname = 'woost.password_change_confirmation_page'
             )
             return confirmation_page.get_uri(
-                host = ".",
+                host = "!",
                 parameters = {
                     "user": self.identifier,
                     "hash": generate_confirmation_hash(self.identifier)

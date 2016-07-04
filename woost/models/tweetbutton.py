@@ -82,7 +82,7 @@ class TweetButton(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.url = self.tw_target and self.tw_target.get_uri(host = ".")
+        view.url = self.tw_target and self.tw_target.get_uri(host = "!")
         view.via = self.tw_via
         view.related = self.tw_related
         view.hashtags = self.tw_hashtags

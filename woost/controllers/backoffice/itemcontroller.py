@@ -12,7 +12,11 @@ from cocktail.modeling import cached_getter, getter
 from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
-from cocktail.controllers import view_state, Location, get_parameter
+from cocktail.controllers import (
+    view_state,
+    get_parameter,
+    get_request_url_builder
+)
 from woost import app
 from woost.models import (
     Item,
@@ -138,12 +142,11 @@ class ItemController(BaseBackOfficeController):
         # final target of the current request - if that is the case, submit()
         # will end up redirecting the user to the default section anyway
         if redirect and self is not cherrypy.request.handler:
-            location = Location.get_current()
-            location.method = "GET"
-            location.params["edit_stack"] = edit_stack.to_param()
-            location.params.pop("member", None)
-            location.hash = Location.empty_hash
-            location.go()
+            url_builder = get_request_url_builder()
+            url_builder.query["edit_stack"] = edit_stack.to_param()
+            url_builder.query.pop("member", None)
+            url_builder.fragment = ""
+            raise cherrypy.HTTPRedirect(url_builder.get_url())
 
         return edit_stack
 

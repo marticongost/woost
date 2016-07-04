@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail.controllers import Location
-from cocktail.controllers import context
+from cocktail.controllers import get_request_url
 from woost import app
 from woost.models import (
     Item,
@@ -37,7 +36,7 @@ from woost.models import (
     <py:ready>
         <?py
         self._backoffice = Publishable.require_instance(qname = "woost.backoffice")
-        self._location = unicode(Location.get_current())
+        self._location = get_request_url()
         self.block_edit_parameters = self.block_edit_parameters.copy()
         self.block_edit_parameters["root_url"] = self._location
 

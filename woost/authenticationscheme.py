@@ -8,7 +8,7 @@ u"""
 """
 import cherrypy
 from cocktail.schema import ErrorList
-from cocktail.controllers import session, Location
+from cocktail.controllers import session, get_request_url_builder
 from woost import app
 from woost.models import User
 
@@ -63,12 +63,11 @@ class AuthenticationScheme(object):
 
             # Request the current location again, with all authentication
             # parameters stripped
-            location = Location.get_current()
-            for params in (location.query_string, location.form_data):
-                params.pop("user", None)
-                params.pop("password", None)
-                params.pop("authenticate", None)
-            location.go("GET")
+            url_builder = get_request_url_builder()
+            url_builder.query.pop("user", None)
+            url_builder.query.pop("password", None)
+            url_builder.query.pop("authenticate", None)
+            raise cherrypy.HTTPRedirect(url_builder.get_url())
 
     def process_logout(self):
         if "logout" in cherrypy.request.params:

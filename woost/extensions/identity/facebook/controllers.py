@@ -5,10 +5,13 @@ u"""
 """
 import json
 import urllib
-
 import cherrypy
 from cocktail.styled import styled
-from cocktail.controllers import Controller, Location, session
+from cocktail.controllers import (
+    Controller,
+    session,
+    get_request_root_url_builder
+)
 from woost import app
 from woost.controllers import CMSController
 from .identityprovider import FacebookIdentityProvider
@@ -49,12 +52,13 @@ class FacebookOAuthProviderController(Controller):
         )
 
     def step_url(self, step_number):
-        location = Location.get_current_host()
-        location.path_info = "/facebook_oauth/%d/step%d" % (
-            self.provider.id,
-            step_number
-        )
-        return unicode(location).decode("utf-8")
+        url_builder = get_request_root_url_builder()
+        url_builder.path = [
+            "facebook_oauth"
+            str(self.provider.id),
+            "step%d" % step_number
+        ]
+        return url_builder.get_url()
 
     @cherrypy.expose
     def step1(self, code = None, target_url = None, **kwargs):

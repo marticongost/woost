@@ -15,11 +15,11 @@ from cocktail.pkgutils import resolve
 from cocktail.persistence import datastore, transactional
 from cocktail.controllers import (
     view_state,
-    Location,
     context as controller_context,
     request_property,
     get_parameter,
     session,
+    get_request_url_builder
 )
 from cocktail import schema
 from woost import app
@@ -174,7 +174,6 @@ class UserAction(object):
     min = 1
     max = 1
     direct_link = False
-    client_redirect = False
     link_target = None
     parameters = None
     show_as_primary_action = "never"
@@ -433,8 +432,7 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        location = Location(self.get_url(controller, selection))
-        location.go(client_redirect = self.client_redirect)
+        raise cherrypy.HTTPRedirect(self.get_url(controller, selection))
 
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
@@ -707,7 +705,6 @@ class OpenResourceAction(UserAction):
         "changelog"
     ])
     link_target = "_blank"
-    client_redirect = True
     show_as_primary_action = "on_content_type"
 
     def get_url(self, controller, selection):
@@ -956,13 +953,13 @@ class SaveAction(UserAction):
 
 
 def focus_block(block):
-    location = Location.get_current()
-    location.hash = "block" + str(block.id)
-    location.query_string.pop("action", None)
-    location.query_string.pop("block_parent", None)
-    location.query_string.pop("block_slot", None)
-    location.query_string.pop("block", None)
-    location.go("GET")
+    url_builder = get_request_url_builder()
+    url_builder.fragment = "block" + str(block.id)
+    url_builder.query.pop("action", None)
+    url_builder.query.pop("block_parent", None)
+    url_builder.query.pop("block_slot", None)
+    url_builder.query.pop("block", None)
+    raise cherrypy.HTTPRedirect(url_builder.get_url())
 
 
 class EditBlocksAction(UserAction):

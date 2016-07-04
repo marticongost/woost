@@ -30,12 +30,11 @@ from cocktail.events import Event, event_handler
 from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher,
-    Location,
     try_decode,
     session
 )
 from cocktail.controllers.asyncupload import AsyncUploadController
-from cocktail.controllers.uriutils import percent_encode
+from cocktail.controllers import get_request_url
 from cocktail.persistence import datastore
 from cocktail.html import templates
 from woost import app
@@ -50,6 +49,7 @@ from woost.models import (
     ReadTranslationPermission,
     AuthorizationError
 )
+from woost.models.utils import get_matching_website
 from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.cmsresourcescontroller import CMSResourcesController
@@ -119,9 +119,16 @@ class CMSController(BaseCMSController):
         @type visible_translations: str set
         """)
 
-    # Application modules
-    LanguageModule = None
-    AuthenticationModule = None
+    resolving_url = Event(
+        """An event triggered when the CMS processes the URL for the active
+        request in order to set its different contextual properties
+        (selected publishable, active website, active language, etc).
+
+        :param url: The `~cocktail.urls.URL` for the current request.
+        :param url_resolution: The `~woost.urlmapping.URLResolution` object for
+            the current request.
+        """
+    )
 
     # Webserver configuration
     virtual_path = "/"
@@ -206,45 +213,6 @@ class CMSController(BaseCMSController):
     def session_middleware(self, app):
         return SessionMiddleware(app, session.config)
 
-    @property
-    def language(self):
-        warn(
-            "CMSController.language is deprecated, use app.language instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-        return app.language
-
-    @property
-    def authentication(self):
-        warn(
-            "CMSController.authentication is deprecated, use "
-            "app.authentication instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-        return app.authentication
-
-    def __init__(self, *args, **kwargs):
-
-        BaseCMSController.__init__(self, *args, **kwargs)
-
-        if self.LanguageModule:
-            warn(
-                "CMSController.LanguageModule is deprecated, use "
-                "app.language instead",
-                DeprecationWarning
-            )
-            app.language = self.LanguageModule()
-
-        if self.AuthenticationModule:
-            warn(
-                "CMSController.AuthenticationModule is deprecated, use "
-                "app.authentication instead",
-                DeprecationWarning
-            )
-            app.authentication = self.AuthenticationModule()
-
     def run(self, block = True):
 
         self.mount()
@@ -277,78 +245,78 @@ class CMSController(BaseCMSController):
             self.application_settings
         )
 
+    def process_url(self, url):
+
+        app.url_resolution = url_resolution = app.url_mapping.resolve(url)
+
+        if url_resolution is not None:
+            app.language.process_request()
+            app.website = url_resolution.website
+            app.publishable = url_resolution.publishable
+
+            if not app.website and app.publishable:
+                app.website = get_matching_website(app.publishable)
+
+            app.theme = Configuration.instance.get_setting("theme")
+
+            self.resolving_url(
+                url = url,
+                url_resolution = url_resolution
+            )
+
     def resolve(self, path):
 
-        # Allow application modules (ie. language) to process the URI before
-        # resolving the requested publishable item
-        self._process_path(path)
+        # Consume path segments
+        for x in xrange(
+            len(path) - len(app.url_resolution.remaining_segments)
+        ):
+            path.pop(0)
 
-        request = cherrypy.request
+        if app.publishable:
 
-        # Item resolution
-        publishable = self._resolve_path(path)
-        app.publishable = publishable
+            # Check maintenance mode
+            self._maintenance_check(app.publishable)
 
-        # HTTP/HTTPS check
-        self._apply_https_policy(publishable)
+            # Controller resolution
+            controller = app.publishable.resolve_controller()
 
-        # Check maintenance mode
-        self._maintenance_check(publishable)
+            if controller is None:
+                raise cherrypy.NotFound()
 
-        # Controller resolution
-        controller = publishable.resolve_controller()
+            return controller
 
-        if controller is None:
-            raise cherrypy.NotFound()
+        return None
 
-        return controller
-
-    def canonical_redirection(self, path_resolution):
+    def _enforce_canonical_url(self):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
         """
-        publishable = path_resolution.item
-
-        # Find the canonical path for the element
-        canonical_path = app.url_resolver.get_path(publishable)
-
-        if canonical_path is None:
-            return
-
-        canonical_path = canonical_path.strip("/")
-        canonical_path = (
-            canonical_path.split("/")
-            if canonical_path
-            else []
+        url = get_request_url()
+        url_resolution = app.url_resolution
+        canonical_url = app.url_mapping.get_url(
+            publishable = app.publishable,
+            website = app.website,
+            host = "!"
         )
 
-        # The current request matches the canonical path, do nothing
-        if canonical_path == path_resolution.matching_path:
-            return
-
-        canonical_uri = "".join(
-            percent_encode(c) for c in "/" + "/".join(
-                step for step in (
-                    canonical_path
-                    + path_resolution.extra_path
-                )
+        if (
+            canonical_url.scheme != url.scheme
+            or canonical_url.hostname != url.hostname
+            or canonical_url.port != url.port
+            or canonical_url.path.segments
+               != tuple(url_resolution.consumed_segments)
+            or any(
+                value != url.query.fields[key]
+                for key, value in canonical_url.query.fields.iteritems()
             )
-        )
-
-        if publishable.per_language_publication:
-            canonical_uri = \
-                app.language.translate_uri(canonical_uri)
-
-        if cherrypy.request.query_string:
-            canonical_uri = canonical_uri + \
-                "?" + cherrypy.request.query_string
-
-        raise cherrypy.HTTPRedirect(canonical_uri, status = 301)
-
-    def _process_path(self, path):
-
-        # Invoke the language module to set the active language
-        app.language.process_request(path)
+        ):
+            redirection = canonical_url.copy(
+                path = canonical_url.path.append(
+                    url_resolution.remaining_segments
+                ),
+                query = url.query.merge(canonical_url.query)
+            )
+            raise cherrypy.HTTPRedirect(redirection, status = 301)
 
     def _maintenance_check(self, publishable):
 
@@ -369,83 +337,6 @@ class CMSController(BaseCMSController):
             if client_ip not in config.maintenance_addresses:
                 raise cherrypy.HTTPError(503, "Site down for maintenance")
 
-    def _resolve_path(self, path):
-
-        unicode_path = [try_decode(step) for step in path]
-        path_resolution = app.url_resolver.resolve_path(unicode_path)
-
-        if path_resolution:
-            publishable = path_resolution.item
-
-            for step in path_resolution.matching_path:
-                path.pop(0)
-
-            self.canonical_redirection(path_resolution)
-        else:
-            website = app.website
-            publishable = website.home if website else None
-
-        return publishable
-
-    def uri(self, publishable, *args, **kwargs):
-        """Obtains the canonical absolute URI for the given item.
-
-        @param publishable: The item to obtain the canonical URI for.
-        @type publishable: L{Publishable<woost.models.publishable.Publishable>}
-
-        @param args: Additional path components to append to the produced URI.
-        @type args: unicode
-
-        @param kwargs: Key/value pairs to append to the produced URI as query
-            string parameters.
-        @type kwargs: (unicode, unicode)
-
-        @return: The item's canonical URI, or None if no matching URI can be
-            constructed.
-        @rtype: unicode
-        """
-        warn(
-            "CMS.uri() is deprecated, use Publishable.get_uri() instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-
-        # User defined URIs
-        if isinstance(publishable, URI):
-            uri = publishable.uri
-
-        # Regular elements
-        else:
-            uri = app.url_resolver.get_path(publishable)
-
-            if uri is not None:
-
-                if publishable.per_language_publication:
-                    uri = app.language.translate_uri(uri)
-
-                uri = self.application_uri(uri, *args, **kwargs)
-
-        if uri:
-            uri = "".join(percent_encode(c) for c in uri)
-
-        return uri
-
-    def translate_uri(self, path = None, language = None):
-        return self.application_uri(
-            app.language.translate_uri(path = path, language = language)
-        )
-
-    def image_uri(self, element, factory = "default"):
-
-        if not isinstance(element, (int, basestring)):
-            if isinstance(element, type) \
-            or not getattr(element, "is_inserted", False):
-                element = element.full_name
-            elif hasattr(element, "id"):
-                element = element.id
-
-        return self.application_uri("images", element, factory)
-
     def validate_publishable(self, publishable):
 
         if not publishable.is_published():
@@ -459,20 +350,12 @@ class CMSController(BaseCMSController):
             language = get_language()
         )
 
-    def _establish_active_website(self):
-        location = Location.get_current_host()
-        website = Configuration.instance.get_website_by_host(location.host)
-        app.website = website
-
-        if website is None:
-            raise cherrypy.HTTPError(404, "Unknown hostname: " + location.host)
-
     @event_handler
-    def handle_traversed(cls, event):
+    def handle_traversed(cls, e):
 
         datastore.sync()
 
-        cms = event.source
+        cms = e.source
         cms.context.update(cms = cms)
 
         # Reset all contextual properties
@@ -484,15 +367,12 @@ class CMSController(BaseCMSController):
         app.website = None
         app.navigation_point = None
 
-        # Determine the active website
-        cms._establish_active_website()
-
-        # Set the visual theme
-        app.theme = Configuration.instance.get_setting("theme")
-
         # Set the default language
         language = app.language.infer_language()
         set_language(language)
+
+        # Extract information from the URL
+        cms.process_url(get_request_url())
 
         # Invoke the authentication module
         app.authentication.process_request()
@@ -501,33 +381,11 @@ class CMSController(BaseCMSController):
     def handle_before_request(cls, event):
 
         cms = event.source
-
         publishable = app.publishable
 
+        event.source._enforce_canonical_url()
+
         if publishable is not None:
-
-            # Add the selected language to the current URI
-            if publishable.per_language_publication:
-                if not cherrypy.request.language_specified:
-                    location = Location.get_current()
-                    uri = app.language.translate_uri()
-                    # Remove the query string from the translated uri
-                    pos = uri.find("?")
-                    if pos != -1:
-                        uri = uri[:pos]
-                    location.path_info = uri
-                    location.go()
-
-            # Remove the language selection from the current URI
-            elif cherrypy.request.language_specified:
-                location = Location.get_current()
-                location.path_info = \
-                    "/" + "/".join(location.path_info.strip("/").split("/")[1:])
-                location.go()
-
-            # Possibly redirect to another website, if the selected publishable is
-            # specific to another website
-            cms._apply_website_exclusiveness(publishable)
 
             # Validate access to the requested item
             cms.validate_publishable(publishable)
@@ -539,8 +397,6 @@ class CMSController(BaseCMSController):
                 if encoding:
                     content_type += ";charset=" + encoding
                 cherrypy.response.headers["Content-Type"] = content_type
-
-            # TODO: encode / decode the request based on the 'encoding' member?
 
     @event_handler
     def handle_producing_output(cls, event):
@@ -580,10 +436,6 @@ class CMSController(BaseCMSController):
 
             if error_page:
                 event.handled = True
-
-                # HTTP/HTTPS check
-                controller._apply_https_policy(error_page)
-
                 app.original_publishable = app.publishable
                 app.publishable = error_page
                 error_controller = error_page.resolve_controller()
@@ -646,35 +498,6 @@ class CMSController(BaseCMSController):
             return config.get_setting("generic_error_page"), 500
 
         return None, None
-
-    def _apply_website_exclusiveness(self, publishable):
-        acceptable_websites = publishable.websites
-        if acceptable_websites:
-            current_website = app.website
-            if (
-                current_website is None
-                or current_website not in acceptable_websites
-            ):
-                for website in Configuration.instance.websites:
-                    if website in acceptable_websites:
-                        raise cherrypy.HTTPRedirect(
-                            publishable.get_uri(host = website.hosts[0])
-                        )
-
-    def _apply_https_policy(self, publishable):
-
-        policy = Configuration.instance.get_setting("https_policy")
-        website = app.website
-
-        if policy == "always":
-            Location.require_https()
-        elif policy == "never":
-            Location.require_http()
-        elif policy == "per_page":
-            if publishable.requires_https or not app.user.anonymous:
-                Location.require_https()
-            elif not website.https_persistence:
-                Location.require_http()
 
     @event_handler
     def handle_after_request(cls, event):

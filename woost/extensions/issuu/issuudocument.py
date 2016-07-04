@@ -7,8 +7,8 @@ import re
 from urllib2 import urlopen
 from json import loads
 from cocktail import schema
+from cocktail.urls import URL
 from cocktail.events import event_handler
-from cocktail.controllers import Location
 from woost.models import Publishable, Controller
 
 ISSUU_DOCUMENT_URL_PATTERN = \
@@ -88,33 +88,43 @@ class IssuuDocument(Publishable):
         if page_number == None:
             page_number = self.thumbnail_page
 
-        return u"http://issuu.com/%s/docs/%s/%s?e=%s" % (
-            self.issuu_document_username,
-            self.issuu_document_name,
-            page_number,
-            self.issuu_config_id
+        return URL(
+            u"http://issuu.com/%s/docs/%s/%s?e=%s" % (
+                self.issuu_document_username,
+                self.issuu_document_name,
+                page_number,
+                self.issuu_config_id
+            )
         )
 
-    def get_uri(self,
+    def get_uri(
+        self,
         path = None,
         parameters = None,
         language = None,
-        host = None,
-        encode = True):
+        host = None
+    ):
+        url = self.get_issuu_uri()
 
-        uri = self.get_issuu_uri()
-
-        if uri is not None:
+        if host or path or parameters:
+            url_path = url.path
+            url_query = url.query
+            url_host = host or url.hostname
 
             if path:
-                uri = make_uri(uri, *path)
+                url_path = list(url_path.segments) + path
 
             if parameters:
-                uri = make_uri(uri, **parameters)
+                url_query = url_query.fields
+                url_query.update(parameters)
 
-            uri = self._fix_uri(uri, host, encode)
+            url = url.copy(
+                hostname = url_host,
+                path = url_path,
+                query = url_query
+            )
 
-        return uri
+        return url
 
     @event_handler
     def handle_changed(cls, event):
@@ -153,14 +163,13 @@ class IssuuDocument(Publishable):
                     self.issuu_document_id = None
 
             if self.issuu_config_id is None:
-                url = Location(self.issuu_document_url)
-                url.query_string.update(e = 0)
-                response = urlopen(url.get_url(), timeout = timeout)
+                url = URL(self.issuu_document_url).merge(query = {"e": 0})
+                response = urlopen(url, timeout = timeout)
                 status = response.getcode()
                 body = response.read()
                 if status >= 200 and status <= 299:
-                    url = Location(response.geturl())
-                    issuu_config_id = url.query_string.get("e")
+                    url = URL(response.geturl())
+                    issuu_config_id = url.query.get_value("e")
                     if issuu_config_id:
                         self.issuu_config_id = issuu_config_id[0]
 
