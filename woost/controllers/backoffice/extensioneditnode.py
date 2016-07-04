@@ -20,7 +20,7 @@ class ExtensionEditNode(EditNode):
             Notification(
                 translations(
                     "woost.controllers.backoffice.ExtensionEditNode "
-                    "%s extension needs reloading"
+                    "extension_%s_reload_notice"
                     % ("enabled" if self.item.enabled else "disabled"),
                     extension = self.item
                 ),

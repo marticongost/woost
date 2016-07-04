@@ -1,0 +1,11 @@
+
+[woost.extensions.textfile.TextFileExtension]
+ca: Fitxers de text
+es: Ficheros de texto
+en: Text files
+
+    [plural]
+    ca: Fitxers de text
+    es: Ficheros de texto
+    en: Text files
+

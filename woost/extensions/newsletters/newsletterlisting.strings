@@ -1,0 +1,35 @@
+
+[woost.extensions.newsletters.newsletterlisting.NewsletterListing]
+ca: Llistat
+es: Listado
+en: Listing
+
+    [plural]
+    ca: Llistats
+    es: Listados
+    en: Listings
+
+    [members]
+
+        [listed_items]
+        ca: Elements a llistar
+        es: Elementos a listar
+        en: Listed items
+
+[woost.models.block.Block.view_class.values]
+
+    [woost.extensions.newsletters.NewsletterListingTextOnlyView]
+    ca: Només text
+    es: Solo texto
+    en: Text only
+
+    [woost.extensions.newsletters.NewsletterListingTextAndIconView]
+    ca: Text i icona
+    es: Texto e icono
+    en: Text and icon
+
+    [woost.extensions.newsletters.NewsletterListingSummaryView]
+    ca: Resum
+    es: Resumen
+    en: Summary
+

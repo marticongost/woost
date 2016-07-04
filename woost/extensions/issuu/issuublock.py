@@ -6,6 +6,7 @@ u"""
 from cocktail import schema
 from woost.models import Configuration
 from woost.extensions.blocks.block import Block
+from woost.extensions.blocks.elementtype import ElementType
 from woost.extensions.issuu.issuudocument import IssuuDocument
 
 
@@ -15,7 +16,11 @@ class IssuuBlock(Block):
     views = ["woost.extensions.issuu.IssuuBlockView"]
     block_display = "woost.extensions.issuu.IssuuBlockDisplay"
 
-    members_order = ["issuu_document", "width", "height"]
+    members_order = [
+        "issuu_document",
+        "width",
+        "height"
+    ]
 
     issuu_document = schema.Reference(
         type = IssuuDocument,

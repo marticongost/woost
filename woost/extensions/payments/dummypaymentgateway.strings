@@ -1,0 +1,40 @@
+
+[woost.extensions.payments.dummypaymentgateway.DummyPaymentGateway]
+ca: Passarel·la de pagaments simulada
+es: Pasarela de pagos simulada
+en: Dummy payment gateway
+
+    [plural]
+    ca: Passarel·les de pagaments simulades
+    es: Pasarelas de pagos simuladas
+    en: Dummy payment gateways
+
+    [members]
+
+        [payment_status]
+        ca: Resultat dels pagaments
+        es: Resultado de los pagos
+        en: Payment outcome
+
+            [values]
+
+                [accepted]
+                ca: Acceptat
+                es: Aceptado
+                en: Accepted
+
+                [failed]
+                ca: Cancel·lat
+                es: Cancelado
+                en: Canceled
+
+        [payment_successful_page]
+        ca: Pàgina de confirmació de pagament
+        es: Página de confirmación de pago
+        en: Payment successful page
+
+        [payment_failed_page]
+        ca: Pàgina de pagament fallit
+        es: Página de pago fallido
+        en: Payment failed page
+

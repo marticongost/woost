@@ -7,10 +7,13 @@ u"""
 @since:			July 2008
 """
 import cherrypy
+from cocktail.translations import translations
 from cocktail.schema import ErrorList
 from cocktail.controllers import session, Location
 from woost import app
 from woost.models import User
+
+translations.load_bundle("woost.authenticationscheme")
 
 
 class AuthenticationScheme(object):

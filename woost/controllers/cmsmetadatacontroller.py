@@ -26,8 +26,8 @@ class CMSMetadataController(Controller):
                 type_info = {
                     "name": cls.name,
                     "namespace": cls.__module__,
-                    "label": translations(cls.name),
-                    "plural": translations(cls.name + "-plural")
+                    "label": translations(cls),
+                    "plural": translations(cls, suffix = ".plural")
                 }
 
                 for base in cls.__bases__:

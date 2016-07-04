@@ -337,9 +337,6 @@ class Configuration(Item):
 
     footer_blocks = Slot()
 
-    def __translate__(self, language, **kwargs):
-        return translations(self.__class__.__name__, language, **kwargs)
-
     def resolve_path(self, path):
         warn(
             "Configuration.resolve_path is deprecated, use app.url_resolver.resolve_path instead",

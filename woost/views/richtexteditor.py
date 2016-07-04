@@ -68,7 +68,7 @@ class RichTextEditor(TinyMCE):
 
     def _build(self):
         TinyMCE._build(self)
-        self.add_resource("woost://scripts/RichTextEditor.js")
+        self.add_resource("woost://scripts/richtexteditor.js")
 
     def _get_default_styles(self):
         return list(Style.select({"applicable_to_text": True}))

@@ -1,0 +1,19 @@
+[woost.controllers.backoffice.BackOfficeUserCollection]
+
+    [members]
+
+        [element]
+        ca: Descripció de l'objecte
+        es: Descripción del objeto
+        en: Object description
+
+        [thumbnail]
+        ca: Miniatura
+        es: Miniatura
+        en: Thumbnail
+
+        [tree]
+        ca: Estructura
+        es: Estructura
+        en: Tree
+

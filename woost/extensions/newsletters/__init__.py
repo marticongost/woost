@@ -13,17 +13,7 @@ from woost.models import (
     rendering
 )
 
-translations.define("NewslettersExtension",
-    ca = u"Butlletins de correu electrònic",
-    es = u"Boletines de correo electrónico",
-    en = u"Newsletters"
-)
-
-translations.define("NewslettersExtension-plural",
-    ca = u"Butlletins de correu electrònic",
-    es = u"Boletines de correo electrónico",
-    en = u"Newsletters"
-)
+translations.load_bundle("woost.extensions.newsletters.package")
 
 
 class NewslettersExtension(Extension):
@@ -56,7 +46,6 @@ class NewslettersExtension(Extension):
         )
 
         from woost.extensions.newsletters import (
-            strings,
             imagefactory,
             newsletter,
             newslettercontent,
@@ -67,6 +56,8 @@ class NewslettersExtension(Extension):
         self.install()
 
     def _install(self):
+
+        translations.load_bundle("woost.extensions.newsletters.installation")
 
         # Newsletter controller
         newsletter_controller = self._create_asset(

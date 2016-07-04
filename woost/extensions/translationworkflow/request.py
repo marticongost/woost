@@ -151,17 +151,6 @@ class TranslationWorkflowRequest(Item):
         for key, value in self.translated_values.iteritems():
             self.translated_item.set(key, value, language)
 
-    def __translate__(self, language, **kwargs):
-        if self.source_language and self.target_language:
-            return translations(
-                "woost.extensions.translationworkflow.request."
-                "TranslationWorkflowRequest-instance",
-                language,
-                instance = self,
-                referer = kwargs.get("referer")
-            )
-        return Item.__translate__(self, language, **kwargs)
-
     @classmethod
     def backoffice_listing_default_tab(cls):
         for role in app.user.iter_roles():
@@ -223,11 +212,17 @@ class TranslationWorkflowRequestMSExcelExporter(MSExcelExporter):
         if member.name == "translated_values":
             yield MSExcelTranslationWorkflowSourceValuesColumn(
                 self,
-                heading = translations("TranslationWorkflowRequest.msexcel.source")
+                heading = translations(
+                    "woost.extensions.translationworflow.request."
+                    "TranslationWorkflowRequest.msexcel.source"
+                )
             )
             yield MSExcelTranslationWorkflowTargetValuesColumn(
                 self,
-                heading = translations("TranslationWorkflowRequest.msexcel.target")
+                heading = translations(
+                    "woost.extensions.translationworflow.request."
+                    "TranslationWorkflowRequest.msexcel.target"
+                )
             )
         else:
             for column in MSExcelExporter.get_member_columns(

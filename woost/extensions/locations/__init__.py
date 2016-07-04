@@ -12,54 +12,7 @@ from cocktail import schema
 from cocktail.persistence import transaction
 from woost.models import Extension
 
-translations.define("LocationsExtension",
-    ca = u"Localitats",
-    es = u"Localidad",
-    en = u"Locations"
-)
-
-translations.define("LocationsExtension.service_uri",
-    ca = u"URL del repositori de dades",
-    es = u"URL del repositorio de datos",
-    en = u"URL of the data repository"
-)
-
-translations.define("LocationsExtension.update_frequency",
-    ca = u"Freqüència d'actualització",
-    es = u"Frecuencia de actualización",
-    en = u"Update frequency"
-)
-
-translations.define("LocationsExtension.update_frequency-explanation",
-    ca = u"El nombre de dies entre actualitzacions de la llista de localitats."
-         u" Deixar en blanc per desactivar les actualitzacions.",
-    es = u"El número de días entre actualizaciones de la lista de localidades."
-         u" Dejar en blanco para desactivar las actualizaciones.",
-    en = u"Number of days between updates to the list of locations. "
-         u"Leave blank to disable updates."
-)
-
-translations.define("LocationsExtension.updated_location_types",
-    ca = u"Tipus de localització a obtenir",
-    es = u"Tipos de localización a obtener",
-    en = u"Location types included in updates"
-)
-
-translations.define("LocationsExtension.updated_subset",
-    ca = u"Subconjunt de localitats a actualitzar",
-    es = u"Subconjunto de localidades a actualizar",
-    en = u"Subset of locations included in updates"
-)
-
-translations.define("LocationsExtension.updated_subset-explanation",
-    ca = u"Llistat de codis qualificats de localitat (per exemple, EU-ES-CT, "
-         u"EU-ES-CV per seleccionar Catalunya i la Comunitat Valenciana).",
-    es = u"Listado de códigos cualificados de localidad (por ejemplo, "
-         u"EU-ES-CT, EU-ES-CV para seleccionar Cataluña y la Comunidad "
-         u"Valenciana).",
-    en = u"List of qualified location codes (ie. EU-ES-CT, EU-ES-CV to "
-         u"select Catalonia and the Valencian Country)."
-)
+translations.load_bundle("woost.extensions.locations.package")
 
 SECONDS_IN_A_DAY = 60 * 60 * 24
 
@@ -142,7 +95,7 @@ class LocationsExtension(Extension):
     )
 
     def _load(self):
-        from woost.extensions.locations import location, strings, migration
+        from woost.extensions.locations import location, migration
 
         if self.should_update():
             transaction(

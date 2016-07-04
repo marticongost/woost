@@ -23,6 +23,8 @@ from woost.extensions.staticsite.staticsitedestination import StatusTracker
 from woost.extensions.staticsite.exportationpermission import \
     ExportationPermission
 
+translations.load_bundle("woost.extensions.staticsite.exportstaticsitecontroller")
+
 
 class ExportStaticSiteController(
     FormControllerMixin,
@@ -59,38 +61,42 @@ class ExportStaticSiteController(
 
     @request_property
     def form_model(self):
-        return schema.Schema("ExportStaticSite", members = [
-            schema.Reference(
-                "snapshoter",
-                type =
-                    "woost.extensions.staticsite.staticsitesnapshoter."
-                    "StaticSiteSnapShoter",
-                required = True,
-                enumeration = self.eligible_snapshoters,
-                edit_control = "cocktail.html.RadioSelector",
-                default = self.eligible_snapshoters[0]
-            ),
-            schema.Reference(
-                "destination",
-                type =
-                    "woost.extensions.staticsite.staticsitedestination."
-                    "StaticSiteDestination",
-                required = True,
-                enumeration = self.eligible_destinations,
-                edit_control = "cocktail.html.RadioSelector",
-                default = self.eligible_destinations[0]
-            ),
-            schema.Boolean(
-                "update_only",
-                required = True,
-                default = True
-            ),
-            schema.Boolean(
-                "follow_links",
-                required = True,
-                default = True
-            )
-        ])
+        return schema.Schema(
+            "woost.extensions.staticsite.exportstaticsitecontroller."
+            "ExportForm",
+            members = [
+                schema.Reference(
+                    "snapshoter",
+                    type =
+                        "woost.extensions.staticsite.staticsitesnapshoter."
+                        "StaticSiteSnapShoter",
+                    required = True,
+                    enumeration = self.eligible_snapshoters,
+                    edit_control = "cocktail.html.RadioSelector",
+                    default = self.eligible_snapshoters[0]
+                ),
+                schema.Reference(
+                    "destination",
+                    type =
+                        "woost.extensions.staticsite.staticsitedestination."
+                        "StaticSiteDestination",
+                    required = True,
+                    enumeration = self.eligible_destinations,
+                    edit_control = "cocktail.html.RadioSelector",
+                    default = self.eligible_destinations[0]
+                ),
+                schema.Boolean(
+                    "update_only",
+                    required = True,
+                    default = True
+                ),
+                schema.Boolean(
+                    "follow_links",
+                    required = True,
+                    default = True
+                )
+            ]
+        )
 
     def submit(self):
         FormControllerMixin.submit(self)

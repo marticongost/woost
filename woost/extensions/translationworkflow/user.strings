@@ -1,0 +1,20 @@
+
+[woost.models.user.User]
+
+    [members]
+
+        [translation_proficiencies]
+        ca: Traduccions que pot realitzar
+        es: Traducciones que puede realizar
+        en: Translations he/she can perform
+
+        [managed_translation_agency]
+        ca: Agència de traducció que gestiona
+        es: Agencia de traducción que gestiona
+        en: Managed translation agency
+
+        [translation_agency]
+        ca: Agència de traducció per la que treballa
+        es: Agencia de traducción para la que trabaja
+        en: Translation agency he/she works for
+

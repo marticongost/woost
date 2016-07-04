@@ -1,0 +1,95 @@
+
+[woost.extensions.ecommerce.ecommercebillingconcept.ECommerceBillingConcept]
+ca: Concepte de facturació
+es: Concepto de facturación
+en: Billing concept
+fr: Concept de facturation
+
+    [plural]
+    ca: Conceptes de facturació
+    es: Conceptos de facturación
+    en: Billing concepts
+    fr: Concepts de facturation
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+        fr: Titre
+
+        [enabled]
+        ca: Activa
+        es: Activa
+        en: Enabled
+        fr: Active
+
+        [start_date]
+        ca: Data d'inici
+        es: Fecha de inicio
+        en: Start date
+        fr: Date de début
+
+        [end_date]
+        ca: Data de fi
+        es: Fecha de fin
+        en: End date
+        fr: Date de fin
+
+        [hidden]
+        ca: Ocult
+        es: Oculto
+        en: Hidden
+        fr: Invisible
+
+        [scope]
+        ca: Àmbit
+        es: Ámbito
+        en: Scope
+        fr: Champ d'application
+
+            [values]
+
+                [order]
+                ca: Comanda
+                es: Pedido
+                en: Order
+                fr: Commande
+
+                [purchase]
+                ca: Línia de comanda
+                es: Linea de pedido
+                en: Purchase
+                fr: Commande en ligne
+
+        [condition]
+        ca: Condició
+        es: Condición
+        en: Condition
+        fr: Condition
+
+        [eligible_countries]
+        ca: Països
+        es: Paises
+        en: Countries
+        fr: Pays
+
+        [eligible_products]
+        ca: Productes
+        es: Productos
+        en: Products
+        fr: Produits
+
+        [eligible_roles]
+        ca: Rols
+        es: Roles
+        en: Roles
+        fr: Roles
+
+        [implementation]
+        ca: Valor
+        es: Valor
+        en: Value
+        fr: Valeur
+
