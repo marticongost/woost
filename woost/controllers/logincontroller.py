@@ -15,7 +15,7 @@ from woost.models import (
     AuthorizationError
 )
 from woost.controllers.documentcontroller import DocumentController
-from woost.controllers.authentication import AuthenticationFailedError
+from woost.authenticationscheme import AuthenticationFailedError
 
 
 class LoginController(FormControllerMixin, DocumentController):
