@@ -23,6 +23,8 @@ translations.define("BlocksExtension-plural",
 
 class BlocksExtension(Extension):
 
+    visible = False
+
     def __init__(self, **values):
         Extension.__init__(self, **values)
         self.extension_author = u"Whads/Accent SL"

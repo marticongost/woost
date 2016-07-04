@@ -7,17 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension, extension_translations
 
-translations.define("TranslationWorkflowExtension",
-    ca = u"Circuït de traducció",
-    es = u"Circuito de traducción",
-    en = u"Translation workflow"
-)
-
-translations.define("TranslationWorkflowExtension-plural",
-    ca = u"Circuït de traducció",
-    es = u"Circuito de traducción",
-    en = u"Translation workflow"
-)
+translations.load_bundle("woost.extensions.translationworkflow.package")
 
 
 class TranslationWorkflowExtension(Extension):
@@ -113,7 +103,6 @@ class TranslationWorkflowExtension(Extension):
 
     def _load(self):
         from woost.extensions.translationworkflow import (
-            strings,
             typegroups,
             configuration,
             user,
@@ -229,9 +218,10 @@ class TranslationWorkflowExtension(Extension):
 
     def create_standard_graph(self):
 
+        translations.load_bundle("woost.extensions.translationworkflow.installation")
+
         from pkg_resources import resource_filename
         from woost.models import File
-        from woost.extensions.translationworkflow import installationstrings
         from woost.extensions.translationworkflow.state \
             import TranslationWorkflowState
         from woost.extensions.translationworkflow.transition \

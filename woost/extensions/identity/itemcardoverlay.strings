@@ -1,0 +1,13 @@
+
+[woost.extensions.identity.ItemCardOverlay]
+
+    [google_link]
+    ca: Compte de Google
+    es: Cuenta de Google
+    en: Google account
+
+    [facebook_link]
+    ca: Compte de Facebook
+    es: Cuenta de Facebook
+    en: Facebook account
+

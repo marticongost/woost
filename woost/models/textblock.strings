@@ -1,0 +1,205 @@
+
+[woost.models.textblock.TextBlock]
+ca: Text + imatges
+es: Texto + imágenes
+en: Text + images
+
+    [plural]
+    ca: Text + imatges
+    es: Texto + imágenes
+    en: Text + images
+
+    [groups]
+
+        [link]
+        ca: Enllaç
+        es: Enlace
+        en: Link
+
+        [images]
+        ca: Imatges
+        es: Imágenes
+        en: Images
+
+            [layout]
+            ca: Disposició
+            es: Disposición
+            en: Layout
+
+            [close_up]
+            ca: Ampliació
+            es: Ampliación
+            en: Close up
+
+            [fields]
+            ca: Camps
+            es: Campos
+            en: Fields
+
+    [members]
+
+        [heading_alignment]
+        ca: Disposició de l'encapçalament
+        es: Disposición del encabezado
+        en: Heading alignment
+
+            [values]
+
+                [top]
+                ca: Inici del bloc
+                es: Inicio del bloque
+                en: Top
+
+                [inside]
+                ca: Inici del text
+                es: Inicio del texto
+                en: Start of the text
+
+        [link]
+        ca: Enllaç
+        es: Enlace
+        en: Link
+
+        [link_destination]
+        ca: Destí de l'enllaç
+        es: Destino del enlace
+        en: Linked resource
+
+        [link_parameters]
+        ca: Paràmetres addicionals per l'enllaç
+        es: Parámetros adicionales para el enlace
+        en: Additional URL parameters
+
+            [explanation]
+            ca:
+                Un paràmetre per línia, separant el nom i el valor amb un
+                caràcter '='.
+            es:
+                Un parámetro por linea, separando el nombre y el valor con un
+                caracter '='.
+            en:
+                One parameter per line, with key and value separated by a
+                '=' character.
+
+        [link_opens_in_new_window]
+        ca: Obrir l'enllaç a una nova finestra
+        es: Abrir el enlace en una ventana nueva
+        en: Open the link in a new window
+
+        [text]
+        ca: Text
+        es: Texto
+        en: Text
+
+        [images]
+        ca: Imatges
+        es: Imágenes
+        en: Images
+
+        [image_alignment]
+        ca: Alineament d'imatge
+        es: Alineamiento de imagen
+        en: Image alignment
+
+            [values]
+
+                [float_top_left]
+                ca: Flotar a l'esquerra
+                es: Flotar a la izquierda
+                en: Top left, floating
+
+                [float_top_right]
+                ca: Flotar a la dreta
+                es: Flotar a la derecha
+                en: Top right, floating
+
+                [column_left]
+                ca: Columna a l'esquerra
+                es: Columna a la izquierda
+                en: Top left, in their own column
+
+                [column_right]
+                ca: Columna a la dreta
+                es: Columna a la derecha
+                en: Top right, in their own column
+
+                [top_left]
+                ca: A dalt a l'esquerra
+                es: Arriba a la izquierda
+                en: Top left
+
+                [bottom_left]
+                ca: A sota a l'esquerra
+                es: Abajo a la izquierda
+                en: Bottom left
+
+                [center_top]
+                ca: Centrar a dalt
+                es: Centrar arriba
+                en: Top center
+
+                [center_bottom]
+                ca: Centrar a sota
+                es: Centrar abajo
+                en: Bottom center
+
+                [top_right]
+                ca: A dalt a la dreta
+                es: Arriba a la derecha
+                en: Top right
+
+                [inline]
+                ca: En línia
+                es: En linea
+                en: Inline
+
+                [heading_icon]
+                ca: Precedint l'encapçalament
+                es: Precediendo el encabezado
+                en: Preceding the heading
+
+                [background]
+                ca: Imatge de fons
+                es: Imagen de fondo
+                en: Background image
+
+                [fallback]
+                ca: Imatge amb descripció textual substitutiva
+                es: Imagen con descripción textual sustitutiva
+                en: Image with fallback content
+
+        [image_thumbnail_factory]
+        ca: Processat d'imatge
+        es: Procesado de imagen
+        en: Image processing
+
+        [image_close_up_enabled]
+        ca: Ampliar les imatges en fer-hi clic
+        es: Ampliar las imágenes al pulsarlas
+        en: Click to enlarge
+
+        [image_close_up_factory]
+        ca: Processat de les imatges ampliades
+        es: Procesado de las imágenes ampliadas
+        en: Image processing for enlarged images
+
+        [image_close_up_preload]
+        ca: Precàrrega de les imatges ampliades
+        es: Precarga de las imágenes ampliadas
+        en: Preload enlarged images
+
+        [image_labels_visible]
+        ca: Mostrar els títols de les imatges
+        es: Mostrar los títulos de las imágenes
+        en: Show image titles
+
+        [image_footnotes_visible]
+        ca: Mostrar els peus d'imatge
+        es: Mostrar los pies de imagen
+        en: Show image footnotes
+
+        [image_original_link_visible]
+        ca: Mostrar un enllaç a la imatge sense modificar
+        es: Mostrar un enlace a la imagen sin modificar
+        en: Show a link to the original image
+

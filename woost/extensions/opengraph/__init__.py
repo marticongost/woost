@@ -16,35 +16,7 @@ from woost.models import (
     rendering
 )
 
-translations.define("OpenGraphExtension",
-    ca = u"OpenGraph",
-    es = u"OpenGraph",
-    en = u"OpenGraph"
-)
-
-translations.define("OpenGraphExtension-plural",
-    ca = u"OpenGraph",
-    es = u"OpenGraph",
-    en = u"OpenGraph"
-)
-
-translations.define("OpenGraphExtension.open_graph",
-    ca = u"Integració amb OpenGraph/Facebook",
-    es = u"Integración con OpenGraph/Facebook",
-    en = u"OpenGraph/Facebook integration"
-)
-
-translations.define("OpenGraphExtension.facebook_administrators",
-    ca = u"Comptes de Facebook dels administradors",
-    es = u"Cuentas de Facebook de los administradores",
-    en = u"Facebook administrator accounts"
-)
-
-translations.define("OpenGraphExtension.facebook_applications",
-    ca = u"Comptes d'aplicació de Facebook",
-    es = u"Cuentas de aplicación de Facebook",
-    en = u"Facebook application accounts"
-)
+translations.load_bundle("woost.extensions.opengraph.package")
 
 
 class OpenGraphExtension(Extension):
@@ -115,6 +87,8 @@ class OpenGraphExtension(Extension):
         self.create_facebook_image_factory()
 
     def create_default_categories(self, verbose = False):
+
+        translations.load_bundle("woost.extensions.opengraph.installation")
 
         from woost.extensions.opengraph.opengraphtype import OpenGraphType
         from woost.extensions.opengraph.opengraphcategory \
@@ -256,6 +230,7 @@ class OpenGraphExtension(Extension):
         return properties
 
     def create_facebook_image_factory(self):
+        translations.load_bundle("woost.extensions.opengraph.installation")
         Configuration.instance.image_factories.append(
             self._create_asset(
                 rendering.ImageFactory,

@@ -15,6 +15,8 @@ from woost.extensions.opengraph.utils import (
     get_publishable_website
 )
 
+translations.load_bundle("woost.extensions.opengraph.publishable")
+
 File.default_open_graph_enabled = False
 File.default_open_graph_type = None
 

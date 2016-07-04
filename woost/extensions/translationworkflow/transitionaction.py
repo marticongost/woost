@@ -39,9 +39,6 @@ class TranslationWorkflowTransitionAction(UserAction):
     hidden_when_disabled = True
     _transition_id = None
 
-    def __translate__(self, language, **kwargs):
-        return translations(self.transition, language, **kwargs)
-
     @request_property
     def transition(self):
         from .transition import TranslationWorkflowTransition

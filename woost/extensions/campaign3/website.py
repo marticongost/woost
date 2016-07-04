@@ -3,8 +3,11 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Website
+
+translations.load_bundle("woost.extensions.campaign3.website")
 
 Website.members_order.extend([
     "campaign_monitor_api_key",

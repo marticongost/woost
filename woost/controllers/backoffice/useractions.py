@@ -190,9 +190,6 @@ class UserAction(object):
         self._id = id
         self.excluded_content_types = set()
 
-    def __translate__(self, language, **kwargs):
-        return translations("woost.actions." + self.id, language, **kwargs)
-
     @getter
     def id(self):
         """The unique identifier for the action.
@@ -1299,4 +1296,12 @@ CancelAction("cancel").register()
 SaveAction("save").register()
 PreviewAction("preview").register()
 SelectAction("select").register()
+
+# Translation
+#------------------------------------------------------------------------------
+translations.load_bundle("woost.controllers.backoffice.useractions")
+
+@translations.instances_of(UserAction)
+def translate_user_action(user_action, **kwargs):
+    return translations("woost.actions." + user_action.id, **kwargs)
 

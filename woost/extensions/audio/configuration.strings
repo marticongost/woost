@@ -1,0 +1,22 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [presentation.audio]
+        ca: Audio
+        es: Audio
+        en: Audio
+
+    [members]
+
+        [audio_decoders]
+        ca: Decodificadors d'àudio
+        es: Decodificadores de audio
+        en: Audio decoders
+
+        [audio_encoders]
+        ca: Codificadors d'àudio
+        es: Codificadores de audio
+        en: Audio encoders
+

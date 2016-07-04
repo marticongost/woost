@@ -1,0 +1,9 @@
+
+[woost.authenticationscheme]
+
+    [AuthenticationFailedError.instance]
+    ca: Usuari o contrasenya incorrectes
+    es: Usuario o contraseña incorrectos
+    en: Incorrect user or password
+    pt: O nome de usuário ou palavra-passe não são corretos
+

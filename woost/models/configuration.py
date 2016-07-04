@@ -337,9 +337,6 @@ class Configuration(Item):
 
     footer_blocks = Slot()
 
-    def __translate__(self, language, **kwargs):
-        return translations(self.__class__.__name__, language, **kwargs)
-
     def get_setting(self, key):
         """Obtains the value for the indicated configuration option.
 
@@ -414,4 +411,3 @@ class Configuration(Item):
         for website in self.websites:
             if "*" in website.hosts:
                 return website
-

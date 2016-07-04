@@ -1,0 +1,21 @@
+
+[woost.models.page.Page]
+ca: Pàgina
+es: Página
+en: Page
+
+    [plural]
+    ca: Pàgines
+    es: Páginas
+    en: Pages
+
+    [none]
+    es: Ninguna
+
+    [members]
+
+        [blocks]
+        ca: Cos
+        es: Cuerpo
+        en: Body
+

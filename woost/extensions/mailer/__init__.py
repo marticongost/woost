@@ -14,18 +14,7 @@ from cocktail.controllers import context
 from woost.models import Extension, Document, Template, User
 from woost.models.permission import DeletePermission, ModifyPermission
 
-
-translations.define("MailerExtension",
-    ca = u"Enviament de documents per correu electrònic",
-    es = u"Envio de documentos por correo electrónico",
-    en = u"Sending documents by email"
-)
-
-translations.define("MailerExtension-plural",
-    ca = u"Enviament de documents per correu electrònic",
-    es = u"Envio de documentos por correo electrónico",
-    en = u"Sending documents by email"
-)
+translations.load_bundle("woost.extensions.mailer.package")
 
 
 class MailerExtension(Extension):
@@ -48,6 +37,8 @@ class MailerExtension(Extension):
 
     def _load(self):
 
+        translations.load_bundle("woost.extensions.mailing.loaded")
+
         from woost.controllers.notifications import Notification
         from woost.controllers.backoffice.basebackofficecontroller import \
             BaseBackOfficeController
@@ -56,8 +47,7 @@ class MailerExtension(Extension):
 
         from woost.extensions.mailer import (
             sendemailaction,
-            createmailingaction,
-            strings
+            createmailingaction
         )
         from woost.extensions.mailer.mailing import Mailing, \
             RunningMailingError

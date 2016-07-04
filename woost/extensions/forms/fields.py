@@ -10,6 +10,8 @@ from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from woost.models import Item
 
+translations.load_bundle("woost.extensions.forms.fields")
+
 
 class Field(Item):
 
@@ -138,42 +140,24 @@ class Field(Item):
 
     @classmethod
     def create_field_default_member(cls):
-
-        default_member = cls.member_type(
+        return cls.member_type(
             "field_default",
             member_group = "field_properties",
-            listed_by_default = False
+            listed_by_default = False,
+            custom_translation_key =
+                "woost.extensions.forms.fields.field_default"
         )
-
-        @extend(default_member)
-        def __translate__(default_member, language, **kwargs):
-            return translations(
-                "woost.extensions.forms.field_default",
-                language,
-                **kwargs
-            )
-
-        return default_member
 
     @classmethod
     def create_field_enumeration_member(cls):
-
-        enumeration_member = schema.Collection(
+        return schema.Collection(
             "field_enumeration",
             items = cls.member_type(),
             member_group = "field_properties",
-            listed_by_default = False
+            listed_by_default = False,
+            custom_translation_key =
+                "woost.extensions.forms.fields.field_enumeration"
         )
-
-        @extend(enumeration_member)
-        def __translate__(enumeration_member, language, **kwargs):
-            return translations(
-                "woost.extensions.forms.field_enumeration",
-                language,
-                **kwargs
-            )
-
-        return enumeration_member
 
     def generate_members(self):
         yield self.create_member()
@@ -207,23 +191,8 @@ class Field(Item):
             member.enumeration = self.field_enumeration or None
 
         member.edit_control = self.field_edit_control
-
-        @extend(member)
-        def __translate__(member, language, **kwargs):
-            suffix = kwargs.get("suffix")
-            if suffix == "=none":
-                return self.get("empty_label", language)
-            elif suffix:
-                return call_base(language, **kwargs)
-            else:
-                return (
-                    self.get("visible_title", language)
-                    or self.get("title", language)
-                )
-
-        @extend(member)
-        def get_member_explanation(member, language = None, **kwargs):
-            return self.get("explanation", language)
+        member.custom_translation_key = \
+            "woost.extensions.forms.fields.field_translation"
 
 
 class FieldSet(Field):
@@ -300,19 +269,13 @@ class FieldSet(Field):
         form_model = self.create_member()
 
         # Add the "submit date" member
-        submit_date = schema.DateTime("submit_date")
-
-        @extend(submit_date)
-        def __translate__(member, language, **kwargs):
-            return translations(
-                "woost.extensions.forms.submit_date",
-                language,
-                **kwargs
-            )
-
-        form_model.add_member(submit_date)
+        form_model.add_member(FormSubmitDateMember("submit_date"))
 
         return form_model
+
+
+class FormSubmitDateMember(schema.DateTime):
+    pass
 
 
 class CollectionField(Field):

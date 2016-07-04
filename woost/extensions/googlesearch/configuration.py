@@ -3,8 +3,11 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Configuration, Document
+
+translations.load_bundle("woost.extensions.googlesearch.configuration")
 
 Configuration.members_order.extend([
     "google_search_engine_id",

@@ -8,6 +8,8 @@ from cocktail.translations import translations
 from woost.controllers.backoffice.editstack import EditNode
 from woost.controllers.notifications import Notification
 
+translations.load_bundle("woost.extensions.campaign3.campaignmonitorlisteditnode")
+
 
 class CampaignMonitorListEditNode(EditNode):
 
@@ -20,7 +22,7 @@ class CampaignMonitorListEditNode(EditNode):
         except Exception, e:
             Notification(
                 translations(
-                    "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode failed synchronization",
+                    "woost.extensions.campaign3.campaignmonitorlisteditnode.synchronization_failed",
                     item = item,
                     exception = e
                 ),
@@ -29,8 +31,9 @@ class CampaignMonitorListEditNode(EditNode):
         else:
             Notification(
                 translations(
-                    "woost.extensions.campaignmonitorlisteditnode.CampaignMonitorListEditNode synchronized changes",
+                    "woost.extensions.campaign3.campaignmonitorlisteditnode.synchronization_success",
                     item = item
                 ),
                 "success"
             ).emit()
+

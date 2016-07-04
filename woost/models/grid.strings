@@ -1,0 +1,65 @@
+
+[woost.models.grid.Grid]
+ca: Graella
+es: Matriz
+en: Grid
+
+    [plural]
+    ca: Graelles
+    es: Matrices
+    en: Grids
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [column_count]
+        ca: Número de columnes
+        es: Número de columnas
+        en: Column size
+
+        [sizes]
+        ca: Mides
+        es: Tamaños
+        en: Sizes
+
+[woost.models.grid.GridSize]
+ca: Mida de graella
+es: Tamaño de matriz
+en: Grid size
+
+    [plural]
+    ca: Mides de graella
+    es: Tamaños de matriz
+    en: Grid sizes
+
+    [members]
+
+        [grid]
+        ca: Graella
+        es: Matriz
+        en: Grid
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+        [min_width]
+        ca: Mida mínima
+        es: Tamaño mínimo
+        en: Minimum size
+
+        [column_width]
+        ca: Amplada de columna
+        es: Ancho de columna
+        en: Column width
+
+        [column_spacing]
+        ca: Separació entre columnes
+        es: Separación entre columnas
+        en: Column spacing
+

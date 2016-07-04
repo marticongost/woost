@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension
 
-
-translations.define("NoticesExtension",
-    ca = u"Avisos",
-    es = u"Avisos",
-    en = u"Notices"
-)
-
-translations.define("NoticesExtension-plural",
-    ca = u"Avisos",
-    es = u"Avisos",
-    en = u"Notices"
-)
+translations.load_bundle("woost.extensions.notices.package")
 
 
 class NoticesExtension(Extension):
@@ -40,9 +29,5 @@ class NoticesExtension(Extension):
         )
 
     def _load(self):
-
-        from woost.extensions.notices import (
-            strings,
-            website
-        )
+        from woost.extensions.notices import website
 

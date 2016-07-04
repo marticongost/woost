@@ -1,0 +1,11 @@
+
+[woost.extensions.googlesearch.GoogleSearchExtension]
+ca: Cercador de Google
+es: Buscador de Google
+en: Google search
+
+    [plural]
+    ca: Cercadors de Google
+    es: Buscadores de Google
+    en: Google search
+

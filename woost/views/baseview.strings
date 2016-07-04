@@ -1,0 +1,12 @@
+
+@init
+from cocktail.translations import translate_locale
+@end
+
+[woost.views.BaseView]
+
+    [alternate_language_link(lang)]
+    ca: Versió en ${translate_locale(lang)}
+    es: Versión en ${translate_locale(lang)}
+    en: ${translate_locale(lang)} version
+

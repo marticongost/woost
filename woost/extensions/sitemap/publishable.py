@@ -11,6 +11,8 @@ from cocktail.translations import translations
 from cocktail import schema
 from woost.models import Publishable, URI
 
+translations.load_bundle("woost.extensions.sitemap.publishable")
+
 Publishable.add_member(
     schema.Boolean(
         "sitemap_indexable",
