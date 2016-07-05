@@ -291,32 +291,13 @@ class CMSController(BaseCMSController):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
         """
-        url = get_request_url()
-        url_resolution = app.url_resolution
-        canonical_url = app.url_mapping.get_url(
-            publishable = app.publishable,
-            website = app.website,
-            host = "!"
+        current_url = get_request_url()
+        canonical_url = app.url_mapping.get_canonical_url(
+            current_url,
+            app.url_resolution
         )
-
-        if (
-            canonical_url.scheme != url.scheme
-            or canonical_url.hostname != url.hostname
-            or canonical_url.port != url.port
-            or canonical_url.path.segments
-               != tuple(url_resolution.consumed_segments)
-            or any(
-                value != url.query.fields[key]
-                for key, value in canonical_url.query.fields.iteritems()
-            )
-        ):
-            redirection = canonical_url.copy(
-                path = canonical_url.path.append(
-                    url_resolution.remaining_segments
-                ),
-                query = url.query.merge(canonical_url.query)
-            )
-            raise cherrypy.HTTPRedirect(redirection, status = 301)
+        if current_url != canonical_url:
+            raise cherrypy.HTTPRedirect(canonical_url, status = 301)
 
     def _maintenance_check(self, publishable):
 
