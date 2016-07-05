@@ -13,6 +13,7 @@ from cocktail.controllers import (
     FormProcessor,
     Form
 )
+from woost import app
 from woost.models.user import User
 from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
 from woost.controllers.documentcontroller import DocumentController
@@ -42,8 +43,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
 
     @request_property
     def identifier_member(self):
-        cms = self.context["cms"]
-        return cms.authentication.identifier_field
+        return app.authentication.identifier_field
 
     @request_property
     def identifier(self):

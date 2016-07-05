@@ -14,6 +14,7 @@ from cocktail.controllers import (
     Form,
     Controller
 )
+from woost import app
 from woost.models.emailtemplate import EmailTemplate
 from woost.models import Configuration, User, Publishable
 from woost.controllers.documentcontroller import DocumentController
@@ -66,8 +67,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
 
         @request_property
         def identifier_member(self):
-            cms = self.controller.context["cms"]
-            return cms.authentication.identifier_field
+            return app.authentication.identifier_field
 
         @request_property
         def identifier(self):

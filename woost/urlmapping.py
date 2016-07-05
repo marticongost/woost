@@ -134,6 +134,45 @@ class URLMapping(object):
 
         return translation_url
 
+    def get_canonical_url(
+        self,
+        url,
+        url_resolution = None,
+        **kwargs
+    ):
+        if url_resolution is None:
+            url_resolution = self.resolve(url)
+
+        if url_resolution is None or url_resolution.website is None:
+            return url
+
+        kwargs.setdefault("publishable", url_resolution.publishable)
+        kwargs.setdefault("website", url_resolution.website)
+        kwargs.setdefault("language", url_resolution.language)
+        kwargs.setdefault("host", "!")
+
+        canonical_url = app.url_mapping.get_url(**kwargs)
+
+        if (
+            canonical_url.scheme != url.scheme
+            or canonical_url.hostname != url.hostname
+            or canonical_url.port != url.port
+            or canonical_url.path.segments
+               != tuple(url_resolution.consumed_segments)
+            or any(
+                value != url.query.fields[key]
+                for key, value in canonical_url.query.fields.iteritems()
+            )
+        ):
+            return canonical_url.copy(
+                path = canonical_url.path.append(
+                    url_resolution.remaining_segments
+                ),
+                query = url.query.merge(canonical_url.query)
+            )
+
+        return url
+
 
 class URLComponent(object):
 
