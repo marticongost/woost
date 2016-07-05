@@ -32,9 +32,6 @@ from woost.models import Publishable
                         edit_control = "cocktail.html.PasswordBox"
                     )
                 ])
-                from cocktail.styled import styled
-                print styled("debug", "pink")
-                print styled(translations(self.schema["user"]), "magenta")
         ?>
     </py:binding>
 
