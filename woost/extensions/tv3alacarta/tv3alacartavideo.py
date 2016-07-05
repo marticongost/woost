@@ -5,6 +5,7 @@ u"""
 """
 import re
 from cocktail import schema
+from cocktail.urls import URL
 from woost.models.publishable import Publishable
 
 video_id_expr = re.compile(r"www\.tv3\.cat/videos/(\d+)")
@@ -48,7 +49,7 @@ class TV3ALaCartaVideo(Publishable):
     )
 
     def get_uri(self, **kwargs):
-        return self.uri_pattern % self.video_id
+        return URL(self.uri_pattern % self.video_id)
 
     def is_internal_content(self, language = None):
         return False
