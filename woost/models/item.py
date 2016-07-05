@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from cocktail.iteration import first
 from cocktail.modeling import getter, copy_mutable_containers
 from cocktail.events import event_handler, when, Event, EventInfo
+from cocktail.urls import URL
 from cocktail import schema
 from cocktail.translations import translations
 from cocktail.caching import whole_cache
@@ -23,12 +24,7 @@ from cocktail.persistence import (
     PersistentMapping,
     MaxValue
 )
-from cocktail.controllers import (
-    make_uri,
-    percent_encode_uri,
-    resolve_object_ref,
-    Location
-)
+from cocktail.controllers import resolve_object_ref
 from woost import app
 from .changesets import ChangeSet, Change
 
@@ -458,7 +454,6 @@ class Item(PersistentObject):
     def get_image_uri(self,
         image_factory = None,
         parameters = None,
-        encode = True,
         include_extension = True,
         host = None
     ):
@@ -466,7 +461,6 @@ class Item(PersistentObject):
         return image._get_image_uri(
             image_factory = image_factory,
             parameters = parameters,
-            encode = encode,
             include_extension = include_extension,
             host = host
         )
@@ -474,7 +468,6 @@ class Item(PersistentObject):
     def _get_image_uri(self,
         image_factory = None,
         parameters = None,
-        encode = True,
         include_extension = True,
         host = None
     ):
@@ -492,12 +485,6 @@ class Item(PersistentObject):
             from woost.models.rendering import ImageFactory
             image_factory = \
                 ImageFactory.require_instance(identifier = image_factory)
-
-        uri = make_uri(
-            "/images",
-            self.id,
-            image_factory.identifier or "factory%d" % image_factory.id
-        )
 
         if include_extension:
             from woost.models.rendering.formats import (
@@ -518,12 +505,16 @@ class Item(PersistentObject):
             if not ext or ext not in formats_by_extension:
                 ext = extensions_by_format[default_format]
 
-            uri += "." + ext
-
-        if parameters:
-            uri = make_uri(uri, **parameters)
-
-        return self._fix_uri(uri, host, encode)
+        return app.url_mapping.get_url(
+            host = host,
+            path = [
+                "images",
+                str(self.id),
+                (image_factory.identifier or "factory%d" % image_factory.id)
+                + (ext and "." + ext)
+            ],
+            query = parameters
+        )
 
     def resolve_representative_image(self, image_factory = None):
 
@@ -540,47 +531,6 @@ class Item(PersistentObject):
             return self.image
         except AttributeError:
             pass
-
-    def _fix_uri(self, uri, host, encode):
-
-        if encode:
-            uri = percent_encode_uri(uri)
-
-        has_protocol = _protocol_regexp.match(uri)
-
-        if has_protocol:
-            host = None
-
-        if host:
-            website = app.website
-            policy = website and website.https_policy
-
-            if (
-                policy == "always"
-                or (
-                    policy == "per_page" and (
-                        getattr(self, 'requires_https', False)
-                        or not app.user.anonymous
-                    )
-                )
-            ):
-                scheme = "https"
-            else:
-                scheme = "http"
-
-            if host == ".":
-                location = Location.get_current_host()
-                location.scheme = scheme
-                host = str(location)
-            elif not "://" in host:
-                host = "%s://%s" % (scheme, host)
-
-            uri = make_uri(host, uri)
-
-        elif not has_protocol:
-            uri = make_uri("/", uri)
-
-        return uri
 
     copy_excluded_members = set([
         changes,

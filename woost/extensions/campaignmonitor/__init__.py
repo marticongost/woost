@@ -221,8 +221,6 @@ class CampaignMonitorExtension(Extension):
         @type restricted: bool
         """
         from campaign_monitor_api import CampaignMonitorApi
-        from cocktail.controllers import context
-        from cocktail.controllers.location import Location
         from woost.extensions.campaignmonitor.campaignmonitorlist import \
             CampaignMonitorList
 
@@ -263,22 +261,17 @@ class CampaignMonitorExtension(Extension):
 
             # Modify remote lists with page urls
 
-            def absolute_uri(publishable, *args, **kwargs):
-                location = Location.get_current_host()
-                location.path_info = context["cms"].uri(
-                    publishable,
-                    *args,
-                    **kwargs
-                )
-                return str(location)
-
             if cmlist.unsubscribe_page:
-                unsubscribe_page = "%s?user=[email]" % absolute_uri(cmlist.unsubscribe_page)
+                unsubscribe_page = (
+                    "%s?user=[email]"
+                    % cmlist.unsubscribe_page.get_uri(host = "!")
+                )
             else:
                 unsubscribe_page = list_detail_data.get("UnsubscribePage")
 
             if cmlist.confirmation_success_page:
-                confirmation_success_page = absolute_uri(cmlist.confirmation_success_page)
+                confirmation_success_page = \
+                    cmlist.confirmation_success_page.get_uri(host = "!")
             else:
                 confirmation_success_page = list_detail_data.get("ConfirmationSuccessPage")
 

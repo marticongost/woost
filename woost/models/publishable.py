@@ -18,11 +18,6 @@ from cocktail.translations import (
 from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import datastore, MultipleValuesIndex
-from cocktail.controllers import (
-    make_uri,
-    percent_encode_uri,
-    Location
-)
 from cocktail.html.datadisplay import display_factory
 from woost import app
 from .enabledtranslations import auto_enables_translations
@@ -537,62 +532,8 @@ class Publishable(Item):
             IsAccessibleExpression(app.user)
         ]).select(*args, **kwargs)
 
-    def get_uri(self,
-        path = None,
-        parameters = None,
-        language = None,
-        host = None,
-        encode = True):
-
-        uri = app.url_resolver.get_path(self, language = language)
-
-        if uri is not None:
-            if self.per_language_publication:
-                uri = app.language.translate_uri(
-                    path = uri,
-                    language = require_language(language)
-                )
-
-            if path:
-                uri = make_uri(uri, *path)
-
-            if parameters:
-                uri = make_uri(uri, **parameters)
-
-            if host in ("!", "?"):
-                current_website = app.website
-                acceptable_websites = self.websites
-                valid_website = (
-                    current_website is not None and (
-                        not acceptable_websites
-                        or current_website in acceptable_websites
-                    )
-                )
-
-                if (
-                    host == "!"
-                    or (host == "?" and not valid_website)
-                ):
-                    if valid_website:
-                        host = current_website.hosts[0]
-                    else:
-                        from woost.models import Configuration
-                        config_websites = Configuration.instance.websites
-                        for website in config_websites:
-                            if (
-                                not acceptable_websites
-                                or website in acceptable_websites
-                            ):
-                                host = website.hosts[0]
-                                break
-                        else:
-                            host = None
-                else:
-                    host = None
-
-            uri = self._fix_uri(uri, host, encode)
-
-        return uri
+    def get_uri(self, **kwargs):
+        return app.url_mapping.get_url(self, **kwargs)
 
     def translate_file_type(self, language = None):
 

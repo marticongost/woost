@@ -13,7 +13,7 @@ from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.modeling import cached_getter
 from cocktail.translations import set_language
-from cocktail.controllers.location import Location
+from cocktail.controllers import get_request_root_url
 from woost import app
 from woost.models import Configuration, User
 from woost.models.permission import ReadPermission
@@ -100,7 +100,7 @@ class SendEmailController(EditController):
             # Send a test email
             mailing._v_template_values = {
                 "cms": self.context["cms"],
-                "base_url": unicode(Location.get_current_host()).rstrip("/")
+                "base_url": get_request_root_url()
             }
             test_email = self.params.read(schema.String("test_email"))
             # Create a fake user
@@ -114,7 +114,7 @@ class SendEmailController(EditController):
             self.task_id = mailing.id
             template_values = {
                 "cms": self.context["cms"],
-                "base_url": unicode(Location.get_current_host()).rstrip("/")
+                "base_url": get_request_root_url()
             }
             mailing.send(self.smtp_server, template_values, self.context.copy())
 

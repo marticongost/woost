@@ -7,11 +7,11 @@ u"""
 @since:			February 2009
 """
 from cocktail import schema
-from cocktail.controllers import Location, make_uri
+from cocktail.urls import URL
+from woost import app
 from woost.models.publishable import Publishable
 from woost.models.file import File
 from woost.models.controller import Controller
-from woost.models.website import Website
 
 
 class URI(Publishable):
@@ -58,37 +58,32 @@ class URI(Publishable):
         member_group = "content"
     )
 
-    def get_uri(self,
+    def get_uri(
+        self,
+        language = None,
         path = None,
         parameters = None,
-        language = None,
-        host = None,
-        encode = True):
+        **kwargs
+    ):
+        url = URL(self.get("language_specific_uri", language) or self.uri)
 
-        uri = self.get("language_specific_uri", language) or self.uri
+        if not url.hostname:
+            url = (
+                app.url_mapping.get_url(language = language, **kwargs)
+                .merge(url)
+            )
 
-        if uri is not None:
+        if path or parameters:
+            url = url.merge(URL(path = path, query = parameters))
 
-            if path:
-                uri = make_uri(uri, *path)
-
-            if parameters:
-                uri = make_uri(uri, **parameters)
-
-            uri = self._fix_uri(uri, host, encode)
-
-        return uri
+        return url
 
     def is_internal_content(self, language = None):
 
         uri = self.get_uri(host = "!", language = language)
-        location = Location(uri)
-
-        if not location.host:
+        if not location.hostname:
             return True
 
-        return any(
-            location.host in website.hosts
-            for website in Website.select()
-        )
+        from woost.models.configuration import Configuration
+        return bool(Configuration.instance.get_website_by_host(uri.hostname))
 

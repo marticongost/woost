@@ -5,7 +5,7 @@ u"""Defines the `ProductController` class.
 """
 import cherrypy
 from cocktail.translations import translations
-from cocktail.controllers import request_property, Location
+from cocktail.controllers import request_property, reload_request_url
 from cocktail.controllers.formprocessor import FormProcessor, Form
 from woost import app
 from woost.models import Publishable
@@ -71,5 +71,5 @@ class ProductController(FormProcessor, PublishableController):
                     ).get_uri()
                 )
             else:
-                Location.get_current().go("GET")
+                reload_request_url()
 

@@ -86,7 +86,10 @@ def remove_links(file, links = None, encoding = None):
 
 def get_links(file):
     return [
-        app.path("static", app.url_resolver.get_path(file, language))
+        app.path(
+            "static",
+            *app.url_mapping.get_url(file, language = language).path.segments
+        )
         for language in (file.translations or [None])
     ]
 

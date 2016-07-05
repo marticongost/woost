@@ -64,7 +64,7 @@ def _get_publishable_properties(self):
     properties = {
         "og:title": translations(self),
         "og:type": self.open_graph_type.code,
-        "og:url": self.get_uri(host = ".")
+        "og:url": self.get_uri(host = "!")
     }
 
     description = self.get_open_graph_description()
@@ -75,7 +75,7 @@ def _get_publishable_properties(self):
     if image:
         if isinstance(image, Publishable):
             if image.is_accessible():
-                image = image.get_image_uri("facebook", host = ".")
+                image = image.get_image_uri("facebook", host = "!")
             else:
                 image = None
 
@@ -85,7 +85,7 @@ def _get_publishable_properties(self):
     video = self.get_open_graph_video()
     if video:
         if isinstance(video, Publishable):
-            video = video.get_uri(host = ".")
+            video = video.get_uri(host = "!")
         properties["og:video"] = video
 
     return properties

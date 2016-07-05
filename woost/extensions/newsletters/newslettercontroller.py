@@ -7,7 +7,7 @@ u"""
 import cherrypy
 from bs4 import BeautifulSoup, Comment
 from premailer import *
-from cocktail.controllers import request_property, Location
+from cocktail.controllers import request_property, get_request_root_url
 from woost import app
 from woost.models import ModifyPermission
 from woost.controllers.documentcontroller import DocumentController
@@ -32,7 +32,7 @@ class NewsletterController(DocumentController):
         # Inline CSS & absolute URLs
         premailer = Premailer(
             html,
-            base_url = unicode(Location.get_current_host())
+            base_url = get_request_root_url()
         )
         html = premailer.transform()
         return html

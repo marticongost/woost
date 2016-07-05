@@ -15,7 +15,7 @@ from woost.models import (
     AuthorizationError
 )
 from woost.controllers.documentcontroller import DocumentController
-from woost.controllers.authentication import AuthenticationFailedError
+from woost.authenticationscheme import AuthenticationFailedError
 
 
 class LoginController(FormControllerMixin, DocumentController):
@@ -42,7 +42,7 @@ class LoginController(FormControllerMixin, DocumentController):
     @cached_getter
     def form_model(self):
 
-        identifier = self.context["cms"].authentication.identifier_field.copy()
+        identifier = app.authentication.identifier_field.copy()
         identifier.name = "user"
 
         form_model = schema.Schema("woost.controllers.logincontroller.form",

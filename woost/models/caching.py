@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.caching import Cache
-from cocktail.controllers import Location
 from cocktail.persistence import datastore, PersistentMapping
+from cocktail.controllers import get_request_url
 from woost import app
 from .item import Item
 
@@ -85,7 +85,7 @@ class CachingPolicy(Item):
         user = app.user
 
         cache_key = (
-            str(Location.get_current(relative = False)),
+            str(get_request_url()),
             None
             if user is None or user.anonymous
             else tuple(role.id for role in user.roles)

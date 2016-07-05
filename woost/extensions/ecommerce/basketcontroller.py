@@ -15,7 +15,7 @@ from cocktail.controllers import (
     request_property,
     FormProcessor,
     Form,
-    Location
+    reload_request_url
 )
 from woost.controllers.notifications import Notification
 from woost.extensions.ecommerce.ecommercepurchase import ECommercePurchase
@@ -89,7 +89,7 @@ class BasketController(FormProcessor, Controller):
             ).emit()
 
             if self.controller.action != "proceed":
-                Location.get_current().go("GET")
+                reload_request_url()
 
     class NextStepForm(ProceedForm):
         process_after = "set_quantities_form",
@@ -127,7 +127,7 @@ class BasketController(FormProcessor, Controller):
                 ),
                 category = "success"
             )
-            Location.get_current().go("GET")
+            reload_request_url()
 
     class EmptyBasketForm(Form):
         """A form that removes all products from the shopping basket."""
@@ -145,5 +145,5 @@ class BasketController(FormProcessor, Controller):
                 ),
                 category = "success"
             )
-            Location.get_current().go("GET")
+            reload_request_url()
 

@@ -7,25 +7,13 @@ from woost.models import Publishable, File, Configuration
 
 _get_uri = Publishable.get_uri
 
-def get_uri(
-    self,
-    path = None,
-    parameters = None,
-    language = None,
-    host = None,
-    encode = True
-):
-    if isinstance(self, File) and host in (None, "!", "?"):
-        host = Configuration.instance.get_setting("external_files_host")
+def get_uri(self, **kwargs):
 
-    return _get_uri(
-        self,
-        path = path,
-        parameters = parameters,
-        language = language,
-        host = host,
-        encode = encode
-    )
+    if isinstance(self, File) and kwargs.get("host") in (None, "!", "?"):
+        kwargs["host"] = \
+            Configuration.instance.get_setting("external_files_host")
+
+    return _get_uri(self, **kwargs)
 
 Publishable.get_uri = get_uri
 

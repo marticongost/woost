@@ -8,7 +8,8 @@
 """
 import cherrypy
 from cocktail import schema
-from cocktail.controllers import get_parameter, Location
+from cocktail.controllers import get_parameter
+from woost import app
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.extensions.payments.dummypaymentgateway \
     import DummyPaymentGateway
@@ -39,12 +40,11 @@ class DummyPaymentGatewayController(BaseCMSController):
 
         # Notify the payment to the application
         cms = self.context["cms"]
-        notification_uri = Location.get_current_host()
-        notification_uri.path_info = cms.application_uri(
-            "payment_notification",
-            payment_id = payment_id
+        notification_uri = app.url_mapping.get_url(
+            path = ["payment_notification"],
+            parameters = {"payment_id": payment_id}
         )
-        urlopen(str(notification_uri))
+        urlopen(notification_uri)
 
         # Redirect the user after the transaction's over
         redirection = None

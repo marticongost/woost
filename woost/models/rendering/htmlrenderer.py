@@ -66,7 +66,7 @@ class HTMLRenderer(Renderer):
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
 
             command = self.command % {
-                "source": item.get_uri(host = "."),
+                "source": item.get_uri(host = "!"),
                 "dest": temp_image_file
             }
 
