@@ -54,7 +54,7 @@ class YouTubeVideo(Publishable):
     )
 
     def get_uri(self, **kwargs):
-        return self.uri_pattern % (self.video_id,)
+        return URL(self.uri_pattern % (self.video_id,))
 
     def is_internal_content(self, language = None):
         return False
