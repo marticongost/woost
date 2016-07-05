@@ -48,7 +48,7 @@ class PDFExtension(Extension):
         from tempfile import mkdtemp
         from subprocess import Popen, PIPE
         import cherrypy
-        from cocktail.controllers import Location, serve_file
+        from cocktail.controllers import serve_file, get_request_url_builder
         from woost.controllers import BaseCMSController
 
         extension = self
@@ -60,12 +60,12 @@ class PDFExtension(Extension):
             pdf_file_path = os.path.join(temp_path, "file.pdf")
 
             try:
-                location = Location.get_current(relative = False)
-                location.query_string["format"] = "html"
+                url_builder = get_request_url_builder()
+                url_builder.query["format"] = "html"
 
                 # Create the file
                 command = extension.command % {
-                    "url": unicode("'%s'" % location),
+                    "url": unicode("'%s'" % url_builder.get_url()),
                     "output_file": pdf_file_path
                 }
                 proc = Popen(command.encode("utf-8"),

@@ -110,7 +110,7 @@ class BaseCMSController(Controller):
         @rtype: unicode
         """
         publishable = app.publishable
-        uri = app.url_resolver.get_path(publishable)
+        uri = app.url_mapping.get_url(publishable)
 
         if uri is None:
             return None

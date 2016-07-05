@@ -9,11 +9,7 @@ from cocktail.events import event_handler
 from cocktail.translations import translations, language_context
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import (
-    request_property,
-    get_parameter,
-    Location
-)
+from cocktail.controllers import request_property, get_parameter
 from woost import app
 from woost.models import Publishable
 from woost.controllers.backoffice.basebackofficecontroller \

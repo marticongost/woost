@@ -92,14 +92,17 @@ class LanguageSelector(LinkSelector):
     def get_entry_url(self, language):
         cms = context["cms"]
         publishable = app.publishable
+        translation_url = app.url_mapping.transform_request_url(
+            language = language
+        )
 
-        if self.missing_translations == "redirect" \
-        and not publishable.is_accessible(language = language):
-            path = "/"
-        else:
-            path = None
+        if (
+            self.missing_translations == "redirect"
+            and not publishable.is_accessible(language = language)
+        ):
+            translation_url = translation_url.copy(path = None)
 
-        return cms.translate_uri(path = path, language = language)
+        return translation_url
 
     def create_entry_link(self, item):
         link = LinkSelector.create_entry_link(self, item)

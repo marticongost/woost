@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail.translations import require_language
 from cocktail.html import Content
 from woost import app
 from woost.models import Configuration, Publishable
@@ -100,7 +99,7 @@ from woost.models import Configuration, Publishable
                         Element("link",
                             rel = "alternate",
                             title = translations("woost.views.BaseView.alternate_language_link", language = trans_lang, lang = trans_lang),
-                            href = app.language.translate_uri(language = trans_lang),
+                            href = app.url_mapping.transform_request_url(language = trans_lang),
                             lang = trans_lang,
                             hreflang = trans_lang
                         )

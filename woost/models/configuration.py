@@ -337,22 +337,6 @@ class Configuration(Item):
 
     footer_blocks = Slot()
 
-    def resolve_path(self, path):
-        warn(
-            "Configuration.resolve_path is deprecated, use app.url_resolver.resolve_path instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-        return app.url_resolver.resolve_path(path)
-
-    def get_path(self, publishable, language = None):
-        warn(
-            "Configuration.get_path is deprecated, use app.url_resolver.get_path instead",
-            DeprecationWarning,
-            stacklevel = 2
-        )
-        return app.url_resolver.get_path(publishable, language = language)
-
     def get_setting(self, key):
         """Obtains the value for the indicated configuration option.
 
