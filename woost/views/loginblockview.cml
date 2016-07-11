@@ -66,7 +66,7 @@ from woost.models import Publishable
                 element.visible = False
             ?>
         </py:ready>
-        ${translations("woost.views.LoginForm.forgot_password_link")}
+        ${translations("woost.views.LoginBlockView.forgot_password_link")}
     </a>
 
 </py:cocktail.html.Form>
