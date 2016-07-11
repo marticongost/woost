@@ -17,6 +17,12 @@
             en: Password
             pt: Chave de acesso
 
+    [forgot_password_link]
+    ca: He oblidat la contrasenya
+    es: He olvidado la contraseña
+    en: I forgot my password
+    pt: Esqueceu a sua chave de acesso?
+
     [submit_button]
     ca: Entrar
     es: Entrar
