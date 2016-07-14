@@ -1,0 +1,238 @@
+
+@import "theme://";
+
+.TextBlockView {
+    overflow: hidden;
+
+    & > .block_link {
+        display: block;
+        text-decoration: none;
+    }
+
+    .image_gallery .image_entry {
+        margin: 0;
+        margin-right: 1em;
+        margin-bottom: 1em;
+    }
+
+    &.single_image.no_text .image_gallery .image_entry {
+        margin: 0;
+    }
+
+    &.top_left {
+
+        .image_gallery .image_entry {
+            display: inline-block;
+            vertical-align: top;
+
+            & > a {
+                text-align: left;
+            }
+        }
+    }
+
+    &.top_right {
+
+        .image_gallery .image_entry {
+            display: inline-block;
+            vertical-align: top;
+
+            & > a {
+                text-align: right;
+            }
+        }
+
+        .image_list {
+            text-align: right;
+        }
+    }
+
+    &.float_top_left {
+
+        .image_gallery {
+            float: left;
+        }
+    }
+
+    &.float_top_right {
+
+        .image_gallery {
+            float: right;
+
+            .image_entry {
+                margin-right: 0;
+                margin-left: 1em;
+            }
+        }
+    }
+
+    .columns_wrapper {
+        display: table-row;
+
+        .image_gallery,
+        .text_container {
+            display: table-cell;
+            vertical-align: top;
+        }
+    }
+
+    &.column_right {
+        .image_gallery .image_entry {
+            margin-right: 0;
+            margin-left: 1em;
+        }
+    }
+
+    &.center_top {
+
+        .image_gallery > ul {
+            text-align: center;
+
+            & > li {
+                display: inline-block;
+            }
+        }
+    }
+
+    &.center_bottom {
+
+        .image_gallery > ul {
+            text-align: center;
+
+            & > li {
+                vertical-align: top;
+                display: inline-block;
+            }
+        }
+    }
+
+    &.inline {
+
+        * {
+            vertical-align: middle;
+        }
+
+        .text_container * {
+            display: inline !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        a.block_link .text_container {
+            text-decoration: underline;
+        }
+    }
+
+    &.fallback {
+
+        .text_container {
+            position: absolute;
+            left: -10000px;
+            top: 0;
+        }
+
+        .image_gallery li {
+            margin: 0;
+
+            img {
+                display: block;
+            }
+        }
+    }
+}
+
+.PublishableGrid {
+
+    ul.publishable_list {
+        padding: 0;
+    }
+
+    .entry {
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        padding: 1em;
+        margin: 0;
+        width: 20em;
+
+        .publishable_view {
+            display: block;
+            margin-bottom: 1em;
+        }
+
+        .AudioPlayer  {
+            width: 12em !important;
+            margin-left: 4em;
+
+            .mejs-controls {
+
+                & > * {
+                    display: none;
+                }
+
+                & > .mejs-playpause-button {
+                    display: block;
+                }
+            }
+
+            .mejs-time-rail {
+                display: block;
+                width: 7.4em !important;
+            }
+
+            .mejs-time-total {
+                width: 7.4em !important;
+            }
+
+            .mejs-time-loaded {
+                background: none !important;
+                background-color: #95889c !important;
+                background-color: #777 !important;
+            }
+        }
+    }
+
+    li.entry {
+        list-style: none;
+
+        & > .ImageGallery {
+            display: inline-block;
+        }
+    }
+}
+
+.PublishableCollage {
+
+    @include scripting-enabled {
+        visibility: hidden;
+
+        &.layout_ready {
+            visibility: visible;
+        }
+    }
+
+    .publishable_list {
+        list-style-type: none;
+        padding: 0;
+        line-height: 0;
+    }
+
+    .entry {
+        display: inline-block;
+        margin: 0;
+    }
+
+    &[data-cocktail-collage-layout=rows] {
+        .entry .ThumbnailLink {
+            &,
+            & > .thumbnail {
+                display: block;
+            }
+        }
+    }
+}
+
+.PublishablePopUp {
+    cursor: pointer;
+}
+
