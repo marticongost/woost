@@ -67,7 +67,7 @@ from woost.models import Configuration, Publishable
         return self.publishable.is_home_page()
     ?>
 
-    <?resource woost://styles/blocks.css ?>
+    <?resource woost://styles/baseview.scss.css ?>
 
     <?py
     self.set_meta("generator", "woost")
