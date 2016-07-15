@@ -40,10 +40,11 @@ class URLMapping(object):
                 language = get_language()
 
         # Website
-        if website is None and publishable:
-            website = get_matching_website(publishable)
-        else:
-            website = Configuration.instance.websites[0]
+        if website is None:
+            if publishable:
+                website = get_matching_website(publishable)
+            else:
+                website = Configuration.instance.websites[0]
 
         # HTTPS policy
         scheme = None
