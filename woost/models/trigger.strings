@@ -1,0 +1,201 @@
+
+[woost.models.trigger]
+
+    [Trigger]
+    ca: Disparador
+    es: Disparador
+    en: Trigger
+
+        [plural]
+        ca: Disparadors
+        es: Disparadores
+        en: Triggers
+
+        [members]
+
+            [title]
+            ca: Títol
+            es: Título
+            en: Title
+
+            [execution_point]
+            ca: Moment d'execució
+            es: Momento de ejecución
+            en: Execution point
+
+                [values]
+
+                    [before]
+                    ca: Immediatament
+                    es: Inmediatamente
+                    en: Immediately
+
+                    [after]
+                    ca: En confirmar la transacció
+                    es: Tras confirmar la transacción
+                    en: After committing the transaction
+
+            [batch_execution]
+            ca: Execució agrupada
+            es: Ejecución agrupada
+            en: Batch execution
+
+                [explanation]
+                ca:
+                    Si s'agrupa l'execució, el disparador només s'activarà un
+                    cop per transacció, independentment de quantes accions
+                    d'aquest tipus s'hagin realitzat.
+                es:
+                    Si se agrupa la ejecución, el disparador solo se activará
+                    una vez por transacción, sin importar cuantas acciones de
+                    este tipo se hayan realizado.
+                en:
+                    If checked, the trigger will be activated only once per
+                    transaction, regardless of how many times its activation
+                    conditions are met.
+
+            [matching_roles]
+            ca: Rols a observar
+            es: Roles a observar
+            en: Watched roles
+
+                [explanation]
+                ca:
+                    Si no es selecciona cap rol, el disparador s'activarà
+                    independentment de l'usuari que inicii l'acció.
+                es:
+                    Si no se selecciona ningún rol, el disparador se activará
+                    independientemente del usuario que inicie la acción.
+                en:
+                    If no role is checked, the trigger will execute regardless
+                    of which user started the action.
+
+            [condition]
+            ca: Condició
+            es: Condición
+            en: Condition
+
+                [explanation]
+                ca:
+                    Una expressió en python que determina si s'executa o no el
+                    disparador.
+                es:
+                    Una expresión en python que determina si se ejecuta o no el
+                    disparador.
+                en:
+                    A python expression that enables or disables the execution of
+                    the trigger depending on its context.
+
+            [custom_context]
+            ca: Context
+            es: Contexto
+            en: Context
+
+                [explanation]
+                ca:
+                    Un bloc de codi Python que permet personalitzar els paràmetres
+                    que es passaran al disparador en el moment en que sigui
+                    executat.
+                es:
+                    Un bloque de código Python que permite personalizar los parámetros
+                    que recibirá el disparador en el momento en que sea ejecutado.
+                en:
+                    A block of Python code that allows to customize the parameters
+                    that the trigger will receive when it is finally executed.
+
+            [responses]
+            ca: Respostes
+            es: Respuestas
+            en: Responses
+
+    [ContentTrigger]
+    ca: Disparador per elements
+    es: Disparador para elementos
+    en: Content trigger
+
+        [plural]
+        ca: Disparadors per contingut
+        es: Disparadores para contenido
+        en: Content triggers
+
+        [members]
+
+            [matching_items]
+            ca: Elements a observar
+            es: Elementos a observar
+            en: Watched items
+
+    [CreateTrigger]
+    ca: Disparador de creació
+    es: Disparador de creación
+    en: Create trigger
+
+        [plural]
+        ca: Disparadors de creació
+        es: Disparadores de creación
+        en: Create triggers
+
+    [InsertTrigger]
+    ca: Disparador d'inserció
+    es: Disparador de inserción
+    en: Insert trigger
+
+        [plural]
+        ca: Disparadors d'inserció
+        es: Disparadores de inserción
+        en: Insert triggers
+
+    [ModifyTrigger]
+    ca: Disparador de modificació
+    es: Disparador de modificación
+    en: Modify trigger
+
+        [plural]
+        ca: Disparadors de modificació
+        es: Disparadores de modificación
+        en: Modify triggers
+
+        [members]
+
+            [matching_members]
+            ca: Membres a observar
+            es: Miembros a observar
+            en: Watched members
+
+                [explanation]
+                ca:
+                    Si no es selecciona cap membre, el disparador s'activarà
+                    sigui quin sigui el membre modificat.
+                es:
+                    Si no se selecciona ningún miembro, el disparador se
+                    activará sea cual sea el miembro modificado.
+                en:
+                    If no member is checked, the trigger will execute
+                    regardless of which member is modified.
+
+            [matching_languages]
+            ca: Idiomes a observar
+            es: Idiomas a observar
+            en: Watched languages
+
+                [explanation]
+                ca:
+                    Si no es selecciona cap idioma, el disparador s'activarà
+                    sigui quin sigui l'idioma dels valors modificats.
+                es:
+                    Si no se selecciona ningún idioma, el disparador se activará
+                    independientemente del idioma de los valores modificados.
+                en:
+                    If no language is checked, the trigger will execute regardless
+                    of which language modified values are translated into.
+
+    [DeleteTrigger]
+    ca: Disparador d'eliminació
+    es: Disparador de eliminación
+    en: Delete trigger
+
+        [plural]
+        ca: Disparadors d'eliminació
+        es: Disparadores de eliminación
+        en: Delete triggers
+

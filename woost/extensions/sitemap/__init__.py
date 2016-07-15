@@ -9,17 +9,7 @@
 from cocktail.translations import translations
 from woost.models import Extension
 
-translations.define("SitemapExtension",
-    ca = u"Refinament de l'indexat web",
-    es = u"Refinamiento del indexado web",
-    en = u"Web crawler hints"
-)
-
-translations.define("SitemapExtension-plural",
-    ca = u"Refinament de l'indexat web",
-    es = u"Refinamiento del indexado web",
-    en = u"Web crawler hints"
-)
+translations.load_bundle("woost.extensions.sitemap.package")
 
 
 class SitemapExtension(Extension):
@@ -44,7 +34,7 @@ class SitemapExtension(Extension):
         )
 
     def _load(self):
-        from woost.extensions.sitemap import publishable, strings
+        from woost.extensions.sitemap import publishable
         self.install()
 
     def _install(self):
@@ -55,6 +45,8 @@ class SitemapExtension(Extension):
             Controller,
             extension_translations
         )
+
+        translations.load_bundle("woost.extensions.sitemap.installation")
 
         # Sitemap controller
         sitemap_controller = self._create_asset(

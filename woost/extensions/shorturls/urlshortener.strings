@@ -1,0 +1,18 @@
+
+[woost.extensions.shorturls.urlshortener.URLShortener]
+ca: Servei d'escurçat d'URLs
+es: Servicio de compactación de URLs
+en: URL shortening service
+
+    [plural]
+    ca: Serveis d'escurçat d'URLs
+    es: Servicios de compactación de URLs
+    en: URL shortening services
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+

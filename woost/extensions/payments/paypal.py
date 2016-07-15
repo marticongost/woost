@@ -15,7 +15,10 @@ class PayPalPaymentGateway(PaymentGateway, Implementation):
     instantiable = True
 
     default_label = schema.DynamicDefault(
-        lambda: translations("PayPalPaymentGateway.label default")
+        lambda: translations(
+            "woost.extensions.payments.paypal.PayPalPaymentGateway."
+            "default_label"
+        )
     )
 
     members_order = [

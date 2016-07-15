@@ -1,0 +1,73 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [ecommerce]
+        ca: Comerç online
+        es: Comercio online
+        en: E-commerce
+
+    [members]
+
+        [ecommerce_pricing]
+        ca: Preus
+        es: Precios
+        en: Pricing
+        fr: Prix
+
+        [ecommerce_shipping_costs]
+        ca: Costos d'enviament
+        es: Costes de envío
+        en: Shipping costs
+        fr: Frais d'expédition
+
+        [ecommerce_taxes]
+        ca: Taxes
+        es: Tasas
+        en: Taxes
+        fr: Taux
+
+        [ecommerce_default_catalog]
+        ca: Catàleg per defecte
+        es: Catálogo por defecto
+        en: Default catalog
+
+        [ecommerce_order_steps]
+        ca: Passos de la compra
+        es: Pasos de la compra
+        en: Order steps
+        fr: Étapes à suivre pour l'achat
+
+        [ecommerce_payment_types]
+        ca: Tipus de pagament
+        es: Tipos de pago
+        en: Payment types
+        fr: Moyen de paiement
+
+            [values]
+
+                [payment_gateway]
+                ca: Pagament en línia
+                es: Pago en línea
+                en: On-line payment
+                fr: Paiement on-line
+
+                [transfer]
+                ca: Transferència
+                es: Transferencia
+                en: Transfer
+                fr: Transfert
+
+                [cash_on_delivery]
+                ca: Contra reemborsament
+                es: Contra reembolso
+                en: Cash on delivery
+                fr: Contre remboursement
+                pt: Pagamento à cobrança
+
+                [ecommerce_payment_gateway]
+                ca: Passarel·la de pagament per la botiga
+                es: Pasarela de pago para la tienda
+                en: Payment gateway for shop
+

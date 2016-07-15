@@ -1,0 +1,8 @@
+
+[woost.views.BackOfficeContentView]
+
+    [add_user_view]
+    ca: Crear vista
+    es: Crear vista
+    en: New view
+

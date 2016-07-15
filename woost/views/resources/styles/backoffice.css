@@ -1211,6 +1211,10 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     font-size: 85%;
 }
 
+.BackOfficeLayout .Table td[dir='rtl'] {
+    text-align: right;
+}
+
 .BackOfficeLayout .ContentTable td {
     vertical-align: middle;
 }

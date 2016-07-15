@@ -1,0 +1,20 @@
+
+[woost.extensions.forms]
+
+    [default_email_notification]
+
+        [title]
+        ca: Notificació per formularis personalitzats
+        es: Notificación para formularios personalizados
+        en: Notification for custom forms
+
+        [subject]
+        ca: S'ha emplenat \${form_description}
+        es: Se ha rellenado \${form_description}
+        en: \${form_description} submitted
+
+        [body]
+        ca: \${form_contents}
+        es: \${form_contents}
+        en: \${form_contents}
+

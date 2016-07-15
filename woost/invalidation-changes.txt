@@ -1,0 +1,5 @@
+
+Item.main_cache_tag -> Item.main_invalidation_tag
+Item.get_cache_tags -> Item.get_invalidation_tags
+Item.get_cache_invalidation_scope -> Item.get_invalidation_scope; cache_part parameter -> part
+

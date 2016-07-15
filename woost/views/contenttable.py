@@ -151,13 +151,13 @@ class ContentTable(Table):
 
         title = Element("div")
         title.add_class("options_header")
-        title.append(translations("woost.views.ContentTable sorting header"))
+        title.append(translations("woost.views.ContentTable.sorting_header"))
         options.append(title)
 
         asc = options.ascending = Element("a")
         asc.add_class("ascending")
         asc["href"] = "?" + view_state(order = order_param, page = 0)
-        asc.append(translations("woost.views.ContentTable sort ascending"))
+        asc.append(translations("woost.views.ContentTable.sort_ascending"))
         options.append(asc)
 
         if direction is PositiveExpression:
@@ -166,7 +166,7 @@ class ContentTable(Table):
         desc = options.ascending = Element("a")
         desc.add_class("descending")
         desc["href"] = "?" + view_state(order = "-" + order_param, page = 0)
-        desc.append(translations("woost.views.ContentTable sort descending"))
+        desc.append(translations("woost.views.ContentTable.sort_descending"))
         options.append(desc)
 
         if direction is NegativeExpression:
@@ -194,14 +194,14 @@ class ContentTable(Table):
 
         title = Element("div")
         title.add_class("options_header")
-        title.append(translations("woost.views.ContentTable search header"))
+        title.append(translations("woost.views.ContentTable.search_header"))
         options.append(title)
 
         add_filter = Element("a")
         add_filter.add_class("add_filter")
         add_filter["href"] = "?" + view_state(**filter_state)
         add_filter.append(
-            translations("woost.views.ContentTable add column filter")
+            translations("woost.views.ContentTable.add_column_filter")
         )
         add_filter.set_client_param("filterId", "member-" + column.name)
         options.append(add_filter)
@@ -215,7 +215,7 @@ class ContentTable(Table):
 
         title = Element("div")
         title.add_class("options_header")
-        title.append(translations("woost.views.ContentTable grouping header"))
+        title.append(translations("woost.views.ContentTable.grouping_header"))
         options.append(title)
 
         grouping_class = resolve(column.grouping)

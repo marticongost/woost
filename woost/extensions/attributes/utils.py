@@ -63,7 +63,7 @@ def export_attribute_value(value, language = None):
         return str(value)
     elif isinstance(value, type):
         return export_attribute_value([
-            translations(cls.__name__, language = language)
+            translations(cls, language = language)
             for cls in value.__mro__
             if cls is not Publishable and issubclass(cls, Publishable)
         ])

@@ -24,14 +24,11 @@ class ContentTypePicker(ContentTypeTree):
 
     def _build(self):
         ContentTypeTree._build(self)
-        self.add_resource("woost://scripts/ContentTypePicker.js")
+        self.add_resource("woost://scripts/contenttypepicker.js")
 
     def _ready(self):
 
         self.set_client_param("selectionMode", self.selection_mode)
-        self.add_client_translation("woost.views.ContentTypePicker select")
-        self.add_client_translation("woost.views.ContentTypePicker accept")
-        self.add_client_translation("woost.views.ContentTypePicker cancel")
 
         self.set_client_variable(
             "cocktail.NO_SELECTION", NO_SELECTION)

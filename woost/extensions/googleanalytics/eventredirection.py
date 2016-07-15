@@ -12,6 +12,8 @@ from woost.controllers.filecontroller import FileController
 from woost.controllers.uricontroller import URIController
 from woost.extensions.googleanalytics import GoogleAnalyticsExtension
 
+translations.load_bundle("woost.extensions.googleanalytics.eventredirection")
+
 
 class GAEventRedirection(object):
 
@@ -97,11 +99,11 @@ class GAEventRedirection(object):
         return publishable.get_uri(parameters = extra_params)
 
     def get_title(self, controller, publishable):
-        return translations("woost.extensions.googleanalytics.redirection_title")
+        return translations("woost.extensions.googleanalytics.eventredirection.title")
 
     def get_body(self, controller, publishable, url):
         return translations(
-            "woost.extensions.googleanalytics.redirection_body",
+            "woost.extensions.googleanalytics.eventredirection.body",
             url = url
         )
 

@@ -1,0 +1,50 @@
+
+[woost.views.ContentView]
+
+    [content_type_selector.shortcut]
+    ca: t
+    es: t
+    en: t
+
+    [content_view_dropdown.shortcut]
+    ca: v
+    es: v
+    en: v
+
+    [show_advanced_search]
+    ca: Més opcions de cerca
+    es: Mas opciones de búsqueda
+    en: More search options
+
+    [close_advanced_search]
+    ca: Descartar la cerca
+    es: Descartar la búsqueda
+    en: Discard search
+
+    [search_button]
+    ca: Cercar
+    es: Buscar
+    en: Search
+
+[woost.content_views]
+
+    [flat]
+    ca: Llistat
+    es: Listado
+    en: Listing
+
+    [tree]
+    ca: Arbre
+    es: Árbol
+    en: Tree
+
+    [thumbnails]
+    ca: Miniatures
+    es: Miniaturas
+    en: Grid
+
+    [calendar]
+    ca: Calendari
+    es: Calendario
+    en: Calendar
+

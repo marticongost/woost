@@ -1,0 +1,65 @@
+
+[woost.models.twittertimelineblock.TwitterTimelineBlock]
+ca: Missatges de Twitter
+es: Mensajes de Twitter
+en: Twitter timeline
+
+    [plural]
+    ca: Missatges de Twitter
+    es: Mensajes de Twitter
+    en: Twitter timeline
+
+    [members]
+
+        [tweet]
+        ca: Tuit
+        es: Tuit
+        en: Tweet
+
+        [appearence]
+        ca: Aparença
+        es: Apariencia
+        en: Appearence
+
+        [widget_id]
+        ca: ID del widget
+        es: ID del widget
+        en: Widget ID
+
+        [theme]
+        ca: Plantilla
+        es: Plantilla
+        en: Theme
+
+            [values]
+
+                [light]
+                ca: Clar
+                es: Claro
+                en: Light
+
+                [dark]
+                ca: Fosc
+                es: Oscuro
+                en: Dark
+
+        [link_color]
+        ca: Color de l'enllaç
+        es: Color del enlace
+        en: Link color
+
+        [width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [height]
+        ca: Alçada
+        es: Alto
+        en: Height
+
+        [related_accounts]
+        ca: Comptes relacionats
+        es: Cuentas relacionadas
+        en: Related accounts
+

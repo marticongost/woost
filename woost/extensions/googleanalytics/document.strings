@@ -1,0 +1,10 @@
+
+[woost.models.document.Document]
+
+    [members]
+
+        [ga_tracking_enabled]
+        ca: Habilitar seguiment amb Google Analytics
+        es: Habilitar seguimiento con Google Analytics
+        en: Track with Google Analytics
+

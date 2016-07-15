@@ -1,0 +1,25 @@
+
+[woost.models.loginblock.LoginBlock]
+ca: Formulari d'autenticació d'usuari
+es: Formulario de autenticación de usuario
+en: Login form
+
+    [plural]
+    ca: Formularis d'autenticació d'usuari
+    es: Formularios de autenticación de usuario
+    en: Login forms
+
+    [members]
+
+        [login_target]
+        ca: Pàgina de destí
+        es: Página de destino
+        en: Destination page
+
+            [explanation]
+            ca: La pàgina que rebrà la petició d'autenticació de l'usuari
+            es:
+                La pàgina que recibirá la petición de autenticación del
+                usuario
+            en: The page that will handle the user's authentication request
+

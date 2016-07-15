@@ -8,7 +8,7 @@ u"""
 """
 from hashlib import sha1
 from cocktail.events import event_handler
-from cocktail.translations import translations
+from cocktail.translations import translations, translate_locale
 from cocktail import schema
 from cocktail.html.uigeneration import display_factory
 from woost.models.item import Item
@@ -120,7 +120,7 @@ class User(Item):
         default = schema.DynamicDefault(_backoffice_language_default),
         enumeration = _backoffice_language_enumeration,
         translate_value = lambda value, language = None, **kwargs:
-            "" if value is None else translations(value, language, **kwargs),
+            "" if value is None else translate_locale(value, language, **kwargs),
         text_search = False,
         listed_by_default = False,
         member_group = "language_preferences"
@@ -277,7 +277,7 @@ class User(Item):
 
         if verbose:
             role = None
-            print permission_check_style(translations(permission_type.name))
+            print permission_check_style(translations(permission_type))
             print permission_param_style("user", translations(self))
 
             for key, value in context.iteritems():

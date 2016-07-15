@@ -446,25 +446,6 @@ class FTPDestination(StaticSiteDestination):
         text_search = False
     )
 
-    def __translate__(self, language, **kwargs):
-
-        desc = self.ftp_host
-
-        if desc:
-            user = self.ftp_user
-            if user:
-                desc = user + "@" + desc
-
-            path = self.ftp_path
-            if path:
-                if not path[0] == "/":
-                    path = "/" + path
-                desc += path
-
-            return "ftp://" + desc
-
-        return StaticSiteDestination.__translate__(self, language, **kwargs)
-
     def setup(self, context):
         context["ftp"] = ftplib.FTP(
             self.ftp_host,
@@ -548,6 +529,25 @@ class FTPDestination(StaticSiteDestination):
         return (parent + name) in ftp.nlst(parent)
 
 
+@translations.instances_of(FTPDestination)
+def translate_ftp_destination(destination, **kwargs):
+
+    desc = destination.ftp_host
+
+    if desc:
+        user = destination.ftp_user
+        if user:
+            desc = user + "@" + desc
+
+        path = destination.ftp_path
+        if path:
+            if not path[0] == "/":
+                path = "/" + path
+            desc += path
+
+        return "ftp://" + desc
+
+
 class ZipDestination(StaticSiteDestination):
     """A class that exports a static snapshot of a site's content to a ZIP
     file.
@@ -627,12 +627,6 @@ class AmazonS3Destination(StaticSiteDestination):
 
     prefix = schema.String()
 
-    def __translate__(self, language, **kwargs):
-        return u"%s (%s)" % (
-            translations(self.__class__.__name__, language, **kwargs),
-            self.bucket_name
-        )
-
     def setup(self, context):
 
         from boto.s3.connection import S3Connection
@@ -659,4 +653,12 @@ class AmazonS3Destination(StaticSiteDestination):
             finally:
                 file.close()
             bucket_entry.set_contents_from_string(data)
+
+
+@translations.instances_of(AmazonS3Destination)
+def translate_amazon_s3_destination(destination, **kwargs):
+    return u"%s (%s)" % (
+        translations(destination.__class__, **kwargs),
+        destination.bucket_name
+    )
 

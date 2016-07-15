@@ -1,0 +1,28 @@
+
+[woost.views.BackOfficeReferencesView]
+
+    [summary(count)]
+    @switch count > 0
+
+        [not_referenced]
+        @case False
+        ca: Aquest element no és referenciat per cap altre element.
+        es: Este elemento no está referenciado por ningún otro elemento.
+        en: This element is not referenced by any other element.
+
+        [referenced]
+        @case True
+        ca: Referenciat per <strong>${count}</strong> ${plural2(count, "element", "elements")}
+        es: Referenciado por <strong>${count}</strong> ${plural2(count, "elemento", "elementos")}
+        en: Referenced by <strong>${count}</strong> ${plural2(count, "element", "elements")}
+
+    [referrer_heading]
+    ca: Element relacionat
+    es: Elemento relacionado
+    en: Referrer
+
+    [relation_heading]
+    ca: Relació
+    es: Relación
+    en: Relation
+
