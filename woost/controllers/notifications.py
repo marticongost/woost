@@ -7,6 +7,7 @@
 @since:			February 2010
 """
 from warnings import warn
+from cocktail.translations import translations
 from cocktail.controllers import session
 from cocktail.html import templates
 
@@ -170,4 +171,9 @@ class Notification(object):
         view = templates.new(self.view_class)
         view.notification = self
         return view
+
+
+@translations.instances_of(Notification)
+def translate_notification(notification, **kwargs):
+    return notification.message
 

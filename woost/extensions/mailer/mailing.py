@@ -114,7 +114,7 @@ class Mailing(Item):
                 "%s (%d %s)" % (
                     translations(value),
                     len(get_receivers_by_lists([value])),
-                    translations("woost.extensions.mailer users")
+                    translations("woost.extensions.mailer.users")
                 )
         ),
         edit_control = "cocktail.html.CheckList",
@@ -140,10 +140,7 @@ class Mailing(Item):
     status = schema.Integer(
         editable = schema.READ_ONLY,
         enumeration = (MAILING_STARTED, MAILING_FINISHED),
-        translate_value = lambda value, language = None, **kwargs: \
-            "" if value is None else translations(
-                "woost.extensions.mailer.mailing.Mailing.status %d" % value
-            ),
+        translatable_enumeration = True,
         member_group = "administration"
     )
 

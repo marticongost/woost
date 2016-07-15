@@ -1,0 +1,10 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowAssignTransitionSetup]
+
+    [members]
+
+        [assignments]
+        ca: Assignació de traductors per idiomes
+        es: Asignación de traductores por idiomas
+        en: Per language translator assignments
+

@@ -3,10 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.translations import translations
 from cocktail.controllers import context
 from woost.controllers.backoffice.editstack import StackNode
 from .transition import TranslationWorkflowTransition
 from .request import TranslationWorkflowRequest
+
+translations.load_bundle("woost.extensions.translationworkflow.transitionnode")
 
 
 class TranslationWorkflowTransitionNode(StackNode):

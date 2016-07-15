@@ -1,0 +1,10 @@
+
+[woost.models.configuration.Configuration]
+
+    [members]
+
+        [identity_providers]
+        ca: Serveis d'autenticació d'usuaris
+        es: Servicios de autenticación de usuarios
+        en: User authentication services
+

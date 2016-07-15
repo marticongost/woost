@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
-from cocktail.translations import translations, get_language
+from cocktail.translations import get_language, translate_locale
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
@@ -85,9 +85,9 @@ class LanguageSelector(LinkSelector):
 
     def get_item_label(self, language):
         if self.translated_labels:
-            return translations("locale", locale = language, language = language)
+            return translate_locale(language, language = language)
         else:
-            return translations("locale", locale = language)
+            return translate_locale(language)
 
     def get_entry_url(self, language):
         cms = context["cms"]

@@ -24,6 +24,10 @@ from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.editcontroller import EditController
 from woost.controllers.backoffice.useractions import get_user_action
 
+translations.load_bundle(
+    "woost.controllers.backoffice.installationsynccontroller"
+)
+
 
 class InstallationSyncController(EditController):
 
@@ -110,7 +114,7 @@ class InstallationSyncController(EditController):
         self.comparision = self.synchronization.compare_content()
 
         Notification(
-            translations("woost.controllers.InstallationSyncController.success"),
+            translations("woost.controllers.installationsynccontroller.success"),
             "success"
         ).emit()
 

@@ -1,0 +1,8 @@
+
+[woost.extensions.staticsite.ExportStaticSiteZIPView]
+
+    [download(url)]
+    ca: Pots descarregar el contingut <a href="${url}">aquí</a>
+    es: Puedes descargar el contenido <a href="${url}">aquí</a>
+    en: Download the content <a href="${url}">here</a>
+

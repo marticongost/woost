@@ -7,18 +7,7 @@ from cocktail.translations import translations
 from woost.models import Extension, Configuration, VideoPlayerSettings
 from woost.models.rendering import ChainRenderer
 
-
-translations.define("VimeoExtension",
-    ca = u"Vimeo",
-    es = u"Vimeo",
-    en = u"Vimeo"
-)
-
-translations.define("VimeoExtension-plural",
-    ca = u"Vimeo",
-    es = u"Vimeo",
-    en = u"Vimeo"
-)
+translations.load_bundle("woost.extensions.vimeo.package")
 
 
 class VimeoExtension(Extension):
@@ -41,7 +30,6 @@ class VimeoExtension(Extension):
 
     def _load(self):
         from woost.extensions.vimeo import (
-            strings,
             vimeovideo,
             videoplayersettings
         )

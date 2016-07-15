@@ -61,7 +61,7 @@ class ItemSelector(Element):
                 self.member.related_type.descriptive_member
 
         if self.descriptive_member:
-            self.add_resource("woost://scripts/ItemSelector.js")
+            self.add_resource("woost://scripts/itemselector.js")
 
             key = self.descriptive_member.name
             if self.descriptive_member.translated:
@@ -157,7 +157,7 @@ class ItemSelector(Element):
             value = self.member.type.full_name + "-" + self.name
         )
         select_button.append(
-            translations("woost.views.ItemSelector select")
+            translations("woost.views.ItemSelector.select")
         )
         return select_button
 
@@ -170,7 +170,7 @@ class ItemSelector(Element):
             value = self.member.name
         )
         unlink_button.append(
-            translations("woost.views.ItemSelector unlink")
+            translations("woost.views.ItemSelector.unlink")
         )
         return unlink_button
 
@@ -222,7 +222,7 @@ class ItemSelector(Element):
                 self.member.name + "-" + list(instantiable_types)[0].full_name
             label = new_button
 
-        label.append(translations("woost.views.ItemSelector new"))
+        label.append(translations("woost.views.ItemSelector.new"))
 
         return new_button
 
@@ -235,7 +235,7 @@ class ItemSelector(Element):
             value = self.member.name
         )
         edit_button.append(
-            translations("woost.views.ItemSelector edit")
+            translations("woost.views.ItemSelector.edit")
         )
         return edit_button
 
@@ -248,7 +248,7 @@ class ItemSelector(Element):
             value = self.member.name
         )
         delete_button.append(
-            translations("woost.views.ItemSelector delete")
+            translations("woost.views.ItemSelector.delete")
         )
         return delete_button
 

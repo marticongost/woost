@@ -12,17 +12,7 @@ from woost.models import (
     Configuration
 )
 
-translations.define("GoogleTagManagerExtension",
-    ca = u"Google Tag Manager",
-    es = u"Google Tag Manager",
-    en = u"Google Tag Manager"
-)
-
-translations.define("GoogleTagManagerExtension-plural",
-    ca = u"Google Tag Manager",
-    es = u"Google Tag Manager",
-    en = u"Google Tag Manager"
-)
+translations.load_bundle("woost.extensions.googletagmanager.package")
 
 
 class GoogleTagManagerExtension(Extension):
@@ -46,7 +36,6 @@ class GoogleTagManagerExtension(Extension):
     def _load(self):
 
         from woost.extensions.googletagmanager import (
-            strings,
             configuration,
             website
         )

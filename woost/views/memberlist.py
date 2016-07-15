@@ -21,7 +21,7 @@ class MemberList(Element):
 
     def _build(self):
         self.add_resource("cocktail://scripts/autocomplete.js")
-        self.add_resource("woost://scripts/MemberList.js")
+        self.add_resource("woost://scripts/memberlist.js")
 
     def _ready(self):
 
@@ -68,7 +68,7 @@ class MemberList(Element):
     def create_class_label(self, cls):
         label = Element("span")
         label.add_class("label")
-        label.append(translations(cls.name))
+        label.append(translations(cls))
         return label
 
     def member_is_eligible(self, member):

@@ -3,10 +3,12 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
+from cocktail.translations import translations
 from cocktail import schema
 from woost.models import File, VideoPlayerSettings
 from woost.extensions.vimeo.vimeovideo import VimeoVideo
 
+translations.load_bundle("woost.extensions.vimeo.videoplayersettings")
 
 VideoPlayerSettings.members_order = VideoPlayerSettings.members_order + [
         "vimeo_loop",

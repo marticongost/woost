@@ -1,0 +1,13 @@
+
+[woost.views.BackOfficePreviewView]
+
+    [language_dropdown_label]
+    ca: Idioma:
+    es: Idioma:
+    en: Language:
+
+        [shortcut]
+        ca: i
+        es: i
+        en: l
+

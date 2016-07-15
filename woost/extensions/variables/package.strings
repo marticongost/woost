@@ -1,0 +1,11 @@
+
+[woost.extensions.variables.VariablesExtension]
+ca: Variables
+es: Variables
+en: Variables
+
+    [plural]
+    ca: Variables
+    es: Variables
+    en: Variables
+

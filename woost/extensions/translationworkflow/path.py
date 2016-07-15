@@ -8,6 +8,8 @@ from cocktail import schema
 from woost.models import LocaleMember
 from woost.views.uigeneration import backoffice_edit_control
 
+translations.load_bundle("woost.extensions.translationworkflow.path")
+
 
 class TranslationWorkflowPath(schema.Tuple):
 

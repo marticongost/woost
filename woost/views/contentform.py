@@ -35,7 +35,7 @@ class ContentForm(Form):
         label = Form.get_group_label(self, group)
 
         if not label and (not group or group == "default"):
-            label = translations(self.schema.original_member.name)
+            label = translations(self.schema.original_member)
 
         return label
 

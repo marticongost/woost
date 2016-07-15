@@ -3,8 +3,11 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail.translations import translations
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.surveys.survey import Survey
+
+translations.load_bundle("woost.extensions.surveys.surveyresultsaction")
 
 
 class SurveyResultsAction(UserAction):

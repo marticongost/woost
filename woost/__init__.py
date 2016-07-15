@@ -9,10 +9,8 @@ in python.
 @since:			October 2008
 """
 
-__version__ = "2.10"
+__version__ = "2.11"
 
 from woost.application import Application
-from woost.translations import strings
-
 app = Application()
 

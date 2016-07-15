@@ -1,0 +1,8 @@
+
+[woost.controllers.backoffice.installationsynccontroller]
+
+    [success]
+    ca: S'han sincronitzat els continguts indicats.
+    es: Se han sincronizado los contenidos indicados.
+    en: Successfully synchronized the selected content.
+

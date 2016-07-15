@@ -1,0 +1,33 @@
+
+[woost.extensions.forms.formagreement.FormAgreement]
+ca: Termes i condicions
+es: Términos y condiciones
+en: Terms and conditions
+
+    [plural]
+    ca: Termes i condicions
+    es: Términos y condiciones
+    en: Terms and conditions
+
+    [members]
+
+        [forms]
+        ca: Formularis
+        es: Formularios
+        en: Forms
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [text]
+        ca: Text
+        es: Texto
+        en: Text
+
+        [document]
+        ca: Document
+        es: Documento
+        en: Document
+

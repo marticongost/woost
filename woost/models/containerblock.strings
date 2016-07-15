@@ -1,0 +1,54 @@
+[woost.models.containerblock.ContainerBlock]
+ca: Contenidor
+es: Contenedor
+en: Container
+
+    [plural]
+    ca: Contenidors
+    es: Contenedores
+    en: Containers
+
+    [members]
+
+        [blocks]
+        ca: Blocs fills
+        es: Bloques hijos
+        en: Child blocks
+
+        [list_type]
+        ca: Tipus de llista
+        es: Tipo de lista
+        en: List type
+
+            [values]
+
+                [div]
+                ca: Element genèric (div)
+                es: Elemento genérico (div)
+                en: Generic element (div)
+
+                [ul]
+                ca: Llista
+                es: Lista
+                en: List
+
+                [ol]
+                ca: Llista ordenada
+                es: Lista ordenada
+                en: Ordered list
+
+                [dl]
+                ca: Llista de definició
+                es: Lista de definición
+                en: Definition list
+
+        [background_image]
+        ca: Imatge de fons
+        es: Imagen de fondo
+        en: Background image
+
+        [background_image_factory]
+        ca: Processat per la imatge de fons
+        es: Procesado para la imagen de fondo
+        en: Processing for the background image
+
