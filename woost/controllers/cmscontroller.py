@@ -355,6 +355,9 @@ class CMSController(BaseCMSController):
         # Extract information from the URL
         cms.process_url(get_request_url())
 
+        if app.website is None:
+            raise cherrypy.NotFound()
+
         # Invoke the authentication module
         app.authentication.process_request()
 
