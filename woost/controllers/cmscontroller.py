@@ -355,12 +355,6 @@ class CMSController(BaseCMSController):
         # Extract information from the URL
         cms.process_url(get_request_url())
 
-        if not app.website:
-            raise cherrypy.HTTPError(400, "Unknown website")
-
-        if not app.publishable:
-            raise cherrypy.NotFound()
-
         # Invoke the authentication module
         app.authentication.process_request()
 
