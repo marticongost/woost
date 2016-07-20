@@ -438,8 +438,9 @@ def delete_validating(item, user = None, deleted_set = None):
 
     if deleted_set is None:
         class ValidatingDeletedSet(InstrumentedSet):
-            def item_added(self, item):
-                user.require_permission(DeletePermission, target = item)
+            def changing(self, added, removed, context):
+                for item in added:
+                    user.require_permission(DeletePermission, target = item)
 
         deleted_set = ValidatingDeletedSet()
 
