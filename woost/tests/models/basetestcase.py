@@ -17,7 +17,6 @@ class BaseTestCase(TempStorageMixin, TestCase):
         from woost import app
         from woost.models import Configuration, User, Role
         from woost.models.trigger import get_triggers_enabled, set_triggers_enabled
-        from woost.controllers.installer import Installer
 
         self.__prev_installation_id = app.installation_id
         self.__prev_triggers_enabled = get_triggers_enabled()
@@ -26,9 +25,13 @@ class BaseTestCase(TempStorageMixin, TestCase):
 
         TempStorageMixin.setUp(self)
 
+        # Project folders
         app.root = os.path.join(self._temp_dir, "test_project")
-        installer = Installer()
-        installer.create_project({"project_path": app.root})
+        os.mkdir(app.root)
+        os.mkdir(app.path("image-cache"))
+        os.mkdir(app.path("static"))
+        os.mkdir(app.path("static", "images"))
+        os.mkdir(app.path("upload"))
 
         # Configuration
         self.config = Configuration(qname = "woost.configuration")
