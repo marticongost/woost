@@ -6,7 +6,7 @@ u"""Defines migrations to the database schema for woost.
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
 from cocktail.persistence.migration import migration_steps
-from cocktail.persistence.utils import remove_broken_type
+from cocktail.persistence.utils import remove_broken_type, is_broken
 from warnings import warn
 
 def admin_members_restriction(members):
@@ -1119,6 +1119,7 @@ def fix_author_in_change_item_state(e):
         if (
             change.action == "create"
             and change.target is not None
+            and not is_broken(change.target)
             and change.item_state is not None
             and change.item_state.get("author") is None
         ):
@@ -1160,8 +1161,13 @@ def make_anonymous_relation_ends_not_versioned(e):
     keys_cache = {}
 
     for change in Change.select(Change.action.equal("modify")):
+
+        if is_broken(change.target):
+            continue
+
         model = change.target.__class__
         keys = keys_cache.get(model)
+
         if keys is None:
             keys = [
                 member.name
