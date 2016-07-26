@@ -9,7 +9,7 @@ u"""
 from cocktail.html import templates
 from cocktail.html.utils import is_inline_element
 from cocktail.translations import translations
-from woost.models import Style
+from woost.models import Style, Publishable
 
 TinyMCE = templates.get_class("cocktail.html.TinyMCE")
 
@@ -26,7 +26,6 @@ class RichTextEditor(TinyMCE):
         "entity_encoding": "raw",
         "style_formats_merge": True,
         "height": 250,
-        "content_css": "/user_styles/?backoffice=1",
         "convert_urls": False,
         "statusbar": False,
         "menubar": [
@@ -94,6 +93,13 @@ class RichTextEditor(TinyMCE):
         return format_dfn
 
     def _ready(self):
+
+        user_styles = Publishable.get_instance(qname = "woost.user_styles")
+        if user_styles:
+            self.tinymce_params.setdefault(
+                "content_css",
+                user_styles.get_uri(parameters = {"backoffice": "1"})
+            )
 
         styles = self.styles
         if styles is None:
