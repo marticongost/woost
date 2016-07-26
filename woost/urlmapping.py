@@ -144,7 +144,7 @@ class URLMapping(object):
         if url_resolution is None:
             url_resolution = self.resolve(url)
 
-        if url_resolution is None or url_resolution.website is None:
+        if url_resolution is None:
             return url
 
         kwargs.setdefault("publishable", url_resolution.publishable)
