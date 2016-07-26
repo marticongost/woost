@@ -3,7 +3,7 @@
 from cocktail.translations import translate_locale
 @end
 
-[woost.extensions.translationworkflow.translation_path(source_language, target_language, **kwargs]
+[woost.extensions.translationworkflow.translation_path(source_language, target_language, **kwargs)]
 ca:
     ${ca_possessive(translate_locale(source_language).lower())}
     a
