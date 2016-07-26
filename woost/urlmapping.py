@@ -316,6 +316,33 @@ class Optional(URLComponent):
             return result
 
 
+class FixedHostname(URLComponent):
+
+    hostname = None
+
+    def __init__(self, hostname):
+        URLComponent.__init__(self)
+        self.hostname = hostname
+
+    def build_url(
+        self,
+        url_builder,
+        host = None,
+        **kwargs
+    ):
+        if host == "!":
+            url_builder.hostname = self.hostname
+            return MATCH
+        else:
+            return IGNORED
+
+    def resolve(self, url, resolution):
+        if url.hostname == self.hostname:
+            return MATCH
+        else:
+            return NO_MATCH
+
+
 class WebsiteInHostname(URLComponent):
 
     def build_url(
