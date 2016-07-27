@@ -1,6 +1,18 @@
 
 [woost.controllers.backoffice.usereditnode]
 
+    [UserEditNode.form_schema.members]
+
+        [change_password]
+        ca: Canviar la contrasenya
+        es: Cambiar la contraseña
+        en: Change password
+
+        [password_confirmation]
+        ca: Confirma la contrasenya
+        es: Confirma la contraseña
+        en: Password confirmation
+
     [PasswordConfirmationError.instance]
     ca: Les contrasenyes no coincideixen
     es: Las contraseñas no coinciden
