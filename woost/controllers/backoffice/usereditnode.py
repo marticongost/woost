@@ -7,8 +7,11 @@ u"""
 @since:			January 2009
 """
 from cocktail.modeling import cached_getter
+from cocktail.translations import translations
 from cocktail import schema
 from woost.controllers.backoffice.editstack import EditNode
+
+translations.load_bundle("woost.controllers.backoffice.usereditnode")
 
 
 class UserEditNode(EditNode):
@@ -55,8 +58,12 @@ class UserEditNode(EditNode):
                     edit_control = "cocktail.html.PasswordBox",
                     visible_in_detail_view = False,
                     required = password_member.required,
-                    member_group = password_member.member_group
+                    member_group = password_member.member_group,
+                    custom_translation_key =
+                        "woost.controllers.backoffice.usereditnode."
+                        "UserEditNode.form_schema.members.password_confirmation"
                 )
+
                 form_schema.add_member(password_conf_member)
                 order.insert(pos + 1, "password_confirmation")
 
@@ -67,7 +74,10 @@ class UserEditNode(EditNode):
                         required = True,
                         default = False,
                         visible_in_detail_view = False,
-                        member_group = password_member.member_group
+                        member_group = password_member.member_group,
+                        custom_translation_key =
+                            "woost.controllers.backoffice.usereditnode."
+                            "UserEditNode.form_schema.members.change_password"
                     )
                     form_schema.add_member(change_password_member)
                     order.insert(pos, "change_password")
