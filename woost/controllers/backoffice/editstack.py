@@ -635,11 +635,23 @@ class EditNode(StackNode):
     def __getstate__(self):
 
         state = {}
+        form_schema = self.form_schema
 
-        for key, value in self.__dict__.iteritems():
+        for key, value in self.__dict__.items():
             if key in self._persistent_keys:
                 if key == "_item" and not value.is_inserted:
                     value = None
+                elif key == "form_data":
+                    # Don't pickle read only data; it is pointless and can
+                    # degrade performance or even raise RuntimeError on big
+                    # recursive data sets
+                    p_form_data = {}
+                    for k, v in value.iteritems():
+                        member = form_schema.get_member(k)
+                        if not member or member.editable == schema.EDITABLE:
+                            p_form_data[k] = v
+                    value = p_form_data
+
                 state[key] = value
 
         state["content_type"] = self._item.__class__
