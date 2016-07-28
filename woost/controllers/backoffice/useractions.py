@@ -832,6 +832,13 @@ class InvalidateCacheAction(UserAction):
     max = None
     excluded = UserAction.excluded | frozenset(["collection"])
 
+    def is_available(self, context, target):
+        return (
+            app.cache.enabled
+            and app.cache.storage
+            and UserAction.is_available(self, context, target)
+        )
+
     def invoke(self, controller, selection):
 
         if selection is None:
