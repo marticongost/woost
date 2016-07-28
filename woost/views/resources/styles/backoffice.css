@@ -3707,7 +3707,7 @@ div.success_label {
 
 .BackOfficeLayout .ItemCard .item_content {
     display: inline-block;
-    vertical-align: top;
+    vertical-align: baseline;
 }
 
 .BackOfficeLayout .ItemCard .item_heading {
@@ -3720,14 +3720,10 @@ div.success_label {
     font-size: 0.9em;
 }
 
-.BackOfficeLayout .ItemCard .item_type {
-    color: #666;
-}
-
 .BackOfficeLayout .ItemCard .item_path {
-    vertical-align: top;
+    vertical-align: baseline;
     display: inline-block;
-    margin-left: 0.5em;
+    margin-left: 4px;
 }
 
 .BackOfficeLayout .ItemCard .item_path ul {
@@ -3736,7 +3732,7 @@ div.success_label {
     vertical-align: top;
     padding: 0;
     margin: 0;
-    margin-left: 0.4em;
+    margin-left: 4px;
 }
 
 .BackOfficeLayout .ItemCard .item_path li {
