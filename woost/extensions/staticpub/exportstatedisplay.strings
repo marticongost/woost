@@ -1,0 +1,8 @@
+
+[woost.extensions.staticpub.ExportStateDisplay]
+
+    [excel_link]
+    ca: Detalls
+    es: Detalles
+    en: Details
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.models import Configuration, Publishable
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.ItemLabel">
+
+    <?resource woost://styles/staticpub-itemlabeloverlay.scss.css ?>
+
+    <py:ready>
+        <?py
+        if (
+            self.item
+            and isinstance(self.item, Publishable)
+            and self.item.included_in_static_publication
+        ):
+            destination = Configuration.instance.staticpub_default_dest
+
+            if destination is not None:
+
+                if destination.has_pending_tasks(self.item):
+                    state = "pending"
+                elif any(
+                    destination.has_pending_tasks(descendant)
+                    for descendant in self.item.descend_tree()
+                ):
+                    state = "descendants_pending"
+                else:
+                    state = None
+
+                if state:
+                    element["data-staticpub-state"] = state
+                    self.staticpub_pending_marker = self.create_staticpub_pending_marker(state)
+                    self.append(self.staticpub_pending_marker)
+        ?>
+    </py:ready>
+
+    <img
+        py:def="staticpub_pending_marker" py:args="state"
+        src="${normalize_resource_uri('woost://images/staticpub_%s.png' % state)}"
+        title="${view_translations('states.' + state)}"/>
+
+</py:overlay>
+

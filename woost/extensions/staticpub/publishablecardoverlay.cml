@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.stringutils import normalize
+from cocktail.translations import translate_locale
+from woost.models import Configuration
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.PublishableCard">
+
+    <?resource woost://styles/staticpub-publishablecardoverlay.scss.css ?>
+
+    <?py-class
+    static_pub_remark_summary_threshold = 4
+    ?>
+
+    <py:ready>
+        <?py
+        if self.item and self.item.included_in_static_publication:
+            destination = Configuration.instance.staticpub_default_dest
+            if destination:
+                tasks = list(destination.iter_pending_tasks(self.item))
+                if tasks:
+                    languages = [
+                        translate_locale(lang)
+                        for pub_id, action, lang in tasks
+                    ]
+                    languages.sort(key = normalize)
+                    self.static_pub_remark = self.create_static_pub_remark(languages)
+                    self.item_info.append(self.static_pub_remark)
+        ?>
+    </py:ready>
+
+    <div py:def="static_pub_remark" py:args="languages">
+        <?py
+        if len(languages) >= self.static_pub_remark_summary_threshold:
+            element.static_pub_remark_details = self.create_static_pub_remark_details(languages)
+            element.append(element.static_pub_remark_details)
+        else:
+            element.append(view_translations("static_pub_remark", languages = languages))
+        ?>
+    </div>
+
+    <details py:def="static_pub_remark_details" py:args="languages">
+        <summary>${view_translations("static_pub_remark_details", languages = languages)}</summary>
+        <ul py:local_id="language_list">
+            <li py:for="language in languages">
+                ${language}
+            </li>
+        </ul>
+    </details>
+
+</py:overlay>
+

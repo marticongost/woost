@@ -1,0 +1,86 @@
+
+[woost.extensions.staticpub.exportcontroller]
+
+    [ExportController]
+
+        [task_count(count)]
+        @switch count
+
+            [empty]
+            @case 0
+            ca: No hi ha cap element que encaixi amb la selecció indicada.
+            es: Ningún elemento encaja con la selección indicada.
+            en: No element matches the given selection.
+
+            [not_empty]
+            @default
+            ca: ${plural2(count, u"S'exportarà l'element següent:", u"S'exportaran <strong>%d</strong> elements:")}
+            es: ${plural2(count, u"Se exportará el elemento siguiente:", u"Se exportarán <strong>%d</strong> elementos:")}
+            en: The following ${plural2(count, u"element", u"<strong>%d</strong> elements")} will be exported
+
+        [language_count(count)]
+        ca: ${plural2(count, "1 idioma", "%d idiomes")}
+        es: ${plural2(count, "1 idioma", "%d idiomas")}
+        en: ${plural2(count, "1 language", "%d languages")}
+
+        [export_schema]
+
+            [members]
+
+                [destination]
+                ca: Destinació
+                es: Destinación
+                en: Destination
+
+                [selection]
+                ca: Contingut a exportar
+                es: Contenido a exportar
+                en: Content to export
+
+                    [none]
+                    ca: Tota la web
+                    es: Toda la web
+                    en: Whole website
+
+                [invalidated_content_only]
+                ca: Incloure només els elements modificats
+                es: Incluir solo los elementos modificados
+                en: Only include invalidated elements
+
+                [include_descendants]
+                ca: Incloure pàgines filles
+                es: Incluir páginas hijas
+                en: Include child elements
+
+                [language_mode]
+                ca: Idiomes a exportar
+                es: Idiomas a exportar
+                en: Languages to export
+
+                    [values]
+
+                        [all]
+                        ca: Incloure tots els idiomes
+                        es: Incluir todos los idiomas
+                        en: Include all languages
+
+                        [include]
+                        ca: Incloure només els idiomes indicats
+                        es: Incluir solo los idiomas indicados
+                        en: Include only selected languages
+
+                        [exclude]
+                        ca: Excloure els idiomes indicats
+                        es: Excluir los idiomas indicados
+                        en: Exclude selected languages
+
+                [language_subset]
+                ca: Subconjunt d'idiomes
+                es: Subconjunto de idiomas
+                en: Language subset
+
+                [include_neutral_language]
+                ca: Incloure contingut no traduïble
+                es: Incluir contenido no traducible
+                en: Include non translatable content
+
