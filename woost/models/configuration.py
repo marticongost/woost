@@ -266,7 +266,7 @@ class Configuration(Item):
     theme = schema.Reference(
         type = Theme,
         related_end = schema.Collection(),
-        member_group = "publication"
+        member_group = "presentation"
     )
 
     renderers = schema.Collection(
