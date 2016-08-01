@@ -78,6 +78,7 @@ class Configuration(Item):
         "heed_client_language",
         "backoffice_language",
         "backoffice_language_chain",
+        "theme",
         "renderers",
         "image_factories",
         "video_player_settings",
