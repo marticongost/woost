@@ -13,9 +13,7 @@ from woost import app
     hide_if_empty = True
     ?>
 
-    <?py
-    self.add_resource("woost://scripts/notices-NoticesBox.js")
-    ?>
+    <?resource woost://scripts/notices-noticesbox.js ?>
 
     <button
         py:id="close_notice_button"
