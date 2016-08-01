@@ -45,6 +45,11 @@ en: Website
         es: Presentación
         en: Presentation
 
+            [appearence]
+            ca: Aparença
+            es: Apariencia
+            en: Appearence
+
         [meta]
         ca: Metadades
         es: Metadatos
@@ -167,6 +172,21 @@ en: Website
         ca: Tema visual
         es: Tema visual
         en: Visual theme
+
+        [default_page_template]
+        ca: Plantilla de pàgina per defecte
+        es: Plantilla de página por defecto
+        en: Default page template
+
+        [default_news_template]
+        ca: Plantilla de notícia per defecte
+        es: Plantilla de noticia por defecto
+        en: Default news template
+
+        [default_event_template]
+        ca: Plantilla d'esdeveniment per defecte
+        es: Plantilla de evento por defecto
+        en: Default event template
 
         [home]
         ca: Pàgina d'inici

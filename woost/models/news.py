@@ -11,6 +11,7 @@ from cocktail import schema
 from .document import Document
 from .file import File
 from .slot import Slot
+from .configuration import Configuration
 
 
 class News(Document):
@@ -43,4 +44,10 @@ class News(Document):
     )
 
     blocks = Slot()
+
+    def get_default_template(self):
+        return (
+            Configuration.instance.get_setting("default_news_template")
+            or Document.get_default_template(self)
+        )
 

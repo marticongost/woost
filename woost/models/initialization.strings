@@ -100,10 +100,20 @@
     es: Tema por defecto
     en: Default theme
 
-    [standard_template.title]
-    ca: Plantilla estàndard
-    es: Plantilla estándar
-    en: Standard template
+    [default_page_template.title]
+    ca: Plantilla de pàgina estàndard
+    es: Plantilla de página estándar
+    en: Standard page template
+
+    [default_news_template.title]
+    ca: Plantilla de notícia
+    es: Plantilla de notincia
+    en: News template
+
+    [default_event_template.title]
+    ca: Plantilla d'esdeveniment
+    es: Plantilla de evento
+    en: Event template
 
     [home.title]
     ca: Lloc web
