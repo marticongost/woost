@@ -79,7 +79,8 @@ class DocumentController(PublishableController):
 
     @cached_getter
     def page_template(self):
-        template = app.publishable.template
+
+        template = app.publishable.get_template()
 
         if template is None:
             raise cherrypy.NotFound()

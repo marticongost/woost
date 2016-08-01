@@ -1326,3 +1326,35 @@ def create_default_grid(e):
     for theme in Theme.select():
         theme.grid = grid
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create default templates")
+
+@when(step.executing)
+def create_default_templates(e):
+
+    from woost.models import Configuration, Template, Page, News, Event
+
+    config = Configuration.instance
+    config.default_page_template = \
+        Template.get_instance(qname = "woost.standard_template")
+
+    for page in Page.select():
+        if page.template is config.default_page_template:
+            page.template = None
+
+    for doc_type, setting in (
+        (News, "default_news_template"),
+        (Event, "default_event_template")
+    ):
+        templates = set()
+
+        for doc in doc_type.select():
+            if doc.template:
+                templates.add(doc.template)
+
+        if len(templates) == 1:
+            config.set(setting, list(templates)[0])
+            for doc in doc_type.select():
+                doc.template = None
+

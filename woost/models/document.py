@@ -164,14 +164,23 @@ class Document(Publishable):
                 for descendant in child.descend_tree(True):
                     yield descendant
 
+    def get_template(self):
+        return self.template or self.get_default_template()
+
+    def get_default_template(self):
+        return None
+
     def render(self, **values):
         """Renders the document using its template."""
-        if self.template is None:
+
+        template = self.get_template()
+
+        if template is None:
             raise ValueError("Can't render a document without a template")
 
         values["publishable"] = self
 
-        view = templates.new(self.template.identifier)
+        view = templates.new(template.identifier)
         for key, value in values.iteritems():
             setattr(view, key, value)
 

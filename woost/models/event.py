@@ -10,6 +10,7 @@ from cocktail import schema
 from .document import Document
 from .slot import Slot
 from .file import File
+from .configuration import Configuration
 
 
 class Event(Document):
@@ -55,4 +56,10 @@ class Event(Document):
     )
 
     blocks = Slot()
+
+    def get_default_template(self):
+        return (
+            Configuration.instance.get_setting("default_event_template")
+            or Document.get_default_template(self)
+        )
 
