@@ -429,7 +429,7 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        raise cherrypy.HTTPRedirect(self.get_url(controller, selection))
+        raise cherrypy.HTTPRedirect(str(self.get_url(controller, selection)))
 
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
