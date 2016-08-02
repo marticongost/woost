@@ -66,7 +66,7 @@ class HorizontalAlignment(schema.String):
             return ""
         else:
             return translations(
-                "woost.models.rendering.image_effects.horizontal_alignment."
+                "woost.models.rendering.imageeffects.horizontal_alignment."
                     + value,
                 language,
                 kwargs
@@ -84,7 +84,7 @@ class VerticalAlignment(schema.String):
             return ""
         else:
             return translations(
-                "woost.models.rendering.image_effects.vertical_alignment."
+                "woost.models.rendering.imageeffects.vertical_alignment."
                     + value,
                 language,
                 kwargs
