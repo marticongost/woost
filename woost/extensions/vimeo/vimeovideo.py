@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
 import re
+from cocktail.urls import URL
 from cocktail import schema
 from woost.models import Publishable, url_importer
 
