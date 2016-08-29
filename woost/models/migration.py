@@ -1114,7 +1114,10 @@ step = MigrationStep("Fix 'author' member in Change.item_state")
 
 @when(step.executing)
 def fix_author_in_change_item_state(e):
+
+    from cocktail.persistence.utils import is_broken
     from woost.models import Change
+
     for change in Change.select():
         if (
             change.action == "create"
@@ -1123,7 +1126,12 @@ def fix_author_in_change_item_state(e):
             and change.item_state is not None
             and change.item_state.get("author") is None
         ):
-            change.item_state["author"] = change.target.author
+            if is_broken(change.target):
+                author = change.target.__Broken_state__["_author"]
+            else:
+                author = change.target.author
+
+            change.item_state["author"] = author
 
 #------------------------------------------------------------------------------
 
@@ -1156,6 +1164,7 @@ step = MigrationStep("Make anonymous relation ends not versioned")
 def make_anonymous_relation_ends_not_versioned(e):
 
     from cocktail import schema
+    from cocktail.persistence.utils import is_broken
     from woost.models import Change
 
     keys_cache = {}
