@@ -313,7 +313,15 @@ class SiteInitializer(object):
 
         # Templates and controllers
         self.create_controllers()
-        self.standard_template = self.create_standard_template()
+
+        self.configuration.default_page_template = \
+            self.create_default_page_template()
+
+        self.configuration.default_news_template = \
+            self.create_default_news_template()
+
+        self.configuration.default_event_template = \
+            self.create_default_event_template()
 
         # Home page
         self.website.home = self.create_home()
@@ -693,10 +701,26 @@ class SiteInitializer(object):
             authorized = False
         )
 
-    def create_standard_template(self):
+    def create_default_page_template(self):
         return self._create(
             Template,
-            qname = "woost.standard_template",
+            qname = "woost.default_page_template",
+            title = TranslatedValues(),
+            identifier = "woost.views.GenericSiteLayout",
+        )
+
+    def create_default_news_template(self):
+        return self._create(
+            Template,
+            qname = "woost.default_news_template",
+            title = TranslatedValues(),
+            identifier = "woost.views.GenericSiteLayout",
+        )
+
+    def create_default_event_template(self):
+        return self._create(
+            Template,
+            qname = "woost.default_event_template",
             title = TranslatedValues(),
             identifier = "woost.views.GenericSiteLayout",
         )

@@ -3,17 +3,18 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail import schema
 from .document import Document
-from .template import Template
 from .slot import Slot
+from .configuration import Configuration
 
 
 class Page(Document):
 
-    default_template = schema.DynamicDefault(
-        lambda: Template.get_instance(qname = "woost.standard_template")
-    )
-
     blocks = Slot()
+
+    def get_default_template(self):
+        return (
+            Configuration.instance.get_setting("default_page_template")
+            or Document.get_default_template(self)
+        )
 
