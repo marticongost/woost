@@ -11,6 +11,7 @@ from woost.models.file import File
 from woost.models.publishable import Publishable
 from woost.models.metatags import MetaTags
 from .theme import Theme
+from .template import Template
 from .slot import Slot
 
 
@@ -71,6 +72,9 @@ class Website(Item):
 
         # presentation
         "theme",
+        "default_page_template",
+        "default_news_template",
+        "default_event_template",
 
         # meta
         "meta_tags",
@@ -262,6 +266,24 @@ class Website(Item):
         related_end = schema.Collection(),
         listed_by_default = False,
         member_group = "publication"
+    )
+
+    default_page_template = schema.Reference(
+        type = Template,
+        related_end = schema.Collection(),
+        member_group = "presentation.appearence"
+    )
+
+    default_news_template = schema.Reference(
+        type = Template,
+        related_end = schema.Collection(),
+        member_group = "presentation.appearence"
+    )
+
+    default_event_template = schema.Reference(
+        type = Template,
+        related_end = schema.Collection(),
+        member_group = "presentation.appearence"
     )
 
     # meta

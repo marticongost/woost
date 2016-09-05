@@ -78,6 +78,11 @@ en: Document
         es: Plantilla
         en: Template
 
+            [explanation]
+            ca: Deixar en blanc per utilitzar la plantilla per defecte.
+            es: Dejar en blanco para utilizar la plantilla por defecto.
+            en: Leave blank to use the default template.
+
         [children]
         ca: Pàgines filles
         es: Páginas hijas

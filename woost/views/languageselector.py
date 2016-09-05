@@ -10,7 +10,6 @@ from cocktail.translations import get_language, translate_locale
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
-from cocktail.controllers import context
 from woost import app
 from woost.models import (
     Configuration,
@@ -90,17 +89,19 @@ class LanguageSelector(LinkSelector):
             return translate_locale(language)
 
     def get_entry_url(self, language):
-        cms = context["cms"]
+
         publishable = app.publishable
-        translation_url = app.url_mapping.transform_request_url(
-            language = language
-        )
 
         if (
             self.missing_translations == "redirect"
             and not publishable.is_accessible(language = language)
         ):
-            translation_url = translation_url.copy(path = None)
+            publishable = app.website.home
+            translation_url = publishable.get_uri(language = language)
+        else:
+            translation_url = app.url_mapping.transform_request_url(
+                language = language
+            )
 
         return translation_url
 
