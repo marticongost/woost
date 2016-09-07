@@ -170,7 +170,10 @@ class TranslationWorkflowRequest(Item):
         if not states:
             yield (
                 "all",
-                translations("TranslationWorkflowRequest.tabs.all"),
+                translations(
+                    "woost.extensions.translationworkflow.request."
+                    "TranslationWorkflowRequest.tabs.all"
+                ),
                 None,
                 {"state": None}
             )

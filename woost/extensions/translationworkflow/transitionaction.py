@@ -25,6 +25,10 @@ from .utils import (
     notify_translation_request_changes
 )
 
+translations.load_bundle(
+    "woost.extensions.translationworkflow.transitionaction"
+)
+
 
 class TranslationWorkflowTransitionAction(UserAction):
 

@@ -6,20 +6,20 @@ en: Change state
 
 [woost.extensions.translationworkflow.transitionaction]
 
-    [TranslationWorkflowTransitionAction.instance(action)]
-    *: t{action.transition}
+    [TranslationWorkflowTransitionAction.instance(self, **kwargs)]
+    *: t{self.transition}
 
-    [TranslationWorkflowInvalidTextError.instance(error)]
+    [TranslationWorkflowInvalidTextError.instance(self, **kwargs)]
     ca:
-        <em>t{error.request}</em> conté errors que impedeixen passar-la a l'estat
-        <em>${translations(error.transition.target_state).lower()}</em>
-        (t{error.error})
+        <em>t{self.request}</em> conté errors que impedeixen passar-la a l'estat
+        <em>${translations(self.transition.target_state).lower()}</em>
+        (t{self.error})
     es:
-        <em>t{error.request}</em> contiene errores que impiden pasarla al estado
-        <em>${translations(error.transition.target_state).lower()}</em>
-        (t{error.error})
+        <em>t{self.request}</em> contiene errores que impiden pasarla al estado
+        <em>${translations(self.transition.target_state).lower()}</em>
+        (t{self.error})
     en:
-        <em>t{error.request}</em> contains errors that prevent its transition to the
-        <em>${translations(error.transition.target_state).lower()}</em> state
-        (t{error.error})
+        <em>t{self.request}</em> contains errors that prevent its transition to the
+        <em>${translations(self.transition.target_state).lower()}</em> state
+        (t{self.error})
 

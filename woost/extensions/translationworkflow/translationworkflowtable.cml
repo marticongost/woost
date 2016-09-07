@@ -11,9 +11,7 @@ from woost.models import ReadMemberPermission
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:mixins="DataDisplay">
 
-    <?py
-    self.add_resource("woost://styles/TranslationWorkflowTable.css")
-    ?>
+    <?resource woost://styles/translationworkflowtable.css ?>
 
     <py:ready>
         <?py
