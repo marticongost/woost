@@ -475,6 +475,17 @@ class PermissionExpression(Expression):
             )):
                 permission_query = permission.select_items(user = user)
 
+                # Optimization: all instances of a type authorized / forbidden,
+                # no need to intersect subsets
+                if (
+                    not permission_query.is_subset()
+                    and issubclass(query.type, permission_query.type)
+                ):
+                    if permission.authorized:
+                        return dataset
+                    else:
+                        return set()
+
                 if query.verbose:
                     permission_query.verbose = True
                     permission_query.nesting = query.nesting + 1
