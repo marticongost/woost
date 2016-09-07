@@ -4,8 +4,9 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?resource woost://styles/translationworkflowrequestform.css ?>
+
     <?py
-    self.add_resource("woost://styles/TranslationWorkflowRequestForm.css")
     self.set_member_label("translated_values", "")
     ?>
 

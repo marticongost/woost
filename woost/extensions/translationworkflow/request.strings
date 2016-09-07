@@ -1,6 +1,7 @@
 
 @init
 from cocktail.stringutils import decapitalize
+from cocktail.translations import translate_locale
 
 translations.define(
     "woost.extensions.translationworkflow.request."

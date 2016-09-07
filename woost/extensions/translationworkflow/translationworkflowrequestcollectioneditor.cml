@@ -21,9 +21,7 @@ from woost.extensions.translationworkflow.request \
                 return self.key.get("plural_title", language)
     ?>
 
-    <?py
-    self.add_resource("woost://styles/TranslationWorkflowRequestCollectionEditor.css")
-    ?>
+    <?resource woost://styles/translationworkflowrequestcollectioneditor.css ?>
 
     <py:with py:element="self.toolbar">
         <?py

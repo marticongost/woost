@@ -4,10 +4,8 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py
-    self.add_resource("woost://scripts/TranslationWorkflowPathEditor.js")
-    self.add_resource("woost://styles/TranslationWorkflowPathEditor.css")
-    ?>
+    <?resource woost://scripts/translationworkflowpatheditor.js ?>
+    <?resource woost://styles/translationworkflowpatheditor.css ?>
 
     <py:cocktail.html.TextBox py:id="text_box"/>
 
