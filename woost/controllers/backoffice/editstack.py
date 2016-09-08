@@ -1047,17 +1047,21 @@ class EditNode(StackNode):
                 for key, member \
                 in self.form_schema.members().iteritems():
                     if member.translated:
-                        value = schema.get(
-                            form_data,
-                            key,
-                            language = fallback_language
-                        )
-                        schema.set(
-                            form_data,
-                            key,
-                            value,
-                            language = language
-                        )
+                        try:
+                            value = schema.get(
+                                form_data,
+                                key,
+                                language = fallback_language
+                            )
+                        except KeyError:
+                            pass
+                        else:
+                            schema.set(
+                                form_data,
+                                key,
+                                value,
+                                language = language
+                            )
                 break
         # If there's no fallback translation to use, create a new
         # translation from scratch
