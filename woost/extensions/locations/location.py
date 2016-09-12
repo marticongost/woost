@@ -315,7 +315,12 @@ def translate_locale_component(locale, component, index, language = None):
 
             return u" - " + location_name
 
-    return base_translate_locale_component(locale, component, index)
+    return base_translate_locale_component(
+        locale,
+        component,
+        index,
+        language = language
+    )
 
 translations.definitions["cocktail.locale_component"] = \
     translate_locale_component
