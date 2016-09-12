@@ -66,6 +66,7 @@ class PaymentGateway(Item):
 
     def get_payment_url(self, *args, **kwargs):
         return app.url_mapping.get_url(
+            host = "!",
             path = ["payments", str(self.id)] + list(args),
             parameters = kwargs
         )
