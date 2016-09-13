@@ -89,11 +89,7 @@ class ReCaptchaExtension(Extension):
 
     def _load(self):
 
-        # Import the extension's models
-        from woost.extensions.recaptcha import (
-            strings,
-            schemarecaptchas
-        )
+        from woost.extensions.recaptcha import schemarecaptchas
 
         # Append additional members to the extension
         ReCaptchaExtension.members_order = [
