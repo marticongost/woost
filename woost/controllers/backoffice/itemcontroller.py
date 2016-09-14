@@ -47,10 +47,6 @@ class ItemController(BaseBackOfficeController):
         return resolve(self.stack_node.item.preview_controller)
 
     @cached_getter
-    def show_detail(self):
-        return resolve(self.stack_node.item.show_detail_controller)
-
-    @cached_getter
     def fields(self):
         return resolve(self.stack_node.item.edit_controller)
 
