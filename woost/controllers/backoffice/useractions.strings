@@ -1,7 +1,7 @@
 @init
 def describe_selection_error_limit(error, min_label, max_label, singular, plural):
 
-    if instance.action.min and instance.selection_size < instance.action.min:
+    if error.action.min and error.selection_size < error.action.min:
         label = min_label
         limit = error.action.min
     else:
@@ -73,7 +73,17 @@ def describe_selection_error_limit(error, min_label, max_label, singular, plural
         es: a
         en: a
 
-    [add_integral]
+    [pick]
+    ca: Llistar
+    es: Listar
+    en: Browse
+
+    [pick_new]
+    ca: Nou
+    es: Nuevo
+    en: New
+
+    [add_new]
     ca: Afegir
     es: Añadir
     en: Add
@@ -82,6 +92,11 @@ def describe_selection_error_limit(error, min_label, max_label, singular, plural
         ca: a
         es: a
         en: a
+
+    [unlink]
+    ca: Desvincular
+    es: Desvincular
+    en: Unlink
 
     [remove]
     ca: Treure
@@ -307,7 +322,7 @@ def describe_selection_error_limit(error, min_label, max_label, singular, plural
         el ${describe_selection_error_limit(error, u"mínim", u"màxim", "és d'1 element", "és de %d elements")}.
     es:
         No se puede aplicar la acción <em>${translations(error.action).lower()}</em>
-        a una selección de ${plural2(error.selection_size, u"un solo elemento", "de %d elementos")};
+        a una selección de ${plural2(error.selection_size, u"un solo elemento", "%d elementos")};
         el ${describe_selection_error_limit(error, u"mínimo", u"máximo", "es de 1 elemento", "es de %d elementos")}.
     en:
         Can't apply action <em>${translations(error.action).lower()}</em>

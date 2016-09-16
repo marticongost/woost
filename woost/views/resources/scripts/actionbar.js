@@ -1,10 +1,10 @@
 /*-----------------------------------------------------------------------------
 
 
-@author:		Jordi Fernández
-@contact:		jordi.fernandez@whads.com
-@organization:	Whads/Accent SL
-@since:			April 2013
+@author:        Martí Congost
+@contact:       marti.congost@whads.com
+@organization:  Whads/Accent SL
+@since:         September 2016
 -----------------------------------------------------------------------------*/
 
 cocktail.bind(".ActionBar", function ($actionBar) {
@@ -13,43 +13,58 @@ cocktail.bind(".ActionBar", function ($actionBar) {
         return !$link.attr("disabled");
     });
 
-    if (!this.selectable) {
-        return;
+    if (this.selectable) {
+        var $selectable = jQuery(this.selectable);
     }
-
-    var $selectable = jQuery(this.selectable);
-    if (!$selectable.length) {
+    else if (this.selectionField) {
+        var $selectable = null;
+    }
+    else {
         return;
     }
 
     function toggleButtons() {
 
-        var actionApplicability = {};
-        var selection = $selectable[0].getSelection();
-        var selectionSize = selection.length;
+        if ($selectable) {
+            var actionApplicability = {};
+            var selection = $selectable[0].getSelection();
+            var selectionSize = selection.length;
 
-        for (var i = 0; i < selection.length; i++) {
-            var $element = jQuery(selection[i]);
-            var elementActions = $element.data("woost-available-actions").split(" ");
-            for (var j = 0; j < elementActions.length; j++) {
-                var actionId = elementActions[j];
-                actionApplicability[actionId] = (actionApplicability[actionId] || 0) + 1;
+            for (var i = 0; i < selection.length; i++) {
+                var $element = jQuery(selection[i]);
+                var elementActions = $element.data("woost-available-actions").split(" ");
+                for (var j = 0; j < elementActions.length; j++) {
+                    var actionId = elementActions[j];
+                    actionApplicability[actionId] = (actionApplicability[actionId] || 0) + 1;
+                }
             }
+        }
+        else {
+            var actionApplicability = null;
+            var selectionSize = 0;
+            jQuery("[name='" + $actionBar[0].selectionField + "']").each(function () {
+                if (this.value) {
+                    selectionSize++;
+                }
+            });
         }
 
         $actionBar.find(".action_button").each(function () {
             var $button = jQuery(this);
             if (
-                // Check the min/max number of elements allowed by the action
-                (
-                    !this.ignoresSelection
-                    && (
-                        (this.minSelection && selectionSize < this.minSelection)
+                !this.ignoresSelection
+                && (
+                    // Not enough / too many items
+                    (
+                           (this.minSelection && selectionSize < this.minSelection)
                         || (this.maxSelection && selectionSize > this.maxSelection)
                     )
+                    // Not applicable to all selected items
+                    || (
+                        actionApplicability
+                        && (actionApplicability[$button.data("woost-action")] || 0) != selectionSize
+                    )
                 )
-                // Only enable actions that can be applied to all the elements in the selection
-                || (actionApplicability[$button.data("woost-action")] || 0) != selectionSize
             ) {
                 $button.attr("disabled", "disabled");
             }
@@ -59,6 +74,13 @@ cocktail.bind(".ActionBar", function ($actionBar) {
         });
     }
 
-    $selectable.on("selectionChanged", toggleButtons);
+    if ($selectable) {
+        $selectable.on("selectionChanged", toggleButtons);
+    }
+    else if (this.selectionField) {
+        jQuery("[name='" + this.selectionField + "']").closest(".control").on("change", toggleButtons);
+    }
+
     toggleButtons();
 });
+

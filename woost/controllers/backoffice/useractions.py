@@ -11,7 +11,7 @@ from threading import Lock
 import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
-from cocktail.pkgutils import resolve
+from cocktail.pkgutils import resolve, get_full_name
 from cocktail.persistence import datastore, transactional
 from cocktail.controllers import (
     view_state,
@@ -22,6 +22,7 @@ from cocktail.controllers import (
     get_request_url_builder
 )
 from cocktail import schema
+from cocktail.html import templates
 from woost import app
 from woost.models import (
     Configuration,
@@ -155,11 +156,6 @@ class UserAction(object):
     @ivar direct_link: Set to True for actions that can provide a direct URL
         for their execution, without requiring a form submit and redirection.
     @type direct_link: bool
-
-    @ivar parameters: A schema describing user supplied parameters required by
-        the action. When set to None, the action requires no additional input
-        from the user.
-    @type parameters: L{Schema<cocktail.schema.schema.Schema>}
     """
     enabled = True
     included = frozenset(["toolbar", "item_buttons"])
@@ -175,7 +171,6 @@ class UserAction(object):
     max = 1
     direct_link = False
     link_target = None
-    parameters = None
     show_as_primary_action = "never"
     hidden_when_disabled = False
 
@@ -386,20 +381,40 @@ class UserAction(object):
         """
         return True
 
-    def get_dropdown_panel(self, target):
+    def get_dropdown_panel(self, action_bar):
         """Produces the user interface fragment that should be shown as the
-        content for the action's dropdown panel. Returning None indicates the
-        action doesn't have a dropdown panel available.
+        content for the action's dropdown panel.
 
-        @param target: The item or content type affected by the action.
-        @type target: L{Item<woost.models.item.Item>} instance or class
+        Returning None indicates the action doesn't have a dropdown panel
+        available.
+
+        @param action_bar: The toolbar where the dropdown will be inserted.
+        @type action_bar: L{ActionBar<woost.views.ActionBar>}
 
         @return: The user interface for the action's dropdown panel.
         @rtype: L{Element<cocktail.html.Element>}
         """
         return None
 
-    def get_errors(self, controller, selection):
+    def get_parameters_schema(self, controller, selection):
+        members = self.get_parameter_members(controller, selection)
+        if members:
+            return schema.Schema(
+                get_full_name(self.__class__) + ".schema",
+                members = members
+            )
+        return None
+
+    def get_parameter_members(self, controller, selection):
+        return []
+
+    def get_errors(
+        self,
+        controller,
+        selection,
+        parameters_schema,
+        **parameters
+    ):
         """Validates the context of an action before it is invoked.
 
         @param controller: The controller that invokes the action.
@@ -421,7 +436,17 @@ class UserAction(object):
             or (self.max is not None and selection_size > self.max):
                 yield SelectionError(self, selection_size)
 
-    def invoke(self, controller, selection):
+            # Validate parameters
+            if parameters_schema:
+                for error in parameters_schema.get_errors(
+                    parameters,
+                    action = self,
+                    controller = controller,
+                    selection = selection
+                ):
+                    yield error
+
+    def invoke(self, controller, selection, **parameters):
         """Delegates control of the current request to the action. Actions can
         override this method to implement their own response logic; by default,
         users are redirected to an action specific controller.
@@ -508,16 +533,59 @@ class SelectionError(Exception):
 #------------------------------------------------------------------------------
 
 class CreateAction(UserAction):
-    included = frozenset(["toolbar"])
-    excluded = frozenset([
-        "collection",
-        ("selector", "existing_only"),
-        "changelog"
-    ])
-    ignores_selection = True
+
+    excluded = UserAction.excluded | frozenset(["existing_only"])
     min = None
     max = None
+    ignores_selection = True
     show_as_primary_action = "always"
+
+    def get_instantiable_types(self, root_type):
+
+        user = app.user
+        role = user.roles and user.roles[0]
+        hidden_types = role and role.hidden_content_types
+
+        return set([
+            cls
+            for cls in root_type.schema_tree()
+            if (
+                cls.visible
+                and cls.instantiable
+                and (not hidden_types or cls not in hidden_types)
+                and user.has_permission(CreatePermission, target = cls)
+            )
+        ])
+
+    def get_dropdown_panel(self, action_bar):
+
+        if action_bar.relation:
+            root_type = action_bar.relation.related_type
+        else:
+            root_type = action_bar.action_target
+
+        instantiable_types = self.get_instantiable_types(root_type)
+
+        if len(instantiable_types) > 1:
+            dropdown = templates.new(
+                "woost.views.BackOfficeNewItemTypeSelector"
+            )
+            dropdown.action = self
+            dropdown.action_target = action_bar.action_target
+            dropdown.selection_field = action_bar.selection_field
+            dropdown.relation = action_bar.relation
+            dropdown.instantiable_types = instantiable_types
+            return dropdown
+
+        return None
+
+
+class NewAction(CreateAction):
+    included = frozenset(["toolbar"])
+    excluded = CreateAction.excluded | frozenset([
+        "collection",
+        "changelog"
+    ])
 
     def get_url(self, controller, selection):
         return controller.edit_uri(controller.edited_content_type)
@@ -534,35 +602,108 @@ class InstallationSyncAction(UserAction):
         return user.has_permission(InstallationSyncPermission)
 
 
-class AddAction(UserAction):
-    included = frozenset([("toolbar", "collection")])
+class SelectRelatedObjectAction(UserAction):
     excluded = frozenset(["integral"])
     ignores_selection = True
     min = None
     max = None
     show_as_primary_action = "always"
 
-    def invoke(self, controller, selection):
+    def get_parameter_members(self, controller, selection):
+        return [
+            schema.MemberReference(
+                "relation",
+                schemas = [self.content_type or Item],
+                enumeration = [
+                    member
+                    for member in
+                        controller.stack_node.item.__class__.iter_members()
+                    if isinstance(member, schema.RelationMember)
+                ],
+                required = True
+            )
+        ]
+
+    def invoke(self, controller, selection, relation):
 
         # Add a relation node to the edit stack, and redirect the user
         # there
         node = RelationNode()
-        node.member = controller.relation_member
+        node.member = relation
         node.action = "add"
         controller.edit_stack.push(node)
         controller.edit_stack.go()
 
 
-class AddIntegralAction(UserAction):
+class AddAction(SelectRelatedObjectAction):
+    included = frozenset([("collection")])
 
-    included = frozenset([("collection", "toolbar", "integral")])
-    ignores_selection = True
-    min = None
-    max = None
+
+class PickAction(SelectRelatedObjectAction):
+    included = frozenset(["reference"])
+
+
+class RelateNewIntegralObjectAction(CreateAction):
+
+    def get_parameter_members(self, controller, selection):
+        return [
+            schema.MemberReference(
+                "relation",
+                schemas = [self.content_type or Item],
+                enumeration = [
+                    member
+                    for member in
+                        controller.stack_node.item.__class__.iter_members()
+                    if isinstance(member, schema.RelationMember)
+                ],
+                required = True
+            ),
+            schema.Reference(
+                "type",
+                class_family = Item
+            )
+        ]
+
+    def invoke(self, controller, selection, relation, type):
+        node = RelationNode()
+        node.member = relation
+        node.action = "add"
+        controller.edit_stack.push(node)
+        raise cherrypy.HTTPRedirect(controller.edit_uri(type))
+
+
+class AddNewAction(RelateNewIntegralObjectAction):
+    included = frozenset([("collection", "integral")])
+
+
+class PickNewAction(RelateNewIntegralObjectAction):
+    included = frozenset([("reference")])
+
+
+class UnlinkAction(UserAction):
+    included = frozenset(["item_selector"])
+    excluded = frozenset(["integral"])
+    max = 1
+    min = 1
     show_as_primary_action = "always"
 
-    def get_url(self, controller, selection):
-        return controller.edit_uri(controller.root_content_type)
+    def get_parameter_members(self, controller, selection):
+        return [
+            schema.MemberReference(
+                "relation",
+                schemas = [self.content_type or Item],
+                enumeration = [
+                    member
+                    for member in
+                    controller.stack_node.item.__class__.iter_members()
+                    if isinstance(member, schema.RelationMember)
+                    ],
+                required = True
+            )
+        ]
+
+    def invoke(self, controller, selection, relation):
+        controller.stack_node.form_data[relation.name] = None
 
 
 class RemoveAction(UserAction):
@@ -571,18 +712,34 @@ class RemoveAction(UserAction):
     max = None
     show_as_primary_action = "always"
 
-    def invoke(self, controller, selection):
+    def get_parameter_members(self, controller, selection):
+        return [
+            schema.MemberReference(
+                "relation",
+                schemas = [self.content_type or Item],
+                enumeration = [
+                    member
+                    for member in
+                        controller.stack_node.item.__class__.iter_members()
+                    if isinstance(member, schema.RelationMember)
+                ],
+                required = True
+            )
+        ]
+
+    def invoke(self, controller, selection, relation):
 
         stack_node = controller.stack_node
 
         for item in selection:
-            stack_node.unrelate(controller.relation_member, item)
+            stack_node.unrelate(relation, item)
 
 
 class EditAction(UserAction):
     included = frozenset([
         "toolbar",
         "item_buttons",
+        "item_selector",
         "block_menu",
         "edit_blocks_toolbar"
     ])
@@ -661,6 +818,7 @@ class DeleteAction(UserAction):
     included = frozenset([
         ("content_view", "toolbar"),
         ("collection", "toolbar", "integral"),
+        ("item_selector", "integral"),
         "item_buttons",
         "block_menu"
     ])
@@ -945,8 +1103,20 @@ class SaveAction(UserAction):
                 target = target.__class__
             )
 
-    def get_errors(self, controller, selection):
-        for error in UserAction.get_errors(self, controller, selection):
+    def get_errors(
+        self,
+        controller,
+        selection,
+        parameters_schema,
+        **parameters
+    ):
+        for error in UserAction.get_errors(
+            self,
+            controller,
+            selection,
+            parameters_schema,
+            **parameters
+        ):
             yield error
 
         for error in controller.stack_node.iter_errors():
@@ -1271,9 +1441,12 @@ class ShareBlockAction(UserAction):
 
 # Action registration
 #------------------------------------------------------------------------------
-CreateAction("new").register()
+NewAction("new").register()
 AddAction("add").register()
-AddIntegralAction("add_integral").register()
+AddNewAction("add_new").register()
+PickAction("pick").register()
+PickNewAction("pick_new").register()
+UnlinkAction("unlink").register()
 RemoveAction("remove").register()
 AddBlockAction("add_block").register()
 AddBlockBeforeAction("add_block_before").register()

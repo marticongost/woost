@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.pkgutils import get_full_name
+?>
+
+<py:woost.views.ContentTypeTree
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    root = None
+    action = None
+    action_target = None
+    selection_field = None
+    relation = None
+    instantiable_types = None
+
+    def filter_item(self, content_type):
+        return (
+            self.instantiable_types is None
+            or content_type in self.instantiable_types
+        )
+
+    def get_action_value(self, content_type):
+
+        value = self.action.id
+
+        if self.selection_field:
+            value += " $" + self.selection_field
+        elif not isinstance(self.action_target, type):
+            value += " " + str(self.action_target.id)
+        else:
+            raise ValueError("Expected an action target or field")
+
+        if self.relation:
+            value += " relation:" + self.relation.get_qualified_name(include_ns = True)
+
+        value += " type:" + get_full_name(content_type)
+
+        return value
+    ?>
+
+    <py:binding>
+        <?py
+        if self.root is None:
+            if self.relation:
+                self.root = self.relation.related_type
+            else:
+                self.root = self.action_target
+        ?>
+    </py:binding>
+
+    <py:with
+        py:def="label" py:args="item"
+        py:tag="button"
+        type="submit"
+        formmethod="POST"
+        name="action"
+        value="${self.get_action_value(item)}"
+        data-woost-action="${self.action.id}"/>
+
+</py:woost.views.ContentTypeTree>
+

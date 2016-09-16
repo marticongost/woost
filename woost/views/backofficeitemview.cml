@@ -84,8 +84,7 @@ from woost.models import Item
             </py:binding>
             <py:with
                 py:def="action_button"
-                py:args="action, extra, action_context"
-                name="item_action">
+                py:args="action, extra, action_context">
                 <?py
                 if action is self.selected_action:
                     element.add_class("selected")

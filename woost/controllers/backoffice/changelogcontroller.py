@@ -127,25 +127,6 @@ class ChangeLogController(BaseBackOfficeController):
         )
         return output
 
-    @cached_getter
-    def action(self):
-        """The user action selected by the current HTTP request.
-        @type: L{UserAction<woost.controllers.backoffice.useractions.UserAction>}
-        """
-        return self._get_user_action()[0]
-
-    @cached_getter
-    def selection(self):
-        return self._get_user_action()[1]
-
-    @cached_getter
-    def action_data(self):
-        return self._get_user_action()
-
-    @cached_getter
-    def ready(self):
-        return self.action is not None
-
     def submit(self):
-        self._invoke_user_action(self.action, self.selection)
+        self._invoke_user_action()
 
