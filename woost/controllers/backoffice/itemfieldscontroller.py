@@ -9,17 +9,14 @@ u"""
 import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
-from cocktail.pkgutils import import_object
-from cocktail.translations import iter_language_chain
 from cocktail import schema
-from cocktail.controllers import get_parameter, view_state
+from cocktail.controllers import get_parameter
 from woost import app
 from woost.models import (
     ReadPermission,
     CreatePermission
 )
 from woost.controllers.backoffice.useractions import get_user_action
-from woost.controllers.backoffice.editstack import RelationNode
 from woost.controllers.backoffice.editcontroller import EditController
 
 
@@ -99,12 +96,6 @@ class ItemFieldsController(EditController):
         # Add read only data
         self._export_read_only_data(form_data)
 
-        # Drop references
-        unlink = cherrypy.request.params.get("relation-unlink")
-
-        if unlink:
-            form_data[unlink] = None
-
         return form_data
 
     def _export_read_only_data(self, form_data):
@@ -161,75 +152,4 @@ class ItemFieldsController(EditController):
             user.require_permission(ReadPermission, target = item)
         else:
             user.require_permission(CreatePermission, target = item.__class__)
-
-    @event_handler
-    def handle_processed(cls, event):
-
-        controller = event.source
-        rel = cherrypy.request.params.get("relation-select")
-
-        # Open the item selector
-        if rel:
-            pos = rel.find("-")
-            root_content_type_name = rel[:pos]
-            selection_parameter = rel[pos + 1:]
-            key = selection_parameter[len(controller.form_prefix):]
-
-            # Push the relation as a new stack node
-            current_node = controller.stack_node
-            rel_node = RelationNode()
-            rel_node.member = current_node.content_type[key]
-            controller.edit_stack.push(rel_node)
-
-            value = schema.get(current_node.form_data, key)
-
-            raise cherrypy.HTTPRedirect(
-                controller.context["cms"].contextual_uri("content")
-                + "?" + view_state(
-                    selection = value.id if value is not None else None,
-                    edit_stack = controller.edit_stack.to_param(),
-                    client_side_scripting = controller.client_side_scripting
-                ) + "#default"
-            )
-
-        # Open an editor for a new nested item
-        new = cherrypy.request.params.get("relation-new")
-
-        if new:
-            pos = new.find("-")
-            member_name = new[:pos]
-            content_type_name = new[pos + 1:]
-
-            # Push the relation as a new stack node
-            current_node = controller.stack_node
-            rel_node = RelationNode()
-            rel_node.member = current_node.content_type[member_name]
-            controller.edit_stack.push(rel_node)
-
-            # All related_item_XYZ parameters ara forwarded as edited_item_XYZ
-            # parameters (for form prefilling)
-            prefill = dict(
-                ("edited" + key[len("related"):], value)
-                for key, value in cherrypy.request.params.iteritems()
-                if key.startswith("related_item_")
-            )
-
-            raise cherrypy.HTTPRedirect(
-                controller.context["cms"].contextual_uri(
-                    "content",
-                    "new",
-                    "fields",
-                    item_type = content_type_name,
-                    edit_stack = controller.edit_stack.to_param(),
-                    **prefill
-                )
-            )
-
-        # Open an editor for an existing nested item
-        edit = cherrypy.request.params.get("relation-edit")
-
-        if edit:
-            raise cherrypy.HTTPRedirect(
-                controller.edit_uri(controller.stack_node.form_data[edit])
-            )
 

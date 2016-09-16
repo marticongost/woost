@@ -81,53 +81,9 @@ class ContentController(BaseBackOfficeController):
             self.context["cms_item"] = item
             return self._item_controller_class()
 
-    def __call__(self, *args, **kwargs):
-
-        rel = cherrypy.request.params.get("relation-select")
-
-        # Open the item selector
-        if rel:
-
-            # Load persistent collection parameters before redirecting
-            self.user_collection
-
-            pos = rel.find("-")
-            root_content_type_name = rel[:pos]
-            selection_parameter = str(rel[pos + 1:])
-
-            for content_type in chain([Item], Item.derived_schemas()):
-                if content_type.full_name == root_content_type_name:
-
-                    edit_stacks_manager = self.context["edit_stacks_manager"]
-                    edit_stack = edit_stacks_manager.current_edit_stack
-
-                    if edit_stack is None:
-                        edit_stack = edit_stacks_manager.create_edit_stack()
-                        edit_stacks_manager.current_edit_stack = edit_stack
-
-                    node = SelectionNode()
-                    node.content_type = content_type
-                    node.selection_parameter = selection_parameter
-                    edit_stack.push(node)
-                    raise cherrypy.HTTPRedirect(node.uri(
-                        selection = self.params.read(
-                            schema.String(selection_parameter)
-                        ),
-                        client_side_scripting = self.client_side_scripting
-                    ))
-
-        return BaseBackOfficeController.__call__(self, **kwargs)
-
-    @cached_getter
-    def action(self):
-        """The user action selected by the current HTTP request.
-        @type: L{UserAction<woost.controllers.backoffice.useractions.UserAction>}
-        """
-        return self.action_data[0]
-
     @cached_getter
     def selection(self):
-        selection = self.action_data[1]
+        selection = self.action_selection
 
         if selection is None:
             if self.user_collection.selection_mode == SINGLE_SELECTION:
@@ -138,15 +94,11 @@ class ContentController(BaseBackOfficeController):
         return selection
 
     @cached_getter
-    def action_data(self):
-        return self._get_user_action()
-
-    @cached_getter
     def ready(self):
         return self.action is not None
 
     def submit(self):
-        self._invoke_user_action(self.action, self.selection)
+        self._invoke_user_action()
 
     # Content
     #--------------------------------------------------------------------------

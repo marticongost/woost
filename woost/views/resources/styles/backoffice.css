@@ -137,7 +137,9 @@ body {
 .BackOfficeLayout .user_views_bar .add_user_view_button,
 .BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
-.BackOfficeFieldsView .ItemSelector-button {
+.BackOfficeFieldsView .ItemSelector .action_button,
+.BackOfficeFieldsView .ItemSelector .DropdownPanel > .button > .label,
+.BackOfficeNewItemTypeSelector button {
     font-size: inherit;
     background: none;
     border: none;
@@ -563,6 +565,11 @@ body.modal {
     height: auto;
 }
 
+.BackOfficeNewItemTypeSelector li button.entry_label {
+    padding: 0;
+    width: auto;
+}
+
 /* Forms
 -----------------------------------------------------------------------------*/
 .BackOfficeLayout fieldset {
@@ -785,7 +792,7 @@ body.modal {
 
 .BackOfficeLayout .Form td .control,
 .BackOfficeLayout .Form td .mceEditor .mceLayout,
-.BackOfficeLayout .Form td .ItemSelector button {
+.BackOfficeLayout .Form td .ItemSelector .action_button {
     width: 100%;
 }
 
@@ -2332,8 +2339,9 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
 }
 
 .BackOfficeLayout .ItemSelector .selection_wrapper,
-.BackOfficeLayout .ItemSelector-buttons {
+.BackOfficeLayout .ItemSelector .buttons {
     display: inline-block;
+    padding: 0;
 }
 
 .BackOfficeLayout .ItemSelector .selection_wrapper {
@@ -2345,17 +2353,23 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     margin-right: 0;
 }
 
-.BackOfficeFieldsView .ItemSelector-button {
-    margin-right: 0.6em;
+.BackOfficeFieldsView .ItemSelector .action_button {
+    margin-right: 1em;
     display: inline-block;
+    width: auto;
 }
 
-.BackOfficeFieldsView button.ItemSelector-button,
-.BackOfficeFieldsView .ItemSelector .new .label {
+.BackOfficeFieldsView .ItemSelector .DropdownPanel > .button {
+    width: auto;
+    font-size: 1em;
+}
+
+.BackOfficeFieldsView .ItemSelector .action_button,
+.BackOfficeFieldsView .ItemSelector .DropdownPanel > .button > .label {
     font-size: 90%;
 }
 
-.BackOfficeFieldsView .ItemSelector-button .icon {
+.BackOfficeFieldsView .ItemSelector .action_button .icon {
     vertical-align: middle;
     margin-right: 0.3em;
 }
@@ -2390,7 +2404,7 @@ body.scripted .BackOfficeLayout .ThumbnailsContentView .collection_display input
     display: none;
 }
 
-.BackOfficeFieldsView .ItemSelector button,
+.BackOfficeFieldsView .ItemSelector .action_button,
 button.TypeSelectorButton {
     text-align: left;
 }
@@ -2788,7 +2802,7 @@ button.TypeSelectorButton span {
     width: auto;
 }
 
-.BackOfficeLayout .CollectionView .filters .ItemSelector button,
+.BackOfficeLayout .CollectionView .filters .ItemSelector .action_button,
 button.TypeSelectorButton {
     font-size: 95%;
 }

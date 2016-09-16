@@ -86,17 +86,6 @@ from woost.controllers.backoffice.editstack import SelectionNode
             )
         )
 
-    def content_type_is_instantiable(self, content_type):
-        return (
-            not self.content_type_is_hidden(content_type)
-            and content_type.visible
-            and content_type.instantiable
-            and app.user.has_permission(
-                CreatePermission,
-                target = content_type
-            )
-        )
-
     def get_visible_content_views(self):
         return sorted(
             self.user_collection.available_content_views or [],
@@ -172,15 +161,6 @@ from woost.controllers.backoffice.editstack import SelectionNode
             user_filter = self.user_collection.user_filters[0]
             if user_filter.id == "global_search":
                 self.set_client_param("searchQuery", user_filter.value)
-
-        self._instantiable_content_types = set(
-            content_type
-            for content_type in chain(
-                [self.user_collection.type],
-                self.user_collection.type.derived_schemas()
-            )
-            if self.content_type_is_instantiable(content_type)
-        )
 
         self.set_client_param("contentType", self.user_collection.type.full_name)
         ?>
@@ -304,6 +284,7 @@ from woost.controllers.backoffice.editstack import SelectionNode
     <py:woost.views.ActionBar
         py:def="toolbar"
         py:action_target="@{self.user_collection.type}"
+        py:selection_field="selection"
         py:empty_result_set="@{not self.visible_results}"
         py:collapsible="${True}">
         <py:binding>
@@ -312,80 +293,13 @@ from woost.controllers.backoffice.editstack import SelectionNode
             element.action_context.update(self.action_context)
             ?>
         </py:binding>
-        <?py
-        @extend(toolbar)
-        def get_actions(toolbar, context):
-            actions = call_base(context)
-            if not self._instantiable_content_types:
-                actions = [action for action in actions if action.id not in ("new", "add_integral")]
-            return actions
-
-        @extend(toolbar)
-        def create_action_button(toolbar, action, extra, action_context):
-            if action.id in ("new", "add_integral"):
-                if len(self._instantiable_content_types) > 1:
-                    button = self.create_new_toolbar_button(action, extra)
-                else:
-                    button = call_base(action, extra, action_context)
-                    button.tag = "a"
-                    del button["name"]
-                    button["href"] = self.get_new_content_uri(list(self._instantiable_content_types)[0])
-            else:
-                button = call_base(action, extra, action_context)
-
-            button.set_client_param("minSelection", action.min)
-            button.set_client_param("maxSelection", action.max)
-            button.set_client_param("ignoresSelection", action.ignores_selection)
-            return button
-        ?>
     </py:woost.views.ActionBar>
-
-    <!-- New item selector -->
-    <py:woost.views.ContentTypeSelector
-        py:def="new_toolbar_button"
-        py:args="action, extra"
-        py:types="@{self.user_collection.type}"
-        py:required_permission="${None}"
-        py:per_role_types="${False}">
-        <?py
-        element.add_class("action_button")
-        element["data-woost-action"] = "new"
-        ?>
-        <py:with
-            py:element="element.label"
-            accesskey="${translations('woost.actions.' + action.id + '.shortcut')}">
-            <?py
-            element.empty()
-            ?>
-            <py:new
-                py:element="self.toolbar.create_action_image(action, extra)"
-                py:if="self.toolbar.button_images and not extra"/>
-            ${translations("woost.actions." + action.id)}
-        </py:with>
-        <py:with py:element="element.palette">
-            <?py
-            @extend(element)
-            def should_include_type(palette, content_type):
-                return (
-                    call_base(content_type)
-                    and self.content_type_is_instantiable(content_type)
-                )
-
-            @extend(element)
-            def should_collapse_type(palette, content_type):
-                return content_type.collapsed_backoffice_menu
-
-            @extend(element)
-            def get_item_url(palette, content_type):
-                return self.get_new_content_uri(content_type)
-            ?>
-        </py:with>
-    </py:woost.views.ContentTypeSelector>
 
     <py:woost.views.ActionBar
         py:id="list_buttons"
         py:button_images="${False}"
         py:action_target="@{self.user_collection.type}"
+        py:selection_field="selection"
         class="buttons">
         <?py
         element.action_context.add("list_buttons")

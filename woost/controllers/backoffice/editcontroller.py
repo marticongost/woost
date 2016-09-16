@@ -45,107 +45,20 @@ class EditController(BaseBackOfficeController):
     @request_property
     def errors(self):
         if self.action:
-            return schema.ErrorList(
-                self.action.get_errors(self, self.action_selection)
-            )
+            return schema.ErrorList(self.action_errors)
         else:
             return []
-
-    @request_property
-    def action(self):
-        return (
-            self.item_action
-            or self.relation_action
-            or self.arbitrary_action
-        )
-
-    @request_property
-    def action_selection(self):
-        if self.relation_action:
-            return self.relation_selection
-        elif self.arbitrary_action:
-            return self.arbitrary_selection
-
-        return [self.stack_node.item]
-
-    @request_property
-    def item_action(self):
-        return self._get_user_action("item_action")[0]
-
-    @request_property
-    def arbitrary_action(self):
-        return self.arbitrary_action_data[0]
-
-    @request_property
-    def arbitrary_selection(self):
-        return self.arbitrary_action_data[1]
-
-    @request_property
-    def arbitrary_action_data(self):
-        return self._get_user_action("action")
-
-    @request_property
-    def relation_action(self):
-        return self._relation_action_data[0]
-
-    @request_property
-    def relation_member(self):
-        return self._relation_action_data[1]
-
-    @request_property
-    def _relation_action_data(self):
-        for key, value in cherrypy.request.params.iteritems():
-            if key.startswith("relation_action-"):
-                member_name = key.split("-", 1)[1]
-
-                action = get_user_action(value)
-                if action and not action.enabled:
-                    action = None
-
-                member = self.stack_node.content_type.get_member(member_name)
-                if not isinstance(member, (schema.Collection, schema.Reference)):
-                    member = None
-
-                return action, member
-
-        return None, None
-
-    @request_property
-    def relation_selection(self):
-        member = self.relation_member
-        value = get_parameter(
-            schema.Collection(
-                name = "relation_selection-" + member.name,
-                items = schema.Reference(type = member.related_type)
-            )
-        )
-        if not value:
-            return []
-        elif self.relation_action.id == "edit":
-            return value
-        else:
-            enum = frozenset(self.stack_node.form_data.get(member.name))
-            return [item for item in value if item in enum]
 
     @request_property
     def submitted(self):
-        return self.action or self.relation_action
+        return self.action is not None
 
     @request_property
     def ready(self):
         return self.submitted and not self.errors
 
     def submit(self):
-        if self.action:
-            self._invoke_user_action(
-                self.action,
-                self.action_selection
-            )
-        elif self.relation_action:
-            self._invoke_user_action(
-                self.relation_action,
-                self.relation_selection
-            )
+        self._invoke_user_action()
 
     def save_item(self, close = False):
 

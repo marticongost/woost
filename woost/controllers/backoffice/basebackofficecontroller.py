@@ -16,7 +16,11 @@ from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.controllers import get_parameter, CookieParameterSource
+from cocktail.controllers import (
+    get_parameter,
+    request_property,
+    CookieParameterSource
+)
 from woost import app
 from woost.models import (
     Configuration,
@@ -106,9 +110,7 @@ class BaseBackOfficeController(BaseCMSController):
         # URI for new items
         if isinstance(target, type) or not target.is_inserted:
             target_id = "new"
-            if edit_stack is None \
-            or ("edit_stack" in params and params["edit_stack"] is None):
-                params["item_type"] = target.full_name
+            params["item_type"] = target.full_name
 
         # URI for existing items
         else:
@@ -205,47 +207,121 @@ class BaseBackOfficeController(BaseCMSController):
             Notification(translations(event.exception), "error").emit()
             raise cherrypy.HTTPRedirect(event.source.contextual_uri())
 
-    def _invoke_user_action(self, action, selection):
-        for error in action.get_errors(self, selection):
-            self._handle_user_action_error(action, selection, error)
+    def _invoke_user_action(self):
 
-        action.invoke(self, selection)
+        action = self.action
+
+        if action:
+
+            for error in self.action_errors:
+                self._handle_user_action_error(error)
+
+            action.invoke(
+                self,
+                self.action_selection,
+                **self.action_parameters
+            )
 
     _graceful_user_action_errors = set([SelectionError])
 
-    def _handle_user_action_error(self, action, selection, error):
+    def _handle_user_action_error(self, error):
         if isinstance(error, tuple(self._graceful_user_action_errors)):
             Notification(translations(error), "error").emit()
             self.go_back()
         else:
             raise error
 
-    def _get_user_action(self, param_key = "action"):
+    @request_property
+    def action_data(self):
 
-        action = None
-        selection = None
-        param_value = self.params.read(schema.String(param_key))
+        data = {
+            "action": None,
+            "selection": None,
+            "schema": None,
+            "parameters": {},
+            "errors": []
+        }
 
-        if param_value:
-            parts = param_value.split("-")
-            if len(parts) == 1:
-                action_id = param_value
-                selection = None
-            else:
-                action_id = parts[0]
-                selection = get_parameter(
-                    schema.Collection(
-                        items = schema.Reference(type = Item)
-                    ),
-                    source = lambda key: parts[1]
+        value = cherrypy.request.params.get("action")
+
+        if value:
+            args = value.split()
+            action_id = args.pop(0)
+            action = get_user_action(action_id)
+
+            if action and action.enabled:
+                selection = []
+
+                if args and ":" not in args[0]:
+                    selection_value = args.pop(0)
+
+                    if selection_value.startswith("$"):
+                        selection_value = cherrypy.request.params.get(
+                            selection_value[1:]
+                        )
+
+                    if selection_value:
+                        cls = action.content_type
+                        if not cls or isinstance(cls, tuple):
+                            cls = Item
+
+                        if isinstance(selection_value, basestring):
+                            selection_value = selection_value.split(",")
+
+                        for id in selection_value:
+                            item = cls.get_instance(int(id))
+                            if item:
+                                selection.append(item)
+
+                params_schema = action.get_parameters_schema(self, selection)
+                parameters = data["parameters"]
+
+                data["action"] = action
+                data["selection"] = selection
+                data["schema"] = params_schema
+
+                if params_schema:
+                    values = {}
+                    for arg in args:
+                        key, value = arg.split(":")
+                        values[key] = value
+
+                    get_parameter(
+                        params_schema,
+                        source = values.get,
+                        target = parameters
+                    )
+
+                data["errors"].extend(
+                    action.get_errors(
+                        self,
+                        selection,
+                        params_schema,
+                        **parameters
+                    )
                 )
 
-            if action_id:
-                action = get_user_action(action_id)
-                if action and not action.enabled:
-                    action = None
+        return data
 
-        return action, selection
+    @request_property
+    def action(self):
+        return self.action_data["action"]
+
+    @request_property
+    def action_selection(self):
+        return self.action_data["selection"]
+
+    @request_property
+    def action_schema(self):
+        return self.action_data["schema"]
+
+    @request_property
+    def action_parameters(self):
+        return self.action_data["parameters"]
+
+    @request_property
+    def action_errors(self):
+        return self.action_data["errors"]
 
     @cached_getter
     def user_views(self):

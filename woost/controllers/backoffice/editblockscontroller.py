@@ -50,11 +50,7 @@ class EditBlocksController(BaseBackOfficeController):
         return cherrypy.request.method == "POST"
 
     def submit(self):
-        action, selection = self._get_user_action()
-        self._invoke_user_action(
-            action,
-            selection or [self.block or self.block_parent or self.edited_item]
-        )
+        self._invoke_user_action()
 
     @request_property
     def block(self):
