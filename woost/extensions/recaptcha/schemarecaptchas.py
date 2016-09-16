@@ -10,11 +10,14 @@ Provides a member that handles reCAPTCHA values.
 import urllib
 import urllib2
 import cherrypy
+from cocktail.translations import translations
 from cocktail.schema.schema import Schema
 from cocktail.schema.schemastrings import String
 from cocktail.schema.accessors import get_accessor
 from cocktail.schema.exceptions import ValidationError
 from woost.extensions.recaptcha import ReCaptchaExtension
+
+translations.load_bundle("woost.extensions.recaptcha.schemarecaptchas")
 
 
 class ReCaptcha(Schema):
