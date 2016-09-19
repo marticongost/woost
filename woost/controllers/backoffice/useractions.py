@@ -540,6 +540,14 @@ class CreateAction(UserAction):
     ignores_selection = True
     show_as_primary_action = "always"
 
+    def get_parameter_members(self, controller, selection):
+        return [
+            schema.Reference(
+                "type",
+                class_family = Item
+            )
+        ]
+
     def get_instantiable_types(self, root_type):
 
         user = app.user
@@ -587,8 +595,8 @@ class NewAction(CreateAction):
         "changelog"
     ])
 
-    def get_url(self, controller, selection):
-        return controller.edit_uri(controller.edited_content_type)
+    def invoke(self, controller, selection, type):
+        raise cherrypy.HTTPRedirect(controller.edit_uri(type))
 
 
 class InstallationSyncAction(UserAction):
