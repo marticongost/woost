@@ -28,7 +28,7 @@
         if self.item is None:
             self.visible = False
         else:
-            self.label["value"] = "edit-%d" % self.item.id
+            self.label["value"] = "edit %d" % self.item.id
         ?>
     </py:ready>
 
