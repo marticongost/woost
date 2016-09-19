@@ -142,9 +142,20 @@ class TranslationWorkflowTransitionAction(UserAction):
         notify_translation_request_changes(changeset)
         reload_request_url()
 
-    def get_errors(self, controller, selection):
-
-        for error in UserAction.get_errors(self, controller, selection):
+    def get_errors(
+        self,
+        controller,
+        selection,
+        parameters_schema,
+        **parameters
+    ):
+        for error in UserAction.get_errors(
+            self,
+            controller,
+            selection,
+            parameters_schema,
+            **parameters
+        ):
             yield error
 
         # Some transitions (ie. "apply") can't proceed unless the text in the
