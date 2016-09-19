@@ -14,10 +14,10 @@ from cocktail.controllers import (
 )
 from woost import app
 from woost.models import changeset_context
-from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from .transitionpermission import TranslationWorkflowTransitionPermission
+from .utils import notify_translation_request_changes
 
 
 class TranslationWorkflowTransitionController(
@@ -70,20 +70,13 @@ class TranslationWorkflowTransitionController(
             transition_data = self.data
 
             with changeset_context(author = app.user) as changeset:
+                self.__changeset = changeset
                 for request in self.controller.requests:
                     transition.execute(request, transition_data)
                     changeset.changes[request.id].is_explicit_change = True
 
         def after_submit(self):
-            Notification(
-                translations(
-                    "woost.extensions.translationworkflow."
-                    "transition_executed_notice",
-                    transition = self.controller.transition,
-                    requests = self.controller.requests
-                ),
-                "success"
-            ).emit()
+            notify_translation_request_changes(self.__changeset)
             self.controller.go_back()
 
     @request_property
