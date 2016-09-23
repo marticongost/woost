@@ -1,4 +1,4 @@
-[woost.initialization.]
+[woost.initialization]
 
     [website.site_name]
     ca: El meu lloc web
@@ -270,26 +270,28 @@
     es: Formulario de cambio de contraseña
     en: Password change form
 
-    [password_change_email_template.title]
-    ca: Plantilla de correu electrònic per sol·licitar el canvi de contrasenya
-    es: Plantilla de correo electrónico para solicitud de cambio de contraseña
-    en: Password change confirmation email template
+    [password_change_email_template]
 
-    [password_change_email_template.subject]
-    ca: Canvi de contrasenya
-    es: Cambio de contraseña
-    en: Password change
+        [title]
+        ca: Plantilla de correu electrònic per sol·licitar el canvi de contrasenya
+        es: Plantilla de correo electrónico para solicitud de cambio de contraseña
+        en: Password change confirmation email template
 
-    [password_change_email_template.body]
-    ca:
-        Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
-        <a href='${confirmation_url}'>${confirmation_url}</a>
-    es:
-        Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
-        <a href='${confirmation_url}'>${confirmation_url}</a>
-    en:
-        Open the following link to set your new password:<br/>
-        <a href='${confirmation_url}'> ${confirmation_url}</a>
+        [subject]
+        ca: Canvi de contrasenya
+        es: Cambio de contraseña
+        en: Password change
+
+        [body]
+        ca:
+            Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
+            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+        es:
+            Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
+            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+        en:
+            Open the following link to set your new password:<br/>
+            <a href='\${confirmation_url}'> \${confirmation_url}</a>
 
     [login_page.title]
     ca: Autenticació d'usuari
