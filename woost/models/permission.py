@@ -481,6 +481,8 @@ class PermissionExpression(Expression):
                 permission_query = permission.select_items(user = user)
 
                 if query.verbose:
+                    permission_query.description = \
+                        repr(permission).decode("utf8")
                     permission_query.verbose = True
                     permission_query.nesting = query.nesting + 1
 
