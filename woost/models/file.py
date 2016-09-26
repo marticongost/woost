@@ -130,7 +130,7 @@ class File(Publishable):
                 temp_path = os.path.join(download_temp_folder, file_name)
 
                 if redownload or not os.path.exists(temp_path):
-                    response = urlopen(path)
+                    response = urlopen(source)
                     with open(temp_path, "w") as temp_file:
                         copyfileobj(response, temp_file)
 
