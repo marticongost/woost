@@ -63,7 +63,9 @@ class OpenGraphExtension(Extension):
             strings,
             publishable,
             opengraphtype,
-            opengraphcategory
+            opengraphcategory,
+            website,
+            configuration
         )
 
         OpenGraphExtension.add_member(
@@ -208,9 +210,12 @@ class OpenGraphExtension(Extension):
         if site_name:
             properties["og:site_name"] = site_name
 
-        logo = config.get_setting("logo")
+        logo = (
+            config.get_setting("open_graph_default_image")
+            or config.get_setting("logo")
+        )
         if logo:
-            properties["og:image"] = logo.get_uri(host = "!")
+            properties["og:image"] = logo.get_uri("facebook", host = "!")
 
         email = config.get_setting("email")
         if email:
