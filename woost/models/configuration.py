@@ -16,6 +16,7 @@ from cocktail.translations import (
     set_language,
     set_fallback_languages
 )
+from cocktail.persistence import datastore
 from cocktail import schema
 from woost import app
 from .item import Item
@@ -92,7 +93,11 @@ class Configuration(Item):
 
     @classgetter
     def instance(cls):
-        return cls.get_instance(qname = "woost.configuration")
+        instance = datastore.get_transaction_value("woost.configuration")
+        if instance is None:
+            instance = cls.get_instance(qname = "woost.configuration")
+            datastore.set_transaction_value("woost.configuration", instance)
+        return instance
 
     # publication
     #--------------------------------------------------------------------------
