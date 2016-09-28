@@ -9,6 +9,8 @@ en: Style
     es: Estilos
     en: Styles
 
+    [members]
+
         [title]
         ca: Nom
         es: Nombre
