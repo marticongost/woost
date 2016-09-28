@@ -1,0 +1,27 @@
+
+[woost.models.videoplayersettings.VideoPlayerSettings]
+
+    [groups]
+
+        [youtube]
+            ca: YouTube
+            es: YouTube
+            en: YouTube
+
+    [members]
+
+        [youtube_allow_fullscreen]
+        ca: Permetre pantalla completa
+        es: Permitir pantalla completa
+        en: Allow fullscreen
+
+        [youtube_show_info]
+        ca: Sobreimpressionar el títol del vídeo
+        es: Sobreimpresionar el título del video
+        en: Overlay the video title
+
+        [youtube_show_related_videos]
+        ca: Mostrar vídeos relacionats
+        es: Mostrar videos relacionados
+        en: Show related videos
+

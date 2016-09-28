@@ -1,0 +1,302 @@
+[woost.models.website.Website]
+ca: Lloc web
+es: Sitio web
+en: Website
+
+    [plural]
+    ca: Llocs web
+    es: Sitios web
+    en: Websites
+
+    [groups]
+
+        [website]
+        ca: Lloc web
+        es: Sitio web
+        en: Website
+
+        [contact]
+        ca: Contacte
+        es: Contacto
+        en: Contact
+
+        [publication]
+        ca: Publicació
+        es: Publicación
+        en: Publication
+
+            [pages]
+            ca: Pàgines especials
+            es: Páginas especiales
+            en: Special pages
+
+            [maintenance]
+            ca: Manteniment
+            es: Mantenimiento
+            en: Maintenance
+
+            [https]
+            ca: HTTPS
+            es: HTTPS
+            en: HTTPS
+
+        [presentation]
+        ca: Presentació
+        es: Presentación
+        en: Presentation
+
+            [appearence]
+            ca: Aparença
+            es: Apariencia
+            en: Appearence
+
+        [meta]
+        ca: Metadades
+        es: Metadatos
+        en: Metadata
+
+        [language]
+        ca: Idioma
+        es: Idioma
+        en: Language
+
+        [services]
+        ca: Serveis
+        es: Servicios
+        en: Services
+
+    [members]
+
+        [specific_content]
+        ca: Contingut específic
+        es: Contenido específico
+        en: Specific content
+
+        [site_name]
+        ca: Nom del lloc
+        es: Nombre del sitio
+        en: Site name
+
+        [logo]
+        ca: Logotip
+        es: Logotipo
+        en: Logo
+
+        [icon]
+        ca: Icona
+        es: Icono
+        en: Icon
+
+        [keywords]
+        ca: Paraules clau
+        es: Palabras clave
+        en: Keywords
+
+        [description]
+        ca: Descripció
+        es: Descripción
+        en: Description
+
+        [hosts]
+        ca: Dominis
+        es: Dominios
+        en: Hosts
+
+        [explanation]
+        ca:
+            La llista de dominis que han d'associar-se a aquesta web.
+            Poden utilitzar-se comodins (per exemple, *.foo.com).
+        es:
+            La lista de dominios que deben asociarse a esta web. Pueden
+            utilizarse comodines (por ejemplo, *.foo.com).
+        en:
+            The list of domains that can be associated to this website.
+            Can use wildcard expressions (such as *.foo.com).
+
+        [organization_name]
+        ca: Nom de l'entitat
+        es: Nombre de la entidad
+        en: Entity name
+
+        [organization_url]
+        ca: URL de l'entitat
+        es: URL de la entidad
+        en: Entity URL
+
+        [address]
+        ca: Adreça
+        es: Dirección
+        en: Address
+
+        [town]
+        ca: Localitat
+        es: Localidad
+        en: Town
+
+        [region]
+        ca: Regió
+        es: Región
+        en: Region
+
+        [postal_code]
+        ca: Codi postal
+        es: Código postal
+        en: Postal code
+
+        [country]
+        ca: País
+        es: País
+        en: Country
+
+        [phone_number]
+        ca: Telèfon
+        es: Teléfono
+        en: Phone number
+
+        [fax_number]
+        ca: Fax
+        es: Fax
+        en: Fax
+
+        [email]
+        ca: Correu electrònic
+        es: Correo electrónico
+        en: Email
+
+        [technical_contact_email]
+        ca: Correu electrònic per notificar errors
+        es: Correo electrónico para notificar errores
+        en: E-mail address for reporting errors
+
+        [theme]
+        ca: Tema visual
+        es: Tema visual
+        en: Visual theme
+
+        [default_page_template]
+        ca: Plantilla de pàgina per defecte
+        es: Plantilla de página por defecto
+        en: Default page template
+
+        [default_news_template]
+        ca: Plantilla de notícia per defecte
+        es: Plantilla de noticia por defecto
+        en: Default news template
+
+        [default_event_template]
+        ca: Plantilla d'esdeveniment per defecte
+        es: Plantilla de evento por defecto
+        en: Default event template
+
+        [home]
+        ca: Pàgina d'inici
+        es: Página de inicio
+        en: Home page
+
+        [login_page]
+        ca: Pàgina d'autenticació
+        es: Página de autenticación
+        en: Authentication page
+
+        [generic_error_page]
+        ca: Pàgina d'error genèric
+        es: Página de error genérico
+        en: Generic error page
+
+        [not_found_error_page]
+        ca: Pàgina no trobada
+        es: Página no encontrada
+        en: Not found error page
+
+        [forbidden_error_page]
+        ca: Pàgina d'error per accés restringit
+        es: Página de error por acceso restringido
+        en: Access forbidden page
+
+        [down_for_maintenance]
+        ca: Lloc aturat per manteniment
+        es: Sitio parado por mantenimiento
+        en: Site down for maintenance
+
+        [maintenance_page]
+        ca: Pàgina a mostrar durant el manteniment
+        es: Página a mostrar durante el mantenimiento
+        en: Service unavailable page
+
+        [https_policy]
+        ca: Política de HTTPS
+        es: Política de HTTPS
+        en: HTTPS policy
+
+            [values]
+
+                [always]
+                ca: Habilitar a totes les pàgines
+                es: Habilitar en todas las páginas
+                en: Enable for all pages
+
+                [never]
+                ca: Deshabilitar a totes les pàgines
+                es: Deshabilitar en todas las páginas
+                en: Disable for all pages
+
+                [per_page]
+                ca: Decidir-ho a cada pàgina
+                es: Decidirlo en cada página
+                en: Decide on a per-page basis
+
+        [https_persistence]
+        ca: Preservar HTTPS entre peticions
+        es: Preservar HTTPS entre peticiones
+        en: Persist HTTPS navigation across requests
+
+            [explanation]
+            ca:
+                Aquesta opció només tindrà efecte si la <em>Política
+                d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.
+            es:
+                Esta opción solo tendrá efecto si la <em>Política de
+                HTTPS</em> se establece a <em>Decidir en cada página</em>.
+            en:
+                This option will only be taken into account if
+                <em>HTTPS policy</em> is set to <em>Decide on a per-page
+                 u"basis</em>.
+
+        [meta_tags]
+        ca: Meta tags
+        es: Meta tags
+        en: Meta tags
+
+        [default_language]
+        ca: Idioma per defecte
+        es: Idioma por defecto
+        en: Default language
+
+        [heed_client_language]
+        ca: Respectar les preferències d'idioma del navegador
+        es: Respetar las preferencias de idioma del navegador
+        en: Heed the language preferences from the browser
+
+        [published_languages]
+        ca: Idiomes publicats
+        es: Idiomas publicados
+        en: Published languages
+
+            [explanation]
+            ca:
+                Limita els idiomes publicats al subconjunt indicat. Deixar en
+                blanc per permetre la publicació en qualsevol dels idiomes
+                disponibles.
+            es:
+                Limita los idiomas publicados al subconjunto indicado. Dejar en
+                blanco para permitir la publicación en cualquiera de los idiomas
+                disponibles.
+            en:
+                Limits publication to the indicated subset of languages. Leave
+                blank to allow publishing in any of the available languages.
+
+        [footer_blocks]
+        ca: Peu de pàgina
+        es: Pie de página
+        en: Footer
+

@@ -1,0 +1,15 @@
+
+[woost.extensions.staticpub.ItemLabelOverlay]
+
+    [states]
+
+        [pending]
+        ca: Pendent d'exportar
+        es: Pendiente de exportar
+        en: Export pending
+
+        [descendants_pending]
+        ca: Descendents pendents d'exportar
+        es: Descendientes pendientes de exportar
+        en: Descendants pending
+

@@ -1,0 +1,11 @@
+
+[woost.extensions.payments.PaymentsExtension]
+ca: Pagaments
+es: Pagos
+en: Payments
+
+    [plural]
+    ca: Pagaments
+    es: Pagos
+    en: Payments
+

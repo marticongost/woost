@@ -1,0 +1,23 @@
+
+[woost.extensions.payments.pasat4b.Pasat4bPaymentGateway]
+ca: Pasat 4B
+es: Pasat 4B
+en: Pasat 4B
+
+    [plural]
+    ca: Pasat 4B
+    es: Pasat 4B
+    en: Pasat 4B
+
+    [default_label]
+    ca: Targeta de crèdit
+    es: Tarjeta de crédito
+    en: Credit card
+
+    [members]
+
+        [merchant_code]
+        ca: Codi de comerç
+        es: Código de comercio
+        en: Merchant code
+

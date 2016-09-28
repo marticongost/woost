@@ -1,0 +1,10 @@
+
+[woost.models.configuration.Configuration]
+
+    [members]
+
+        [staticpub_default_dest]
+        ca: Destinació per defecte per la publicació estàtica
+        es: Destinación por defecto para la publicación estática
+        en: Static publication default destination
+

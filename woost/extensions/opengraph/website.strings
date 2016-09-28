@@ -1,0 +1,11 @@
+
+[woost.models.website.Website]
+
+    [members]
+
+        [open_graph_default_image]
+        @reuse "woost.models.configuration.Configuration.members.open_graph_default_image"
+
+            [explanation]
+            @reuse "woost.models.configuration.Configuration.members.open_graph_default_image.explanation"
+

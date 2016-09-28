@@ -1,0 +1,8 @@
+
+[woost.extensions.annotations.annotations.Annotation]
+
+    [default_member_translation(member, **kwargs)]
+    ca: t{member.annotation_target, **kwargs} (notes)
+    es: t{member.annotation_target, **kwargs} (notas)
+    en: t{member.annotation_target, **kwargs} (notes)
+

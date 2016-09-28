@@ -1,0 +1,32 @@
+[woost.models.siteinstallation.SiteInstallation]
+ca: Instal·lació del lloc web
+es: Instalación del sitio web
+en: Site installation
+
+    [plural]
+    ca: Instal·lacions del lloc web
+    es: Instalaciones del sitio web
+    en: Site installations
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [url]
+        ca: URL
+        es: URL
+        en: URL
+
+        [synchronization_user]
+        ca: Usuari per la sincronització
+        es: Usuario para la sincronización
+        en: Synchronization user
+
+        [synchronization_password]
+        ca: Contrasenya per la sincronització
+        es: Contraseña para la sincronización
+        en: Synchronization password
+

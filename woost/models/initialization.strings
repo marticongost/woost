@@ -1,0 +1,375 @@
+[woost.initialization]
+
+    [website.site_name]
+    ca: El meu lloc web
+    es: Mi sitio web
+    en: My website
+
+    [vcard.heading]
+    ca: Dades de contacte
+    es: Datos de contacto
+    en: Contact data
+
+    [anonymous.title]
+    ca: Anònim
+    es: Anónimo
+    en: Anonymous
+
+    [administrators.title]
+    ca: Administradors
+    es: Administradores
+    en: Administrators
+
+    [everybody.title]
+    ca: Tothom
+    es: Todos los usuarios
+    en: Everybody
+
+    [authenticated.title]
+    ca: Autenticat
+    es: Autenticado
+    en: Authenticated
+
+    [editors.title]
+    ca: Editors
+    es: Editores
+    en: Editors
+
+    [file_deletion_trigger.title]
+    ca: Esborrar fitxers del disc quan s'elimini el seu element
+    es: Borrar ficheros del disco cuando se elimine su elemento
+    en: Erase files from disc when their item is deleted
+
+    [default_grid.title]
+    ca: Graella estàndard
+    es: Matriz estándar
+    en: Default grid
+
+    [document_controller.title]
+    ca: Controlador de document
+    es: Controlador de documento
+    en: Document controller
+
+    [file_controller.title]
+    ca: Controlador de fitxer
+    es: Controlador de fichero
+    en: File controller
+
+    [uri_controller.title]
+    ca: Controlador de redirecció
+    es: Controlador de redirección
+    en: Redirection controller
+
+    [styles_controller.title]
+    ca: Controlador d'estils d'usuari
+    es: Controlador de estilos de usuario
+    en: User styles controller
+
+    [feed_controller.title]
+    ca: Controlador de sindicació de continguts
+    es: Controlador de sindicación de contenidos
+    en: Feed controller
+
+    [backoffice_controller.title]
+    ca: Controlador de panell administratiu
+    es: Controlador de panel administrativo
+    en: Backoffice controller
+
+    [firstchildredirection_controller.title]
+    ca: Controlador de redirecció automàtica al primer fill
+    es: Controlador de redirección automática al primer hijo
+    en: First child redirection controller
+
+    [login_controller.title]
+    ca: Controlador de autenticació d'usuari
+    es: Controlador de autenticación de usuario
+    en: User authentication controller
+
+    [passwordchange_controller.title]
+    ca: Controlador de canvi de contrasenya
+    es: Controlador de cambio de contraseña
+    en: Password change controller
+
+    [passwordchangeconfirmation_controller.title]
+    ca: Controlador de confirmació de canvi de contrasenya
+    es: Controlador de confirmación de cambio de contraseña
+    en: Password change confirmation controller
+
+    [default_theme.title]
+    ca: Tema per defecte
+    es: Tema por defecto
+    en: Default theme
+
+    [default_page_template.title]
+    ca: Plantilla de pàgina estàndard
+    es: Plantilla de página estándar
+    en: Standard page template
+
+    [default_news_template.title]
+    ca: Plantilla de notícia
+    es: Plantilla de notincia
+    en: News template
+
+    [default_event_template.title]
+    ca: Plantilla d'esdeveniment
+    es: Plantilla de evento
+    en: Event template
+
+    [home.title]
+    ca: Lloc web
+    es: Sitio web
+    en: Web site
+
+    [home.inner_title]
+    ca: Benvingut!
+    es: Bienvenido!
+    en: Welcome!
+
+    [home.body]
+    ca:
+        <p>
+            El teu lloc web s'ha creat correctament. Ja pots començar a
+            <a href='/cms'>treballar-hi</a> i substituir aquesta pàgina
+            amb els teus propis continguts.
+        </p>
+    es:
+        <p>
+            Tu sitio web se ha creado correctamente. Ya puedes empezar
+            a <a href='/cms'>trabajar</a> en él y sustituir esta página
+            con tus propios contenidos.
+        </p>
+    en:
+        <p>
+            Your web site has been created successfully. You can start
+            <a href='/cms'>working on it</a> and replace this page with
+            your own content.
+        </p>
+
+    [user_styles.title]
+    ca: Estils d'usuari
+    es: Estilos de usuario
+    en: User styles
+
+    [backoffice.title]
+    ca: Gestor de continguts
+    es: Gestor de contenidos
+    en: Content Manager
+
+    [generic_error_page.title]
+    ca: Error
+    es: Error
+    en: Error
+
+    [generic_error_page.body]
+    ca:
+        <p>
+            Ho sentim, s'ha produït un error que ha impedit completar la
+            sol·licitud. Els nostres tècnics han estat alertats de la
+            incidència i intentaran resoldre-la el més aviat possible. Si el
+            problema persisteix pots contactar amb nosaltres [CONTACT] per tal
+            que t'assistim.
+        </p>
+    es:
+        <p>
+            Lo sentimos, se ha producido un error que ha impedido completar
+            la solicitud. Nuestros técnicos han sido alertados de la
+            incidencia y intentarán resolverla lo antes posible. Si el
+            problema persiste puedes contactar con nosotros [CONTACT] para que
+            te asistamos.
+        </p>
+    en:
+        <p>
+            Sorry, an error occurred that prevented your request from being
+            completed. Our technical staff has been alerted of the problem and
+            will try to address it as soon as possible. If the problem
+            persists, please contact us [CONTACT] so that we can assist you.
+        </p>
+
+    [not_found_error_page.title]
+    ca: Pàgina no trobada
+    es: Página no encontrada
+    en: Page not found
+
+    [not_found_error_page.body]
+    ca:
+        <p>
+            La direcció indicada no coincideix amb cap dels continguts
+            del web. Si us plau, revísa-la i torna-ho a provar.
+        </p>
+    es:
+        <p>
+            La dirección indicada no coincide con ninguno de los contenidos
+            del web. Por favor, revísala y inténtalo de nuevo.
+        </p>
+    en:
+        <p>
+            Couldn't find the indicated address. Please, verify it and try
+            again.
+        </p>
+
+    [forbidden_error_page.title]
+    ca: Accés denegat
+    es: Acceso denegado
+    en: Forbidden
+    pt: Acesso negado
+
+    [forbidden_error_page.body]
+    ca: <p>No es permet l'accés a aquesta secció del web.</p>
+    es: <p>No se permite el acceso a esta sección del sitio.</p>
+    en: <p>Access denied.</p>
+    pt: <p>Não é permitido o acesso a esta seção do site.</p>
+
+    [password_change_page.title]
+    ca: Canvi de contrasenya d'usuari
+    es: Cambio de contraseña de usuario
+    en: Password change
+    pt: Alterar chave de acesso
+
+    [password_change_page.body]
+    ca:
+        <p>
+            Introdueix el teu identificador d'usuari per iniciar el
+            procés de canvi de contrasenya
+        </p>
+    es:
+        <p>
+            Introduce a tu identificador de usuario para iniciar el
+             proceso de cambio de contraseña
+        </p>
+    en:
+        <p>
+            Enter your user identifier below to start the password
+            change process
+        </p>
+    pt:
+        <p>
+            Introduza o seu endereço eletrónico para iniciar o
+            processo de alteração da palavra-passe. Enviar-lhe-emos
+            um e-mail para o efeito.
+        </p>
+
+    [password_change_page.form_title]
+    ca: Formulari de petició de canvi de contrasenya
+    es: Formulario de petición de cambio de contraseña
+    en: Password change request form
+
+    [password_change_confirmation_page.title]
+    ca: Canvi de contrasenya
+    es: Cambio de contraseña
+    en: Change your password
+    pt: Alterar chave de acesso
+
+    [password_change_confirmation_page.body]
+    ca: <p>Introduïx la nova contrasenya pel teu compte d'usuari:</p>
+    es: <p>Introduce tu nueva contraseña para tu cuenta de usuario:</p>
+    en: <p>Enter the new password for your user account:</p>
+    pt: <p>Digite a nova senha para a sua conta de usuário:</p>
+
+    [password_change_confirmation_page.form_title]
+    ca: Formulari de canvi de contrasenya
+    es: Formulario de cambio de contraseña
+    en: Password change form
+
+    [password_change_email_template]
+
+        [title]
+        ca: Plantilla de correu electrònic per sol·licitar el canvi de contrasenya
+        es: Plantilla de correo electrónico para solicitud de cambio de contraseña
+        en: Password change confirmation email template
+
+        [subject]
+        ca: Canvi de contrasenya
+        es: Cambio de contraseña
+        en: Password change
+
+        [body]
+        ca:
+            Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
+            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+        es:
+            Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
+            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+        en:
+            Open the following link to set your new password:<br/>
+            <a href='\${confirmation_url}'> \${confirmation_url}</a>
+
+    [login_page.title]
+    ca: Autenticació d'usuari
+    es: Autenticación de usuario
+    en: User authentication
+
+    [own_items_user_view.title]
+    ca: Els meus elements
+    es: Mis elementos
+    en: My items
+
+    [page_tree_user_view.title]
+    ca: Arbre de pàgines
+    es: Árbol de páginas
+    en: Page tree
+
+    [file_gallery_user_view.title]
+    ca: Galeria de fitxers
+    es: Galería de ficheros
+    en: File gallery
+
+    [content_renderer.title]
+    ca: Imatge del contingut
+    es: Imagen del contenido
+    en: Content renderer
+
+    [icon16_renderer.title]
+    ca: Icones de 16x16
+    es: Iconos de 16x16
+    en: 16x16 icons
+
+    [icon32_renderer.title]
+    ca: Icones de 32x32
+    es: Iconos de 32x32
+    en: 32x32 icons
+
+    [default_image_factory.title]
+    ca: Imatge sense processar
+    es: Imagen sin procesar
+    en: Unprocessed image
+
+    [icon16_image_factory.title]
+    ca: Icona de 16x16
+    es: Icono de 16x16
+    en: 16x16 icon
+
+    [icon32_image_factory.title]
+    ca: Icona de 32x32
+    es: Icono de 32x32
+    en: 32x32 icon
+
+    [backoffice_thumbnail_image_factory.title]
+    ca: Vista en miniatura del panell d'administració
+    es: Vista en miniatura del panel de administración
+    en: Backoffice thumbnail
+
+    [backoffice_small_thumbnail_image_factory.title]
+    ca: Vista en miniatura petita del panell d'administració
+    es: Vista en miniatura pequeña del panel de administración
+    en: Backoffice small thumbnail
+
+    [edit_blocks_thumbnail_image_factory.title]
+    ca: Vista en miniatura de l'editor de blocs
+    es: Vista en miniatura del editor de bloques
+    en: Block editor thumbnail
+
+    [close_up_image_factory.title]
+    ca: Ampliació estàndard de la galeria d'imatges
+    es: Ampliación estándar de la galería de imágenes
+    en: Default image gallery close up
+
+    [default_thumbnail_image_factory.title]
+    ca: Miniatura estàndard de la galeria d'imatges
+    es: Miniatura estándar de la galería de imágenes
+    en: Default image gallery thumbnail
+
+    [collage_image_factory.title]
+    ca: Peça de collage
+    es: Pieza de collage
+    en: Collage piece
+

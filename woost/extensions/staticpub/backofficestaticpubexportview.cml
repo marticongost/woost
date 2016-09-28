@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import get_request_url_builder
+?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://scripts/staticpub-backofficestaticpubexportview.js ?>
+    <?resource woost://styles/staticpub-backofficestaticpubexportview.scss.css ?>
+
+    <?py-class
+    export_schema = None
+    export_data = None
+    export_errors = None
+    ?>
+
+    <py:ready>
+        <?py
+        url_builder = get_request_url_builder()
+        url_builder.path.append("preview")
+        url_builder.query.pop("selection", None)
+        self.set_client_param("previewURL", url_builder.get_url())
+        ?>
+    </py:ready>
+
+    <h2 py:def="page_title">
+        @{view_translations("page_title")}
+    </h2>
+
+    <py:with py:element="self.body">
+
+        <py:cocktail.html.Form
+            py:id="export_form"
+            py:schema="@{self.export_schema}"
+            py:data="@{self.export_data}">
+
+            <py:with
+                py:element="element.submit_button"
+                name="export_action"
+                value="export">
+                <py:ready>
+                    <?py
+                    element.empty()
+                    element.append(view_translations("submit_button"))
+                    ?>
+                </py:ready>
+            </py:with>
+
+        </py:cocktail.html.Form>
+
+        <div py:id="preview">
+
+            <div py:id="loading_label">
+                ${view_translations("loading_label")}
+            </div>
+
+            <div py:id="error_label">
+                ${view_translations("error_label")}
+            </div>
+
+            <div py:id="task_count_label"/>
+            <ul py:id="preview_entries"/>
+        </div>
+
+    </py:with>
+
+    <li
+        py:id="publishable_group"
+        py:client_model="woost.extensions.staticpub.BackOfficeStaticPubExportView.publishableGroup">
+
+        <div py:local_id="publishable_group_header">
+            <ul py:local_id="path"/>
+            <button py:local_id="languages_button" type="button">
+                <span py:local_id="toggle_sign">▶</span>
+                <span py:local_id="language_count"/>
+            </button>
+        </div>
+
+        <ul py:local_id="publishable_group_entries"/>
+    </li>
+
+    <li
+        py:id="publishable_group_entry"
+        py:client_model="woost.extensions.staticpub.BackOfficeStaticPubExportView.publishableGroupEntry">
+
+        <div py:local_id="language_heading"/>
+
+        <a py:local_id="local_link" target="_blank">
+            ${view_translations("local_link")}
+        </a>
+
+        <a py:local_id="remote_link" target="_blank">
+            ${view_translations("remote_link")}
+        </a>
+
+    </li>
+
+</py:woost.views.BackOfficeLayout>
+
