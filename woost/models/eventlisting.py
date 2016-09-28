@@ -78,6 +78,10 @@ class EventListing(Block):
         member_group = "listing"
     )
 
+    views_paging_type = {
+        "woost.views.EventsCalendar": "by_month"
+    }
+
     def init_view(self, view):
         Block.init_view(self, view)
         view.name_prefix = self.name_prefix
@@ -86,15 +90,18 @@ class EventListing(Block):
         view.calendar_page = self.calendar_page
         view.calendar_page_member = self.calendar_page_member
 
-        if self.paginated:
+        paging_type = self.views_paging_type.get(self.view_class,'')
+
+        if self.paginated and paging_type != 'by_month':
             view.pagination = self.pagination
         else:
             view.events = self.select_events()
 
     def select_events(self):
         events = Event.select_accessible()
+        paging_type = self.views_paging_type.get(self.view_class,'')
 
-        if self.calendar_page:
+        if paging_type == 'by_month' and self.calendar_page:
             one_week = timedelta(days = 7)
             events.add_filter(
                 Event.event_start.between(
