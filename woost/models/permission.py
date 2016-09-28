@@ -469,36 +469,79 @@ class PermissionExpression(Expression):
             authorized_subset = set()
             queried_type = query.type
             user = self.user
+            permission_queries = []
 
-            for permission in reversed(list(
-                user.iter_permissions(self.permission_type)
-            )):
+            for permission in user.iter_permissions(self.permission_type):
                 permission_query = permission.select_items(user = user)
-
-                # Optimization: all instances of a type authorized / forbidden,
-                # no need to intersect subsets
-                if (
+                covers_whole_set = (
                     not permission_query.is_subset()
                     and issubclass(query.type, permission_query.type)
-                ):
-                    if permission.authorized:
+                )
+                permission_queries.append((
+                    permission,
+                    permission_query,
+                    covers_whole_set
+                ))
+
+
+            # Optimization: all instances of a type authorized / forbidden with
+            # no preceeding contradicting permission, no need to intersect
+            # subsets
+            check_dir = None
+
+            for permission, permission_query, covers_whole_set \
+            in permission_queries:
+
+                perm_authorized = permission.authorized
+
+                # A previous permission opposes this one (ie. this is an
+                # authorization and previous permissions were deauthorizations,
+                # or the other way around). The optimization is no longer
+                # possible.
+                if check_dir is not None and perm_authorized != check_dir:
+                    break
+
+                # The permission covers the whole type, so there's no need to
+                # consider the results of other permissions. Return the whole
+                # set of already matching instances (authorizations) or an
+                # empty set (deauthorizations)
+                if covers_whole_set:
+                    if perm_authorized:
                         return dataset
                     else:
                         return set()
 
-                if query.verbose:
-                    permission_query.verbose = True
-                    permission_query.nesting = query.nesting + 1
+                check_dir = perm_authorized
 
-                if issubclass(queried_type, permission_query.type) \
-                or issubclass(permission_query.type, queried_type):
+            # Regular check: iterate permissions, from more general to more
+            # specific, to allow permissions at the top of the stack to
+            # override results.
+            for permission, permission_query, covers_whole_set \
+            in reversed(permission_queries):
 
-                    permission_subset = permission_query.execute()
-
+                # Optimization: if the permission covers the whole type,
+                # ignore the results of previous permissions
+                if covers_whole_set:
                     if permission.authorized:
-                        authorized_subset.update(permission_subset)
+                        authorized_subset = permission_query.execute()
                     else:
-                        authorized_subset.difference_update(permission_subset)
+                        authorized_subset = set()
+                else:
+                    if query.verbose:
+                        permission_query.description = \
+                            repr(permission).decode("utf8")
+                        permission_query.verbose = True
+                        permission_query.nesting = query.nesting + 1
+
+                    if issubclass(queried_type, permission_query.type) \
+                    or issubclass(permission_query.type, queried_type):
+
+                        permission_subset = permission_query.execute()
+
+                        if permission.authorized:
+                            authorized_subset.update(permission_subset)
+                        else:
+                            authorized_subset.difference_update(permission_subset)
 
             dataset.intersection_update(authorized_subset)
             return dataset

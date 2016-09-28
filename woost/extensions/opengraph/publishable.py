@@ -117,9 +117,7 @@ def _get_news_description(self):
 News.get_open_graph_description = _get_news_description
 
 def _get_publishable_open_graph_image(self):
-    website = get_publishable_website(self)
-    if website:
-        return website.logo
+    return self.get_representative_image()
 
 Publishable.get_open_graph_image = _get_publishable_open_graph_image
 
@@ -127,11 +125,6 @@ def _get_publishable_open_graph_video(self):
     return None
 
 Publishable.get_open_graph_video = _get_publishable_open_graph_video
-
-def _get_news_open_graph_image(self):
-    return self.image
-
-News.get_open_graph_image = _get_news_open_graph_image
 
 # Metadata for shop products (only if the 'shop' extension is enabled)
 from woost.extensions.shop import ShopExtension
