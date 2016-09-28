@@ -1,0 +1,11 @@
+
+[woost.extensions.googletagmanager.GoogleTagManagerExtension]
+ca: Google Tag Manager
+es: Google Tag Manager
+en: Google Tag Manager
+
+    [plural]
+    ca: Google Tag Manager
+    es: Google Tag Manager
+    en: Google Tag Manager
+

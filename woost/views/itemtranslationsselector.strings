@@ -1,0 +1,67 @@
+[woost.views.ItemTranslationsSelector]
+
+    [selection_controls_label]
+    ca: Seleccionar:
+    es: Seleccionar:
+    en: Select:
+
+    [select_all_link]
+    ca: Tots
+    es: Todos
+    en: All
+
+    [select_none_link]
+    ca: Cap
+    es: Ninguno
+    en: None
+
+    [available_languages_section.heading]
+    ca: Idiomes disponibles
+    es: Idiomas disponibles
+    en: Available languages
+
+    [defined_languages_section.heading]
+    ca: Traduccions definides
+    es: Traducciones definidas
+    en: Defined translations
+
+    [add_translation_button]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
+        [shortcut]
+        ca: a
+        es: a
+        en: a
+
+    [delete_translation_button]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+
+        [shortcut]
+        ca: e
+        es: e
+        en: d
+
+    [show_translation_button]
+    ca: Mostrar
+    es: Mostrar
+    en: Show
+
+        [shortcut]
+        ca: m
+        es: m
+        en: s
+
+    [hide_translation_button]
+    ca: Ocultar
+    es: Ocultar
+    en: Hide
+
+        [shortcut]
+        ca: o
+        es: o
+        en: h
+

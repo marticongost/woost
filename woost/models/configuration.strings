@@ -1,0 +1,314 @@
+
+[woost.models.configuration.Configuration]
+ca: Configuració
+es: Configuración
+en: Configuration
+
+    [instance(config, **kwargs)]
+    *: t{"woost.models.configuration.Configuration"}
+
+    [plural]
+    ca: Configuració
+    es: Configuración
+    en: Configuration
+
+    [groups]
+
+        [publication]
+        ca: Publicació
+        es: Publicación
+        en: Publication
+
+            [pages]
+            ca: Pàgines especials
+            es: Páginas especiales
+            en: Special pages
+
+            [maintenance]
+            ca: Manteniment
+            es: Mantenimiento
+            en: Maintenance
+
+        [language]
+        ca: Idioma
+        es: Idioma
+        en: Language
+
+        [meta]
+        ca: Metadades
+        es: Metadatos
+        en: Metadata
+
+        [presentation]
+        ca: Presentació
+        es: Presentación
+        en: Presentation
+
+            [appearence]
+            ca: Aparença
+            es: Apariencia
+            en: Appearence
+
+            [images]
+            ca: Imatges
+            es: Imágenes
+            en: Images
+
+            [video]
+            ca: Vídeo
+            es: Video
+            en: Video
+
+        [services]
+        ca: Serveis
+        es: Servicios
+        en: Services
+
+        [system]
+        ca: Sistema
+        es: Sistema
+        en: System
+
+            [smtp]
+            ca: Servidor SMTP
+            es: Servidor SMTP
+            en: SMTP server
+
+    [members]
+
+        [common_blocks]
+        ca: Blocs comuns
+        es: Bloques comunes
+        en: Common blocks
+
+        [footer_blocks]
+        ca: Peu de pàgina
+        es: Pie de página
+        en: Footer
+
+        [websites]
+        ca: Pàgines web
+        es: Páginas web
+        en: Websites
+
+        [caching_policies]
+        ca: Polítiques de cache
+        es: Políticas de cache
+        en: Caching policies
+
+        [theme]
+        ca: Tema visual
+        es: Tema visual
+        en: Visual theme
+
+        [default_page_template]
+        ca: Plantilla de pàgina per defecte
+        es: Plantilla de página por defecto
+        en: Default page template
+
+        [default_news_template]
+        ca: Plantilla de notícia per defecte
+        es: Plantilla de noticia por defecto
+        en: Default news template
+
+        [default_event_template]
+        ca: Plantilla d'esdeveniment per defecte
+        es: Plantilla de evento por defecto
+        en: Default event template
+
+        [login_page]
+        ca: Pàgina d'autenticació
+        es: Página de autenticación
+        en: Authentication page
+
+        [generic_error_page]
+        ca: Pàgina d'error genèric
+        es: Página de error genérico
+        en: Generic error page
+
+        [not_found_error_page]
+        ca: Pàgina no trobada
+        es: Página no encontrada
+        en: Not found error page
+        pt: Página não encontrada
+
+        [forbidden_error_page]
+        ca: Pàgina d'error per accés restringit
+        es: Página de error por acceso restringido
+        en: Access forbidden page
+
+        [down_for_maintenance]
+        ca: Lloc aturat per manteniment
+        es: Sitio parado por mantenimiento
+        en: Site down for maintenance
+
+        [maintenance_page]
+        ca: Pàgina a mostrar durant el manteniment
+        es: Página a mostrar durante el mantenimiento
+        en: Service unavailable page
+
+        [maintenance_addresses]
+        ca: Adreces IP que ignoren el mode de manteniment
+        es: Direcciones IP que ignoran el modo de mantenimiento
+        en: IP addresses that ignore maintenance mode
+
+        [meta_tags]
+        ca: Meta tags
+        es: Meta tags
+        en: Meta tags
+
+        [robots_should_index]
+        ca: Contingut indexable
+        es: Contenido indexable
+        en: Indexable content
+
+        [languages]
+        ca: Idiomes
+        es: Idiomas
+        en: Languages
+
+            [explanation]
+            ca:
+                Llistat d'idiomes als que es pot traduïr el contingut. Cada
+                idioma s'indica mitjançant el seu codi ISO de dues lletres.
+            es:
+                Listado de idiomas a los que se puede traducir el contenido.
+                Cada idioma se indica mediante su código ISO de dos letras.
+            en:
+                Languages that content can be translated to. Each language is
+                specified using its two letter ISO code.
+
+        [published_languages]
+        ca: Idiomes publicats
+        es: Idiomas publicados
+        en: Published languages
+
+            [explanation]
+            ca:
+                Limita els idiomes publicats al subconjunt indicat. Deixar en
+                blanc per permetre la publicació en qualsevol dels idiomes
+                disponibles.
+            es:
+                Limita los idiomas publicados al subconjunto indicado. Dejar en
+                blanco para permitir la publicación en cualquiera de los idiomas
+                disponibles.
+            en:
+                Limits publication to the indicated subset of languages. Leave
+                blank to allow publishing in any of the available languages.
+
+        [virtual_languages]
+        ca: Idiomes virtuals
+        es: Idiomas virtuales
+        en: Virtual languages
+
+            [explanation]
+            ca:
+                Indica els idiomes que no es publiquen mai directament, si no que
+                només actuen com a base per a altres idiomes.
+            es:
+                Indica los idiomas que no se publican nunca directamente, si no
+                que solo actuan como base para otros idiomas.
+            en:
+                Establishes a set of languages that will never be directly
+                published, and will be used instead as a base for other languages.
+
+        [default_language]
+        ca: Idioma per defecte
+        es: Idioma por defecto
+        en: Default language
+
+        [heed_client_language]
+        ca: Respectar les preferències d'idioma del navegador
+        es: Respetar las preferencias de idioma del navegador
+        en: Heed the language preferences from the browser
+
+        [fallback_languages]
+        ca: Idiomes substitutius
+        es: Idiomas sustitutivos
+        en: Fallback languages
+
+        [backoffice_language]
+        ca: Idioma per defecte de la interfície d'edició
+        es: Idioma por defecto de la interfaz de edición
+        en: Default language for the backoffice
+
+        [backoffice_language_chain]
+        ca: Idiomes a utilitzar en descriure el contingut
+        es: Idiomas a utilizar al describir el contenido
+        en: Languages to use when describing content
+
+        [renderers]
+        ca: Pintadors
+        es: Pintadores
+        en: Renderers
+
+            [explanation]
+            ca:
+                Components encarregats de produïr una imatge representativa a
+                partir d'un tipus de contingut específic (imatges, PDFs, vídeos,
+                etc).
+            es:
+                Componentes encargados de producir una imagen representativa a
+                partir de un tipo de contenido específico (imágenes, PDFs,
+                videos, etc).
+            en:
+                Components tasked with producing images for different kinds of
+                content (ie. image files, PDF documents, videos, etc).
+
+        [image_factories]
+        ca: Processadors d'imatges
+        es: Procesadores de imágenes
+        en: Image factories
+
+            [explanation]
+            ca:
+                Les diferents variants de redimensionat i efectes que s'apliquen
+                a les imatges de la web.
+            es:
+                Las distintas variaciones de redimensionado y efectos que se
+                aplican a las imágenes de la web.
+            en:
+                The different resizing and transformation effects applied to the
+                site's images.
+
+        [video_player_settings]
+        ca: Opcions de reproductor de vídeo
+        es: Opciones de reproductor de video
+        en: Video player settings
+
+        [timezone]
+        ca: Zona horària
+        es: Zona horaria
+        en: Timezone
+
+        [smtp_host]
+        ca: Adreça del servidor SMTP
+        es: Dirección del servidor SMTP
+        en: SMTP host
+
+        [smtp_user]
+        ca: Compte d'usuari del servidor SMTP
+        es: Cuenta de usuario del servidor SMTP
+        en: SMTP server user account
+
+        [smtp_password]
+        ca: Contrasenya del servidor SMTP
+        es: Contraseña de usuario del servidor SMTP
+        en: SMTP server password
+
+        [triggers]
+        ca: Disparadors
+        es: Disparadores
+        en: Triggers
+
+            [explanation]
+            ca:
+                Permet programar accions que s'activin quan es produeixin canvis
+                al contingut.
+            es:
+                Permite programar acciones que se activen cuando se produzcan
+                cambios en el contenido.
+            en:
+                Program actions that will be activated when the site's content
+                changes.
+

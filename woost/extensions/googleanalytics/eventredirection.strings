@@ -1,0 +1,19 @@
+
+[woost.extensions.googleanalytics.eventredirection]
+
+    [title]
+    ca: Obrint recurs
+    es: Abriendo recurso
+    en: Downloading resource
+
+    [body(url)]
+    ca:
+        S'està obrint el recurs sol·licitat. Si no s'obre automàticament,
+        si us plau faci clic <a href='${url}'>aquí</a>.
+    es:
+        Se está abriendo el recurso solicitado. Si no se abre
+        automáticamente, por favor haga clic <a href="${url}">aquí</a>.
+    en:
+        The page or file you requested is being downloaded. If the download
+        doesn't start automatically, please click <a href="${url}">here</a>.
+

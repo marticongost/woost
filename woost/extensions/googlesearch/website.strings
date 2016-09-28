@@ -1,0 +1,17 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [services.google_cse]
+        @reuse "woost.models.configuration.Configuration.groups.services.google_cse"
+
+    [members]
+
+        [google_search_engine_id]
+        @reuse "woost.models.configuration.Configuration.members.google_search_engine_id"
+        *: ${inherit_config_translation(key)}
+
+        [google_search_results_page]
+        @reuse "woost.models.configuration.Configuration.members.google_search_results_page"
+

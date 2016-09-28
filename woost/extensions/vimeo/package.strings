@@ -1,0 +1,11 @@
+
+[woost.extensions.vimeo.VimeoExtension]
+ca: Vimeo
+es: Vimeo
+en: Vimeo
+
+    [plural]
+    ca: Vimeo
+    es: Vimeo
+    en: Vimeo
+

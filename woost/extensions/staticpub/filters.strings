@@ -1,0 +1,47 @@
+@init
+from cocktail.translations import translate_locale
+@end
+
+[woost.extensions.staticpub.filters]
+
+    [HasPendingChangesExpression]
+
+        [instance(expr)]
+        @switch expr.language is None
+
+            [any_language]
+            @case True
+            ca: amb canvis pendents d'exportar a t{expr.destination}
+            es: con cambios pendientes de exportar a t{expr.destination}
+            en: with changes to export to t{expr.destination}
+
+            [specific_language]
+            @case False
+            ca: amb canvis en ${translate_locale(expr.language)} pendents d'exportar a t{expr.destination}
+            es: con cambios en ${translate_locale(expr.language)} pendientes de exportar a t{expr.destination}
+            en: with changes in ${translate_locale(expr.language)} to export to t{expr.destination}
+
+    [HasPendingChangesUserFilter]
+
+        [instance]
+        ca: Té canvis pendents d'exportar
+        es: Tiene cambios pendientes de exportar
+        en: Has changes to export
+
+            [members]
+
+                [destination]
+                ca: Destinació
+                es: Destinación
+                en: Destination
+
+                [language]
+                ca: Idioma
+                es: Idioma
+                en: Language
+
+                    [none]
+                    ca: Qualsevol
+                    es: Cualquiera
+                    en: Any
+

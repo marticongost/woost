@@ -1,0 +1,11 @@
+
+[woost.extensions.annotations.AnnotationsExtension]
+ca: Annotacions
+es: Anotaciones
+en: Annotations
+
+    [plural]
+    ca: Annotacions
+    es: Anotaciones
+    en: Annotations
+

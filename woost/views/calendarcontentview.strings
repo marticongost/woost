@@ -1,0 +1,43 @@
+
+[woost.views.CalendarContentView]
+
+    [current_year]
+    ca: Any actual
+    es: Año actual
+    en: Current year
+
+    [previous_year]
+    ca: Any anterior
+    es: Año anterior
+    en: Previous year
+
+    [next_year]
+    ca: Any següent
+    es: Año siguiente
+    en: Next year
+
+    [current_month]
+    ca: Mes actual
+    es: Mes actual
+    en: Current month
+
+    [previous_month]
+    ca: Mes anterior
+    es: Mes anterior
+    en: Previous month
+
+    [next_month]
+    ca: Mes següent
+    es: Mes siguiente
+    en: Next month
+
+    [select_year_layout]
+    ca: Vista de l'any
+    es: Vista del año
+    en: Year view
+
+    [ongoing_items_message]
+    ca: Elements en curs:
+    es: Elementos en curso:
+    en: Ongoing items:
+

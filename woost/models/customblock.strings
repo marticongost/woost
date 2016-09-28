@@ -1,0 +1,11 @@
+
+[woost.models.customblock.CustomBlock]
+ca: Bloc a mida
+es: Bloque a medida
+en: Custom block
+
+    [plural]
+    ca: Blocs a mida
+    es: Bloques a medida
+    en: Custom blocks
+

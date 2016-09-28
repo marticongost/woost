@@ -1,0 +1,36 @@
+
+[woost.models.news.News]
+ca: Notícia
+es: Noticia
+en: News
+
+    [plural]
+    ca: Notícies
+    es: Noticias
+    en: News
+
+    [none]
+    es: Ninguna
+
+    [members]
+
+        [news_date]
+        ca: Data de la notícia
+        es: Fecha de la noticia
+        en: News date
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+
+        [summary]
+        ca: Sumari
+        es: Sumario
+        en: Summary
+
+        [blocks]
+        ca: Cos
+        es: Cuerpo
+        en: Body
+

@@ -1,0 +1,12 @@
+@init
+from cocktail.translations import DATE_STYLE_TEXT
+@end
+
+[woost.extensions.ecommerce.Discount]
+
+    [end_date(end_date)]
+    ca: fins al t{end_date, style = DATE_STYLE_TEXT}
+    es: hasta el t{end_date, style = DATE_STYLE_TEXT}
+    en: until t{end_date, style = DATE_STYLE_TEXT}
+    fr: jusqu'à t{end_date, style = DATE_STYLE_TEXT}
+

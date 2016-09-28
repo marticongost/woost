@@ -1,0 +1,282 @@
+[woost.models.publishable]
+
+    [Publishable]
+    ca: Element publicable
+    es: Elemento publicable
+    en: Publishable element
+
+        [plural]
+        ca: Elements publicables
+        es: Elementos publicables
+        en: Publishable elements
+
+        [backoffice.menu_label]
+        ca: Tots els elements publicables
+        es: Todos los elementos publicables
+        en: All publishable elements
+
+        [groups]
+
+            [presentation]
+            ca: Presentació
+            es: Presentación
+            en: Presentation
+
+                [behavior]
+                ca: Comportament
+                es: Comportamiento
+                en: Behavior
+
+                [format]
+                ca: Format
+                es: Formato
+                en: Format
+
+            [navigation]
+            ca: Navegació
+            es: Navegación
+            en: Navigation
+
+            [meta]
+            ca: Metadades
+            es: Metadatos
+            en: Metadata
+
+            [meta.robots]
+            ca: Robots
+            es: Robots
+            en: Robots
+
+            [publication]
+            ca: Publicació
+            es: Publicación
+            en: Publication
+
+        [members]
+
+            [encoding]
+            ca: Codificació de text
+            es: Codificación del texto
+            en: Text encoding
+
+            [resource_type]
+            ca: Tipus de recurs
+            es: Tipo de recurso
+            en: Resource type
+
+                [values]
+
+                    [text]
+                    ca: Text
+                    es: Texto
+                    en: Text
+
+                    [image]
+                    ca: Imatge
+                    es: Imagen
+                    en: Image
+
+                    [audio]
+                    ca: Audio
+                    es: Audio
+                    en: Audio
+
+                    [video]
+                    ca: Video
+                    es: Video
+                    en: Video
+
+                    [package]
+                    ca: Paquet
+                    es: Paquete
+                    en: Package
+
+                    [document]
+                    ca: Document
+                    es: Documento
+                    en: Document
+
+                    [html_resource]
+                    ca: Recurs HTML
+                    es: Recurso HTML
+                    en: HTML resource
+
+                    [other]
+                    ca: Altre
+                    es: Otro
+                    en: Other
+
+            [mime_type]
+            ca: Tipus MIME
+            es: Tipo MIME
+            en: MIME type
+
+            [robots_should_index]
+            ca: Contingut indexable
+            es: Contenido indexable
+            en: Indexable content
+
+            [per_language_publication]
+            ca: Publicació per idiomes
+            es: Publicación por idiomas
+            en: Per language publication
+
+            [enabled]
+            ca: Actiu
+            es: Activo
+            en: Enabled
+
+            [enabled_translations]
+            ca: Traduccions actives
+            es: Traducciones activas
+            en: Enabled translations
+
+            [websites]
+            ca: Webs on es publica
+            es: Webs donde se publica
+            en: Websites where it is published
+
+                [explanation]
+                ca:
+                    Webs des de les que es podrà veure i accedir a l'element. Deixar
+                    en blanc per permetre que l'element aparegui a totes les webs.
+                es:
+                    Webs des de las que se podrá ver y acceder al elemento. Dejar en
+                    blanco para permitir que el elemento aparezca en todas las webs.
+                en:
+                    Websites where the element will be published. Leave blank to share
+                    this element across all websites.
+
+            [access_level]
+            ca: Nivell d'accés
+            es: Nivel de acceso
+            en: Access level
+
+                [none]
+                ca: Sense restricció
+                es: Sin restricción
+                en: No restrictions
+
+            [hidden]
+            ca: Ocult
+            es: Oculto
+            en: Hidden
+
+            [start_date]
+            ca: Data de publicació
+            es: Fecha de publicación
+            en: Publication date
+
+            [end_date]
+            ca: Data de caducitat
+            es: Fecha de caducidad
+            en: Expiration date
+
+            [requires_https]
+            ca: Requereix HTTPS
+            es: Requiere HTTPS
+            en: Requires HTTPS
+
+                [explanation]
+                ca:
+                    Aquesta opció només tindrà efecte si la <em>Política
+                    d'HTTPS</em> del lloc web s'estableix a <em>Decidir a cada
+                    pàgina</em>.
+                es:
+                    Esta opción solo tendrá efecto si la <em>Política de
+                    HTTPS</em> del sitio web se establece a <em>Decidir en cada
+                    página</em>.
+                en:
+                    This option will only be taken into account if the site's
+                    <em>HTTPS policy</em> is set to <em>Decide on a per-page
+                    basis</em>.
+
+            [controller]
+            ca: Controlador
+            es: Controlador
+            en: Controller
+
+            [parent]
+            ca: Pare
+            es: Padre
+            en: Parent
+
+            [menu_title]
+            ca: Títol pel menú
+            es: Título para el menú
+            en: Menu title
+
+                [explanation]
+                ca:
+                    El títol de l'element quan aparegui als menús de la pàgina.
+                    Deixar en blanc per utilitzar el títol general de l'element.
+                es:
+                    El título del elemento cuando aparezca en los menús de la
+                    página. Dejar en blanco para utilizar el título general del
+                    elemento.
+                en:
+                    The title used by the element when displayed on page menus.
+                    Leave blank to use the element's general title.
+
+            [path]
+            ca: Ruta
+            es: Ruta
+            en: Path
+
+            [full_path]
+            ca: Ruta completa
+            es: Ruta completa
+            en: Full path
+
+            [caching_policies]
+            ca: Polítiques de cache
+            es: Políticas de cache
+            en: Caching policies
+
+                [explanation]
+                ca:
+                    Permet establir una política de cache específica per a
+                    l'element. Si es deixa en blanc s'utilitzarà la política
+                    general del lloc web.
+                es:
+                    Permite establecer una política de cache específica para el
+                    elemento. Si se deja en blanco se utilizará la política general
+                    del sitio web.
+                en:
+                    Sets a specific caching policy for this item. Leave blank to
+                    fall back to the site wide caching policy.
+
+            [login_page]
+            ca: Pàgina d'autorització
+            es: Página de autorización
+            en: Authorization page
+
+                [explanation]
+                ca:
+                    Permet dotar l'element i les seves pàgines filles d'una pàgina
+                    d'autenticació pròpia. Deixar buit per utilitzar el mateix
+                    formulari que la resta del lloc web.
+                es:
+                    Permite dotar al elemento y a sus páginas hijas de una página
+                    de autenticación propia. Dejar vacío para utilizar el mismo
+                    formulario que el resto del sitio.
+                en:
+                    If set, indicates an alternative authentication page to use when
+                    restricting access to this element or its descending pages. Leave
+                    blank to use the same authentication form as the rest of the site.
+
+    [IsPublishedExpression.instance]
+    ca: publicat
+    es: publicado
+    en: published
+
+    [IsAccessibleExpression.instance]
+    ca: accessible
+    es: accesible
+    en: accessible
+
+    [UserHasAccessLevelExpression.instance]
+    ca: amb nivell d'accés adequat
+    es: con nivel de acceso adecuado
+    en: with a valid access level
+

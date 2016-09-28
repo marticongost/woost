@@ -1,0 +1,86 @@
+
+[woost.models.item.Item]
+ca: Element genèric
+es: Elemento genérico
+en: Generic element
+
+    [plural]
+    ca: Elements genèrics
+    es: Elementos genéricos
+    en: Generic elements
+
+    [backoffice.menu_label]
+    ca: Tots els elements del web
+    es: Todos los elementos de la web
+    en: All elements
+
+    [none]
+    ca: Cap
+    es: Ninguno
+    en: None
+
+    [groups]
+
+        [administration]
+        ca: Administració
+        es: Administración
+        en: Administration
+
+    [members]
+
+        [id]
+        ca: ID
+        es: ID
+        en: ID
+
+        [qname]
+        ca: Nom qualificat
+        es: Nombre cualificado
+        en: Qualified name
+
+        [global_id]
+        ca: Identificador global
+        es: Identificador global
+        en: Global identifier
+
+        [synchronizable]
+        ca: Sincronitzable
+        es: Sincronizable
+        en: Synchronizable
+
+            [explanation]
+            ca:
+                Indica si l'objecte es tindrà en compte a l'hora de
+                sincronitzar les dades de dues còpies del lloc web.
+            es:
+                Indica si el objeto se tendrá en cuenta a la hora de
+                sincronizar los datos de dos copias del sitio web.
+            en:
+                Indicates wether the object will be taken into account when
+                synchronizing data across copies of the site."
+
+        [author]
+        ca: Autor
+        es: Autor
+        en: Author
+
+        [changes]
+        ca: Canvis
+        es: Cambios
+        en: Changes
+
+        [creation_time]
+        ca: Data de creació
+        es: Fecha de creación
+        en: Creation date
+
+        [last_update_time]
+        ca: Última modificació
+        es: Última modificación
+        en: Last updated
+
+        [last_translation_update_time]
+        ca: Última modificació de la traducció
+        es: Última modificación de la traducción
+        en: Translation last update
+

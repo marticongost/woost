@@ -1,0 +1,70 @@
+
+[woost.type_groups]
+
+    [misc]
+    ca: Miscel·lània
+    es: Miscelanea
+    en: Miscellany
+
+    [publishable]
+    ca: Elements publicables
+    es: Elementos publicables
+    en: Publishable items
+
+    [document]
+    ca: Documents
+    es: Documentos
+    en: Documents
+
+    [resource]
+    ca: Recursos
+    es: Recursos
+    en: Resources
+
+    [setup]
+    ca: Administració
+    es: Administración
+    en: Setup
+
+    [customization]
+    ca: Personalització
+    es: Personalización
+    en: Customization
+
+    [users]
+    ca: Usuaris i permisos
+    es: Usuarios y permisos
+    en: Users and permissions
+
+    [blocks]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+        [layout]
+        ca: Disposició
+        es: Disposición
+        en: Layout
+
+        [listings]
+        ca: Llistats
+        es: Listados
+        en: Listings
+
+        [social]
+        ca: Xarxes socials
+        es: Redes sociales
+        en: Social networks
+
+        [forms]
+        ca: Formularis
+        es: Formularios
+        en: Forms
+
+        [custom]
+        ca: Avançats
+        es: Avanzados
+        en: Custom
+

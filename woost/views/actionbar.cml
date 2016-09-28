@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from itertools import chain
+from cocktail import schema
+from cocktail.pkgutils import get_full_name
+from cocktail.controllers import context
+from woost.controllers.backoffice.useractions import get_view_actions
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource cocktail://scripts/selectable.js ?>
+    <?resource woost://scripts/actionbar.js ?>
+
+    <?py-class
+    action_context = None
+    action_target = None
+    relation = None
+    selection_field = None
+    selectable = None
+    button_images = True
+    keyboard_shortcuts = True
+    hide_when_empty = True
+    group_additional_actions = True
+    min_frequent_actions = 1
+    min_additional_actions = 2
+    empty_result_set = False
+    hide_disabled_actions = False
+
+    def connect_selectable(self, selectable):
+
+        @self.when_ready
+        def pass_selectable_to_client():
+            self.set_client_param(
+                "selectable",
+                "#" + selectable.require_id()
+            )
+
+        @selectable.when_binding
+        def update_selectable_action_context():
+            self.bind()
+            selectable.action_context = self.action_context
+            self.set_client_param(
+                "selectable",
+                "#" + selectable.require_id()
+            )
+
+    def get_actions(self, context):
+        return [
+            action
+            for action in get_view_actions(
+                context,
+                self.action_target
+            )
+            if not self.empty_result_set
+            or not action.min
+            or action.ignores_selection
+        ]
+
+    def create_action_button(self, action, extra, action_context):
+
+        panel = action.get_dropdown_panel(self)
+
+        if panel:
+            action_button = loader.new("cocktail.html.DropdownPanel")
+            label = action_button.label
+            action_button.panel.append(panel)
+        else:
+            action_button = label = Element()
+
+            if action.direct_link:
+                action_button.tag = "a"
+                action_button["href"] = action.get_url(context["cms"], None)
+                action_button["target"] = action.link_target
+            else:
+                action_button.tag = "button"
+                action_button["type"] = "submit"
+                action_button["name"] = "action"
+                action_button["value"] = self.get_action_value(action)
+                action_button["formtarget"] = action.link_target
+                action_button["formmethod"] = "POST"
+
+        action_button.add_class("action_button")
+        action_button["data-woost-action"] = action.id
+
+        if self.hide_disabled_actions or action.hidden_when_disabled:
+            action_button.add_class("hidden_when_disabled")
+
+        if self.button_images and not extra:
+            action_button.action_image = self.create_action_image(action, extra)
+            label.append(action_button.action_image)
+
+        label.append(translations(action, target = self.action_target, context = action_context))
+
+        if self.keyboard_shortcuts:
+            label["accesskey"] = translations("woost.actions." + action.id + ".shortcut")
+
+        if self.selection_field:
+            action_button.set_client_param("minSelection", action.min)
+            action_button.set_client_param("maxSelection", action.max)
+            action_button.set_client_param("ignoresSelection", action.ignores_selection)
+
+        return action_button
+
+    def get_action_value(self, action):
+
+        value = action.id
+
+        if not action.ignores_selection:
+            if self.selection_field:
+                value += " $" + self.selection_field
+            elif not isinstance(self.action_target, type):
+                value += " " + str(self.action_target.id)
+            else:
+                raise ValueError("Expected an action target or field")
+
+        if self.relation and action.id in ("pick", "pick_new", "unlink", "add", "add_new", "remove"):
+            value += " relation:" + self.relation.get_qualified_name(include_ns = True)
+
+        if action.id in ("new", "add_new", "pick_new"):
+            if self.relation:
+                content_type = self.relation.related_type
+            else:
+                content_type = self.action_target
+            value += " type:" + get_full_name(content_type)
+
+        return value
+    ?>
+
+    <?py
+    self.action_context = set()
+    ?>
+
+    <img
+        py:def="action_image"
+        py:args="action, extra"
+        src="${normalize_resource_uri(action.icon_uri)}"/>
+
+    <div py:def="additional_actions_selector" class="selector">
+        <span class="label">${translations("woost.views.ActionBar.additional_actions")}</span>
+        <div py:id="additional_actions_box" class="selector_content"/>
+    </div>
+
+    <py:ready>
+        <?py
+        if not self.action_context:
+            raise ValueError("No action context specified for %r" % self)
+
+        if not self.action_target:
+            raise ValueError("No action target specified for %r" % self)
+
+        if self.empty_result_set:
+            self.action_context.add("empty_set")
+
+        if self.relation:
+            if isinstance(self.relation, schema.Collection):
+                self.action_context.add("collection")
+            else:
+                self.action_context.add("reference")
+
+            if self.relation.integral:
+                self.action_context.add("integral")
+
+        actions = []
+        additional_actions = []
+
+        for action in self.get_actions(self.action_context):
+            if action.is_primary(self.action_target, self.action_context):
+                actions.append(action)
+            else:
+                additional_actions.append(action)
+
+        groupped = self.group_additional_actions
+
+        # Avoid superflous groupping of additional actions
+        if groupped:
+            if self.min_frequent_actions:
+                if len(actions) < self.min_frequent_actions:
+                    groupped = False
+
+            if self.min_additional_actions:
+                if len(additional_actions) < self.min_additional_actions:
+                    groupped = False
+
+        if not groupped:
+            actions.extend(additional_actions)
+
+        has_actions = False
+
+        # Frequent actions
+        for action in actions:
+            action_button = self.create_action_button(
+                action,
+                False,
+                self.action_context
+            )
+            self.append(action_button)
+            has_actions = True
+
+        # Additional actions dropdown
+        if groupped:
+            selector = self.create_additional_actions_selector()
+            self.append(selector)
+
+            for action in additional_actions:
+                action_button = self.create_action_button(
+                    action,
+                    True,
+                    self.action_context
+                )
+                self.additional_actions_box.append(action_button)
+                has_actions = True
+
+        # Automatically hide an empty toolbar
+        if self.hide_when_empty and not has_actions:
+            self.visible = False
+
+        if self.selection_field:
+            self.set_client_param("selectionField", self.selection_field)
+        ?>
+    </py:ready>
+</div>

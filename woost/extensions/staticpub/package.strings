@@ -1,0 +1,11 @@
+
+[woost.extensions.staticpub.StaticPubExtension]
+ca: Publicació estàtica
+es: Publicación estática
+en: Static publication
+
+    [plural]
+    ca: Publicació estàtica
+    es: Publicación estática
+    en: Static publication
+
