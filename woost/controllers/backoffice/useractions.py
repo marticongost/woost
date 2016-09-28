@@ -590,10 +590,10 @@ class CreateAction(UserAction):
 
 class NewAction(CreateAction):
     included = frozenset(["toolbar"])
-    excluded = CreateAction.excluded | frozenset([
+    excluded = (CreateAction.excluded | frozenset([
         "collection",
         "changelog"
-    ])
+    ])) - frozenset(["selector"])
 
     def invoke(self, controller, selection, type):
         raise cherrypy.HTTPRedirect(controller.edit_uri(type))
