@@ -25,7 +25,7 @@ from .controller import Controller
 class File(Publishable):
 
     instantiable = True
-    cacheable = False
+    cacheable_server_side = False
     type_group = "resource"
     backoffice_listing_includes_thumbnail_column = True
 
