@@ -40,6 +40,7 @@ class Publishable(Item):
 
     instantiable = False
     cacheable = True
+    cacheable_server_side = True
     backoffice_listing_includes_element_column = True
     backoffice_listing_includes_thumbnail_column = True
     edit_view = "woost.views.PublishableFieldsView"
