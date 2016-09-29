@@ -120,7 +120,8 @@ class Block(Item):
         enumeration = [
             "off",
             "hidden",
-            "on"
+            "on",
+            "custom"
         ],
         edit_control = display_factory(
             "cocktail.html.DropdownSelector",
@@ -128,6 +129,15 @@ class Block(Item):
         ),
         text_search = False,
         member_group = "content"
+    )
+
+    custom_heading = schema.HTML(
+        translated = True,
+        member_group = "content",
+        tinymce_params = {
+            "forced_root_block": "",
+            "height": "70px"
+        }
     )
 
     # publication
@@ -283,7 +293,7 @@ class Block(Item):
         if self.element_type:
             block_proxy.tag = self.element_type
         elif view.tag == "div":
-            if self.heading and self.heading_display != "off":
+            if self.has_heading() and self.heading_display != "off":
                 block_proxy.tag = "section"
 
         if self.html_attributes:
@@ -348,8 +358,14 @@ class Block(Item):
     def get_block_proxy(self, view):
         return view
 
+    def get_heading(self):
+        if self.heading_display == "custom":
+            return self.custom_heading
+        else:
+            return self.heading
+
     def has_heading(self):
-        return bool(self.heading)
+        return bool(self.get_heading())
 
     def add_heading(self, view):
 
@@ -359,11 +375,11 @@ class Block(Item):
             if hasattr(view, "heading"):
                 if isinstance(view.heading, Element):
                     heading = view.heading
-                    label = self.heading
+                    label = self.get_heading()
                     if label:
                         heading.append(label)
                 else:
-                    view.heading = self.heading
+                    view.heading = self.get_heading()
             else:
                 insert_heading = getattr(view, "insert_heading", None)
                 view.heading = heading = self.create_heading()
@@ -396,7 +412,7 @@ class Block(Item):
         heading = Element()
         heading.add_class("heading")
 
-        label = self.heading
+        label = self.get_heading()
         if label:
             heading.append(label)
 
