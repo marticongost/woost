@@ -35,8 +35,14 @@ class Image(Element):
             self["alt"] = translations(
                 self.image, discard_generic_translation = True
             )
-            self["src"] = self.image.get_image_uri(
-                image_factory = self.image_factory or "default",
-                host = self.host
-            )
+            file_ext = getattr(self.image, "file_extension", None)
+            if file_ext in (".svg", ".svgz"):
+                self["src"] = self.image.get_uri(
+                    host = self.host
+                )
+            else:
+                self["src"] = self.image.get_image_uri(
+                    image_factory = self.image_factory or "default",
+                    host = self.host
+                )
 
