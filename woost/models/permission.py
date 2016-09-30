@@ -543,6 +543,9 @@ class PermissionExpression(Expression):
 
                         permission_subset = permission_query.execute()
 
+                        if not isinstance(authorized_subset, set):
+                            authorized_subset = set(authorized_subset)
+
                         if permission.authorized:
                             authorized_subset.update(permission_subset)
                         else:
