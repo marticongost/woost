@@ -20,6 +20,7 @@ class Style(Item):
         "title",
         "applicable_to_text",
         "applicable_to_blocks",
+        "applicable_to_documents",
         "custom_class_name",
         "html_tag",
         "editor_keyboard_shortcut",
@@ -49,6 +50,13 @@ class Style(Item):
     applicable_to_blocks = schema.Boolean(
         required = True,
         default = True,
+        indexed = True,
+        listed_by_default = False
+    )
+
+    applicable_to_documents = schema.Boolean(
+        required = True,
+        default = False,
         indexed = True,
         listed_by_default = False
     )

@@ -5,5 +5,7 @@
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
     <?resource woost://scripts/publicationfields.js ?>
+    <?resource woost://scripts/blockfieldsview.js ?>
 
 </py:woost.views.BackOfficeFieldsView>
+
