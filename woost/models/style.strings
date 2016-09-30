@@ -66,6 +66,11 @@ en: Style
         es: Aplicable a bloques
         en: Applicable to blocks
 
+        [applicable_to_documents]
+        ca: Aplicable a documents
+        es: Aplicable a documentos
+        en: Applicable to documents
+
         [declarations_initialization]
         ca: Inicialització dels estils
         es: Inicialización de los estilos

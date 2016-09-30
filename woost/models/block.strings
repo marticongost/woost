@@ -38,6 +38,11 @@ en: Block
         es: Título
         en: Title
 
+        [custom_heading]
+        ca: Encapçalament personalitzat
+        es: Encabezado personalizado
+        en: Custom heading
+
         [heading_display]
         ca: Encapçalament
         es: Encabezado
@@ -59,6 +64,11 @@ en: Block
                 ca: Visible
                 es: Visible
                 en: Visible
+
+                [custom]
+                ca: Personalitzat
+                es: Personalizado
+                en: Custom
 
         [heading_type]
         ca: Tipus d'encapçalament

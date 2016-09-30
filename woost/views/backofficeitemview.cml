@@ -56,7 +56,7 @@ from woost.models import Item
         <button
             py:index="0"
             type="submit"
-            name="item_action" value="save"
+            name="action" value="save"
             style="position: absolute; left: -1000px; top: -1000px"/>
 
         <!-- Actions -->

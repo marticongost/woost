@@ -2,7 +2,7 @@
 <?py
 from cocktail.html import Content
 from woost import app
-from woost.models import Configuration, Publishable
+from woost.models import Configuration, Publishable, Document
 ?>
 
 <py:block
@@ -182,9 +182,16 @@ from woost.models import Configuration, Publishable
         if website and website.qname:
             self.add_class(website.qname.replace(".", "-"))
 
-        # Add a CSS class based on the page's name
-        if publishable and self.publishable.qname:
-            self.add_class(self.publishable.qname.replace(".", "-"))
+        if publishable:
+
+            # Add CSS classes for user styles linked to the active document
+            if isinstance(publishable, Document):
+                for style in publishable.styles:
+                    self.add_class(style.class_name)
+
+            # Add a CSS class based on the page's name
+            if publishable.qname:
+                self.add_class(publishable.qname.replace(".", "-"))
         ?>
     </py:ready>
 
