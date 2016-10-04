@@ -34,9 +34,9 @@ en: Document
         en: Title
 
         [inner_title]
-        ca: Títol interior
-        es: Título interior
-        en: Inner title
+        ca: Encapçalament personalitzat
+        es: Encabezado personalizado
+        en: Custom heading
 
         [custom_document_title]
         ca: Títol personalitzat

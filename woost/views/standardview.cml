@@ -15,7 +15,13 @@ from woost.models import Configuration
         return self._website.logo
 
     def get_main_heading_title(self):
-        return self.get_main_title()
+        if self.rendering_home_page():
+            return None
+        else:
+            return (
+                getattr(self.publishable, "inner_title", None)
+                or translations(self.publishable)
+            )
     ?>
 
     <py:ready>
@@ -27,6 +33,9 @@ from woost.models import Configuration
 
         if self._site_logo and not self._site_logo.is_accessible():
             self._site_logo = None
+
+        if getattr(self.publishable, "inner_title", None):
+            self.add_class("with_custom_heading")
         ?>
     </py:ready>
 
