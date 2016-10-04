@@ -59,10 +59,14 @@ class Document(Publishable):
         member_group = "content"
     )
 
-    inner_title = schema.String(
+    inner_title = schema.HTML(
         translated = True,
+        tinymce_params = {
+            "forced_root_block": "",
+            "force_p_newlines": False,
+            "height": "70px"
+        },
         listed_by_default = False,
-        spellcheck = True,
         member_group = "content"
     )
 

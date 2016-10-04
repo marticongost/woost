@@ -22,13 +22,7 @@ from woost.models import Configuration, Publishable, Document
         return app.website.site_name
 
     def get_main_title(self):
-        if self.rendering_home_page():
-            return None
-        else:
-            return (
-                getattr(self.publishable, "inner_title", None)
-                or translations(self.publishable)
-            )
+        return translations(self.publishable)
 
     def get_page_title(self):
 
