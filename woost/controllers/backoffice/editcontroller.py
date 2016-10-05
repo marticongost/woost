@@ -13,7 +13,7 @@ from cocktail.events import event_handler, when, Event
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import request_property, get_parameter
+from cocktail.controllers import request_property, get_parameter, redirect
 from woost import app
 from woost.models import (
     Configuration,
