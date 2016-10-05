@@ -10,7 +10,7 @@ import hashlib
 import cherrypy
 from cocktail import schema
 from cocktail.persistence import transaction
-from cocktail.controllers import request_property
+from cocktail.controllers import request_property, redirection
 from woost import app
 from woost.models import User
 from woost.controllers.documentcontroller import DocumentController
@@ -50,7 +50,7 @@ class SignUpConfirmationController(DocumentController):
                     if self.autologin:
                         app.authentication.set_user_session(instance)
 
-                    raise cherrypy.HTTPRedirect(app.publishable.get_uri())
+                    redirection(app.publishable.get_uri())
 
             raise cherrypy.HTTPError(400, "Invalid hash")
 

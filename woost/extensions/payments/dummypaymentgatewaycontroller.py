@@ -5,6 +5,7 @@ u"""
 """
 from urllib import urlopen
 import cherrypy
+from cocktail.controllers import redirection
 from woost import app
 from woost.extensions.payments.paymentgatewaycontroller \
     import PaymentGatewayController
@@ -43,5 +44,5 @@ class DummyPaymentGatewayController(PaymentGatewayController):
         if redirection is None:
             redirection = app.website.home
 
-        raise cherrypy.HTTPRedirect(redirection.get_uri(host = "!"))
+        redirection(redirection.get_uri(host = "!"))
 

@@ -6,9 +6,8 @@
 @organization:	Whads/Accent SL
 @since:			October 2009
 """
-import cherrypy
 from cocktail import schema
-from cocktail.controllers import get_parameter
+from cocktail.controllers import get_parameter, redirection
 from woost import app
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.extensions.payments.dummypaymentgateway \
@@ -47,15 +46,12 @@ class DummyPaymentGatewayController(BaseCMSController):
         urlopen(notification_uri)
 
         # Redirect the user after the transaction's over
-        redirection = None
+        destination = None
 
         if gateway.payment_status == "accepted":
-            redirection = gateway.payment_successful_page
+            destination = gateway.payment_successful_page
         elif gateway.payment_status == "failed":
-            redirection = gateway.payment_failed_page
+            destination = gateway.payment_failed_page
 
-        raise cherrypy.HTTPRedirect(
-            (redirection and cms.uri(redirection)
-            or cms.application_uri()).encode("utf-8")
-        )
+        redirection((destination or app.website.home).get_uri())
 

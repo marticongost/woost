@@ -3,11 +3,10 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import FormProcessor
+from cocktail.controllers import FormProcessor, redirection
 from woost import app
 from woost.models import (
     changeset_context,
@@ -142,7 +141,7 @@ class UserFormController(FormProcessor, DocumentController):
 
             # Redirect the user to a confirmation page
             if document.redirection:
-                raise cherrypy.HTTPRedirect(
+                redirection(
                     self.controller.context["cms"].uri(
                         document.redirection,
                         form = document.id,

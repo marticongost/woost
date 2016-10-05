@@ -3,9 +3,12 @@ u"""Defines the `ProductController` class.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail.translations import translations
-from cocktail.controllers import request_property, reload_request_url
+from cocktail.controllers import (
+    request_property,
+    redirection,
+    reload_request_url
+)
 from cocktail.controllers.formprocessor import FormProcessor, Form
 from woost import app
 from woost.models import Publishable
@@ -65,7 +68,7 @@ class ProductController(FormProcessor, PublishableController):
             ).emit()
 
             if self.redirect_to_basket:
-                raise cherrypy.HTTPRedirect(
+                redirection(
                     Publishable.require_instance(
                         qname = "woost.extensions.ecommerce.basket_page"
                     ).get_uri()

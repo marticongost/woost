@@ -8,7 +8,6 @@ Declaration of back office actions.
 @since:			December 2008
 """
 from threading import Lock
-import cherrypy
 from cocktail.modeling import getter, ListWrapper
 from cocktail.translations import translations
 from cocktail.pkgutils import resolve, get_full_name
@@ -19,6 +18,7 @@ from cocktail.controllers import (
     request_property,
     get_parameter,
     session,
+    redirection,
     get_request_url_builder
 )
 from cocktail import schema
@@ -454,7 +454,7 @@ class UserAction(object):
         @param controller: The controller that invokes the action.
         @type controller: L{Controller<cocktail.controllers.controller.Controller>}
         """
-        raise cherrypy.HTTPRedirect(str(self.get_url(controller, selection)))
+        redirection(self.get_url(controller, selection))
 
     def get_url(self, controller, selection):
         """Produces the URL of the controller that handles the action
@@ -596,7 +596,7 @@ class NewAction(CreateAction):
     ])) - frozenset(["selector"])
 
     def invoke(self, controller, selection, type):
-        raise cherrypy.HTTPRedirect(controller.edit_uri(type))
+        redirection(controller.edit_uri(type))
 
 
 class InstallationSyncAction(UserAction):
@@ -677,7 +677,7 @@ class RelateNewIntegralObjectAction(CreateAction):
         node.member = relation
         node.action = "add"
         controller.edit_stack.push(node)
-        raise cherrypy.HTTPRedirect(controller.edit_uri(type))
+        raise redirection(controller.edit_uri(type))
 
 
 class AddNewAction(RelateNewIntegralObjectAction):
@@ -819,7 +819,7 @@ class DuplicateAction(UserAction):
             ),
             "success"
         ).emit()
-        raise cherrypy.HTTPRedirect(controller.edit_uri(copy))
+        raise redirection(controller.edit_uri(copy))
 
 
 class DeleteAction(UserAction):
@@ -1141,7 +1141,7 @@ def focus_block(block):
     url_builder.query.pop("block_parent", None)
     url_builder.query.pop("block_slot", None)
     url_builder.query.pop("block", None)
-    raise cherrypy.HTTPRedirect(url_builder.get_url())
+    raise redirection(url_builder)
 
 
 class EditBlocksAction(UserAction):

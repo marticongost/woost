@@ -13,6 +13,7 @@ from cocktail.events import event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
 from cocktail.controllers import (
+    redirection,
     view_state,
     get_parameter,
     get_request_url_builder
@@ -142,7 +143,7 @@ class ItemController(BaseBackOfficeController):
             url_builder.query["edit_stack"] = edit_stack.to_param()
             url_builder.query.pop("member", None)
             url_builder.fragment = ""
-            raise cherrypy.HTTPRedirect(url_builder.get_url())
+            redirection(url_builder)
 
         return edit_stack
 
@@ -167,7 +168,7 @@ class ItemController(BaseBackOfficeController):
         else:
             params = {}
 
-        raise cherrypy.HTTPRedirect(
+        redirection(
             self.edit_uri(
                 item if item.is_inserted else item.__class__,
                 section,

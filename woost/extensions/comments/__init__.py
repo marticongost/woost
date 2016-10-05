@@ -11,7 +11,7 @@ import cherrypy
 from cocktail import schema
 from cocktail.events import when
 from cocktail.translations import translations
-from cocktail.controllers import get_request_url
+from cocktail.controllers import get_request_url, redirection
 from woost import app
 from woost.models import Extension
 
@@ -73,7 +73,7 @@ class CommentsExtension(Extension):
         return comments_schema
 
     def _after_process_comments(self, comment):
-        raise cherrypy.HTTPRedirect(
+        redirection(
             "%s#comment-%s" % (
                 get_request_url(),
                 str(comment.id)
