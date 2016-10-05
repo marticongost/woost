@@ -28,7 +28,7 @@ from cocktail.controllers import (
     context,
     get_parameter,
     session,
-    redirection,
+    redirect,
     request_property
 )
 from cocktail.persistence import (
@@ -343,7 +343,7 @@ class EditStack(ListWrapper):
             if back_hash:
                 uri += "#" + back_hash
 
-            redirection(uri)
+            redirect(uri)
         else:
             if self.root_url:
                 # When redirecting the user by means of a callback URL, discard
@@ -353,9 +353,9 @@ class EditStack(ListWrapper):
                 # and show all at once whenever the user opens the backoffice)
                 # is not that great either.
                 Notification.pop()
-                redirection(self.root_url)
+                redirect(self.root_url)
             else:
-                redirection(context["cms"].contextual_uri(**params))
+                redirect(context["cms"].contextual_uri(**params))
 
     def go(self, index = -1):
         """Redirects the user to the indicated node of the edit stack.
@@ -363,7 +363,7 @@ class EditStack(ListWrapper):
         @param index: The position of the stack to move to.
         @type index: int
         """
-        redirection(self.uri(index))
+        redirect(self.uri(index))
 
     def uri(self, index = -1):
         """Gets the location of the given position in the stack.

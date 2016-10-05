@@ -10,7 +10,7 @@ from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
 from cocktail.pkgutils import import_object
-from cocktail.controllers import FormProcessor, Form, redirection
+from cocktail.controllers import FormProcessor, Form, redirect
 from woost import app
 from woost.controllers.documentcontroller import DocumentController
 from woost.extensions.campaignmonitor import CampaignMonitorExtension
@@ -129,7 +129,7 @@ class CampaignMonitorController(FormProcessor, DocumentController):
                 else:
                     uri = self.get_default_uri(cmlist, email = email, name = name, **encoded_custom_fields)
 
-                redirection(uri)
+                redirect(uri)
 
         def get_confirmation_uri(self, cmlist, **kwargs):
             return self.controller.context["cms"].uri(cmlist.confirmation_success_page)

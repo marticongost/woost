@@ -10,7 +10,7 @@ from cocktail.styled import styled
 from cocktail.controllers import (
     Controller,
     session,
-    redirection,
+    redirect,
     get_request_root_url_builder
 )
 from woost import app
@@ -79,7 +79,7 @@ class FacebookOAuthProviderController(Controller):
             login_uri = 'https://www.facebook.com/dialog/oauth?' + \
                         urllib.urlencode(params)
 
-            redirection(login_uri)
+            redirect(login_uri)
 
         if self.provider.debug_mode:
             print styled("Facebook authorization code:", "magenta"), code
@@ -108,14 +108,14 @@ class FacebookOAuthProviderController(Controller):
             print styled("Facebook token data:", "magenta"),
             print token_data
 
-        redirection(self.step_url(2))
+        redirect(self.step_url(2))
 
     @cherrypy.expose
     def step2(self):
         credentials = session.get(SESSION_PREFIX + "credentials")
 
         if not credentials:
-            redirection(self.step_url(1))
+            redirect(self.step_url(1))
 
         fields = ['name', 'email']
         query = '{}{}{}{}'.format(
@@ -136,13 +136,13 @@ class FacebookOAuthProviderController(Controller):
         self.provider.login(user_data)
         del session[SESSION_PREFIX + "credentials"]
 
-        redirection(self.target_url)
+        redirect(self.target_url)
 
     def check_step2_errors(self, result):
 
         if 'error' in result:
             if 'OAuthException' in result['error']:
-                redirection(self.step_url(1))
+                redirect(self.step_url(1))
             else:
                 msg = result.get('error_user_msg', 'Facebook user '
                                                    'authentification error')
@@ -154,7 +154,7 @@ class FacebookOAuthProviderController(Controller):
             error_reason = kwargs.get('error_reason', 'Error')
 
             if error_reason == u'user_denied':
-                redirection(self.target_url)
+                redirect(self.target_url)
             else:
                 raise FacebookOAuthException(error_reason)
 

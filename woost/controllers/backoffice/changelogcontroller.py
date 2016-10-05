@@ -11,7 +11,7 @@ from cocktail.modeling import cached_getter
 from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.schema.expressions import NegativeExpression
-from cocktail.controllers import redirection
+from cocktail.controllers import redirect
 from cocktail.controllers.parameters import SessionParameterSource
 from woost import app
 from woost.models import (
@@ -60,7 +60,7 @@ class ChangeLogController(BaseBackOfficeController):
                     node.content_type = content_type
                     node.selection_parameter = selection_parameter
                     edit_stack.push(node)
-                    redirection(
+                    redirect(
                         node.uri(
                             selection = self.params.read(
                                 schema.String(selection_parameter)

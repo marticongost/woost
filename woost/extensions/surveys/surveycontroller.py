@@ -8,7 +8,7 @@ from cocktail.controllers import (
     FormProcessor,
     Form,
     request_property,
-    redirection
+    redirect
 )
 from woost import app
 
@@ -33,7 +33,7 @@ class SurveyController(FormProcessor, Controller):
 
         def after_submit(self):
             if self.controller.block.redirection:
-                redirection(self.controller.block.redirection.get_uri())
+                redirect(self.controller.block.redirection.get_uri())
             else:
                 app.publishable.first_child_redirection()
 

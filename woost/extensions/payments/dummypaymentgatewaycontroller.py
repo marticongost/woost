@@ -5,7 +5,7 @@ u"""
 """
 from urllib import urlopen
 import cherrypy
-from cocktail.controllers import redirection
+from cocktail.controllers import redirect
 from woost import app
 from woost.extensions.payments.paymentgatewaycontroller \
     import PaymentGatewayController

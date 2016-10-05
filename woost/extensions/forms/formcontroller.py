@@ -11,7 +11,7 @@ from cocktail.controllers import (
     FormProcessor,
     request_property,
     context,
-    redirection
+    redirect
 )
 from woost import app
 from woost.controllers.uploadform import UploadForm
@@ -118,7 +118,7 @@ class FormController(FormProcessor, Controller):
                     publishable.find_first_child_redirection_target()
 
             if redirection_dest is not None:
-                redirection(
+                redirect(
                     redirection_dest.get_uri(
                         parameters = redirection_parameters
                     )

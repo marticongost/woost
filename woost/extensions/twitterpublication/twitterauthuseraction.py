@@ -10,7 +10,7 @@ from urlparse import parse_qsl
 from simplejson import loads
 from cocktail.persistence import datastore
 from cocktail.translations import translations
-from cocktail.controllers import Location, session, redirection
+from cocktail.controllers import Location, session, redirect
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.twitterpublication.exceptions import TwitterAPIError
@@ -67,7 +67,7 @@ class TwitterAuthUserAction(UserAction):
                     "&oauth_callback=%s"
                     % (data["oauth_token"], callback)
                 )
-                redirection(auth_url)
+                redirect(auth_url)
             else:
                 token = Token(oauth_token, session[oauth_secret_session_key])
                 token.set_verifier(oauth_verifier)

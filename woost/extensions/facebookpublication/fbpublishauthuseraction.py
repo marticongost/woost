@@ -8,7 +8,7 @@ from urllib import urlopen, quote_plus
 from simplejson import loads
 from cocktail.persistence import datastore
 from cocktail.translations import translations
-from cocktail.controllers import Location, redirection
+from cocktail.controllers import Location, redirect
 from woost.controllers.notifications import Notification
 from woost.controllers.backoffice.useractions import UserAction
 from woost.extensions.facebookpublication.facebookpublicationtarget \
@@ -135,7 +135,7 @@ class FBPublishAuthUserAction(UserAction):
                     permissions
                 )
             )
-            redirection(auth_url)
+            redirect(auth_url)
 
 FBPublishAuthUserAction("fbpublish_auth").register()
 

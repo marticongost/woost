@@ -6,7 +6,7 @@ u"""Defines the `ProductController` class.
 from cocktail.translations import translations
 from cocktail.controllers import (
     request_property,
-    redirection,
+    redirect,
     reload_request_url
 )
 from cocktail.controllers.formprocessor import FormProcessor, Form
@@ -68,7 +68,7 @@ class ProductController(FormProcessor, PublishableController):
             ).emit()
 
             if self.redirect_to_basket:
-                redirection(
+                redirect(
                     Publishable.require_instance(
                         qname = "woost.extensions.ecommerce.basket_page"
                     ).get_uri()
