@@ -3,7 +3,6 @@ u"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
-import cherrypy
 from createsend import CreateSend, Subscriber, BadRequest
 from cocktail.translations import translations
 from cocktail import schema
@@ -12,7 +11,8 @@ from cocktail.controllers import (
     Controller,
     FormProcessor,
     Form,
-    request_property
+    request_property,
+    redirection
 )
 from woost.models import Configuration
 
@@ -97,11 +97,11 @@ class SubscriptionController(FormProcessor, Controller):
                 for list in self.subscribed_lists:
                     if list.confirmation_success_page \
                     and list.confirmation_success_page.is_accessible():
-                        raise cherrypy.HTTPRedirect(list.confirmation_success_page.get_uri())
+                        redirection(list.confirmation_success_page.get_uri())
 
             # Redirect the user to the confirmation page
             for list in self.subscribed_lists:
                 if list.confirmation_page \
                 and list.confirmation_page.is_accessible():
-                    raise cherrypy.HTTPRedirect(list.confirmation_page.get_uri())
+                    redirection(list.confirmation_page.get_uri())
 

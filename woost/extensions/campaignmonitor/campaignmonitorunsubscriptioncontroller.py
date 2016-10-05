@@ -6,12 +6,11 @@
 @organization:	Whads/Accent SL
 @since:			April 2010
 """
-import cherrypy
 from datetime import datetime
 from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
-from cocktail.controllers import context
+from cocktail.controllers import context, redirection
 from woost import app
 from woost.models import StandardPage
 from woost.controllers.documentcontroller import DocumentController
@@ -118,7 +117,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
         if uri is None:
             uri = app.website.home.get_uri()
 
-        raise cherrypy.HTTPRedirect(uri.encode("utf-8"))
+        redirection(uri)
 
     def get_subscription_uri(self, **kwargs):
         subscription_page = CampaignMonitorSubscriptionPage.get_instance(

@@ -8,6 +8,7 @@ u"""
 """
 from warnings import warn
 import cherrypy
+from cocktail.controllers import redirection
 from woost import app
 from woost.controllers import BaseCMSController
 
@@ -28,7 +29,7 @@ class FirstChildRedirectionController(BaseCMSController):
 
             for child in publishable.children:
                 if child.is_accessible():
-                    raise cherrypy.HTTPRedirect(uri.get_uri())
+                    redirection(uri.get_uri())
 
         raise cherrypy.HTTPError(404)
 

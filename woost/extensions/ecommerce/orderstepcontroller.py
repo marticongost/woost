@@ -3,9 +3,9 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail.controllers import (
     request_property,
+    redirection,
     Form
 )
 from woost import app
@@ -33,7 +33,7 @@ class OrderStepForm(Form):
         pop_user_notifications()
         next_step = self.next_step
         if next_step is not None:
-            raise cherrypy.HTTPRedirect(next_step.get_uri())
+            redirection(next_step.get_uri())
 
 
 class ProceedForm(OrderStepForm):

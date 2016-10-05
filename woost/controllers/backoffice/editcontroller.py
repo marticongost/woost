@@ -127,7 +127,7 @@ class EditController(BaseBackOfficeController):
         if close:
             self.go_back()
         else:
-            raise cherrypy.HTTPRedirect(self.edit_uri(item))
+            redirection(self.edit_uri(item))
 
     def _apply_changes(self, item):
 

@@ -9,7 +9,7 @@ u"""
 import cherrypy
 from cocktail.translations import get_language, translations
 from cocktail.modeling import cached_getter
-from cocktail.controllers import get_state
+from cocktail.controllers import get_state, redirection
 from woost import app
 from woost.controllers.publishablecontroller import PublishableController
 
@@ -38,7 +38,7 @@ class DocumentController(PublishableController):
             method = document.redirection_method
 
             if method == "perm":
-                raise cherrypy.HTTPRedirect(uri, 301)
+                redirection(uri, status = 301)
             elif method == "client":
                 return """
                     <!DOCTYPE html>
@@ -65,7 +65,7 @@ class DocumentController(PublishableController):
                     )
                 )
             else:
-                raise cherrypy.HTTPRedirect(uri)
+                redirection(uri)
 
         # Override visual theme
         template = self.page_template
