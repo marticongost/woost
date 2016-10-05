@@ -72,7 +72,7 @@ class ItemController(BaseBackOfficeController):
 
     def _require_edit_node(self):
 
-        redirect = False
+        should_redirect = False
         context_item = self.context["cms_item"]
         edit_stacks_manager = self.context["edit_stacks_manager"]
         edit_stack = edit_stacks_manager.current_edit_stack
@@ -81,7 +81,7 @@ class ItemController(BaseBackOfficeController):
         if edit_stack is None:
             edit_stack = edit_stacks_manager.create_edit_stack()
             edit_stacks_manager.current_edit_stack = edit_stack
-            redirect = True
+            should_redirect = True
         else:
             # Integral part; add a new relation node (won't be shown to the
             # user)
@@ -100,7 +100,7 @@ class ItemController(BaseBackOfficeController):
                 edit_stack[-1].tab = group
 
                 edit_stack.push(node)
-                redirect = True
+                should_redirect = True
 
         # Make sure the top node of the stack is an edit node
         if not edit_stack \
@@ -131,14 +131,14 @@ class ItemController(BaseBackOfficeController):
                 visible_translations = e.visible_translations
             )
             edit_stack.push(node)
-            redirect = True
+            should_redirect = True
 
         # If the stack is modified a redirection is triggered so that any
         # further request mentions the new stack position in its parameters.
         # However, the redirection won't occur if the controller itself is the
         # final target of the current request - if that is the case, submit()
         # will end up redirecting the user to the default section anyway
-        if redirect and self is not cherrypy.request.handler:
+        if should_redirect and self is not cherrypy.request.handler:
             url_builder = get_request_url_builder()
             url_builder.query["edit_stack"] = edit_stack.to_param()
             url_builder.query.pop("member", None)
