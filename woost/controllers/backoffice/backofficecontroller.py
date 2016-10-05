@@ -9,7 +9,7 @@ u"""
 import cherrypy
 from cocktail.pkgutils import resolve
 from cocktail.events import event_handler
-from cocktail.controllers import view_state, redirection
+from cocktail.controllers import view_state, redirect
 from cocktail.translations import set_language
 from woost import app
 from woost.models import Configuration
@@ -51,7 +51,7 @@ class BackOfficeController(BaseBackOfficeController):
     drop_block = DropBlockController
 
     def submit(self):
-        redirection(
+        redirect(
             self.contextual_uri(self.default_section) + "?" + view_state()
         )
 

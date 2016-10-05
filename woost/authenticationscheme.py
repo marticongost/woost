@@ -12,7 +12,7 @@ from cocktail.schema import ErrorList
 from cocktail.controllers import (
     session,
     get_request_url_builder,
-    redirection
+    redirect
 )
 from woost import app
 from woost.models import User
@@ -74,7 +74,7 @@ class AuthenticationScheme(object):
             url_builder.query.pop("user", None)
             url_builder.query.pop("password", None)
             url_builder.query.pop("authenticate", None)
-            redirection(url_builder)
+            redirect(url_builder)
 
     def process_logout(self):
         if "logout" in cherrypy.request.params:

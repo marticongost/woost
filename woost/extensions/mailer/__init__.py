@@ -10,7 +10,7 @@ import cherrypy
 from cocktail.events import when
 from cocktail import schema
 from cocktail.translations import translations
-from cocktail.controllers import context, redirection
+from cocktail.controllers import context, redirect
 from woost.models import Extension, Document, Template, User
 from woost.models.permission import DeletePermission, ModifyPermission
 
@@ -81,7 +81,7 @@ class MailerExtension(Extension):
                 RunningMailingError
             ):
                 Notification(translations(event.exception), "error").emit()
-                redirection(event.source.contextual_uri())
+                redirect(event.source.contextual_uri())
 
         # Disable interactive features from rendered pages when rendering
         # static content

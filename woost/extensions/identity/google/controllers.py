@@ -11,7 +11,7 @@ from cocktail.styled import styled
 from cocktail.controllers import (
     Controller,
     session,
-    redirection,
+    redirect,
     get_request_root_url_builder
 )
 from woost import app
@@ -78,7 +78,7 @@ class GoogleOAuthProviderController(Controller):
         flow.params["access_type"] = self.provider.access_type
 
         if not code:
-            redirection(flow.step1_get_authorize_url())
+            redirect(flow.step1_get_authorize_url())
 
         if self.provider.debug_mode:
             print styled("Google authorization code:", "magenta"), code
@@ -92,7 +92,7 @@ class GoogleOAuthProviderController(Controller):
             print styled("Google access token:", "magenta"),
             print credentials.access_token
 
-        redirection(self.step_url(2))
+        redirect(self.step_url(2))
 
     @cherrypy.expose
     def step2(self):
@@ -100,7 +100,7 @@ class GoogleOAuthProviderController(Controller):
         credentials = session.get(SESSION_PREFIX + "credentials")
 
         if not credentials or credentials.access_token_expired:
-            redirection(self.step_url(1))
+            redirect(self.step_url(1))
 
         http_auth = credentials.authorize(httplib2.Http())
         oauth2_service = discovery.build('oauth2', 'v2', http_auth)
@@ -112,7 +112,7 @@ class GoogleOAuthProviderController(Controller):
         self.provider.login(user_data)
         del session[SESSION_PREFIX + "credentials"]
 
-        redirection(self.target_url)
+        redirect(self.target_url)
 
     @cherrypy.expose
     def refresh_token(self, code):

@@ -6,7 +6,7 @@ u"""
 from cocktail.modeling import cached_getter
 from cocktail import schema
 from cocktail.persistence import datastore
-from cocktail.controllers import FormProcessor, redirection
+from cocktail.controllers import FormProcessor, redirect
 from woost import app
 from woost.models import (
     changeset_context,
@@ -141,7 +141,7 @@ class UserFormController(FormProcessor, DocumentController):
 
             # Redirect the user to a confirmation page
             if document.redirection:
-                redirection(
+                redirect(
                     self.controller.context["cms"].uri(
                         document.redirection,
                         form = document.id,

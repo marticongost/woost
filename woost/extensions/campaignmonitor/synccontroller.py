@@ -8,7 +8,7 @@
 """
 from __future__ import with_statement
 from cocktail.persistence import datastore
-from cocktail.controllers import redirection
+from cocktail.controllers import redirect
 from woost import app
 from woost.models import changeset_context
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -25,7 +25,7 @@ class SyncCampaignMonitorListsController(BaseBackOfficeController):
     def __call__(self, *args, **kwargs):
 
         if "cancel" in kwargs:
-            redirection(
+            redirect(
                 self.edit_uri(
                     CampaignMonitorExtension.instance,
                     "lists",

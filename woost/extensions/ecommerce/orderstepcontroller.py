@@ -5,7 +5,7 @@ u"""
 """
 from cocktail.controllers import (
     request_property,
-    redirection,
+    redirect,
     Form
 )
 from woost import app
@@ -33,7 +33,7 @@ class OrderStepForm(Form):
         pop_user_notifications()
         next_step = self.next_step
         if next_step is not None:
-            redirection(next_step.get_uri())
+            redirect(next_step.get_uri())
 
 
 class ProceedForm(OrderStepForm):

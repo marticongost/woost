@@ -6,7 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			March 2009
 """
-from cocktail.controllers import get_state, redirection
+from cocktail.controllers import get_state, redirect
 from woost import app
 from woost.controllers import BaseCMSController
 
@@ -21,5 +21,5 @@ class URIController(BaseCMSController):
             parameters = None
 
         uri = app.publishable.get_uri(parameters = parameters)
-        redirection(uri)
+        redirect(uri)
 

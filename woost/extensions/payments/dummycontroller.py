@@ -7,7 +7,7 @@
 @since:			October 2009
 """
 from cocktail import schema
-from cocktail.controllers import get_parameter, redirection
+from cocktail.controllers import get_parameter, redirect
 from woost import app
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.extensions.payments.dummypaymentgateway \
@@ -53,5 +53,5 @@ class DummyPaymentGatewayController(BaseCMSController):
         elif gateway.payment_status == "failed":
             destination = gateway.payment_failed_page
 
-        redirection((destination or app.website.home).get_uri())
+        redirect((destination or app.website.home).get_uri())
 

@@ -12,7 +12,7 @@ from cocktail.controllers import (
     FormProcessor,
     Form,
     request_property,
-    redirection
+    redirect
 )
 from woost.models import Configuration
 
@@ -97,11 +97,11 @@ class SubscriptionController(FormProcessor, Controller):
                 for list in self.subscribed_lists:
                     if list.confirmation_success_page \
                     and list.confirmation_success_page.is_accessible():
-                        redirection(list.confirmation_success_page.get_uri())
+                        redirect(list.confirmation_success_page.get_uri())
 
             # Redirect the user to the confirmation page
             for list in self.subscribed_lists:
                 if list.confirmation_page \
                 and list.confirmation_page.is_accessible():
-                    redirection(list.confirmation_page.get_uri())
+                    redirect(list.confirmation_page.get_uri())
 

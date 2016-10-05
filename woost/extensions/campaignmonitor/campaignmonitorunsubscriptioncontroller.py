@@ -10,7 +10,7 @@ from datetime import datetime
 from campaign_monitor_api import CampaignMonitorApi
 from cocktail import schema
 from cocktail.modeling import cached_getter
-from cocktail.controllers import context, redirection
+from cocktail.controllers import context, redirect
 from woost import app
 from woost.models import StandardPage
 from woost.controllers.documentcontroller import DocumentController
@@ -117,7 +117,7 @@ class CampaignMonitorUnsubscriptionController(DocumentController):
         if uri is None:
             uri = app.website.home.get_uri()
 
-        redirection(uri)
+        redirect(uri)
 
     def get_subscription_uri(self, **kwargs):
         subscription_page = CampaignMonitorSubscriptionPage.get_instance(

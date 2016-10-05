@@ -13,7 +13,7 @@ from cocktail.persistence import transaction
 from cocktail.controllers import (
     request_property,
     get_parameter,
-    redirection
+    redirect
 )
 from woost import app
 from woost.models import (
@@ -201,7 +201,7 @@ class ExportController(BaseBackOfficeController):
         export = transaction(create_export)
         export.execute_in_subprocess()
 
-        redirection(
+        redirect(
             app.publishable.get_uri(
                 path = ["content", str(export.id)]
             )

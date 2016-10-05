@@ -13,7 +13,7 @@ from cocktail.controllers import (
     Form,
     request_property,
     context,
-    redirection
+    redirect
 )
 from cocktail.controllers.location import Location
 from woost import app
@@ -104,7 +104,7 @@ class SignUpController(FormProcessor, Controller):
                 app.authentication.set_user_session(self.instance)
 
             # Redirecting to the success page
-            redirection(success_page.get_uri())
+            redirect(success_page.get_uri())
 
         @request_property
         def email_parameters(self):

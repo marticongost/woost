@@ -12,7 +12,7 @@ import re
 from cocktail.controllers import (
     serve_file,
     resolve_object_ref,
-    redirection
+    redirect
 )
 from woost import app
 from woost.models import Item, RenderPermission
@@ -43,7 +43,7 @@ class ImagesController(BaseCMSController):
 
         # Normalize the URL to use a local id
         if id == item.global_id:
-            redirection(
+            redirect(
                 cherrypy.url().replace("/" + id + "/", "/%d/" % item.id)
             )
 
