@@ -78,6 +78,7 @@ class URLMapping(object):
                 language = language,
                 website = website,
                 host = host,
+                scheme = scheme,
                 **kwargs
             )
 
@@ -350,11 +351,16 @@ class WebsiteInHostname(URLComponent):
         url_builder,
         website = None,
         host = None,
+        scheme = None,
         **kwargs
     ):
         if website and (
             host == "!"
-            or (host == "?" and website is not app.website)
+            or (
+                host == "?"
+                and (website is not app.website or scheme == "https")
+            )
+            or (not host and scheme == "https")
         ):
             url_builder.hostname = website.hosts[0]
             return MATCH
