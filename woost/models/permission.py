@@ -185,7 +185,7 @@ class TranslationPermission(Permission):
     """Base class for permissions that restrict operations on languages."""
 
     matching_languages = schema.Collection(
-        edit_control = "cocktail.html.CheckList",
+        edit_control = "cocktail.html.SplitSelector",
         items = LocaleMember()
     )
 
