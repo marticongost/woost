@@ -215,7 +215,7 @@ class OpenGraphExtension(Extension):
             or config.get_setting("logo")
         )
         if logo:
-            properties["og:image"] = logo.get_uri("facebook", host = "!")
+            properties["og:image"] = logo.get_image_uri("facebook", host = "!")
 
         email = config.get_setting("email")
         if email:
