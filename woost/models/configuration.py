@@ -31,6 +31,7 @@ from .trigger import Trigger
 from .metatags import MetaTags
 from .theme import Theme
 from .template import Template
+from .localemember import LocaleMember
 
 try:
     from fractions import Fraction
@@ -251,13 +252,11 @@ class Configuration(Item):
         member_group = "language"
     )
 
-    backoffice_language = schema.String(
+    backoffice_language = LocaleMember(
         required = True,
         enumeration = ["en", "es", "ca"],
         default = "en",
         text_search = False,
-        translate_value = lambda value, language = None, **kwargs:
-            u"" if not value else translations(value, language, **kwargs),
         listed_by_default = False,
         member_group = "language"
     )
