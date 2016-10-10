@@ -81,7 +81,8 @@ class URI(Publishable):
     def is_internal_content(self, language = None):
 
         uri = self.get_uri(host = "!", language = language)
-        if not location.hostname:
+
+        if not uri.hostname:
             return True
 
         from woost.models.configuration import Configuration
