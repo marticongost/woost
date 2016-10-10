@@ -85,6 +85,6 @@ class URI(Publishable):
         if not uri.hostname:
             return True
 
-        from woost.models.configuration import Configuration
-        return bool(Configuration.instance.get_website_by_host(uri.hostname))
+        resolution = app.url_mapping.resolve(uri)
+        return bool(resolution and resolution.website)
 
