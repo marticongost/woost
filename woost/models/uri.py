@@ -81,9 +81,10 @@ class URI(Publishable):
     def is_internal_content(self, language = None):
 
         uri = self.get_uri(host = "!", language = language)
-        if not location.hostname:
+
+        if not uri.hostname:
             return True
 
-        from woost.models.configuration import Configuration
-        return bool(Configuration.instance.get_website_by_host(uri.hostname))
+        resolution = app.url_mapping.resolve(uri)
+        return bool(resolution and resolution.website)
 
