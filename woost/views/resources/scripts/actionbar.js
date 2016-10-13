@@ -9,17 +9,20 @@
 
 cocktail.bind(".ActionBar", function ($actionBar) {
 
+    var $selectable;
+
     $actionBar.on("click", "a", function () {
         return !$link.attr("disabled");
     });
 
     if (this.selectable) {
-        var $selectable = jQuery(this.selectable);
+        $selectable = jQuery(this.selectable);
     }
     else if (this.selectionField) {
-        var $selectable = null;
+        $selectable = null;
     }
-    else {
+
+    if (!$selectable || !$selectable.length) {
         return;
     }
 
