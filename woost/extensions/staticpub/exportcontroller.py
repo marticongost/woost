@@ -12,7 +12,8 @@ from cocktail.html.readonlydisplay import read_only_display
 from cocktail.persistence import transaction
 from cocktail.controllers import (
     request_property,
-    get_parameter
+    get_parameter,
+    redirect
 )
 from woost import app
 from woost.models import (
@@ -200,7 +201,7 @@ class ExportController(BaseBackOfficeController):
         export = transaction(create_export)
         export.execute_in_subprocess()
 
-        raise cherrypy.HTTPRedirect(
+        redirect(
             app.publishable.get_uri(
                 path = ["content", str(export.id)]
             )

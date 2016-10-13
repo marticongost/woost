@@ -8,7 +8,7 @@
 """
 import cherrypy
 from cocktail import schema
-from cocktail.controllers import get_parameter
+from cocktail.controllers import get_parameter, redirect
 from woost.extensions.shop.shopcontroller import ShopController
 from woost.extensions.shop.product import Product
 from woost.extensions.shop.basket import Basket
@@ -33,5 +33,5 @@ class BasketController(ShopController):
         parts = cherrypy.request.path_info.strip("/").split("/")
         parts.pop(-1)
         path = "/" + "/".join(parts)
-        raise cherrypy.HTTPRedirect(path)
+        redirect(path)
 

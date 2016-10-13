@@ -6,14 +6,14 @@
 @organization:	Whads/Accent SL
 @since:			January 2010
 """
-import cherrypy
 from cocktail import schema
 from cocktail.controllers import (
     Controller,
     FormProcessor,
     Form,
     request_property,
-    context
+    context,
+    redirect
 )
 from cocktail.controllers.location import Location
 from woost import app
@@ -104,7 +104,7 @@ class SignUpController(FormProcessor, Controller):
                 app.authentication.set_user_session(self.instance)
 
             # Redirecting to the success page
-            raise cherrypy.HTTPRedirect(success_page.get_uri())
+            redirect(success_page.get_uri())
 
         @request_property
         def email_parameters(self):

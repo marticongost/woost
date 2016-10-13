@@ -3,12 +3,12 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail import schema
 from cocktail.controllers import (
     Controller,
+    FormProcessor,
     request_property,
-    FormProcessor
+    redirect
 )
 from woost import app
 from woost.models import Publishable
@@ -51,7 +51,7 @@ class SummaryController(FormProcessor, Controller):
             # page; the payment will have to be handled manually by the site's
             # personnel
             else:
-                raise cherrypy.HTTPRedirect(
+                redirect(
                     Publishable.require_instance(
                         qname = "woost.extensions.ecommerce.success_page"
                     ).get_uri(

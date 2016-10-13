@@ -6,8 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			March 2009
 """
-import cherrypy
-from cocktail.controllers import get_state
+from cocktail.controllers import get_state, redirect
 from woost import app
 from woost.controllers import BaseCMSController
 
@@ -22,5 +21,5 @@ class URIController(BaseCMSController):
             parameters = None
 
         uri = app.publishable.get_uri(parameters = parameters)
-        raise cherrypy.HTTPRedirect(uri)
+        redirect(uri)
 

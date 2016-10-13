@@ -109,15 +109,9 @@ class BaseCMSController(Controller):
         @return: The generated absolute URI.
         @rtype: unicode
         """
-        publishable = app.publishable
-        uri = app.url_mapping.get_url(publishable)
-
-        if uri is None:
-            return None
-
-        return self.application_uri(
-            uri,
-            *args,
-            **kwargs
+        return app.url_mapping.get_url(
+            app.publishable,
+            path = args,
+            parameters = kwargs
         )
 

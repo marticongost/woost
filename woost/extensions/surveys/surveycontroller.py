@@ -3,12 +3,12 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from cocktail.controllers import (
     Controller,
     FormProcessor,
     Form,
-    request_property
+    request_property,
+    redirect
 )
 from woost import app
 
@@ -33,9 +33,7 @@ class SurveyController(FormProcessor, Controller):
 
         def after_submit(self):
             if self.controller.block.redirection:
-                raise cherrypy.HTTPRedirect(
-                    self.controller.block.redirection.get_uri()
-                )
+                redirect(self.controller.block.redirection.get_uri())
             else:
                 app.publishable.first_child_redirection()
 
