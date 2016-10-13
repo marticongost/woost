@@ -7,7 +7,7 @@ from datetime import datetime
 import cherrypy
 from createsend import CreateSend, Client, List, Subscriber, BadRequest
 from cocktail import schema
-from cocktail.controllers import Controller, request_property
+from cocktail.controllers import Controller, request_property, redirect
 from cocktail.controllers.parameters import get_parameter
 from woost.models import Configuration
 from woost.extensions.campaign3.campaignmonitorlist import CampaignMonitorList
@@ -80,7 +80,7 @@ class ResubscribeController(Controller):
             if list \
             and list.confirmation_page \
             and list.confirmation_page.is_accessible():
-                raise cherrypy.HTTPRedirect(list.confirmation_page.get_uri())
+                redirect(list.confirmation_page.get_uri())
 
     @request_property
     def output(self):

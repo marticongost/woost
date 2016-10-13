@@ -17,6 +17,7 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import PersistentObject
 from woost import app
+from .localemember import LocaleMember
 from .item import Item
 from .changesets import ChangeSet, Change
 from .messagestyles import permission_doesnt_match_style
@@ -183,20 +184,10 @@ class RenderPermission(ContentPermission):
 class TranslationPermission(Permission):
     """Base class for permissions that restrict operations on languages."""
 
-    def _matching_languages_enumeration(ctx):
-        from woost.models import Configuration
-        return Configuration.instance.languages
-
     matching_languages = schema.Collection(
-        edit_control = "cocktail.html.CheckList",
-        items = schema.String(
-            enumeration = _matching_languages_enumeration,
-            translate_value = lambda value, language = None, **kwargs:
-                u"" if not value else translations(value, language, **kwargs)
-        )
+        edit_control = "cocktail.html.SplitSelector",
+        items = LocaleMember()
     )
-
-    del _matching_languages_enumeration
 
     def match(self, user, language, verbose = False):
 

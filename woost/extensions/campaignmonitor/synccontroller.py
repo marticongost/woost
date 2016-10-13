@@ -7,8 +7,8 @@
 @since:			March 2010
 """
 from __future__ import with_statement
-import cherrypy
 from cocktail.persistence import datastore
+from cocktail.controllers import redirect
 from woost import app
 from woost.models import changeset_context
 from woost.controllers.backoffice.basebackofficecontroller \
@@ -25,11 +25,13 @@ class SyncCampaignMonitorListsController(BaseBackOfficeController):
     def __call__(self, *args, **kwargs):
 
         if "cancel" in kwargs:
-            raise cherrypy.HTTPRedirect(self.edit_uri(
-                CampaignMonitorExtension.instance,
-                "lists",
-                edit_stack = None
-            ))
+            redirect(
+                self.edit_uri(
+                    CampaignMonitorExtension.instance,
+                    "lists",
+                    edit_stack = None
+                )
+            )
 
         return BaseBackOfficeController.__call__(self, *args, **kwargs)
 

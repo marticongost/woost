@@ -19,6 +19,7 @@ from cocktail import schema
 from cocktail.controllers import (
     get_parameter,
     request_property,
+    redirect,
     CookieParameterSource
 )
 from woost import app
@@ -149,7 +150,7 @@ class BaseBackOfficeController(BaseCMSController):
 
         # Go back to the root of the backoffice
         else:
-            raise cherrypy.HTTPRedirect(
+            redirect(
                 edit_stack and edit_stack.root_url or self.contextual_uri()
             )
 
@@ -205,7 +206,7 @@ class BaseBackOfficeController(BaseCMSController):
             WrongEditStackError
         ):
             Notification(translations(event.exception), "error").emit()
-            raise cherrypy.HTTPRedirect(event.source.contextual_uri())
+            redirect(event.source.contextual_uri())
 
     def _invoke_user_action(self):
 

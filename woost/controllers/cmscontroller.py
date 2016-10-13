@@ -31,7 +31,8 @@ from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher,
     try_decode,
-    session
+    session,
+    redirect
 )
 from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers import get_request_url
@@ -297,7 +298,7 @@ class CMSController(BaseCMSController):
             app.url_resolution
         )
         if current_url != canonical_url:
-            raise cherrypy.HTTPRedirect(canonical_url, status = 301)
+            redirect(canonical_url, status = 301)
 
     def _maintenance_check(self, publishable):
 

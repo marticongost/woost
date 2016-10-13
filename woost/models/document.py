@@ -6,10 +6,10 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.html import templates
+from cocktail.controllers import redirect
 from .publishable import Publishable
 from .controller import Controller
 from .style import Style
@@ -220,7 +220,7 @@ class Document(Publishable):
     def first_child_redirection(self):
         child = self.find_first_child_redirection_target()
         if child is not None:
-            raise cherrypy.HTTPRedirect(child.get_uri())
+            redirect(child.get_uri())
 
     @event_handler
     def handle_related(cls, event):

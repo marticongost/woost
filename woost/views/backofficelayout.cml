@@ -35,14 +35,7 @@ from woost.controllers.backoffice.editstack import (
     <?resource woost://scripts/backofficelayout.js ?>
 
     <?py
-    # TODO: Implement conditional comments for IE more generally
-    self.add_head_element(IEConditionalComment(condition = "lt IE 8", children = [
-        Element("link",
-            rel = "Stylesheet",
-            type = "text/css",
-            href = "woost://styles/backoffice_ie.css")
-    ]))
-
+    self.add_resource("woost://styles/backoffice_ie.css", ie_condition = "lt IE 8")
     self.add_head_element(
         Element("link",
             rel = "Stylesheet",
@@ -51,7 +44,6 @@ from woost.controllers.backoffice.editstack import (
             href = normalize_resource_uri("woost://styles/print.css")
         )
     )
-
     self.action_context = set()
     ?>
 

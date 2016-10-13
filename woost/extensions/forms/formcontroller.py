@@ -3,7 +3,6 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import cherrypy
 from datetime import datetime
 from cocktail.translations import translations
 from cocktail.modeling import extend, call_base
@@ -11,7 +10,8 @@ from cocktail.controllers import (
     Controller,
     FormProcessor,
     request_property,
-    context
+    context,
+    redirect
 )
 from woost import app
 from woost.controllers.uploadform import UploadForm
@@ -76,7 +76,7 @@ class FormController(FormProcessor, Controller):
             block = self.controller.block
             notification_receivers = block.notification_receivers
             email_messages = block.email_messages
-            redirection = block.redirection
+            redirection_dest = block.redirection
             redirection_parameters = {}
 
             # User supplied initialization
@@ -86,7 +86,7 @@ class FormController(FormProcessor, Controller):
                     "block": block,
                     "notification_receivers": notification_receivers,
                     "email_messages": email_messages,
-                    "redirection": redirection,
+                    "redirection": redirection_dest,
                     "redirection_parameters": redirection_parameters
                 }
                 label = "%s #%s.after_submit_code" % (
@@ -98,7 +98,7 @@ class FormController(FormProcessor, Controller):
                 notification_receivers = \
                     after_submit_context["notification_receivers"]
                 email_messages = after_submit_context["email_messages"]
-                redirection = after_submit_context["redirection"]
+                redirection_dest = after_submit_context["redirection"]
                 redirection_parameters = \
                     after_submit_context["redirection_parameters"]
 
@@ -112,12 +112,15 @@ class FormController(FormProcessor, Controller):
                 })
 
             # Redirection
-            if redirection is None:
+            if redirection_dest is None:
                 publishable = app.publishable
-                redirection = publishable.find_first_child_redirection_target()
+                redirection_dest = \
+                    publishable.find_first_child_redirection_target()
 
-            if redirection is not None:
-                raise cherrypy.HTTPRedirect(redirection.get_uri(
-                    parameters = redirection_parameters
-                ))
+            if redirection_dest is not None:
+                redirect(
+                    redirection_dest.get_uri(
+                        parameters = redirection_parameters
+                    )
+                )
 
