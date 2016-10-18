@@ -3314,6 +3314,23 @@ translations.define("Document.template",
     en = u"Template"
 )
 
+translations.define("Document.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
+)
+
+translations.define("Document.theme-explanation",
+    ca = u"Deixar en blanc per utilitzar el tema visual per defecte establert "
+         u"per la plantilla, el lloc web o la configuració general.",
+    es = u"Dejar en blanco para utilizar el tema visual por defecto "
+         u"establecido por la plantilla, el sitio web o la configuración "
+         u"general.",
+    en = u"Leave blank to use the default visual theme, as set by the "
+         u"document's template, the active website or the general "
+         u"configuration."
+)
+
 translations.define("Document.children",
     ca = u"Pàgines filles",
     es = u"Páginas hijas",
