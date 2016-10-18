@@ -12,6 +12,7 @@ from cocktail.html import templates
 from cocktail.controllers import redirect
 from .publishable import Publishable
 from .controller import Controller
+from .theme import Theme
 from .style import Style
 from .metatags import MetaTags
 
@@ -31,6 +32,7 @@ class Document(Publishable):
         "title",
         "inner_title",
         "template",
+        "theme",
         "styles",
         "custom_document_title",
         "meta_tags",
@@ -102,6 +104,13 @@ class Document(Publishable):
         bidirectional = True,
         listed_by_default = False,
         after_member = "controller",
+        member_group = "presentation.behavior"
+    )
+
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        listed_by_default = False,
         member_group = "presentation.behavior"
     )
 
