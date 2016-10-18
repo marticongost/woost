@@ -83,6 +83,24 @@ en: Document
             es: Dejar en blanco para utilizar la plantilla por defecto.
             en: Leave blank to use the default template.
 
+        [theme]
+        ca: Tema visual
+        es: Tema visual
+        en: Visual theme
+
+            [explanation]
+            ca:
+                Deixar en blanc per utilitzar el tema visual per defecte establert
+                per la plantilla, el lloc web o la configuració general.
+            es:
+                Dejar en blanco para utilizar el tema visual por defecto
+                establecido por la plantilla, el sitio web o la configuración
+                general.
+            en:
+                Leave blank to use the default visual theme, as set by the
+                document's template, the active website or the general
+                configuration.
+
         [styles]
         ca: Estils
         es: Estilos
