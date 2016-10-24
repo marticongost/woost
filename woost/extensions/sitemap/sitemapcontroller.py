@@ -29,8 +29,6 @@ class SitemapController(BaseCMSController):
         write(u"<?xml version='1.0' encoding='utf-8'?>")
         write(u"<urlset xmlns='%s'>" % self.namespace)
 
-        uri = self.context["cms"].uri
-
         for item in self.items:
             write(u"\t<url>")
             write(u"\t\t<loc>%s</loc>" % item.get_uri(host = "!"))
