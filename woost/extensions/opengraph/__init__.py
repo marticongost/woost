@@ -60,7 +60,6 @@ class OpenGraphExtension(Extension):
     def _load(self):
 
         from woost.extensions.opengraph import (
-            strings,
             publishable,
             opengraphtype,
             opengraphcategory,
