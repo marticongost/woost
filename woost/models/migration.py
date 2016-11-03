@@ -1151,10 +1151,21 @@ step = MigrationStep("Make Item.translations not versioned")
 
 @when(step.executing)
 def make_item_translations_not_versioned(e):
+
+    import transaction
+    from cocktail.styled import ProgressBar
+    from cocktail.iteration import batch
     from woost.models import Change
-    for change in Change.select(Change.action.equal("modify")):
-        change.changed_members.discard("translations")
-        change.item_state.pop("translations", None)
+
+    changes = Change.select(Change.action.equal("modify"))
+
+    with ProgressBar(len(changes)) as bar:
+        for changes in batch(changes, 5000):
+            for change in changes:
+                change.changed_members.discard("translations")
+                change.item_state.pop("translations", None)
+                bar.update(1)
+            transaction.savepoint(True)
 
 #------------------------------------------------------------------------------
 
@@ -1163,32 +1174,42 @@ step = MigrationStep("Make anonymous relation ends not versioned")
 @when(step.executing)
 def make_anonymous_relation_ends_not_versioned(e):
 
+    import transaction
+    from cocktail.styled import ProgressBar
+    from cocktail.iteration import batch
     from cocktail import schema
     from cocktail.persistence.utils import is_broken
     from woost.models import Change
 
     keys_cache = {}
+    changes = Change.select(Change.action.equal("modify"))
 
-    for change in Change.select(Change.action.equal("modify")):
+    with ProgressBar(len(changes)) as bar:
+        for changes in batch(changes, 5000):
+            for change in changes:
 
-        if is_broken(change.target):
-            continue
+                if is_broken(change.target):
+                    continue
 
-        model = change.target.__class__
-        keys = keys_cache.get(model)
+                model = change.target.__class__
+                keys = keys_cache.get(model)
 
-        if keys is None:
-            keys = [
-                member.name
-                for member in model.iter_members()
-                if isinstance(member, schema.RelationMember)
-                and member.anonymous
-            ]
-            keys_cache[model] = keys
+                if keys is None:
+                    keys = [
+                        member.name
+                        for member in model.iter_members()
+                        if isinstance(member, schema.RelationMember)
+                        and member.anonymous
+                    ]
+                    keys_cache[model] = keys
 
-        for key in keys:
-            change.changed_members.discard(key)
-            change.item_state.pop(key, None)
+                for key in keys:
+                    change.changed_members.discard(key)
+                    change.item_state.pop(key, None)
+
+                bar.update(1)
+
+            transaction.savepoint(True)
 
 #------------------------------------------------------------------------------
 
