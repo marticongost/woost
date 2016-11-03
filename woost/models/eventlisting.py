@@ -5,6 +5,7 @@ u"""
 """
 from datetime import date, datetime, timedelta
 from cocktail.dateutils import add_time
+from cocktail import events
 from cocktail import schema
 from cocktail.schema.expressions import RangeIntersectionExpression
 from cocktail.controllers import (
@@ -34,8 +35,16 @@ class EventListing(Block):
 
     default_view_class = "woost.views.DateLocationTitleEventListing"
 
+    selecting_items = events.Event(
+        """An event triggered to allow sites and extensions to filter, order or
+        otherwise alter the news included in the listing.
+
+        :param items: The entries included in the listing.
+        :type items: `~woost.models.Event` `~cocktail.persistence.Query`
+        """
+    )
+
     members_order = [
-        "element_type",
         "include_expired",
         "listing_order",
         "paginated",
@@ -118,7 +127,8 @@ class EventListing(Block):
         if not self.paginated and self.page_size:
             events.range = (0, self.page_size)
 
-        return events
+        e = self.selecting_items(items = events)
+        return e.items
 
     def _apply_listing_order(self, events):
         if self.listing_order:

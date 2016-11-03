@@ -67,6 +67,17 @@ class DocumentController(PublishableController):
             else:
                 raise cherrypy.HTTPRedirect(uri)
 
+        # Override visual theme
+        theme = app.publishable.theme
+        if theme:
+            app.theme = theme
+        else:
+            template = self.page_template
+            if template:
+                template_theme = template.theme
+                if template_theme:
+                    app.theme = template_theme
+
         # No redirection, serve the document normally
         return PublishableController.__call__(self)
 

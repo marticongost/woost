@@ -6,6 +6,7 @@ u"""
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
+from warnings import warn
 import os
 import hashlib
 from mimetypes import guess_type
@@ -80,6 +81,21 @@ class File(Publishable):
         member_group = "content"
     )
 
+    def __init__(self, file = None, **kwargs):
+
+        Publishable.__init__(self, **kwargs)
+
+        if file is not None:
+            self._v_initializing = True
+            self.import_file(
+                file,
+                guess_mime_type = not self.mime_type,
+                compute_hash = not self.file_hash,
+                compute_size = not self.file_size,
+                assign_file_name = not self.file_name
+            )
+            self._v_initializing = False
+
     @property
     def file_extension(self):
         return os.path.splitext(self.file_name)[1]
@@ -88,15 +104,84 @@ class File(Publishable):
     def file_path(self):
         return app.path("upload", str(self.require_id()))
 
+    def import_file(
+        self,
+        source,
+        dest = None,
+        guess_mime_type = True,
+        compute_hash = True,
+        compute_size = True,
+        assign_file_name = True,
+        encoding = "utf-8",
+        download_temp_folder = None,
+        redownload = False
+    ):
+        is_path = isinstance(source, basestring)
+
+        if is_path:
+
+            file_name = os.path.split(source)[1]
+
+            # Download remote files
+            if "://" in source:
+                if not download_temp_folder:
+                    download_temp_folder = mkdtemp()
+
+                temp_path = os.path.join(download_temp_folder, file_name)
+
+                if redownload or not os.path.exists(temp_path):
+                    response = urlopen(path)
+                    with open(temp_path, "w") as temp_file:
+                        copyfileobj(response, temp_file)
+
+                source = temp_path
+
+            if encoding and isinstance(file_name, str):
+                file_name = file_name.decode(encoding)
+
+            if assign_file_name:
+                self.file_name = file_name
+
+            if compute_size:
+                self.file_size = os.stat(source).st_size
+
+            if guess_mime_type:
+                mime_type = guess_type(file_name, strict = False)
+                if mime_type:
+                    self.mime_type = mime_type[0]
+        else:
+            if compute_size:
+                source.seek(0, 2)
+                self.file_size = source.tell()
+                source.seek(0)
+
+        if compute_hash:
+            self.file_hash = file_hash(source)
+            if not is_path:
+                source.seek(0)
+
+        if dest is None:
+            upload_path = self.file_path
+        else:
+            upload_path = os.path.join(dest, str(self.require_id()))
+
+        if is_path:
+            copy(source, upload_path)
+        else:
+            with open(upload_path, "wb") as upload:
+                copyfileobj(source, upload)
+
     @classmethod
-    def from_path(cls,
+    def from_path(
+        cls,
         path,
         dest = None,
         languages = None,
         hash = None,
         encoding = "utf-8",
         download_temp_folder = None,
-        redownload = False):
+        redownload = False
+    ):
         """Imports a file into the site.
 
         @param path: The path to the file that should be imported.
@@ -113,6 +198,25 @@ class File(Publishable):
         @return: The created file.
         @rtype: L{File}
         """
+        warn(
+            "File.from_path() is deprecated, use File.import_file() or the "
+            "'file' argument of the File constructor",
+            DeprecationWarning,
+            stacklevel = 2
+        )
+
+        file = cls()
+        file.import_file(
+            path,
+            dest = dest,
+            compute_hash = not hash,
+            encoding = encoding,
+            download_temp_folder = download_temp_folder,
+            redownload = redownload
+        )
+
+        if hash:
+            file.file_hash = hash
 
         # The default behavior is to translate created files into all the languages
         # defined by the site
@@ -123,49 +227,11 @@ class File(Publishable):
         file_name = os.path.split(path)[1]
         title, ext = os.path.splitext(file_name)
 
-        # Download remote files
-        if "://" in path:
-            if not download_temp_folder:
-                download_temp_folder = mkdtemp()
-
-            temp_path = os.path.join(download_temp_folder, file_name)
-
-            if redownload or not os.path.exists(temp_path):
-                response = urlopen(path)
-                with open(temp_path, "w") as temp_file:
-                    copyfileobj(response, temp_file)
-
-            path = temp_path
-
-        if encoding:
-            if isinstance(title, str):
-                title = title.decode(encoding)
-            if isinstance(file_name, str):
-                file_name = file_name.decode(encoding)
-
         title = title.replace("_", " ").replace("-", " ")
         title = title[0].upper() + title[1:]
 
-        file = cls()
-
-        file.file_size = os.stat(path).st_size
-        file.file_hash = hash or file_hash(path)
-        file.file_name = file_name
-
-        # Infer the file's MIME type
-        mime_type = guess_type(file_name, strict = False)
-        if mime_type:
-            file.mime_type = mime_type[0]
-
         for language in languages:
             file.set("title", title, language)
-
-        if dest is None:
-            upload_path = file.file_path
-        else:
-            upload_path = os.path.join(dest, str(file.require_id()))
-
-        copy(path, upload_path)
 
         return file
 

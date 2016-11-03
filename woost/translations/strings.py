@@ -925,6 +925,13 @@ translations.define(
 )
 
 translations.define(
+    "woost.initialization.vcard.heading",
+    ca = u"Dades de contacte",
+    es = u"Datos de contacto",
+    en = u"Contact data"
+)
+
+translations.define(
     "woost.initialization.anonymous.title",
     ca = u"Anònim",
     es = u"Anónimo",
@@ -963,6 +970,12 @@ translations.define("woost.initialization.file_deletion_trigger.title",
     ca = u"Esborrar fitxers del disc quan s'elimini el seu element",
     es = u"Borrar ficheros del disco cuando se elimine su elemento",
     en = u"Erase files from disc when their item is deleted"
+)
+
+translations.define("woost.initialization.default_grid.title",
+    ca = u"Graella estàndard",
+    es = u"Matriz estándar",
+    en = u"Default grid"
 )
 
 translations.define("woost.initialization.document_controller.title",
@@ -1023,6 +1036,13 @@ translations.define("woost.initialization.passwordchangeconfirmation_controller.
     ca = u"Controlador de confirmació de canvi de contrasenya",
     es = u"Controlador de confirmación de cambio de contraseña",
     en = u"Password change confirmation controller"
+)
+
+translations.define(
+    "woost.initialization.default_theme.title",
+    ca = u"Tema per defecte",
+    es = u"Tema por defecto",
+    en = u"Default theme"
 )
 
 translations.define(
@@ -1960,19 +1980,19 @@ translations.define("Configuration.meta",
     en = u"Metadata"
 )
 
-translations.define("Configuration.media",
-    ca = u"Multimèdia",
-    es = u"Multimedia",
-    en = u"Media"
+translations.define("Configuration.presentation",
+    ca = u"Presentació",
+    es = u"Presentación",
+    en = u"Presentation"
 )
 
-translations.define("Configuration.media.images",
+translations.define("Configuration.presentation.images",
     ca = u"Imatges",
     es = u"Imagenes",
     en = u"Images"
 )
 
-translations.define("Configuration.media.video",
+translations.define("Configuration.presentation.video",
     ca = u"Vídeo",
     es = u"Video",
     en = u"Video"
@@ -2008,6 +2028,12 @@ translations.define("Configuration.common_blocks",
     en = u"Common blocks"
 )
 
+translations.define("Configuration.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
+)
+
 translations.define("Configuration.websites",
     ca = u"Pàgines web",
     es = u"Páginas web",
@@ -2018,6 +2044,12 @@ translations.define("Configuration.caching_policies",
     ca = u"Polítiques de cache",
     es = u"Políticas de cache",
     en = u"Caching policies"
+)
+
+translations.define("Configuration.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
 )
 
 translations.define("Configuration.login_page",
@@ -2273,10 +2305,22 @@ translations.define("Website.publication.https",
     en = u"HTTPS"
 )
 
+translations.define("Website.presentation",
+    ca = u"Presentació",
+    es = u"Presentación",
+    en = u"Presentation"
+)
+
 translations.define("Website.meta",
     ca = u"Metadades",
     es = u"Metadatos",
     en = u"Metadata"
+)
+
+translations.define("Website.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
 )
 
 translations.define("Website.language",
@@ -2523,6 +2567,12 @@ translations.define("Website.published_languages-explanation",
          u"disponibles.",
     en = u"Limits publication to the indicated subset of languages. Leave "
          u"blank to allow publishing in any of the available languages."
+)
+
+translations.define("Website.footer_blocks",
+    ca = u"Peu de pàgina",
+    es = u"Pie de página",
+    en = u"Footer"
 )
 
 translations.define("woost.views.LoginFormView.main",
@@ -3108,6 +3158,22 @@ translations.define("Publishable.parent",
     en = u"Parent"
 )
 
+translations.define("Publishable.menu_title",
+    ca = u"Títol pel menú",
+    es = u"Título para el menú",
+    en = u"Menu title"
+)
+
+translations.define("Publishable.menu_title-explanation",
+    ca = u"El títol de l'element quan aparegui als menús de la pàgina. "
+         u"Deixar en blanc per utilitzar el títol general de l'element.",
+    es = u"El título del elemento cuando aparezca en los menús de la "
+         u"página. Dejar en blanco para utilizar el título general del "
+         u"elemento.",
+    en = u"The title used by the element when displayed on page menus. "
+         u"Leave blank to use the element's general title."
+)
+
 translations.define("Publishable.path",
     ca = u"Ruta",
     es = u"Ruta",
@@ -3199,6 +3265,31 @@ translations.define("Document.inner_title",
     en = u"Inner title"
 )
 
+translations.define("Document.custom_document_title",
+    ca = u"Títol personalitzat",
+    es = u"Título personalizado",
+    en = u"Custom title"
+)
+
+translations.define("Document.custom_document_title-explanation",
+    ca = u"""
+        Títol del document HTML generat per aquest element (tag
+        <code>&lt;title&gt;</code> de l'element <code>&lt;head&gt;</code>).
+        Si no s'especifica, s'utilitzarà el títol general de l'element.
+        """,
+    es = u"""
+        Título del documento HTML generado para este elemento (tag
+        <code>&lt;title&gt;</code> del elemento <code>&lt;head&gt;</code>).
+        Si no se especifica, se utilitzará el título general del elemento.
+        """,
+    en = u"""
+        Title of the HTML document generated for this element (
+        <code>&lt;title&gt;</code> tag of the <code>&lt;head&gt;</code>
+        element). If not specified, the general title of the item will
+        be used.
+        """
+)
+
 translations.define("Document.meta_tags",
     ca = u"Meta tags",
     es = u"Meta tags",
@@ -3221,6 +3312,23 @@ translations.define("Document.template",
     ca = u"Plantilla",
     es = u"Plantilla",
     en = u"Template"
+)
+
+translations.define("Document.theme",
+    ca = u"Tema visual",
+    es = u"Tema visual",
+    en = u"Visual theme"
+)
+
+translations.define("Document.theme-explanation",
+    ca = u"Deixar en blanc per utilitzar el tema visual per defecte establert "
+         u"per la plantilla, el lloc web o la configuració general.",
+    es = u"Dejar en blanco para utilizar el tema visual por defecto "
+         u"establecido por la plantilla, el sitio web o la configuración "
+         u"general.",
+    en = u"Leave blank to use the default visual theme, as set by the "
+         u"document's template, the active website or the general "
+         u"configuration."
 )
 
 translations.define("Document.children",
@@ -4187,16 +4295,68 @@ translations.define("Style.custom_class_name-explanation",
          u"pattern."
 )
 
+translations.define("Style.declarations_initialization",
+    ca = u"Inicialització dels estils",
+    es = u"Inicialización de los estilos",
+    en = u"Style initialization"
+)
+
+translations.define("Style.declarations_initialization-explanation",
+    ca = u"Un fragment de codi SCSS que precedirà els estils afegits pels "
+         u"camps <em>estils</em> i <em>estils per l'administració</em>. "
+         u"Útil per importar fulls d'estil i fer declaracions fora de "
+         u"l'àmbit de l'estil. Es combina amb els camps <em>inicialització "
+         u"d'estils comú</em> de la configuració i els llocs web.",
+    es = u"Un fragmento de código SCSS que precederá los estilos añadidos "
+         u"por los campos <em>estilos</em> y <em>estilos para el "
+         u"administrador</em>. Útil para importar hojas de estilo y hacer "
+         u"declaraciones fuera del ámbito del estilo. Se combina con los "
+         u"campos <em>inicialización de estilos común</em> de la "
+         u"configuración y los sitios web.",
+    en = u"A fragment of SCSS code that will precede the styles added by the "
+         u"<em>styles</em> and <em>admin styles</em> fields. Useful to import "
+         u"style sheets or to make declarations outside the scope of the "
+         u"style. Will be combined with the <em>common styles "
+         u"initialization</em> fields specified by the configuration and "
+         u"websites."
+)
+
 translations.define("Style.declarations",
-    ca = u"Declaracions CSS",
-    es = u"Declaraciones CSS",
-    en = u"CSS declarations"
+    ca = u"Estils",
+    es = u"Estilos",
+    en = u"Styles"
+)
+
+translations.define("Style.declarations-explanation",
+    ca = u"Codi SCSS que s'aplicarà als elements vinculats a aquest estil. "
+         u"S'embolcalla automàticament amb el selector adequat.",
+    es = u"Código SCSS que se aplicará a los elementos vinculados con este "
+         u"estilo. Se envuelve automáticamente con el selector adecuado.",
+    en = u"SCSS code that will be applied to elements linked to this style. "
+         u"The code is automatically wrapped in the appropiate selector."
 )
 
 translations.define("Style.admin_declarations",
-    ca = u"Declaracions CSS per l'administració",
-    es = u"Declaraciones CSS para el administrador",
-    en = u"Admin CSS declarations"
+    ca = u"Estils per l'administració",
+    es = u"Estilos para el administrador",
+    en = u"Admin styles"
+)
+
+translations.define("Style.admin_declarations-explanation",
+    ca = u"Com el camp <em>estils</em>, però només s'aplica dins de la "
+         u"interfície d'administració. Això és útil per fer més llegibles "
+         u"estils que quedarien fora de lloc dins de l'editor de text; per "
+         u"exemple, donar un altre color a text que al frontal hagi de ser "
+         u"blanc.",
+    es = u"Como el campo <em>estilos</em>, pero solo se aplica dentro de la "
+         u"interfaz de administración. Esto es útil para hacer más legibles "
+         u"estilos que quedarían fuera de sitio dentro del editor de texto; "
+         u"por ejemplo, dar otro color a texto que en el frontal tenga que "
+         u"ser blanco.",
+    en = u"Like the <em>styles</em> field, but will be only applied within "
+         u"the administration interface. This is useful to subdue styles that "
+         u"would look out of place on the text editor; for example, to change "
+         u"the color of text that should be white on the frontend."
 )
 
 # UserView
@@ -4533,6 +4693,44 @@ translations.define("woost.models.accesslevel.AccessLevel-instance",
         ])
 )
 
+# Theme
+#------------------------------------------------------------------------------
+translations.define("Theme",
+    ca = u"Tema",
+    es = u"Tema",
+    en = u"Theme"
+)
+
+translations.define("Theme-plural",
+    ca = u"Temes",
+    es = u"Temas",
+    en = u"Themes"
+)
+
+translations.define("Theme.title",
+    ca = u"Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Theme.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("Theme.declarations",
+    ca = u"Declaracions",
+    es = u"Declaraciones",
+    en = u"Declarations"
+)
+
+translations.define("Theme.grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
+)
+
 # Template
 #------------------------------------------------------------------------------
 translations.define("Template",
@@ -4561,6 +4759,12 @@ translations.define("Template.identifier",
     ca = u"Identificador",
     es = u"Identificador",
     en = u"Identifier"
+)
+
+translations.define("Template.theme",
+    ca = u"Tema",
+    es = u"Tema",
+    en = u"Theme"
 )
 
 translations.define("Template.documents",
@@ -6903,7 +7107,7 @@ translations.define("Block.heading_type=hidden",
     en = u"Hidden"
 )
 
-translations.define("Block.heading_type=generic",
+translations.define("Block.heading_type=div",
     ca = u"Etiqueta genèrica (div)",
     es = u"Etiqueta genérica (div)",
     en = u"Generic label (div)"
@@ -7071,6 +7275,13 @@ translations.define(
     en = u"Text and image"
 )
 
+translations.define(
+    "Block.view_class=woost.views.ExtractNewsListing",
+    ca = u"Extracte",
+    es = u"Extracto",
+    en = u"Extract"
+)
+
 # - EventListing views
 translations.define(
     "Block.view_class=woost.views.CompactEventListing",
@@ -7118,10 +7329,47 @@ translations.define("Block.styles",
     en = u"Styles"
 )
 
-translations.define("Block.inline_css_styles",
-    ca = u"Estils en línia",
-    es = u"Estilos en linea",
-    en = u"Inline CSS styles"
+translations.define("Block.embedded_styles_initialization",
+    ca = u"Inicialització dels estils incrustats",
+    es = u"Inicialización de los estilos incrustados",
+    en = u"Embedded styles initialization"
+)
+
+translations.define("Block.embedded_styles_initialization-explanation",
+    ca = u"Un fragment de codi SCSS que precedirà els estils afegits pel "
+         u"camp <em>estils incrustats</em>. Útil per importar fulls d'estil "
+         u"i fer declaracions fora de l'àmbit del bloc. Es combina amb els "
+         u"camps <em>inicialització d'estils comú</em> de la configuració "
+         u"i els llocs web.",
+    es = u"Un fragmento de código SCSS que precederá los estilos añadidos "
+         u"por el campo <em>estilos incrustados</em>. Útil para importar "
+         u"hojas de estilo y hacer declaraciones fuera del ámbito del "
+         u"bloque. Se combina con los campos <em>inicialización de estilos "
+         u"común</em> de la configuración y los sitios web.",
+    en = u"A fragment of SCSS code that will precede the styles added by the "
+         u"<em>embedded styles</em> field. Useful to import style sheets or "
+         u"to make declarations outside the scope of the block. Will be "
+         u"combined with the <em>common styles initialization</em> fields "
+         u"specified by the configuration and websites."
+)
+
+translations.define("Block.embedded_styles",
+    ca = u"Estils incrustats",
+    es = u"Estilos incrustados",
+    en = u"Embedded styles"
+)
+
+translations.define("Block.embedded_styles-explanation",
+    ca = u"Un bloc de codi SCSS que s'afegirà utilitzant un tag "
+         u"<code>&lt;style&gt;</code> al <code>&lt;head&gt;</code> de la "
+         u"pàgina. El codi serà embolcallat en un selector pel bloc.",
+    es = u"Un bloque de código SCSS que se añadirá utilizando un tag "
+         u"<code>&lt;style&gt;</code> al <code>&lt;head&gt;</code> de la "
+         u"página. El código será envuelto en un selector para el bloque.",
+    en = u"An SCSS code block that will be added using a "
+         u"<code>&lt;style&gt;</code> tag to the page's "
+         u"<code>&lt;head&gt;</code>. The code will be wrapped in a selector "
+         u"for this block."
 )
 
 translations.define("Block.per_language_publication",
@@ -7286,6 +7534,18 @@ translations.define("ContainerBlock.list_type=dl",
     ca = u"Llista de definició",
     es = u"Lista de definición",
     en = u"Definition list"
+)
+
+translations.define("ContainerBlock.background_image",
+    ca = u"Imatge de fons",
+    es = u"Imagen de fondo",
+    en = u"Background image"
+)
+
+translations.define("ContainerBlock.background_image_factory",
+    ca = u"Processat per la imatge de fons",
+    es = u"Procesado para la imagen de fondo",
+    en = u"Processing for the background image"
 )
 
 # SlideShowBlock
@@ -8664,5 +8924,89 @@ translations.define(
         str(count) + u" " + translations(
             model.name + plural2(count, "", "-plural")
         )
+)
+
+# SmallScreenNavigation
+#------------------------------------------------------------------------------
+translations.define("woost.views.SmallScreenNavigation.menu_button",
+    ca = u"Mostrar / ocultar menú",
+    es = u"Mostrar / ocultar menú",
+    en = u"Show / hide menu"
+)
+
+# Grid
+#-------------------------------------------------------------------------------
+translations.define("Grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
+)
+
+translations.define("Grid-plural",
+    ca = u"Graelles",
+    es = u"Matrices",
+    en = u"Grids"
+)
+
+translations.define("Grid.title",
+    ca = "Nom",
+    es = u"Nombre",
+    en = u"Name"
+)
+
+translations.define("Grid.column_count",
+    ca = u"Número de columnes",
+    es = u"Número de columnas",
+    en = u"Column size"
+)
+
+translations.define("Grid.sizes",
+    ca = u"Mides",
+    es = u"Tamaños",
+    en = u"Sizes"
+)
+
+# GridSize
+#-------------------------------------------------------------------------------
+translations.define("GridSize",
+    ca = u"Mida de graella",
+    es = u"Tamaño de matriz",
+    en = u"Grid size"
+)
+
+translations.define("GridSize-plural",
+    ca = u"Mides de graella",
+    es = u"Tamaños de matriz",
+    en = u"Grid sizes"
+)
+
+translations.define("GridSize.grid",
+    ca = u"Graella",
+    es = u"Matriz",
+    en = u"Grid"
+)
+
+translations.define("GridSize.identifier",
+    ca = u"Identificador",
+    es = u"Identificador",
+    en = u"Identifier"
+)
+
+translations.define("GridSize.min_width",
+    ca = u"Mida mínima",
+    es = u"Tamaño mínimo",
+    en = u"Minimum size"
+)
+
+translations.define("GridSize.column_width",
+    ca = u"Amplada de columna",
+    es = u"Ancho de columna",
+    en = u"Column width"
+)
+
+translations.define("GridSize.column_spacing",
+    ca = u"Separació entre columnes",
+    es = u"Separación entre columnas",
+    en = u"Column spacing"
 )
 

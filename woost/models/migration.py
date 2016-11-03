@@ -6,7 +6,7 @@ u"""Defines migrations to the database schema for woost.
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
 from cocktail.persistence.migration import migration_steps
-from cocktail.persistence.utils import remove_broken_type
+from cocktail.persistence.utils import remove_broken_type, is_broken
 from warnings import warn
 
 def admin_members_restriction(members):
@@ -1114,15 +1114,24 @@ step = MigrationStep("Fix 'author' member in Change.item_state")
 
 @when(step.executing)
 def fix_author_in_change_item_state(e):
+
+    from cocktail.persistence.utils import is_broken
     from woost.models import Change
+
     for change in Change.select():
         if (
             change.action == "create"
             and change.target is not None
+            and not is_broken(change.target)
             and change.item_state is not None
             and change.item_state.get("author") is None
         ):
-            change.item_state["author"] = change.target.author
+            if is_broken(change.target):
+                author = change.target.__Broken_state__["_author"]
+            else:
+                author = change.target.author
+
+            change.item_state["author"] = author
 
 #------------------------------------------------------------------------------
 
@@ -1155,13 +1164,19 @@ step = MigrationStep("Make anonymous relation ends not versioned")
 def make_anonymous_relation_ends_not_versioned(e):
 
     from cocktail import schema
+    from cocktail.persistence.utils import is_broken
     from woost.models import Change
 
     keys_cache = {}
 
     for change in Change.select(Change.action.equal("modify")):
+
+        if is_broken(change.target):
+            continue
+
         model = change.target.__class__
         keys = keys_cache.get(model)
+
         if keys is None:
             keys = [
                 member.name
@@ -1273,4 +1288,50 @@ def set_block_heading_display(e):
             block.heading_display = "off"
         else:
             block.heading_display = "on"
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Rename Block.inline_styles to Block.embedded_styles")
+
+@when(step.executing)
+def rename_block_inline_styles_to_embedded_styles(e):
+
+    from woost.models import Block
+
+    for block in Block.select():
+        if hasattr(block, "_inline_css_styles"):
+            block.embedded_styles = block._inline_css_styles
+            del block._inline_css_styles
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create a standard theme")
+
+@when(step.executing)
+def create_standard_theme(e):
+
+    from woost.models import Configuration
+    from woost.models.initialization import SiteInitializer
+
+    config = Configuration.instance
+    init = SiteInitializer()
+    init.languages = config.languages
+    config.theme = init.create_default_theme()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Create the default grid")
+
+@when(step.executing)
+def create_default_grid(e):
+
+    from woost.models import Configuration, Theme
+    from woost.models.initialization import SiteInitializer
+
+    init = SiteInitializer()
+    init.languages = Configuration.instance.languages
+    grid = init.create_default_grid()
+
+    for theme in Theme.select():
+        theme.grid = grid
 

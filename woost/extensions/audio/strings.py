@@ -7,7 +7,7 @@ from cocktail.translations import translations
 
 # Configuration
 #------------------------------------------------------------------------------
-translations.define("Configuration.media.audio",
+translations.define("Configuration.presentation.audio",
     ca = u"Audio",
     es = u"Audio",
     en = u"Audio"

@@ -44,6 +44,7 @@ from .siteinstallation import SiteInstallation
 from .changesets import ChangeSet, Change, changeset_context
 from .item import Item
 from .userview import UserView
+from .grid import Grid, GridSize
 from .style import Style
 from .publishable import (
     Publishable,
@@ -53,6 +54,7 @@ from .publishable import (
     user_has_access_level
 )
 from .document import Document
+from .theme import Theme
 from .template import Template
 from .controller import Controller
 from .user import (

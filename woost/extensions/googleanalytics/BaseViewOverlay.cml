@@ -7,6 +7,10 @@
 
     <?py
     self.add_resource("woost://scripts/googleanalytics.js")
+
+    @self.when_document_ready
+    def add_ga_page_metadata(document):
+        document.ga_event_source = self.publishable
     ?>
 
 </py:overlay>

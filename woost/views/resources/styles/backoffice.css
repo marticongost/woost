@@ -320,7 +320,7 @@ body {
 .BackOfficeLayout input[type=search],
 .BackOfficeLayout input[type=tel],
 .BackOfficeLayout textarea,
-.BackOfficeLayout .CodeMirror-wrapping {
+.BackOfficeLayout .CodeMirror {
     border: 1px solid rgb(200,200,200);
     padding: 0.2em;
     -moz-box-sizing: border-box;
@@ -332,10 +332,15 @@ body {
     background: white url(../images/search_box.png) 0.3em center no-repeat;
 }
 
-.BackOfficeLayout .CodeMirror-wrapping {
+.BackOfficeLayout .CodeMirror {
     clear: left;
-    width: 45em !important;
-    height: 10em !important;
+    width: 45em;
+    height: 10em;
+}
+
+.BackOfficeLayout .CodeMirror.CodeMirror-fullscreen {
+    width: auto !important;
+    height: auto !important;
 }
 
 .BackOfficeLayout .TreeView .filtered {
@@ -2732,12 +2737,16 @@ button.TypeSelectorButton span {
     float: none !important;
     clear: none !important;
     display: inline-block !important;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry .field_instance .control,
 .BackOfficeLayout .FilterBox .filter_entry .field_instance .Autocomplete.control .text_box {
     font-size: 1em;
+}
+
+.BackOfficeLayout .FilterBox .filter_entry .field {
+    margin-right: 1em;
 }
 
 .BackOfficeLayout .FilterBox .filter_entry fieldset {
@@ -2747,7 +2756,7 @@ button.TypeSelectorButton span {
 
 .BackOfficeLayout .FilterBox .delete_filter_button {
     position: relative;
-    top: 0.2em;
+    top: 0.3em;
     font-size: 1.2em;
     text-decoration: none;
     color: #888;
@@ -3059,6 +3068,16 @@ a.pickcolor span {
     width: 4em;
 }
 
+/* Block edit form
+-----------------------------------------------------------------------------*/
+.BlockFieldsView .embedded_styles_initialization_field .CodeMirror {
+    height: 4em;
+}
+
+.BlockFieldsView .embedded_styles_field .CodeMirror {
+    height: 14em;
+}
+
 /* Member list
 -----------------------------------------------------------------------------*/
 .BackOfficeFieldsView .MemberList-autocomplete {
@@ -3345,19 +3364,19 @@ a.pickcolor span {
     width: 30em !important;
 }
 
-.Trigger .condition_field .CodeMirror-wrapping {
-    width: 30em !important;
-    height: 2.5em !important;
+.Trigger .condition_field .CodeMirror {
+    width: 30em;
+    height: 2.5em;
 }
 
 /* Syndication feed styles
 -----------------------------------------------------------------------------*/
-.Feed .item_title_expression_field .CodeMirror-wrapping,
-.Feed .item_link_expression_field .CodeMirror-wrapping,
-.Feed .item_publication_date_expression_field .CodeMirror-wrapping,
-.Feed .item_description_expression_field .CodeMirror-wrapping {
-    width: 30em !important;
-    height: 2.5em !important;
+.Feed .item_title_expression_field .CodeMirror,
+.Feed .item_link_expression_field .CodeMirror,
+.Feed .item_publication_date_expression_field .CodeMirror,
+.Feed .item_description_expression_field .CodeMirror {
+    width: 30em;
+    height: 2.5em;
 }
 
 /* Tweaks for custom trigger responses
@@ -3373,9 +3392,9 @@ a.pickcolor span {
 
 /* Tweaks for email templates
 -----------------------------------------------------------------------------*/
-.EmailTemplate .sender_field .CodeMirror-wrapping,
-.EmailTemplate .receivers_field .CodeMirror-wrapping,
-.EmailTemplate .bcc_field .CodeMirror-wrapping {
+.EmailTemplate .sender_field .CodeMirror,
+.EmailTemplate .receivers_field .CodeMirror,
+.EmailTemplate .bcc_field .CodeMirror {
     height: 5em;
 }
 

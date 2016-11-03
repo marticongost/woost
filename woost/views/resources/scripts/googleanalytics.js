@@ -9,26 +9,51 @@
 
 cocktail.declare("woost.ga");
 
+woost.ga.setCustomDefinitions = function (customDefs) {
+    this.customDefinitions = customDefs;
+    for (var id in customDefs) {
+        var cdef = customDefs[id];
+        cdef.id = id;
+        cdef.key = cdef.type + cdef.index;
+        cdef.attribute = "data-" + id.replace(".", "-");
+    }
+}
+
 woost.ga.getEventData = function (element) {
 
-    if (element.parentNode && element.parentNode.getAttribute) {
+    // Inherit data from ancestor elements
+    var inherit = element.parentNode && element.parentNode.getAttribute;
+    if (inherit) {
         var data = woost.ga.getEventData(element.parentNode);
-        var json = element.getAttribute("data-ga-event-data");
-        if (json) {
-            var customData = jQuery.parseJSON(json);
-            for (var key in customData) {
-                data[key] = customData[key];
-            }
-        }
     }
     else {
-        var json = element.getAttribute("data-ga-event-data");
-        var data = json ? jQuery.parseJSON(json) : {};
-        if (!data.hitType) {
-            data.hitType = "event";
+        var data = {};
+    }
+
+    // Gather data from data- attributes
+    for (var id in this.customDefinitions) {
+        var cdef = this.customDefinitions[id];
+        var value = element.getAttribute(cdef.attribute);
+        if (value !== null && value !== undefined) {
+            data[cdef.key] = value;
         }
     }
 
+    // Gather data from the data-ga-event-data attribute
+    var json = element.getAttribute("data-ga-event-data");
+    if (json) {
+        var jsonData = jQuery.parseJSON(json);
+        for (var key in jsonData) {
+            data[key] = jsonData[key];
+        }
+    }
+
+    // Default event type
+    if (!inherit && !data.hitType) {
+        data.hitType = "event";
+    }
+
+    // Event properties
     if (element.hasAttribute("data-ga-event-category")) {
         data.eventCategory = element.getAttribute("data-ga-event-category");
     }
@@ -56,7 +81,7 @@ woost.ga.getEventData = function (element) {
 woost.ga.eventTrigger = function (e) {
     var gaEvent = woost.ga.getEventData(this);
     gaEvent.transport = "beacon";
-    if (window.ga) {
+    if (window.ga && gaEvent.eventCategory && gaEvent.eventAction) {
         ga("send", "event", gaEvent);
     }
 }
