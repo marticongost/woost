@@ -104,7 +104,8 @@ from woost.views.uigeneration import backoffice_display
         <py:ready>
             <py:new
                 py:element="self.create_changeset_list_entry(changeset)"
-                py:for="changeset in self.changesets"/>
+                py:for="changeset in self.changesets"
+                py:if="self.changesets"/>
         </py:ready>
     </ul>
 
