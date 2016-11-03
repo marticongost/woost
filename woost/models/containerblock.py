@@ -6,6 +6,8 @@ u"""
 from cocktail import schema
 from .slot import Slot
 from .block import Block
+from .file import File
+from .blockimagefactoryreference import BlockImageFactoryReference
 
 
 class ContainerBlock(Block):
@@ -15,7 +17,10 @@ class ContainerBlock(Block):
     views = ["woost.views.ContainerBlockView"]
 
     members_order = [
-        "list_type"
+        "list_type",
+        "background_image",
+        "background_image_factory",
+        "blocks"
     ]
 
     list_type = schema.String(
@@ -30,12 +35,30 @@ class ContainerBlock(Block):
         member_group = "content"
     )
 
+    background_image = schema.Reference(
+        type = File,
+        related_end = schema.Collection(),
+        relation_constraints = {"resource_type": "image"},
+        member_group = "content"
+    )
+
+    background_image_factory = BlockImageFactoryReference(
+        member_group = "content"
+    )
+
     blocks = Slot()
 
     def init_view(self, view):
         Block.init_view(self, view)
         view.blocks_list.tag = self.list_type
         view.blocks = self.blocks
+
+        if self.background_image:
+            view.background_image = self.background_image
+
+        if self.background_image_factory:
+            view.background_image_factory = self.background_image_factory
+
         return view
 
     def get_block_proxy(self, view):

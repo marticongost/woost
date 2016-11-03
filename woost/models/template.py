@@ -7,7 +7,8 @@ u"""
 @since:			June 2008
 """
 from cocktail import schema
-from woost.models import Item
+from .item import Item
+from .theme import Theme
 
 
 class Template(Item):
@@ -17,6 +18,7 @@ class Template(Item):
     members_order = [
         "title",
         "identifier",
+        "theme",
         "documents"
     ]
 
@@ -34,6 +36,12 @@ class Template(Item):
     identifier = schema.String(
         required = True,
         text_search = False
+    )
+
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        listed_by_default = False
     )
 
     documents = schema.Collection(

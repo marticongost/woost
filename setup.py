@@ -54,6 +54,7 @@ of its features include:\n"
     install_requires = [
         "simplejson",
         "enum34",
+        "libsass",
         "cocktail>=1.10,<1.11"
     ],
     extras_require = {
@@ -80,6 +81,7 @@ of its features include:\n"
 			"signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
+            "googletagmanager=woost.extensions.googletagmanager:GoogleTagManagerExtension",
             "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
             "mailer = woost.extensions.mailer:MailerExtension",
             "usermodels = woost.extensions.usermodels:UserModelsExtension",
@@ -106,7 +108,8 @@ of its features include:\n"
             "newsletters = woost.extensions.newsletters:NewslettersExtension",
             "forms = woost.extensions.forms:FormsExtension",
             "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension",
-            "identity = woost.extensions.identity:IdentityExtension"
+            "identity = woost.extensions.identity:IdentityExtension",
+            "attributes = woost.extensions.attributes:AttributesExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

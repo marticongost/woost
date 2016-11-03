@@ -14,6 +14,7 @@ from woost.models import Configuration, Publishable
     publishable = None
     user = None
     head_end_html = ""
+    body_beginning_html = ""
     body_end_html = ""
     base_url = None
     include_alternate_language_links = True
@@ -31,8 +32,14 @@ from woost.models import Configuration, Publishable
             )
 
     def get_page_title(self):
+
+        custom_title = getattr(self.publishable, "custom_document_title", None)
+        if custom_title:
+            return custom_title
+
         site_title = self.get_site_title()
         main_title = self.get_main_title()
+
         if site_title and main_title:
             return main_title + " | " + site_title
         else:
@@ -115,11 +122,13 @@ from woost.models import Configuration, Publishable
 
     <py:ready>
         <?py
-        if self.head_end_html or self.body_end_html:
+        if self.head_end_html or self.body_beginning_html or self.body_end_html:
             @self.when_document_ready
             def add_trailing_html(document):
                 if self.head_end_html:
                     document.head.append(self.head_end_html)
+                if self.body_beginning_html:
+                    document.body.insert(0, self.body_beginning_html)
                 if self.body_end_html:
                     document.body.append(self.body_end_html)
 
@@ -178,6 +187,17 @@ from woost.models import Configuration, Publishable
             self.add_class(self.publishable.qname.replace(".", "-"))
         ?>
     </py:ready>
+
+    <py:cocktail.html.GridRulers py:id="grid_rulers">
+        <py:binding>
+            <?py
+            if app.theme.grid:
+                element.column_count = app.theme.grid.column_count
+            else:
+                element.visible = False
+            ?>
+        </py:binding>
+    </py:cocktail.html.GridRulers>
 
     <py:woost.views.EditPanel py:id="cms_edit_panel"/>
 

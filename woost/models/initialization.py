@@ -35,8 +35,11 @@ from woost.models import (
     Role,
     URI,
     Controller,
+    Theme,
     Template,
     Style,
+    Grid,
+    GridSize,
     File,
     UserView,
     Permission,
@@ -101,6 +104,9 @@ class SiteInitializer(object):
         Permission,
         CachingPolicy,
         SiteInstallation,
+        Theme,
+        Grid,
+        GridSize,
         Trigger,
         TriggerResponse,
         UserView,
@@ -141,12 +147,14 @@ class SiteInitializer(object):
         "woost.models.configuration.Configuration.renderers",
         "woost.models.configuration.Configuration.image_factories",
         "woost.models.configuration.Configuration.video_player_settings",
+        "woost.models.configuration.Configuration.theme",
         "woost.models.website.Website.hosts",
         "woost.models.website.Website.https_policy",
         "woost.models.website.Website.https_persistence",
         "woost.models.website.Website.published_languages",
         "woost.models.website.Website.default_language",
         "woost.models.website.Website.heed_client_language",
+        "woost.models.website.Website.theme",
         "woost.models.block.Block.initialization"
     ]
 
@@ -298,6 +306,9 @@ class SiteInitializer(object):
         self.file_deletion_trigger = self.create_file_deletion_trigger()
         self.configuration.triggers.append(self.file_deletion_trigger)
 
+        # Standard theme
+        self.configuration.theme = self.create_default_theme()
+
         # Templates and controllers
         self.create_controllers()
         self.standard_template = self.create_standard_template()
@@ -360,7 +371,7 @@ class SiteInitializer(object):
         self.enable_extensions()
 
     def create_configuration(self):
-        return self._create(
+        config = self._create(
             Configuration,
             qname = "woost.configuration",
             secret_key = random_string(10),
@@ -374,6 +385,15 @@ class SiteInitializer(object):
                         Configuration.backoffice_language.enumeration
                 )
         )
+        config.footer_blocks = [
+            self._create(
+                CustomBlock,
+                qname = "woost.vcard",
+                heading = TranslatedValues(),
+                view_class = "woost.views.VCard"
+            )
+        ]
+        return config
 
     def create_administrator(self):
         return self._create(
@@ -577,6 +597,56 @@ class SiteInitializer(object):
                     code = u"from os import remove\n"
                            u"for item in items:\n"
                            u"    remove(item.file_path)"
+                )
+            ]
+        )
+
+    def create_default_theme(self):
+        return self._create(
+            Theme,
+            qname = "woost.default_theme",
+            title = TranslatedValues(),
+            identifier = "default",
+            grid = self.create_default_grid()
+        )
+
+    def create_default_grid(self):
+        return self._create(
+            Grid,
+            title = TranslatedValues(),
+            qname = "woost.default_grid",
+            column_count = 12,
+            sizes = [
+                self._create(
+                    GridSize,
+                    identifier = "XL",
+                    min_width = 1389,
+                    column_width = 80
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "L",
+                    min_width = 1159,
+                    column_width = 59
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "M",
+                    min_width = 929,
+                    column_width = 60
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "S",
+                    min_width = 713,
+                    column_width = 42
+                ),
+                self._create(
+                    GridSize,
+                    identifier = "XS",
+                    min_width = 0,
+                    column_width = 32,
+                    column_spacing = 8
                 )
             ]
         )

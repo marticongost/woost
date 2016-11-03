@@ -487,6 +487,9 @@ class CMSController(BaseCMSController):
         # Determine the active website
         cms._establish_active_website()
 
+        # Set the visual theme
+        app.theme = Configuration.instance.get_setting("theme")
+
         # Set the default language
         language = app.language.infer_language()
         set_language(language)

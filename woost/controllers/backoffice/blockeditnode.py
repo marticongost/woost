@@ -7,7 +7,7 @@ from cocktail.events import event_handler
 from cocktail import schema
 from cocktail.controllers import request_property
 from cocktail.html.uigeneration import display_factory
-from woost.models import Item
+from woost.models import Item, Block
 from woost.models.blockutils import add_block
 from .enabledtranslationseditnode import EnabledTranslationsEditNode
 
@@ -79,7 +79,7 @@ class BlockEditNode(EnabledTranslationsEditNode):
         form_adapter = EnabledTranslationsEditNode.form_adapter(self)
 
         views = self.views
-        if not self.views or len(self.views) == 1:
+        if self.views and len(self.views) == 1:
             form_adapter.exclude("view_class", rule_position = 0)
 
         return form_adapter

@@ -3,7 +3,9 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import sys
 import webbrowser
+from cocktail.schema import TranslatedValues as T
 from cocktail.translations import *
 from cocktail.persistence import *
 from woost import app
@@ -16,7 +18,20 @@ def setup_shell(env):
     config.setup_languages()
     app.user = User.require_instance(qname = "woost.anonymous_user")
     app.website = config.websites[0]
+
+    # Load extensions and import their models
     load_extensions()
+
+    for extension in Extension.select():
+        pkg_name = extension.__class__.__module__
+        module_name = pkg_name.rsplit(".", 1)[1]
+        ext_module = sys.modules[pkg_name]
+        env[module_name] = ext_module
+        setattr(ext_module, "instance", extension)
+        if extension.enabled:
+            for cls in Item.derived_schemas():
+                if cls.full_name.startswith(pkg_name + "."):
+                    setattr(ext_module, cls.__name__, cls)
 
 get = Item.get_instance
 req = Item.require_instance

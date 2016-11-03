@@ -16,6 +16,7 @@ from cocktail.translations import (
     set_language,
     set_fallback_languages
 )
+from cocktail.persistence import datastore
 from cocktail import schema
 from woost import app
 from .item import Item
@@ -28,6 +29,7 @@ from .rendering.imagefactory import ImageFactory
 from .videoplayersettings import VideoPlayerSettings
 from .trigger import Trigger
 from .metatags import MetaTags
+from .theme import Theme
 
 try:
     from fractions import Fraction
@@ -49,8 +51,9 @@ class Configuration(Item):
         "publication.maintenance",
         "meta",
         "language",
-        "media.images",
-        "media.video",
+        "presentation",
+        "presentation.images",
+        "presentation.video",
         "rendering",
         "services",
         "system",
@@ -83,14 +86,18 @@ class Configuration(Item):
         "smtp_host",
         "smtp_user",
         "smtp_password",
-        "triggers"
+        "triggers",
+        "common_blocks",
+        "footer_blocks"
     ]
 
     @classgetter
     def instance(cls):
-        return cls.get_instance(qname = "woost.configuration")
-
-    common_blocks = Slot()
+        instance = datastore.get_transaction_value("woost.configuration")
+        if instance is None:
+            instance = cls.get_instance(qname = "woost.configuration")
+            datastore.set_transaction_value("woost.configuration", instance)
+        return instance
 
     # publication
     #--------------------------------------------------------------------------
@@ -259,14 +266,20 @@ class Configuration(Item):
         member_group = "language"
     )
 
-    # media
+    # presentation
     #--------------------------------------------------------------------------
+    theme = schema.Reference(
+        type = Theme,
+        related_end = schema.Collection(),
+        member_group = "publication"
+    )
+
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     image_factories = schema.Collection(
@@ -274,7 +287,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.images"
+        member_group = "presentation.images"
     )
 
     video_player_settings = schema.Collection(
@@ -282,7 +295,7 @@ class Configuration(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "media.video"
+        member_group = "presentation.video"
     )
 
     # system
@@ -322,6 +335,12 @@ class Configuration(Item):
         integral = True,
         member_group = "administration"
     )
+
+    # Blocks
+    #------------------------------------------------------------------------------
+    common_blocks = Slot()
+
+    footer_blocks = Slot()
 
     def __translate__(self, language, **kwargs):
         return translations(self.__class__.__name__, language, **kwargs)
@@ -416,4 +435,3 @@ class Configuration(Item):
         for website in self.websites:
             if "*" in website.hosts:
                 return website
-
