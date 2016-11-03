@@ -504,16 +504,39 @@ class NumericField(Field):
 
     @classmethod
     def add_generic_members(cls):
+
         Field.add_generic_members.im_func(cls)
+
         if cls.get_member("min") is None:
+
             min_member = cls.member_type(
                 "min",
-                listed_by_default = False
+                listed_by_default = False,
+                member_group = "field_properties"
             )
+
+            @extend(min_member)
+            def __translate__(min_member, language, **kwargs):
+                return translations(
+                    "woost.extensions.forms.min",
+                    language,
+                    **kwargs
+                )
+
             max_member = cls.member_type("max",
                 min = min_member,
-                listed_by_default = False
+                listed_by_default = False,
+                member_group = "field_properties"
             )
+
+            @extend(max_member)
+            def __translate__(max_member, language, **kwargs):
+                return translations(
+                    "woost.extensions.forms.max",
+                    language,
+                    **kwargs
+                )
+
             cls.add_member(min_member)
             cls.add_member(max_member)
 
