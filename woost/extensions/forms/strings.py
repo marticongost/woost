@@ -35,6 +35,18 @@ translations.define("woost.extensions.forms.field_enumeration",
     en = u"Allowed values"
 )
 
+translations.define("woost.extensions.forms.min",
+    ca = u"Mínim",
+    es = u"Mínimo",
+    en = u"Minimum"
+)
+
+translations.define("woost.extensions.forms.max",
+    ca = u"Màxim",
+    es = u"Máximo",
+    en = u"Maximum"
+)
+
 # FormBlock
 #------------------------------------------------------------------------------
 translations.define("FormBlock",
