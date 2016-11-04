@@ -8,6 +8,7 @@ from woost.models import (
     Slot,
     ModifyPermission
 )
+from woost.models.utils import any_translation
 ?>
 
 <div py:id="blocks_section"
@@ -48,7 +49,7 @@ from woost.models import (
     </py:ready>
 
     <div py:id="blocks_title" class="edit_panel_title">
-        @{translations(self.slot)}
+        @{any_translation(self.slot)}
     </div>
 
     <div py:id="blocks_content" class="edit_panel_section_content">
@@ -63,7 +64,7 @@ from woost.models import (
                 ?>
             </py:binding>
             <img class="icon" src="${normalize_resource_uri('woost://images/edit_blocks.png')}" alt=""/>
-            <span class="label">${translations("woost.views.BlockSection.edit_slot_link")}</span>
+            <span class="label">${any_translation("woost.views.BlockSection.edit_slot_link")}</span>
         </a>
 
         <py:cocktail.html.TreeView
@@ -87,10 +88,7 @@ from woost.models import (
 
             @extend(element)
             def get_item_label(tree, item):
-                if item.heading:
-                    return item.heading
-                else:
-                    return translations(item.__class__)
+                return any_translation(item)
             ?>
 
             <py:with py:def="entry" py:args="item">
