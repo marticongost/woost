@@ -10,6 +10,7 @@ from woost.models import (
     ModifyPermission,
     DeletePermission
 )
+from woost.models.utils import any_translation
 ?>
 
 <a
@@ -60,9 +61,9 @@ from woost.models import (
 
         if self.target_desc is None:
             if self.target is app.publishable:
-                self.target_desc = translations("woost.views.EditLink.publishable_target")
+                self.target_desc = any_translation("woost.views.EditLink.publishable_target")
             else:
-                self.target_desc = translations(self.target)
+                self.target_desc = any_translation(self.target)
 
         if "root_url" not in self.edit_parameters:
             self.edit_parameters["root_url"] = get_request_url()
@@ -78,7 +79,7 @@ from woost.models import (
         src="${normalize_resource_uri('woost://images/EditLink-%s.png' % self.action)}"/>
 
     <span py:id="label">
-        @{translations("woost.views.EditLink." + self.action, target_desc = self.target_desc)}
+        @{any_translation("woost.views.EditLink." + self.action, target_desc = self.target_desc)}
     </span>
 
 </a>
