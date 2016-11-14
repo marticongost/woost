@@ -13,18 +13,6 @@ from woost.models import Publishable, URI
 
 translations.load_bundle("woost.extensions.sitemap.publishable")
 
-Publishable.add_member(
-    schema.Boolean(
-        "sitemap_indexable",
-        required = True,
-        default = True,
-        indexed = True,
-        member_group = "sitemap",
-        listed_by_default = False
-    ),
-    append = True
-)
-
 URI.default_sitemap_indexable = False
 
 Publishable.add_member(
@@ -45,7 +33,7 @@ Publishable.add_member(
                 language,
                 **kwargs
             ),
-        member_group = "sitemap",
+        member_group = "meta.robots",
         text_search = False,
         listed_by_default = False
     ),
@@ -54,11 +42,10 @@ Publishable.add_member(
 
 Publishable.add_member(
     schema.Decimal("sitemap_priority",
-        default = Decimal("0.5"),
         min = 0,
         max = 1,
         listed_by_default = False,
-        member_group = "sitemap"
+        member_group = "meta.robots"
     ),
     append = True
 )
