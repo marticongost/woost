@@ -1388,3 +1388,21 @@ def create_default_templates(e):
             for doc in doc_type.select():
                 doc.template = None
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Index Publishable.robots_should_index")
+
+@when(step.executing)
+def index_publishable_robots_should_index(e):
+    from woost.models import Publishable
+    Publishable.robots_should_index.rebuild_index()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Set the robots_should_index setting")
+
+@when(step.executing)
+def set_robots_should_index_setting(e):
+    from woost.models import Configuration, Website
+    Configuration.instance.robots_should_index = True
+

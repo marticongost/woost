@@ -267,6 +267,16 @@ en: Website
         es: Meta tags
         en: Meta tags
 
+        [robots_should_index]
+        ca: Permetre que s'indexi la web
+        es: Permitir que se indexe la web
+        en: Allow the web to be indexed
+
+            [none]
+            ca: Seguir la configuració general
+            en: Seguir la configuración general
+            en: Heed the general configuration
+
         [default_language]
         ca: Idioma per defecte
         es: Idioma por defecto

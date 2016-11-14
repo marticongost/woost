@@ -21,11 +21,6 @@ en: Document
         es: Contenido
         en: Content
 
-        [meta.robots]
-        ca: Robots
-        es: Robots
-        en: Robots
-
     [members]
 
         [title]
@@ -154,11 +149,6 @@ en: Document
                 ca: Client
                 es: Cliente
                 en: Client
-
-        [robots_should_index]
-        ca: Contingut indexable
-        es: Contenido indexable
-        en: Indexable content
 
         [robots_should_follow]
         ca: Seguir els enllaços
