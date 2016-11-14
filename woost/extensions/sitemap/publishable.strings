@@ -1,19 +1,7 @@
 
 [woost.models.publishable.Publishable]
 
-    [groups]
-
-        [sitemap]
-        ca: Refinament de l'indexat web
-        es: Refinamiento del indexado web
-        en: Web crawler hints
-
     [members]
-
-        [sitemap_indexable]
-        ca: Indexable
-        es: Indexable
-        en: Indexable
 
         [sitemap_change_frequency]
         ca: Freqüència d'actualització

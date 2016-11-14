@@ -34,7 +34,12 @@ class SitemapExtension(Extension):
         )
 
     def _load(self):
-        from woost.extensions.sitemap import publishable
+        from woost.extensions.sitemap import (
+            migration,
+            publishable,
+            sitemap,
+            robots
+        )
         self.install()
 
     def _install(self):
@@ -56,24 +61,4 @@ class SitemapExtension(Extension):
             python_name =
                 "woost.extensions.sitemap.sitemapcontroller.SitemapController"
         )
-
-        # Sitemap document
-        sitemap_doc = self._create_asset(
-            Document,
-            "sitemap_document",
-            title = extension_translations,
-            path = "sitemap_xml",
-            per_language_publication = False,
-            mime_type = "text/xml",
-            hidden = True,
-            sitemap_indexable = False,
-            controller = sitemap_controller
-        )
-
-        # Force indexing of the 'sitemap_indexable' member
-        # (can't rely on defaults when executing queries)
-        for item in Publishable.select():
-            if not hasattr(item, "_sitemap_indexable"):
-                item.sitemap_indexable = \
-                    item.sitemap_indexable and not item.hidden
 

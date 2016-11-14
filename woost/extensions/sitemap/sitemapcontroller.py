@@ -6,46 +6,15 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-from cocktail.modeling import cached_getter
-from woost.models import Publishable
-from woost.controllers import BaseCMSController
+import cherrypy
+from woost import app
+from woost.controllers.publishablecontroller import PublishableController
 
 
-class SitemapController(BaseCMSController):
+class SitemapController(PublishableController):
 
-    namespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
-
-    @cached_getter
-    def items(self):
-        return Publishable.select_accessible([
-            Publishable.sitemap_indexable.equal(True)
-        ])
-
-    def __call__(self):
-
-        output = []
-        write = output.append
-
-        write(u"<?xml version='1.0' encoding='utf-8'?>")
-        write(u"<urlset xmlns='%s'>" % self.namespace)
-
-        for item in self.items:
-            write(u"\t<url>")
-            write(u"\t\t<loc>%s</loc>" % item.get_uri(host = "!"))
-
-            date = item.last_update_time.strftime("%Y-%m-%d")
-            write(u"\t\t<lastmod>%s</lastmod>" % date)
-
-            frequency = item.sitemap_change_frequency
-            if frequency:
-                write(u"\t\t<changefreq>%s</changefreq>" % frequency)
-
-            priority = item.sitemap_priority
-            if priority:
-                write(u"\t\t<priority>%s</priority>" % priority)
-
-            write(u"\t</url>")
-
-        write(u"</urlset>")
-        return u"\n".join(output)
+    def _produce_content(self, **kwargs):
+        cherrypy.response.headers["Content-Type"] = "text/xml"
+        for fragment in app.publishable.generate_sitemap():
+            yield fragment
 
