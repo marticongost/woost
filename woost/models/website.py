@@ -299,6 +299,29 @@ class Website(Item):
         member_group = "language"
     )
 
+    def get_published_languages(self, languages = None):
+
+        from woost.models import Configuration
+        config = Configuration.instance
+
+        if languages is None:
+            languages = set(config.languages)
+        else:
+            languages = set(languages)
+
+        # Exclude virtual languages
+        languages.difference_update(config.virtual_languages)
+
+        # Limit to languages published in this website
+        enabled_languages = (
+            self.published_languages
+            or config.published_languages
+        )
+        if enabled_languages:
+            languages.intersection_update(enabled_languages)
+
+        return languages
+
     default_language = schema.String(
         listed_by_default = False,
         text_search = False,
