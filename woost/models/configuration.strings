@@ -157,6 +157,11 @@ en: Configuration
         es: Meta tags
         en: Meta tags
 
+        [robots_should_index]
+        ca: Contingut indexable
+        es: Contenido indexable
+        en: Indexable content
+
         [languages]
         ca: Idiomes
         es: Idiomas

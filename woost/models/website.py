@@ -78,6 +78,7 @@ class Website(Item):
 
         # meta
         "meta_tags",
+        "robots_should_index",
 
         # language
         "published_languages",
@@ -289,6 +290,11 @@ class Website(Item):
     # meta
     #------------------------------------------------------------------------------
     meta_tags = MetaTags(
+        member_group = "meta"
+    )
+
+    robots_should_index = schema.Boolean(
+        edit_control = "cocktail.html.DropdownSelector",
         member_group = "meta"
     )
 

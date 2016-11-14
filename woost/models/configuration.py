@@ -70,6 +70,8 @@ class Configuration(Item):
         "down_for_maintenance",
         "maintenance_page",
         "maintenance_addresses",
+        "meta_tags",
+        "robots_should_index",
         "login_page",
         "generic_error_page",
         "not_found_error_page",
@@ -173,6 +175,12 @@ class Configuration(Item):
     # meta
     #------------------------------------------------------------------------------
     meta_tags = MetaTags(
+        member_group = "meta"
+    )
+
+    robots_should_index = schema.Boolean(
+        required = True,
+        default = True,
         member_group = "meta"
     )
 

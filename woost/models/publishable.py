@@ -33,6 +33,7 @@ from .caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
+# TODO: s/website = "any"/website = Publishable.any_website/
 
 @auto_enables_translations
 class Publishable(Item):
@@ -60,6 +61,8 @@ class Publishable(Item):
         "presentation",
         "presentation.behavior",
         "presentation.format",
+        "meta",
+        "meta.robots",
         "publication"
     ]
 
@@ -179,6 +182,14 @@ class Publishable(Item):
     login_page = schema.Reference(
         listed_by_default = False,
         member_group = "navigation"
+    )
+
+    robots_should_index = schema.Boolean(
+        required = True,
+        default = True,
+        listed_by_default = False,
+        indexed = True,
+        member_group = "meta.robots"
     )
 
     per_language_publication = schema.Boolean(

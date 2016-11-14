@@ -17,11 +17,6 @@
 
         [groups]
 
-            [meta]
-            ca: Metadades
-            es: Metadatos
-            en: Metadata
-
             [presentation]
             ca: Presentació
             es: Presentación
@@ -41,6 +36,16 @@
             ca: Navegació
             es: Navegación
             en: Navigation
+
+            [meta]
+            ca: Metadades
+            es: Metadatos
+            en: Metadata
+
+            [meta.robots]
+            ca: Robots
+            es: Robots
+            en: Robots
 
             [publication]
             ca: Publicació
@@ -105,6 +110,11 @@
             ca: Tipus MIME
             es: Tipo MIME
             en: MIME type
+
+            [robots_should_index]
+            ca: Contingut indexable
+            es: Contenido indexable
+            en: Indexable content
 
             [per_language_publication]
             ca: Publicació per idiomes

@@ -42,7 +42,6 @@ class Document(Publishable):
         "redirection_mode",
         "redirection_target",
         "redirection_method",
-        "robots_should_index",
         "robots_should_follow"
     )
 
@@ -155,18 +154,12 @@ class Document(Publishable):
         member_group = "navigation"
     )
 
-    robots_should_index = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False,
-        member_group = "meta.robots"
-    )
-
     robots_should_follow = schema.Boolean(
         required = True,
         default = True,
         listed_by_default = False,
-        member_group = "meta.robots"
+        member_group = "meta.robots",
+        after_member = "robots_should_index"
     )
 
     def _update_path(self, parent, path):
