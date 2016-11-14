@@ -49,8 +49,10 @@ class Publishable(Item):
         "EnabledTranslationsEditNode"
     )
     backoffice_card_view = "woost.views.PublishableCard"
-
     type_group = "publishable"
+
+    any_language = object()
+    any_website = object()
 
     groups_order = [
         "content",
@@ -474,30 +476,39 @@ class Publishable(Item):
         return (self.start_date is None or self.start_date <= now) \
             and (self.end_date is None or self.end_date > now)
 
-    def is_published(self, language = None, website = None):
+    def is_published(
+        self,
+        language = None,
+        website = None,
+        _user = None
+    ):
+        from woost.models import Configuration, Website
 
         if self.per_language_publication:
 
-            language = require_language(language)
-            if language not in self.enabled_translations:
+            target_websites = _resolve_websites(website, self)
+            if not target_websites:
                 return False
 
-            from woost.models import Configuration
-            if not Configuration.instance.language_is_enabled(language):
+            target_languages = _resolve_languages(
+                language,
+                target_websites,
+                self,
+                _user
+            )
+            if not target_languages:
+                return False
+        else:
+            if not self.enabled:
                 return False
 
-        elif not self.enabled:
-            return False
+            if website is not Publishable.any_website:
+                target_websites = _resolve_websites(website, self)
+                if not target_websites:
+                    return False
 
         if not self.is_current():
             return False
-
-        websites_subset = self.websites
-        if websites_subset and website != "any":
-            if website is None:
-                website = app.website
-            if website is None or website not in websites_subset:
-                return False
 
         return True
 
@@ -507,31 +518,48 @@ class Publishable(Item):
             user = app.user
 
         return (
-            self.is_published(language, website)
+            self.is_published(
+                language = language,
+                website = website,
+                _user = user
+            )
             and user.has_permission(
                 ReadPermission,
                 target = self
-            )
-            and (
-                not self.per_language_publication
-                or user.has_permission(
-                    ReadTranslationPermission,
-                    language = require_language(language)
-                )
             )
         )
 
     @classmethod
     def select_published(cls, *args, **kwargs):
-        return cls.select(filters = [
-            IsPublishedExpression()
-        ]).select(*args, **kwargs)
+
+        language = kwargs.pop("language", None)
+        website = kwargs.pop("website", None)
+
+        query = cls.select(*args, **kwargs)
+        query.add_filter(
+            IsPublishedExpression(
+                language = language,
+                website = website
+            )
+        )
+        return query
 
     @classmethod
     def select_accessible(cls, *args, **kwargs):
-        return cls.select(filters = [
-            IsAccessibleExpression(app.user)
-        ]).select(*args, **kwargs)
+
+        user = kwargs.pop("user", None)
+        language = kwargs.pop("language", None)
+        website = kwargs.pop("website", None)
+
+        query = cls.select(*args, **kwargs)
+        query.add_filter(
+            IsAccessibleExpression(
+                user = user,
+                language = language,
+                website = website
+            )
+        )
+        return query
 
     def get_uri(self, **kwargs):
         return app.url_mapping.get_url(self, **kwargs)
@@ -579,6 +607,17 @@ Publishable.related_end = schema.Collection()
 class IsPublishedExpression(Expression):
     """An expression that tests if items are published."""
 
+    def __init__(
+        self,
+        language = None,
+        website = None,
+        _user = None
+    ):
+        Expression.__init__(self, language, website)
+        self.language = language
+        self.website = website
+        self._user = None
+
     def eval(self, context, accessor = None):
         return context.is_published()
 
@@ -587,45 +626,49 @@ class IsPublishedExpression(Expression):
         def impl(dataset):
 
             per_lang_pub_index = Publishable.per_language_publication.index
+            per_website_index = Publishable.per_website_publication_index
 
-            # Exclude disabled items
-            enabled_subset = set(per_lang_pub_index.values(key = False))
-            enabled_subset.intersection_update(
+            matching_subset = set()
+
+            website_neutral = set(per_website_index.values(key = None))
+            language_dependant = set(per_lang_pub_index.values(key = True))
+
+            language_neutral_enabled = set(
+                per_lang_pub_index.values(key = False)
+            )
+            language_neutral_enabled.intersection_update(
                 Publishable.enabled.index.values(key = True)
             )
 
-            language = get_language()
+            # Per website publication
+            for website in _resolve_websites(self.website):
 
-            from woost.models import Configuration
-            if Configuration.instance.language_is_enabled(language):
-                enabled_for_current_language = set(
-                    Publishable.per_language_publication.index.values(
-                        key = True
+                # Content that can be published in languages that are enabled
+                # on the active website
+                website_subset = set()
+                for language in _resolve_languages(
+                    self.language,
+                    {website,},
+                    user = self._user
+                ):
+                    website_subset.update(
+                        Publishable.enabled_translations.index.values(
+                            key = language
+                        )
                     )
+
+                website_subset.intersection_update(language_dependant)
+                website_subset.update(language_neutral_enabled)
+
+                # Content that can be published on the active website
+                website_subset.intersection_update(
+                    website_neutral
+                    | set(per_website_index.values(key = website.id))
                 )
-                enabled_for_current_language.intersection_update(
-                    Publishable.enabled_translations.index.values(
-                        key = language
-                    )
-                )
-                enabled_subset.update(enabled_for_current_language)
 
-            dataset.intersection_update(enabled_subset)
+                matching_subset.update(website_subset)
 
-            # Exclude content by website:
-            if len(Configuration.instance.websites) > 1:
-
-                website = app.website
-                per_website_index = Publishable.per_website_publication_index
-
-                # - content that can be published on any website
-                website_subset = set(per_website_index.values(key = None))
-
-                # - content that can be published on the active website
-                if website:
-                    website_subset.update(per_website_index.values(key = website.id))
-
-                dataset.intersection_update(website_subset)
+            dataset.intersection_update(matching_subset)
 
             # Remove items outside their publication window
             now = datetime.now()
@@ -658,9 +701,12 @@ class IsAccessibleExpression(Expression):
     @ivar user: The user that accesses the items.
     @type user: L{User<woost.models.user.User>}
     """
-    def __init__(self, user = None):
+
+    def __init__(self, user = None, language = None, website = None):
         Expression.__init__(self)
         self.user = user
+        self.language = language
+        self.website = website
 
     def eval(self, context, accessor = None):
         return context.is_accessible(user = self.user)
@@ -670,20 +716,13 @@ class IsAccessibleExpression(Expression):
         def impl(dataset):
             user = self.user or app.user
             access_expr = PermissionExpression(user, ReadPermission)
-            published_expr = IsPublishedExpression()
+            published_expr = IsPublishedExpression(
+                language = self.language,
+                website = self.website,
+                _user = user
+            )
             dataset = access_expr.resolve_filter(query)[1](dataset)
             dataset = published_expr.resolve_filter(query)[1](dataset)
-
-            if not user.has_permission(
-                ReadTranslationPermission,
-                language = require_language()
-            ):
-                dataset.difference_update(
-                    Publishable.per_language_publication.index.values(
-                        key = True
-                    )
-                )
-
             return dataset
 
         return ((-1, 1), impl)
@@ -809,4 +848,63 @@ def get_category_from_mime_type(mime_type):
             return prefix
 
     return mime_type_categories.get(mime_type, "other")
+
+
+def _resolve_websites(website, publishable = None):
+
+    from woost.models import Configuration, Website
+
+    website = website or app.website or Publishable.any_website
+
+    if website is Publishable.any_website:
+        websites = set(Configuration.instance.websites)
+    elif isinstance(website, Website):
+        websites = {website,}
+    else:
+        websites = website
+
+    if publishable is not None:
+        publishable_websites = publishable.websites
+        if publishable_websites:
+            websites.intersection_update(publishable_websites)
+
+    return websites
+
+
+def _resolve_languages(
+    language,
+    websites,
+    publishable = None,
+    user = None
+):
+    language = language or get_language() or Publishable.any_language
+
+    website_languages = set()
+    for website in websites:
+        website_languages.update(website.get_published_languages())
+
+    if language is Publishable.any_language:
+        languages = website_languages
+    elif isinstance(language, basestring):
+        if language in website_languages:
+            languages = {language}
+        else:
+            return set()
+    else:
+        languages = website_languages.intersection(language)
+
+    if publishable is not None and publishable.per_language_publication:
+        languages.intersection_update(publishable.enabled_translations)
+
+    if user is not None:
+        languages = {
+            language
+            for language in languages
+            if user.has_permission(
+                ReadTranslationPermission,
+                language = language
+            )
+        }
+
+    return languages
 
