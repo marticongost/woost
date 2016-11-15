@@ -55,7 +55,7 @@ of its features include:\n"
         "simplejson",
         "enum34",
         "libsass",
-        "cocktail>=1.11,<1.12"
+        "cocktail==1.12b1"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
