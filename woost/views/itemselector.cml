@@ -22,6 +22,8 @@ from woost.views.uigeneration import (
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
+    <?resource woost://scripts/itemselector.js ?>
+
     <?py-class
     existing_items_only = False
     selection_ui_generator = backoffice_selection_control
