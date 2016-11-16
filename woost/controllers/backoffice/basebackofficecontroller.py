@@ -13,6 +13,7 @@ import cherrypy
 from cocktail.modeling import getter, cached_getter, OrderedSet
 from cocktail.iteration import first
 from cocktail.stringutils import normalize
+from cocktail.urls import QueryString
 from cocktail.translations import translations, get_language
 from cocktail.events import event_handler
 from cocktail import schema
@@ -132,10 +133,7 @@ class BaseBackOfficeController(BaseCMSController):
         )
 
         if params:
-            uri += "?" + urlencode(
-                dict((k, v) for k, v in params.iteritems() if v is not None),
-                True
-            )
+            uri += "?" + str(QueryString(params))
 
         return uri + "#default"
 
