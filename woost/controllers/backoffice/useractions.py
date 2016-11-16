@@ -8,8 +8,9 @@ Declaration of back office actions.
 @since:			December 2008
 """
 from threading import Lock
+from urllib import unquote
 from cocktail.modeling import getter, ListWrapper
-from cocktail.translations import translations
+from cocktail.translations import translations, get_language
 from cocktail.pkgutils import resolve, get_full_name
 from cocktail.persistence import datastore, transactional
 from cocktail.controllers import (
@@ -669,15 +670,26 @@ class RelateNewIntegralObjectAction(CreateAction):
             schema.Reference(
                 "type",
                 class_family = Item
-            )
+            ),
+            schema.String("text")
         ]
 
-    def invoke(self, controller, selection, relation, type):
+    def invoke(self, controller, selection, relation, type, text = None):
         node = RelationNode()
         node.member = relation
         node.action = "add"
         controller.edit_stack.push(node)
-        raise redirect(controller.edit_uri(type))
+
+        if text and type.descriptive_member:
+            text = unquote(text.encode("utf-8")).decode("utf-8")
+            key = "edited_item_%s" % type.descriptive_member.name
+            if type.descriptive_member.translated:
+                key += "-" + get_language()
+            params = {key: text}
+        else:
+            params = {}
+
+        raise redirect(controller.edit_uri(type, **params))
 
 
 class AddNewAction(RelateNewIntegralObjectAction):
