@@ -56,8 +56,13 @@
             self.content_wrapper.add_class("columns_wrapper")
 
         if self._images and self.image_alignment == "background":
-            image_uri = self._images[0].get_image_uri(self.image_thumbnail_factory)
-            element.set_style("background-image", "url(%s)" % image_uri)
+            element.set_style(
+                "background-image",
+                u", ".join(
+                    u"url(%s)" % image.get_image_uri(self.image_thumbnail_factory)
+                    for image in self._images
+                )
+            )
 
         if self.link_parameters:
 
