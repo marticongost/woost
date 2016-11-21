@@ -23,7 +23,7 @@ class Link(Element):
     tag = "a"
     value = None
     language = None
-    host = None
+    host = "?"
     parameters = None
     path = None
     content_check = REQUIRE_ACCESSIBLE
