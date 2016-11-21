@@ -20,7 +20,7 @@ from woost.models import Configuration
         else:
             return (
                 getattr(self.publishable, "inner_title", None)
-                or translations(self.publishable)
+                or self.get_main_title()
             )
     ?>
 
