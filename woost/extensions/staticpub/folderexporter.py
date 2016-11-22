@@ -15,7 +15,7 @@ class FolderExporter(Exporter):
     def __init__(self, root_folder):
         self.root_folder = root_folder
 
-    def write_file(self, path, content):
+    def write_file(self, path, content, content_type = None):
 
         folder = os.path.join(self.root_folder, *path[:-1])
         if not os.path.exists(folder):
