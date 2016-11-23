@@ -198,12 +198,15 @@
     margin-left: 0.8em;
 }
 
+.EditBlocksView .BlockDisplay .status_label img {
+    margin-right: 4px;
+}
+
 .EditBlocksView .BlockDisplay > .status_labels .status_label .label {
     position: relative;
     top: -0.3em;
     font-size: 0.8em;
-    font-style: italic;
-    color: #444;
+    opacity: 0.7;
 }
 
 .EditBlocksView .BlockDisplay .block_handle > .button > .label {
