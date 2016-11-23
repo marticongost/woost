@@ -1341,6 +1341,11 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
     width: 1em;
 }
 
+.BackOfficeLayout .ContentTable .thumbnail_column svg {
+    max-width: 32px;
+    max-height: 32px;
+}
+
 .BackOfficeLayout .ContentTable td.thumbnail_column {
     text-align: center;
 }
@@ -3717,6 +3722,11 @@ div.success_label {
 
 .BackOfficeLayout .ContentTable .ItemCard .item_image_gallery .image_list {
     padding-left: 0;
+}
+
+.BackOfficeLayout .ItemCard .item_display svg {
+    max-width: 100px;
+    max-height: 100px;
 }
 
 .BackOfficeLayout .ItemCard .item_content {
