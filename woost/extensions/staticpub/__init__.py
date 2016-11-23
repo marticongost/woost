@@ -42,7 +42,8 @@ class StaticPubExtension(Extension):
             filters,
             invalidation,
             folderdestination,
-            amazons3destination
+            amazons3destination,
+            csrfprotectionexemption
         )
 
         # Set up backoffice controllers
