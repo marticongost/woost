@@ -366,6 +366,11 @@
     box-shadow: 0 2px 2px #bbb;
 }
 
+.EditBlocksView .TextBlockDisplay .image_gallery svg {
+    max-width: 75px;
+    max-height: 75px;
+}
+
 .EditBlocksView .insertion_marker {
     outline: 0.1em solid #44ddff;
     margin-top: 0.5em;
