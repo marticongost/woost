@@ -50,7 +50,8 @@ class NewslettersExtension(Extension):
             newsletter,
             newslettercontent,
             newsletterbox,
-            newsletterlisting
+            newsletterlisting,
+            csrfprotectionexemption
         )
 
         self.install()
