@@ -193,7 +193,7 @@ class TextBlock(Block):
         return view
 
     def has_heading(self):
-        return self.heading or (
+        return Block.has_heading(self) or (
             self.image_alignment == "heading_icon"
             and any(image.is_accessible() for image in self.images)
         )
