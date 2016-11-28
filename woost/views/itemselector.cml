@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<?py
+from cocktail.translations import require_language
+from cocktail.html import Element, templates
+from cocktail.html.hiddeninput import HiddenInput
+from woost import app
+from woost.models import (
+    Item,
+    Publishable,
+    CreatePermission,
+    ModifyPermission,
+    DeletePermission
+)
+from woost.views.uigeneration import (
+    backoffice_selection_control,
+    backoffice_integral_selection_control
+)
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://scripts/itemselector.js ?>
+
+    <?py-class
+    existing_items_only = False
+    selection_ui_generator = backoffice_selection_control
+    integral_selection_ui_generator = backoffice_integral_selection_control
+
+    def create_selection_display(self):
+
+        if self.member.integral:
+            ui_generator = self.integral_selection_ui_generator
+        else:
+            ui_generator = self.selection_ui_generator
+
+        selection_display = ui_generator.create_member_display(
+            self.data,
+            self.member,
+            self.value
+        )
+        selection_display.add_class("selection_display")
+
+        # Displays for integral relations will typically be read only; add a
+        # hidden input to hold their value if required.
+        if self.member.integral:
+            element = selection_display
+            while element.data_binding_delegate is not None:
+                element = element.data_binding_delegate
+            if not element.is_form_control:
+                hidden_input = HiddenInput()
+                selection_display.append(hidden_input)
+                selection_display.data_binding_delegate = hidden_input
+
+        return selection_display
+    ?>
+
+    <py:binding>
+        <?py
+        self.selection_display = self.create_selection_display()
+        self.selection_wrapper.append(self.selection_display)
+        self.data_binding_delegate = self.selection_display
+        ?>
+    </py:binding>
+
+    <div py:id="selection_wrapper"/>
+
+    <py:woost.views.ActionBar
+        py:id="buttons"
+        py:action_target="@{self.member.related_type}"
+        py:selection_field="edited_item_@{self.member.name}"
+        py:relation="@{self.member.original_member}"
+        py:button_images="${False}"
+        py:keyboard_shortcuts="${False}"
+        py:hide_disabled_actions="${True}">
+        <py:binding>
+            <?py
+            element.action_context.add("item_selector")
+            if self.value is None:
+                element.action_context.add("empty")
+            if self.existing_items_only:
+                element.action_context.add("existing_only")
+            ?>
+        </py:binding>
+    </py:woost.views.ActionBar>
+
+</div>
+

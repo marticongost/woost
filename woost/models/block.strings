@@ -1,0 +1,403 @@
+
+[woost.models.block.Block]
+ca: Bloc
+es: Bloque
+en: Block
+
+    [plural]
+    ca: Blocs
+    es: Bloques
+    en: Blocks
+
+    [default_value]
+    ca: -- Valor predeterminat --
+    es: -- Valor predeterminado --
+    en: -- Default --
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+        [publication]
+        ca: Publicació
+        es: Publicación
+        en: Publication
+
+        [html]
+        ca: HTML
+        es: HTML
+        en: HTML
+
+    [members]
+
+        [heading]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [custom_heading]
+        ca: Encapçalament personalitzat
+        es: Encabezado personalizado
+        en: Custom heading
+
+        [heading_display]
+        ca: Encapçalament
+        es: Encabezado
+        en: Heading
+
+            [values]
+
+                [off]
+                ca: Cap
+                es: Ninguno
+                en: None
+
+                [hidden]
+                ca: Ocult
+                es: Oculto
+                en: Hidden
+
+                [on]
+                ca: Visible
+                es: Visible
+                en: Visible
+
+                [custom]
+                ca: Personalitzat
+                es: Personalizado
+                en: Custom
+
+        [heading_type]
+        ca: Tipus d'encapçalament
+        es: Tipo de encabezado
+        en: Heading type
+
+            [values]
+
+                [div]
+                ca: Etiqueta genèrica (div)
+                es: Etiqueta genérica (div)
+                en: Generic label (div)
+
+                [h1]
+                ca: Encapçalament 1
+                es: Encabezado 1
+                en: Heading 1
+
+                [h2]
+                ca: Encapçalament 2
+                es: Encabezado 2
+                en: Heading 2
+
+                [h3]
+                ca: Encapçalament 3
+                es: Encabezado 3
+                en: Heading 3
+
+                [h4]
+                ca: Encapçalament 4
+                es: Encabezado 4
+                en: Heading 4
+
+                [h5]
+                ca: Encapçalament 5
+                es: Encabezado 5
+                en: Heading 5
+
+                [h6]
+                ca: Encapçalament 6
+                es: Encabezado 6
+                en: Heading 6
+
+                [dt]
+                ca: Terme (dt)
+                es: Término (dt)
+                en: Term (dt)
+
+                [figcaption]
+                ca: Títol per un recurs complementari (figcaption)
+                es: Título para un recurso complementario (figcaption)
+                en: Figure caption
+
+        [element_type]
+        ca: Tipus d'element
+        es: Tipo de elemento
+        en: Element type
+
+            [values]
+
+                [div]
+                ca: Element genèric (div)
+                es: Elemento genérico (div)
+                en: Generic element (div)
+
+                [section]
+                ca: Secció
+                es: Sección
+                en: Section
+
+                [article]
+                ca: Article
+                es: Artículo
+                en: Article
+
+                [details]
+                ca: Detalls
+                es: Detalles
+                en: Details
+
+                [figure]
+                ca: Recurs complementari (figure)
+                es: Recurso complementario (figure)
+                en: Figure
+
+                [aside]
+                ca: Contingut relacionat (aside)
+                es: Contenido relacionado (aside)
+                en: Tangentially related content (aside)
+
+                [header]
+                ca: Capçalera
+                es: Cabecera
+                en: Header
+
+                [footer]
+                ca: Peu
+                es: Pie
+                en: Footer
+
+                [nav]
+                ca: Navegació
+                es: Navegación
+                en: Navigation
+
+                [dd]
+                ca: Definició (dd)
+                es: Definición (dd)
+                en: Definition (dd)
+
+        [view_class]
+        ca: Aparença
+        es: Apariencia
+        en: Appearence
+
+            [values]
+
+                [woost.views.TextBlockView]
+                ca: Text i imatge estàndard
+                es: Texto e imagen estándar
+                en: Standard text and image
+
+                [woost.views.PublishableTextualListing]
+                ca: Només text
+                es: Solo texto
+                en: Text only
+
+                [woost.views.PublishableIconListing]
+                ca: Icona i text
+                es: Icono y texto
+                en: Icon and text
+
+                [woost.views.PublishableGrid]
+                ca: Graella
+                es: Parrilla
+                en: Grid
+
+                [woost.views.PublishableCollage]
+                ca: Collage
+                es: Collage
+                en: Collage
+
+                [woost.views.CompactNewsListing]
+                ca: Compacta
+                es: Compacta
+                en: Compact
+
+                [woost.views.TextOnlyNewsListing]
+                ca: Només text
+                es: Solo texto
+                en: Text only
+
+                [woost.views.TextAndImageNewsListing]
+                ca: Text i imatge
+                es: Texto e imagen
+                en: Text and image
+
+                [woost.views.ExtractNewsListing]
+                ca: Extracte
+                es: Extracto
+                en: Extract
+
+                [woost.views.CompactEventListing]
+                ca: Només el títol
+                es: Solo el título
+                en: Title only
+
+                [woost.views.DateLocationTitleEventListing]
+                ca: Data, ubicació i títol
+                es: Fecha, ubicación y título
+                en: Date, location and title
+
+                [woost.views.EventsCalendar]
+                ca: Calendari mensual
+                es: Calendario mensual
+                en: Monthly calendar
+
+                [woost.views.VideoBlockView]
+                ca: Incrustat
+                es: Incrustado
+                en: Embedded
+
+                [woost.views.VideoPopUp]
+                ca: Finestra emergent
+                es: Ventana emergente
+                en: Pop up
+
+        [html_attributes]
+        ca: Atributs HTML
+        es: Atributos HTML
+        en: HTML attributes
+
+        [styles]
+        ca: Estils
+        es: Estilos
+        en: Styles
+
+        [embedded_styles_initialization]
+        ca: Inicialització dels estils incrustats
+        es: Inicialización de los estilos incrustados
+        en: Embedded styles initialization
+
+            [explanation]
+            ca:
+                Un fragment de codi SCSS que precedirà els estils afegits pel
+                camp <em>estils incrustats</em>. Útil per importar fulls
+                d'estil i fer declaracions fora de l'àmbit del bloc. Es combina
+                amb els camps <em>inicialització d'estils comú</em> de la
+                configuració i els llocs web.
+            es:
+                Un fragmento de código SCSS que precederá los estilos añadidos
+                por el campo <em>estilos incrustados</em>. Útil para importar
+                hojas de estilo y hacer declaraciones fuera del ámbito del
+                bloque. Se combina con los campos <em>inicialización de estilos
+                común</em> de la configuración y los sitios web.
+            en:
+                A fragment of SCSS code that will precede the styles added by the
+                <em>embedded styles</em> field. Useful to import style sheets or
+                to make declarations outside the scope of the block. Will be
+                combined with the <em>common styles initialization</em> fields
+                specified by the configuration and websites.
+
+        [embedded_styles]
+        ca: Estils incrustats
+        es: Estilos incrustados
+        en: Embedded styles
+
+            [explanation]
+            ca:
+                Un bloc de codi SCSS que s'afegirà utilitzant un tag
+                <code>&lt;style&gt;</code> al <code>&lt;head&gt;</code> de
+                la pàgina. El codi serà embolcallat en un selector pel
+                bloc.
+            es:
+                Un bloque de código SCSS que se añadirá utilizando un
+                tag <code>&lt;style&gt;</code> al <code>&lt;head&gt;</code>
+                de la página. El código será envuelto en un selector para
+                el bloque.
+            en:
+                An SCSS code block that will be added using a
+                <code>&lt;style&gt;</code> tag to the page's
+                <code>&lt;head&gt;</code>. The code will be wrapped in a
+                selector matching this block.
+
+        [per_language_publication]
+        ca: Publicació per idiomes
+        es: Publicación por idiomas
+        en: Per language publication
+
+        [enabled]
+        ca: Actiu
+        es: Activo
+        en: Active
+
+        [enabled_translations]
+        ca: Traduccions actives
+        es: Traducciones actives
+        en: Enabled translations
+
+        [start_date]
+        ca: Inici de publicació
+        es: Inicio de publicación
+        en: Publication start
+
+        [end_date]
+        ca: Fi de publicació
+        es: Fin de publicación
+        en: Publication end
+
+        [controller]
+        ca: Controlador
+        es: Controlador
+        en: Controller
+
+        [initialization]
+        ca: Inicialització
+        es: Inicialización
+        en: Initialization
+
+        [explanation]
+        ca:
+            <p>
+                Fragment de codi Python que permet inicialitzar la vista
+                generada pel bloc.
+            </p>
+            <details>
+                <summary>Detalls</summary>
+                <p>
+                    Es proporcionen les variables següents:
+                </p>
+                <dl>
+                    <dt>block</dt>
+                    <dd>Una referència a aquest bloc.</dd>
+                    <dt>view</dt>
+                    <dd>La vista a inicialitzar.</dd>
+                </dl>
+            </details>
+        es:
+            <p>
+                Fragmento de código Python que permite inicializar la vista generada
+                por el bloque.
+            </p>
+            <details>
+                <summary>Detalles</summary>
+                <p>
+                    Se proporcionan las variables siguientes:
+                </p>
+                <dl>
+                    <dt>block</dt>
+                    <dd>Una referencia a este bloque.</dd>
+                    <dt>view</dt>
+                    <dd>La vista a inicializar.</dd>
+                </dl>
+            </details>
+        en:
+            <p>
+                A Python code snippet to initialize the view generated by this
+                block.
+            </p>
+            <details>
+                <summary>Details</summary>
+                <p>
+                    The code snippet will have access to the following variables:
+                </p>
+                <dl>
+                    <dt>block</dt>
+                    <dd>A reference to this block.</dd>
+                    <dt>view</dt>
+                    <dd>The view to initialize.</dd>
+                </dl>
+            </details>
+

@@ -1,0 +1,8 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowRequestCard]
+
+    [request_language_field.field_label]
+    ca: Idioma
+    es: Idioma
+    en: Language
+

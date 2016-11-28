@@ -1,0 +1,116 @@
+
+[woost.extensions.staticsite.staticsitedestination]
+
+    [StaticSiteDestination]
+    ca: Destí de contingut estàtic
+    es: Destino de contenido estático
+    en: Static content destination
+
+        [plural]
+        ca: Destins de contingut estàtic
+        es: Destinos de contenido estático
+        en: Static content destinations
+
+        [members]
+
+            [destination_permissions]
+            ca: Permisos
+            es: Permisos
+            en: Permissions
+
+            [encoding]
+            ca: Codificació dels fitxers
+            es: Codificación de los ficheros
+            en: File encoding
+
+    [FolderDestination]
+    ca: Carpeta local
+    es: Carpeta local
+    en: Local folder
+
+        [plural]
+        ca: Carpeta local
+        es: Carpeta local
+        en: Local folder
+
+        [members]
+
+            [target_folder]
+            ca: Carpeta de destí
+            es: Carpeta de destino
+            en: Target folder
+
+    [FTPDestination]
+    ca: Servidor FTP
+    es: Servidor FTP
+    en: FTP server
+
+        [plural]
+        ca: Servidor FTP
+        es: Servidor FTP
+        en: FTP server
+
+        [members]
+
+            [ftp_host]
+            ca: Adreça del servidor FTP
+            es: Dirección del servidor FTP
+            en: FTP host
+
+            [ftp_user]
+            ca: Usuari FTP
+            es: Usuario FTP
+            en: FTP user
+
+            [ftp_password]
+            ca: Contrasenya FTP
+            es: Contraseña FTP
+            en: FTP password
+
+            [ftp_path]
+            ca: Carpeta de destí
+            es: Carpeta de destino
+            en: Target folder
+
+    [ZipDestination]
+    ca: Fitxer ZIP
+    es: Fichero ZIP
+    en: ZIP file
+
+        [plural]
+        ca: Fitxer ZIP
+        es: Fichero ZIP
+        en: ZIP file
+
+    [AmazonS3Destination]
+    ca: Amazon S3
+    es: Amazon S3
+    en: Amazon S3
+
+        [plural]
+        ca: Amazon S3
+        es: Amazon S3
+        en: Amazon S3
+
+        [members]
+
+            [aws_access_key]
+            ca: Clau d'accés d'AWS
+            es: Clave de acceso de AWS
+            en: AWS access key ID
+
+            [aws_secret_key]
+            ca: Clau secreta d'AWS
+            es: Clave secreta de AWS
+            en: AWS secret access key
+
+            [bucket_name]
+            ca: Contenidor d'Amazon S3
+            es: Contenedor de Amazon S3
+            en: Amazon S3 bucket
+
+            [prefix]
+            ca: Prefix per les rutes
+            es: Prefijo para las rutas
+            en: Key prefix
+

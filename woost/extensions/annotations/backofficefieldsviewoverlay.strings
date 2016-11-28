@@ -1,0 +1,8 @@
+
+[woost.extensions.annotations.FormOverlay]
+
+    [annotationDropdown.label]
+    ca: Annotacions per aquest camp
+    es: Anotaciones para este campo
+    en: Annotations for this field
+

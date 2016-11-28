@@ -1,0 +1,31 @@
+
+[woost.extensions.ecommerce.OrderStepsContainerBlockView]
+
+    [catalog_button]
+    ca: Veure més productes
+    es: Ver más productos
+    en: See more products
+	fr: Voire autres articles
+    pt: Ver mais produtos
+
+    [back_button]
+    ca: Tornar enrere
+    es: Volver atrás
+    en: Go back
+	fr: Revenir
+    pt: Retorno
+
+    [proceed_button]
+    ca: Continuar la compra
+    es: Continuar la compra
+    en: Proceed
+	fr: Procédez
+    pt: Continuar com a compra
+
+    [submit_button]
+    ca: Confirmar la compra
+    es: Confirmar la compra
+    en: Submit order
+    fr: Confirmer l'achat
+    pt: Confirmar
+

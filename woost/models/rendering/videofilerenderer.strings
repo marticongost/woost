@@ -1,0 +1,11 @@
+
+[woost.models.rendering.videofilerenderer.VideoFileRenderer]
+ca: Pintador de fitxers de vídeo
+es: Pintador de ficheros de video
+en: Video file renderer
+
+    [plural]
+    ca: Pintadors de fitxers de vídeo
+    es: Pintadores de ficheros de video
+    en: Video file renderers
+

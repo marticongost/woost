@@ -1,0 +1,89 @@
+
+[woost.extensions.mailer.mailing]
+
+    [Mailing]
+    ca: Enviament
+    es: Envio
+    en: Mailing
+
+        [plural]
+        ca: Enviaments
+        es: Envios
+        en: Mailings
+
+        [groups]
+
+            [content]
+            ca: Contingut
+            es: Contenido
+            en: Content
+
+        [members]
+
+            [document]
+            ca: Document
+            es: Documento
+            en: Document
+
+            [sender]
+            ca: Remitent
+            es: Remitente
+            en: Sender
+
+            [subject]
+            ca: Assumpte
+            es: Asunto
+            en: Subject
+
+            [lists]
+            ca: Llistes
+            es: Listas
+            en: Lists
+
+            [language]
+            ca: Idioma
+            es: Idioma
+            en: Language
+
+            [per_user_customizable]
+            ca: Personalitzable per usuari
+            es: Personalizable por usuario
+            en: Per user customizable
+
+            [status]
+            ca: Estat
+            es: Estado
+            en: Status
+
+                [values]
+
+                    [1]
+                    ca: Iniciat
+                    es: Iniciado
+                    en: Started
+
+                    [2]
+                    ca: Finalitzat
+                    es: Finalizado
+                    en: Finished
+
+    [DocumentTemplateRequiredError.instance(error)]
+    ca: El camp ${error.member_desc()} ha d'especificar una plantilla
+    es: El campo ${error.member_desc()} debe especificar una plantilla
+    en: ${error.member_desc()} must specify a template
+
+    [LanguageValueError.instance(error)]
+    ca: El camp ${error.member_desc()} no coincideix amb cap dels idiomes del document
+    es: El campo ${error.member_desc()} no coincide con ningungo de los idiomas del documento
+    en: ${error.member_desc()} doesn't match any of the document's translations
+
+    [PerUserCustomizableValueError.instance(error)]
+    ca: El camp ${error.member_desc()} no és vàlid pel document seleccionat
+    es: El campo ${error.member_desc()} no es válido para el documento seleccionado
+    en: ${error.member_desc()} is not valid for the selected document
+
+    [RunningMailingError.instance(error)]
+    ca: No es pot eliminar un enviament que està en execució
+    es: No se puede eliminar un envio que está en ejecución
+    en: Can't delete a running mailing
+

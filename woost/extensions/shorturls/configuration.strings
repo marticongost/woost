@@ -1,0 +1,17 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.short_urls]
+        ca: Escurçat d'URLs
+        es: URLs cortas
+        en: Short URLs
+
+    [members]
+
+        [url_shortener]
+        ca: Servei d'URLs curtes
+        es: Servicio de URLs cortas
+        en: Short URLs service
+

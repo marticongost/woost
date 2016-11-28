@@ -1,0 +1,395 @@
+
+[woost.extensions.forms.fields]
+
+    [field_translation(member, **kwargs)]
+    *: ${member.visible_title or member.title}
+
+        [explanation(member, **kwargs)]
+        *: ${member.explanation}
+
+        [none(member, **kwargs)]
+        *: ${member.empty_label}
+
+    [FormSubmitDateMember.default_member_translation(member, **kwargs)]
+    ca: Data
+    es: Fecha
+    en: Date
+
+    [field_default]
+    ca: Valor per defecte
+    es: Valor por defecto
+    en: Default value
+
+    [field_enumeration]
+    ca: Valors permesos
+    es: Valores permitidos
+    en: Allowed values
+
+    [Field]
+    ca: Camp
+    es: Campo
+    en: Field
+
+        [plural]
+        ca: Camps
+        es: Campos
+        en: Fields
+
+        [groups]
+
+            [field_description]
+            ca: Descripció
+            es: Descripción
+            en: Description
+
+            [field_structure]
+            ca: Estructura
+            es: Estructura
+            en: Structure
+
+            [field_properties]
+            ca: Propietats
+            es: Propiedades
+            en: Properties
+
+        [members]
+
+            [field_name]
+            ca: Identificador
+            es: Identificador
+            en: Identifier
+
+            [field_set]
+            ca: Conjunt
+            es: Conjunto
+            en: Field set
+
+            [collection]
+            ca: Col·lecció
+            es: Colección
+            en: Collection
+
+            [title]
+            ca: Nom
+            es: Nombre
+            en: Name
+
+            [visible_title]
+            ca: Nom visible
+            es: Nombre visible
+            en: Visible name
+
+            [empty_label]
+            ca: Valor indeterminat
+            es: Valor indeterminado
+            en: Empty label
+
+                [explanation]
+                ca: El text que es mostrarà quan el camp sigui buit
+                es: El texto que se mostrará cuando el campo esté vacío
+                en: The text for the field's empty option
+
+            [explanation]
+            ca: Explicació
+            es: Explicación
+            en: Explanation
+
+            [is_required_field]
+            ca: Requerit
+            es: Requerido
+            en: Required
+
+            [field_edit_control]
+            ca: Interfície d'usuari
+            es: Interfaz de usuario
+            en: User interface
+
+                [none]
+                ca: Control per defecte
+                es: Control por defecto
+                en: Default control
+
+                [values]
+
+                    [cocktail.html.TextBox]
+                    ca: Caixa de text
+                    es: Caja de texto
+                    en: Text box
+
+                    [cocktail.html.TextArea]
+                    ca: Caixa de text multilínia
+                    es: Caja de texto multilinea
+                    en: Text area
+
+                    [cocktail.html.DropdownSelector]
+                    ca: Selector desplegable
+                    es: Selector desplegable
+                    en: Dropdown selector
+
+                    [cocktail.html.RadioSelector]
+                    ca: Botons de radio
+                    es: Botones de radio
+                    en: Radio buttons
+
+                    [cocktail.html.CheckBox]
+                    ca: Xec
+                    es: Check
+                    en: Check box
+
+                    [cocktail.html.CheckList]
+                    ca: Llista de xecs
+                    es: Lista de checks
+                    en: Check list
+
+                    [cocktail.html.DatePicker]
+                    ca: Calendari desplegable
+                    es: Calendario desplegable
+                    en: Dropdown calendar
+
+                    [cocktail.html.CompoundDateSelector]
+                    ca: Desplegables separats per dia, mes i any
+                    es: Desplegables separados para día, mes y año
+                    en: Separate dropdown selectors for day, month and year
+
+            [field_initialization]
+            ca: Inicialització
+            es: Inicialización
+            en: Initialization
+
+    [FieldSet]
+    ca: Conjunt de camps
+    es: Conjunto de campos
+    en: Field set
+
+        [plural]
+        ca: Conjunts de camps
+        es: Conjuntos de campos
+        en: Field sets
+
+        [members]
+
+            [base_field_set]
+            ca: Base
+            es: Base
+            en: Base
+
+            [derived_field_sets]
+            ca: Conjunts derivats
+            es: Conjuntos derivados
+            en: Derived field sets
+
+            [fields]
+            ca: Camps
+            es: Campos
+            en: Fields
+
+    [CollectionField]
+    ca: Camp de col·lecció
+    es: Campo de colección
+    en: Collection field
+
+        [plural]
+        ca: Camps de col·lecció
+        es: Campos de colección
+        en: Collection fields
+
+        [members]
+
+            [items]
+            ca: Elements de la col·lecció
+            es: Elementos de la colección
+            en: Collection items
+
+            [min]
+            ca: Nombre mínim d'elements
+            es: Número mínimo de elementos
+            en: Minimum number of items
+
+            [max]
+            ca: Nombre màxim d'elements
+            es: Número máximo de elementos
+            en: Maximum number of items
+
+    [BooleanField]
+    ca: Camp de sí / no
+    es: Campo de sí / no
+    en: Yes / no field
+
+        [plural]
+        ca: Camps de sí / no
+        es: Campos de sí / no
+        en: Yes / no fields
+
+    [TextField]
+    ca: Camp de text
+    es: Campo de texto
+    en: Text field
+
+        [plural]
+        ca: Camps de text
+        es: Campos de texto
+        en: Text fields
+
+        [members]
+
+            [format]
+            ca: Format
+            es: Formato
+            en: Format
+
+            [min]
+            ca: Longitud mínima
+            es: Longitud mínima
+            en: Minimum length
+
+            [max]
+            ca: Longitud màxima
+            es: Longitud máxima
+            en: Maximum length
+
+    [OptionsField]
+    ca: Camp d'opcions
+    es: Campo de opciones
+    en: Options field
+
+        [plural]
+        ca: Camps d'opcions
+        es: Campos de opciones
+        en: Option fields
+
+        [members]
+
+            [options]
+            ca: Opcions
+            es: Opciones
+            en: Options
+
+    [OptionsFieldOption]
+    ca: Entrada de camp d'opcions
+    es: Entrada de campo de opciones
+    en: Options field entry
+
+        [plural]
+        ca: Entrades de camp d'opcions
+        es: Entradas de campo de opciones
+        en: Options field entries
+
+        [members]
+
+            [field]
+            ca: Camp
+            es: Campo
+            en: Name
+
+            [title]
+            ca: Nom
+            es: Nombre
+            en: Name
+
+            [enabled]
+            ca: Activa
+            es: Activa
+            en: Enabled
+
+    [EmailAddressField]
+    ca: Camp d'adreça de correu electrònic
+    es: Campo de dirección de correo electrónico
+    en: E-mail address field
+
+        [plural]
+        ca: Camps d'adreça de correu electrònic
+        es: Campos de dirección de correo electrónico
+        en: E-mail address fields
+
+    [PhoneNumberField]
+    ca: Camp de número de telèfon
+    es: Campo de número de teléfono
+    en: Phone number field
+
+        [plural]
+        ca: Camps de número de telèfon
+        es: Campos de número de teléfono
+        en: Phone number fields
+
+    [HTMLField]
+    ca: Camp de text enriquit
+    es: Campo de texto enriquecido
+    en: Rich text field
+
+        [plural]
+        ca: Camps de text enriquit
+        es: Campos de texto enriquecido
+        en: Rich text fields
+
+    [NumericField]
+    ca: Camp numèric
+    es: Campo numérico
+    en: Numeric field
+
+        [plural]
+        ca: Camps numèrics
+        es: Campos numéricos
+        en: Numeric fields
+
+        [members]
+
+            [min]
+            ca: Mínim
+            es: Mínimo
+            en: Minimum
+
+            [max]
+            ca: Màxim
+            es: Máximo
+            en: Maximum
+
+    [IntegerField]
+    ca: Camp enter
+    es: Campo entero
+    en: Integer field
+
+        [plural]
+        ca: Camps enters
+        es: Campos enteros
+        en: Integer fields
+
+    [DecimalField]
+    ca: Camp decimal
+    es: Campo decimal
+    en: Decimal field
+
+        [plural]
+        ca: Camps decimals
+        es: Campos decimales
+        en: Decimal fields
+
+    [DateField]
+    ca: Camp de data
+    es: Campo de fecha
+    en: Date field
+
+        [plural]
+        ca: Camps de data
+        es: Campos de fecha
+        en: Date fields
+
+    [TimeField]
+    ca: Camp d'hora
+    es: Campo de hora
+    en: Time field
+
+        [plural]
+        ca: Camps d'hora
+        es: Campos de hora
+        en: Time fields
+
+    [DateTimeField]
+    ca: Camp de data / hora
+    es: Campo de fecha / hora
+    en: Date / time field
+
+        [plural]
+        ca: Camps de data / hora
+        es: Campos de fecha / hora
+        en: Date / time fields
+

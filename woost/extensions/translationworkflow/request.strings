@@ -1,0 +1,173 @@
+
+@init
+from cocktail.stringutils import decapitalize
+from cocktail.translations import translate_locale
+
+translations.define(
+    "woost.extensions.translationworkflow.request."
+    "TranslationWorkflowRequest.instance",
+    ca = lambda instance, referer = None, **kwargs:
+        (
+            (
+                u"Traducció "
+                + ca_possessive(
+                     '"%s" '
+                     % translations(instance.translated_item)
+                )
+            )
+            if referer is None
+            else ""
+        )
+        + (
+            instance.source_language
+            and ca_possessive(
+                decapitalize(
+                    translate_locale(instance.source_language)
+                )
+            )
+            or u"?"
+        )
+        + u" a "
+        + (
+            instance.target_language
+            and decapitalize(
+                translate_locale(instance.target_language)
+            )
+            or u"?"
+        ),
+    es = lambda instance, referer = None, **kwargs:
+        (
+            u'Traducción de "%s" de '
+            % translations(instance.translated_item)
+            if referer is None
+            else u"De "
+        )
+        + (
+            instance.source_language
+            and decapitalize(
+                translate_locale(instance.source_language)
+            )
+            or u"?"
+        )
+        + u" a "
+        + (
+            decapitalize(
+                translate_locale(instance.target_language)
+            )
+            if instance.target_language
+            else "?"
+        ),
+    en = lambda instance, referer = None, **kwargs:
+        (
+            u'Translation of "%s" from '
+            % translations(instance.translated_item)
+            if referer is None
+            else u"From "
+        )
+        + (
+            instance.source_language
+            and translate_locale(instance.source_language)
+            or u"?"
+        )
+        + u" to "
+        + (
+            instance.target_language
+            and translate_locale(instance.target_language)
+            or u"?"
+        )
+)
+@end
+
+[woost.extensions.translationworkflow.request.TranslationWorkflowRequest]
+ca: Petició de traducció
+es: Petición de traducción
+en: Translation request
+
+    [plural]
+    ca: Peticions de traducció
+    es: Peticiones de traducción
+    en: Translation requests
+
+    [tabs]
+
+        [all]
+        ca: Totes
+        es: Todas
+        en: All
+
+    [msexcel]
+
+        [source]
+        ca: Text original
+        es: Texto original
+        en: Source text
+
+        [target]
+        ca: Traducció
+        es: Traducción
+        en: Translation
+
+    [groups]
+
+        [translation_request]
+        ca: Petició de traducció
+        es: Petición de traducción
+        en: Translation request
+
+            [info]
+            ca: Dades de la petició
+            es: Datos de la petición
+            en: Request data
+
+            [translated_values]
+            ca: Traducció
+            es: Traducción
+            en: Translation
+
+            [changelog]
+            ca: Històric
+            es: Histórico
+            en: Change log
+
+    [members]
+
+        [translated_item]
+        ca: Element a traduir
+        es: Elemento a traducir
+        en: Translated item
+
+        [source_language]
+        ca: Idioma origen
+        es: Idioma origen
+        en: Idioma destino
+
+        [target_language]
+        ca: Idioma destí
+        es: Idioma destino
+        en: Target language
+
+        [state]
+        ca: Estat
+        es: Estado
+        en: State
+
+        [assigned_agency]
+        ca: Agència de traducció
+        es: Agencia de traducción
+        en: Translation agency
+
+        [assigned_translator]
+        ca: Traductor assignat
+        es: Traductor asignado
+        en: Assigned translator
+
+        [comments]
+        ca: Comentaris
+        es: Comentarios
+        en: Comments
+
+        [translated_values]
+        ca: Traducció
+        es: Traducción
+        en: Translation
+

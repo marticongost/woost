@@ -1,0 +1,11 @@
+
+[woost.extensions.youtube.YouTubeExtension]
+ca: YouTube
+es: YouTube
+en: YouTube
+
+    [plural]
+    ca: YouTube
+    es: YouTube
+    en: YouTube
+

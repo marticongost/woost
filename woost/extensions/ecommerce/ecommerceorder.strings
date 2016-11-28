@@ -1,0 +1,212 @@
+
+[woost.extensions.ecommerce.ecommerceorder.ECommerceOrder]
+ca: Comanda
+es: Pedido
+en: Shop order
+fr: Commande
+
+    [plural]
+    ca: Comandes
+    es: Pedidos
+    en: Shop orders
+    fr: Commandes
+
+    [description_for_gateway]
+    ca: Comanda de %s
+    es: Pedido de %s
+    en: Order at %s
+    fr: Commande de %s
+
+    [groups]
+
+        [shipping_info]
+        ca: Direcció d'enviament
+        es: Dirección de envío
+        en: Shipping address
+        fr: Adresse de livraison
+        pt: Endereço de envio
+
+        [billing]
+        ca: Facturació
+        es: Facturación
+        en: Billing
+        fr: Facturation
+        pt: Faturação
+
+    [members]
+
+        [website]
+        ca: Lloc web
+        es: Sitio web
+        en: Website
+
+        [customer]
+        ca: Client
+        es: Cliente
+        en: Customer
+        fr: Client
+        pt: Cliente
+
+        [address]
+        ca: Adreça
+        es: Dirección
+        en: Address
+        fr: Adresse
+        pt: Endereço
+
+        [town]
+        ca: Població
+        es: Población
+        en: Town
+        fr: Ville
+        pt: Cidade
+
+        [region]
+        ca: Estat o província
+        es: Estado o provincia
+        en: State or province
+        fr: État ou province
+        pt: Província
+
+        [country]
+        ca: País
+        es: País
+        en: Country
+        fr: Pays
+        pt: País
+
+        [postal_code]
+        ca: Codi postal
+        es: Código postal
+        en: Postal code
+        fr: Code postal
+        pt: Código postal
+
+        [language]
+        ca: Idioma
+        es: Idioma
+        en: Language
+        fr: Langue
+        pt: Língua
+
+        [status]
+        ca: Estat
+        es: Estado
+        en: State
+        fr: État
+
+            [values]
+
+                [shopping]
+                ca: En curs
+                es: En curso
+                en: Shopping
+                fr: En cours
+                pt: Em processamento
+
+                [payment_pending]
+                ca: Pendent de pagament
+                es: Pago pendiente
+                en: Payment pending
+                fr: Paiement en attente
+                pt: Pagamento pendente
+
+                [accepted]
+                ca: Acceptada
+                es: Aceptada
+                en: Accepted
+                fr: Accepté
+                pt: Aceito
+
+                [refund]
+                ca: Devolució
+                es: Devolución
+                en: Refund
+                fr: Remboursement
+                pt: Devolução
+
+                [failed]
+                ca: Cancel·lada
+                es: Cancelada
+                en: Cancelled
+                fr: Annulé
+                pt: Cancelada
+
+        [purchases]
+        ca: Contingut de la comanda
+        es: Contenido del pedido
+        en: Purchases
+        fr: Contenu de la commande
+
+        [total_price]
+        ca: Preu
+        es: Precio
+        en: Price
+        fr: Prix
+
+        [pricing]
+        ca: Modificacions al preu
+        es: Modificaciones al precio
+        en: Pricing
+        fr: Modifications au prix
+
+        [total_shipping_costs]
+        ca: Costos d'enviament
+        es: Costes de envío
+        en: Shipping costs
+        fr: Frais d'expédition
+
+        [shipping_costs]
+        ca: Costos d'enviament aplicats
+        es: Costes de envío aplicados
+        en: Applied shipping costs
+        fr: Frais d'expédition appliqués
+
+        [total_taxes]
+        ca: Taxes
+        es: Tasas
+        en: Taxes
+        fr: Impôts
+
+        [taxes]
+        ca: Taxes aplicades
+        es: Tasas aplicadas
+        en: Applied taxes
+        fr: Taxes appliquées
+
+        [total]
+        ca: Total
+        es: Total
+        en: Total
+        fr: Total
+
+        [payment_type]
+        ca: Tipus de pagament
+        es: Tipo de pago
+        en: Payment type
+        fr: Moyen de paiement
+        pt: Formas de pagamento
+
+            [values]
+
+                [payment_gateway]
+                ca: Pagament en línia
+                es: Pago en línea
+                en: On-line payment
+                fr: Paiment on-line
+                pt: Pagamento on-line
+
+                [transfer]
+                ca: Transferència
+                es: Transferencia
+                en: Transfer
+                fr: Transfert
+                pt: Transferência
+
+                [cash_on_delivery]
+                ca: Contra reemborsament
+                es: Contra reembolso
+                en: Cash on delivery
+                fr: Contre remboursement
+                pt: Contra-reembolso
+

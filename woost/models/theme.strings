@@ -1,0 +1,33 @@
+
+[woost.models.theme.Theme]
+ca: Tema
+es: Tema
+en: Theme
+
+    [plural]
+    ca: Temes
+    es: Temas
+    en: Themes
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+        [declarations]
+        ca: Declaracions
+        es: Declaraciones
+        en: Declarations
+
+        [grid]
+        ca: Graella
+        es: Matriz
+        en: Grid
+

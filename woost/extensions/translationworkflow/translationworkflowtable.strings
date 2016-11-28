@@ -1,0 +1,8 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowTable]
+
+    [missing_translation_notice]
+    ca: Pendent de traduïr
+    es: Pendiente de traducción
+    en: Not translated yet
+

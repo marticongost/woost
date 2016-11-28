@@ -1,0 +1,11 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowExtension]
+ca: Circuït de traducció
+es: Circuito de traducción
+en: Translation workflow
+
+    [plural]
+    ca: Circuït de traducció
+    es: Circuito de traducción
+    en: Translation workflow
+

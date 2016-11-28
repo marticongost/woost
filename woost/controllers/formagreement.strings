@@ -1,0 +1,41 @@
+
+@init
+def describe_agreement_subject(member, link = True):
+    label = (
+        translations(member, suffix = ".agreement_subject")
+        or translations("woost.controllers.formagreement.default_subject")
+    )
+    if member.agreement_document and link:
+        label = '<a href="%s">%s</a>' % (
+            member.agreement_document.get_uri(),
+            label
+        )
+    return label
+@end
+
+[woost.controllers.formagreement]
+
+    [default_subject]
+    ca:
+        els termes i condicions
+    es:
+        los términos y condiciones
+    en:
+        the terms and conditions
+
+    [FormAgreement.default_member_translation(member, **kwargs)]
+    ca:
+        He llegit i accepto ${describe_agreement_subject(member)}
+    es:
+        He leído y acepto ${describe_agreement_subject(member)}
+    en:
+        I have read and agree to the ${describe_agreement_subject(member)}
+
+    [ConsentNotGivenError.instance(error)]
+    ca:
+        Has d'acceptar ${describe_agreement_subject(error.member)} del formulari
+    es:
+        Debes aceptar ${describe_agreement_subject(error.member)} del formulario
+    en:
+        You must accept ${describe_agreement_subject(error.member)} of the form
+

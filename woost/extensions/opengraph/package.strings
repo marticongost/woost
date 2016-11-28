@@ -1,0 +1,35 @@
+
+[woost.extensions.opengraph.OpenGraphExtension]
+ca: OpenGraph
+es: OpenGraph
+en: OpenGraph
+
+    [plural]
+    ca: OpenGraph
+    es: OpenGraph
+    en: OpenGraph
+
+    [groups]
+
+        [open_graph]
+        ca: Integració amb OpenGraph/Facebook
+        es: Integración con OpenGraph/Facebook
+        en: OpenGraph/Facebook integration
+
+    [members]
+
+        [facebook_administrators]
+        ca: Comptes de Facebook dels administradors
+        es: Cuentas de Facebook de los administradores
+        en: Facebook administrator accounts
+
+        [facebook_applications]
+        ca: Comptes d'aplicació de Facebook
+        es: Cuentas de aplicación de Facebook
+        en: Facebook application accounts
+
+        [categories]
+        ca: Categories
+        es: Categorías
+        en: Categories
+

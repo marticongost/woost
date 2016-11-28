@@ -1,0 +1,55 @@
+
+[woost.extensions.googleanalytics.customdefinition.GoogleAnalyticsCustomDefinition]
+ca: Definició personalitzada de Google Analytics
+es: Definición personalizada de Google Analytics
+en: Custom definition for Google Analytics
+
+    [plural]
+    ca: Definicions personalitzada de Google Analytics
+    es: Definiciones personalizadas de Google Analytics
+    en: Custom definitions for Google Analytics
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+        [definition_type]
+        ca: Tipus de definició
+        es: Tipo de definición
+        en: Definition type
+
+            [values]
+
+                [dimension]
+                ca: Dimensió
+                es: Dimensión
+                en: Dimension
+
+                [metric]
+                ca: Mètrica
+                es: Métrica
+                en: Metric
+
+        [enabled]
+        ca: Activa
+        es: Activa
+        en: Enabled
+
+        [content_types]
+        ca: Tipus d'element
+        es: Tipos de elemento
+        en: Content types
+
+        [initialization]
+        ca: Inicialització
+        es: Inicialización
+        en: Initialization
+

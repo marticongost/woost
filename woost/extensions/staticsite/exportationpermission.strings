@@ -1,0 +1,23 @@
+
+[woost.extensions.staticsite.exportationpermission.ExportationPermission]
+ca: Permís d'exportació
+es: Permiso de exportación
+en: Exportation permission
+
+    [plural]
+    ca: Permisos d'exportacions
+    es: Permisos de exportaciones
+    en: Exportation permissions
+
+    [members]
+
+        [destination]
+        ca: Destí
+        es: Destino
+        en: Exportation
+
+            [none]
+            ca: Tots els destins
+            es: Todos los destinos
+            en: All destinations
+

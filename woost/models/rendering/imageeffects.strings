@@ -1,0 +1,487 @@
+
+[woost.models.rendering.imageeffects]
+
+    [ImageEffect]
+    ca: Efecte d'imatge
+    es: Efecto de imagen
+    en: Image effect
+
+        [plural]
+        ca: Efectes d'imatge
+        es: Efectos de imagen
+        en: Image effects
+
+
+    [horizontal_alignment]
+
+        [left]
+        ca: Esquerra
+        es: Izquierda
+        en: Left
+
+        [center]
+        ca: Centrat
+        es: Centrado
+        en: Center
+
+        [right]
+        ca: Dreta
+        es: Derecha
+        en: Right
+
+    [vertical_alignment]
+
+        [top]
+        ca: A dalt
+        es: Arriba
+        en: Top
+
+        [center]
+        ca: Centrat
+        es: Centrado
+        en: Center
+
+        [bottom]
+        ca: A baix
+        es: Abajo
+        en: Bottom
+
+    [Thumbnail]
+    ca: Redimensionar
+    es: Redimensionar
+    en: Resize
+
+        [plural]
+        ca: Efectes de redimensionat
+        es: Efectos de redimensionat
+        en: Resize effects
+
+        [members]
+
+            [width]
+            ca: Amplada
+            es: Ancho
+            en: Width
+
+            [height]
+            ca: Alçada
+            es: Alto
+            en: Height
+
+            [upscale]
+            ca: Permetre ampliar les imatges
+            es: Permitir ampliar las imágenes
+            en: Allow image upscaling
+
+    [Crop]
+    ca: Retallar
+    es: Recortar
+    en: Crop
+
+        [plural]
+        ca: Efectes de retallat
+        es: Efectos de recorte
+        en: Crop effects
+
+        [members]
+
+            [left]
+            ca: X1
+            es: X1
+            en: X1
+
+            [top]
+            ca: Y1
+            es: Y1
+            en: Y1
+
+            [right]
+            ca: X2
+            es: X2
+            en: X2
+
+            [bottom]
+            ca: Y2
+            es: Y2
+            en: Y2
+
+    [AutoCrop]
+    ca: Retallat automàtic
+    es: Recorte automático
+    en: Autocrop
+
+        [plural]
+        ca: Efectes de retallat automàtic
+        es: Efectos de recorte automático
+        en: Autocrop effects
+
+    [Fill]
+    ca: Redimensionar i retallar
+    es: Redimensionar y recortar
+    en: Thumbnail and crop
+
+        [plural]
+        ca: Efectes de redimensionar i retallar
+        es: Efectos redimensionar y recortar
+        en: Thumbnail and crop effects
+
+        [members]
+
+            [width]
+            ca: Amplada
+            es: Ancho
+            en: Width
+
+            [height]
+            ca: Alçada
+            es: Alto
+            en: Height
+
+            [upscale]
+            ca: Permetre ampliar les imatges
+            es: Permitir ampliar las imágenes
+            en: Allow image upscaling
+
+            [horizontal_alignment]
+            ca: Alineament horitzontal
+            es: Alineamiento horizontal
+            en: Horizontal alignment
+
+            [vertical_alignment]
+            ca: Alineament vertical
+            es: Alineamiento vertical
+            en: Vertical alignment
+
+            [preserve_vertical_images]
+            ca: Preservar imatges verticals
+            es: Preservar imágenes verticales
+            en: Preserve vertical images
+
+    [Rotate]
+    ca: Rotar
+    es: Rotar
+    en: Rotate
+
+        [plural]
+        ca: Rotacions
+        es: Rotaciones
+        en: Rotations
+
+        [members]
+
+            [angle]
+            ca: Angle
+            es: Ángulo
+            en: Angle
+
+    [Color]
+    ca: Intensitat del color
+    es: Intensidad del color
+    en: Color intensity
+
+        [plural]
+        ca: Efectes d'intensitat del color
+        es: Efectos de intensidad del color
+        en: Color intensity effects
+
+        [members]
+
+            [level]
+            ca: Nivell
+            es: Nivel
+            en: Level
+
+    [Brightness]
+    ca: Lluminositat
+    es: Luminosidad
+    en: Brightness
+
+        [plural]
+        ca: Efectes de lluminositat
+        es: Efectos de luminosidad
+        en: Brightness effects
+
+        [members]
+
+            [level]
+            ca: Nivell
+            es: Nivel
+            en: Level
+
+    [Contrast]
+    ca: Contrast
+    es: Contraste
+    en: Contrast
+
+        [plural]
+        ca: Efectes de contrast
+        es: Efectos de contraste
+        en: Contrast effects
+
+        [members]
+
+            [level]
+            ca: Nivell
+            es: Nivel
+            en: Level
+
+    [Sharpness]
+    ca: Definició
+    es: Definición
+    en: Sharpness
+
+        [plural]
+        ca: Efectes de definició
+        es: Efectos de definición
+        en: Sharpness effects
+
+        [members]
+
+            [level]
+            ca: Nivell
+            es: Nivel
+            en: Level
+
+    [Frame]
+    ca: Marc
+    es: Marco
+    en: Frame
+
+        [plural]
+        ca: Marcs
+        es: Marcos
+        en: Frames
+
+        [members]
+
+            [edge_width]
+            ca: Gruix del marc
+            es: Grueso del marco
+            en: Edge width
+
+            [edge_color]
+            ca: Color del marc
+            es: Color del marco
+            en: Edge color
+
+            [vertical_padding]
+            ca: Espaiat vertical
+            es: Espaciado vertical
+            en: Vertical padding
+
+            [horizontal_padding]
+            ca: Espaiat horitzontal
+            es: Espaciado horizontal
+            en: Horizontal padding
+
+            [background]
+            ca: Color de fons
+            es: Color de fondo
+            en: Background
+
+    [Shadow]
+    ca: Ombra
+    es: Sombra
+    en: Shadow
+
+        [plural]
+        ca: Ombres
+        es: Sombras
+        en: Shadows
+
+        [members]
+
+            [offset]
+            ca: Desplaçament
+            es: Desplazamiento
+            en: Offset
+
+            [padding]
+            ca: Espaiat
+            es: Espaciado
+            en: Padding
+
+            [color]
+            ca: Color
+            es: Color
+            en: Color
+
+    [ReducedOpacity]
+    ca: Reduïr l'opacitat
+    es: Reducir la opacidad
+    en: Reduce opacity
+
+        [plural]
+        ca: Reduccions d'opacitat
+        es: Reducciones de opacidad
+        en: Opacity reductions
+
+        [members]
+
+            [level]
+            ca: Nivell
+            es: Nivel
+            en: Level
+
+    [Fade]
+    ca: Esvaïr
+    es: Desvanecer
+    en: Fade
+
+        [plural]
+        ca: Esvaïments
+        es: Desvanecimientos
+        en: Fade effects
+
+        [members]
+
+            [top_width]
+            ca: Gruix superior
+            es: Ancho superior
+            en: Top width
+
+            [right_width]
+            ca: Gruix a la dreta
+            es: Ancho derecho
+            en: Right width
+
+            [bottom_width]
+            ca: Gruix inferior
+            es: Ancho inferior
+            en: Bottom width
+
+            [left_width]
+            ca: Gruix a l'esquerra
+            es: Ancho a la izquierda
+            en: Left width
+
+            [edge_opacity]
+            ca: Opacitat exterior
+            es: Opacidad exterior
+            en: Edge opacity
+
+            [inner_opacity]
+            ca: Opacitat interior
+            es: Opacidad interior
+            en: Inner opacity
+
+    [Watermark]
+    ca: Marca d'aigua
+    es: Marca de agua
+    en: Watermark
+
+        [plural]
+        ca: Marques d'aigua
+        es: Marcas de agua
+        en: Watermarks
+
+        [members]
+
+            [mark]
+            ca: Marca
+            es: Marca
+            en: Mark
+
+            [opacity]
+            ca: Opacitat
+            es: Opacidad
+            en: Opacity
+
+            [placement]
+            ca: Posicionament
+            es: Posicionamiento
+            en: Positioning
+
+                [values]
+
+                    [middle]
+                    ca: Centrat
+                    es: Centrado
+                    en: In the middle
+
+                    [scale]
+                    ca: Omplir
+                    es: Rellenar
+                    en: Scale
+
+                    [tile]
+                    ca: Repetir
+                    es: Repetir
+                    en: Tile
+
+    [Flip]
+    ca: Capgirar
+    es: Voltear
+    en: Flip
+
+        [plural]
+        ca: Efectes de capgirar
+        es: Efectos de volteado
+        en: Flip effects
+
+        [members]
+
+            [axis]
+            ca: Eix
+            es: Eje
+            en: Axis
+
+                [values]
+
+                    [horizontal]
+                    ca: Horitzontal
+                    es: Horizontal
+                    en: Horizontal
+
+                    [vertical]
+                    ca: Vertical
+                    es: Vertical
+                    en: Vertical
+
+    [Align]
+    ca: Aliniar
+    es: Alinear
+    en: Align
+
+        [plural]
+        ca: Alineaments
+        es: Alineamientos
+        en: Alignments
+
+        [members]
+
+            [width]
+            ca: Amplada
+            es: Ancho
+            en: Width
+
+            [height]
+            ca: Alçada
+            es: Alto
+            en: Height
+
+            [horizontal_alignment]
+            ca: Alineament horitzontal
+            es: Alineamiento horizontal
+            en: Horizontal alignment
+
+            [vertical_alignment]
+            ca: Alineament vertical
+            es: Alineamiento vertical
+            en: Vertical alignment
+
+            [background]
+            ca: Color de fons
+            es: Color de fondo
+            en: Background
+
+    [Grayscale]
+    ca: Tons de gris
+    es: Tonos de gris
+    en: Grayscale
+
+        [plural]
+        ca: Tons de gris
+        es: Tonos de gris
+        en: Grayscale
+
