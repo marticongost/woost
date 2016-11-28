@@ -610,22 +610,34 @@ class Item(PersistentObject):
 
                 if isinstance(member, schema.Date):
                     threshold = date.today()
+                    value_type = date
                 else:
                     threshold = datetime.now()
+                    value_type = datetime
 
-                instance = first(
-                    cls.select(
-                        member.greater(threshold),
-                        order = member,
-                        cached = False
-                    )
-                )
+                nearest_value = None
 
-                if instance is not None:
-                    expiration = nearest_expiration(
-                        expiration,
-                        instance.get(member)
+                if member.indexed:
+                    for nearest_value in member.index.keys(
+                        min = member.get_index_value(threshold),
+                        exclude_min = True
+                    ):
+                        nearest_value = value_type(*nearest_value)
+                        break
+                else:
+                    instance = first(
+                        cls.select(
+                            member.greater(threshold),
+                            order = member,
+                            cached = False
+                        )
                     )
+
+                    if instance is not None:
+                        nearest_value = instance.get(member)
+
+                if nearest_value is not None:
+                    expiration = nearest_expiration(expiration, nearest_value)
 
         return expiration
 
