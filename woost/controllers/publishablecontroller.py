@@ -54,7 +54,7 @@ class PublishableController(BaseCMSController):
             and app.cache.storage
             and publishable.cacheable
             and request.method == "GET"
-            and app.original_publishable is None
+            and app.error is None
         ):
             return None
 
