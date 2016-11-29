@@ -113,9 +113,15 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
     });
 
     // Set the initial state for each entry
-    $menu.find("li").each(function () {
-        var $entry = jQuery(this);
-        $nav[0].setMenuEntryExpanded($entry, $entry.is(".selected"));
+    var $trail = $menu.find("[data-woost-item='" + woost.navigationPoint + "']");
+    $trail.addClass("active");
+    $trail = $trail.add($trail.parents("li.branch"));
+    $menu.find("li").not($trail).each(function () {
+        $nav[0].setMenuEntryExpanded(this, false);
+    });
+    $trail.each(function () {
+        jQuery(this).addClass("selected");
+        $nav[0].setMenuEntryExpanded(this, true);
     });
 
     this.setMenuExpanded(false);
