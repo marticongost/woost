@@ -116,6 +116,9 @@ from woost.models import Configuration, Publishable, Document
 
     <py:ready>
         <?py
+        self.set_client_variable("woost.publishable", app.publishable and app.publishable.id)
+        self.set_client_variable("woost.navigationPoint", app.navigation_point and app.navigation_point.id)
+
         if self.head_end_html or self.body_beginning_html or self.body_end_html:
             @self.when_document_ready
             def add_trailing_html(document):
