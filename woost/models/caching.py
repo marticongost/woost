@@ -9,7 +9,7 @@ from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.caching import Cache
 from cocktail.persistence import datastore, PersistentMapping
-from cocktail.controllers import get_request_url
+from cocktail.controllers import get_request_url_builder
 from woost import app
 from .item import Item
 
@@ -83,9 +83,11 @@ class CachingPolicy(Item):
     def get_content_cache_key(self, publishable, **context):
 
         user = app.user
+        url = get_request_url_builder()
+        url.query = None
 
         cache_key = (
-            str(get_request_url()),
+            str(url.get_url()),
             None
             if user is None or user.anonymous
             else tuple(role.id for role in user.roles)
