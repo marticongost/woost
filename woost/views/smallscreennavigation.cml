@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost import app
+?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
@@ -18,6 +21,7 @@
     folder_action = "expand"
     folder_animation_duration = 400
     popup_animation_duration = 400
+    cached = True
 
     def create_expand_menu_button_content(self):
         if self.collapsed_menu_image:
@@ -37,6 +41,12 @@
         else:
             return self.expanded_menu_character
     ?>
+
+    <py:binding>
+        <?py
+        self.qualify_cache_key(app.website.id, get_language())
+        ?>
+    </py:binding>
 
     <py:ready>
         <?py
@@ -60,7 +70,8 @@
         <py:woost.views.Menu
             py:id="small_screen_menu"
             py:expanded="${True}"
-            py:emphasized_selection="${False}">
+            py:highlighted_selection="${False}">
+            <py:with py:def="entry" py:args="item" data-woost-item="${item.id}"/>
         </py:woost.views.Menu>
     </div>
 

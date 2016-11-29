@@ -5,7 +5,8 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail.html import Element
-from woost.models import get_current_user, ReadPermission
+from woost import app
+from woost.models import ReadPermission
 
 
 class Link(Element):
@@ -40,7 +41,7 @@ class Link(Element):
             )
             and not (
                 self.content_check & self.REQUIRE_READABLE
-                and not get_current_user().has_permission(
+                and not app.user.has_permission(
                     ReadPermission,
                     target = self.value
                 )

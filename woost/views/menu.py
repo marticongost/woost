@@ -45,7 +45,7 @@ class Menu(TreeView):
 
         self.depends_on(self.root)
 
-        if self.selection is None:
+        if self.highlighted_selection and self.selection is None:
             self.selection = app.navigation_point
 
         TreeView._ready(self)
@@ -82,7 +82,11 @@ class Menu(TreeView):
 
         label.append(self.get_item_label(item))
 
-        if self.emphasized_selection and item is self.selection:
+        if (
+            self.highlighted_selection
+            and self.emphasized_selection
+            and item is self.selection
+        ):
             if label.tag == "a":
                 label = Element("strong", children = [label])
             else:
