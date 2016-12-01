@@ -137,7 +137,7 @@ from woost.controllers.backoffice.useractions import get_view_actions
     <img
         py:def="action_image"
         py:args="action, extra"
-        src="${action.icon_uri}"/>
+        src="${normalize_resource_uri(action.icon_uri)}"/>
 
     <div py:def="additional_actions_selector" class="selector">
         <span class="label">${translations("woost.views.ActionBar.additional_actions")}</span>
