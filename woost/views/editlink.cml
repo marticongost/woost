@@ -48,7 +48,7 @@ from woost.models.utils import any_translation
             path = ["delete"]
             parameters["selection"] = self.target.id,
 
-        return backoffice.get_uri(path = path, **parameters)
+        return backoffice.get_uri(path = path, parameters = parameters)
     ?>
 
     <py:ready>
