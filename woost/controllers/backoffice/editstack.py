@@ -20,6 +20,7 @@ from cocktail.modeling import (
     ListWrapper,
     OrderedSet
 )
+from cocktail.urls import URL
 from cocktail.events import Event, EventHub, event_handler
 from cocktail.pkgutils import resolve
 from cocktail import schema
@@ -222,7 +223,11 @@ class EditStacksManager(object):
         """
         edit_stack = resolve(self._edit_stack_class)()
         edit_stack.id = session.get(self._session_id_key, 0)
-        edit_stack.root_url = cherrypy.request.params.get("root_url")
+
+        root_url = cherrypy.request.params.get("root_url")
+        if root_url:
+            edit_stack.root_url = URL(root_url)
+
         session[self._session_id_key] = edit_stack.id + 1
         self.__stack_map[edit_stack.id] = edit_stack
 
