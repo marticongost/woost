@@ -166,7 +166,7 @@ class OpenGraphExtension(Extension):
 
                 key = "opengraph.categories." + category_id
 
-                for language in translations:
+                for language in Configuration.instance.languages:
                     label = translations(key, language)
                     if label:
                         og_category.set("title", label, language)
@@ -191,7 +191,7 @@ class OpenGraphExtension(Extension):
 
                     key = "opengraph.types." + type_id
 
-                    for language in translations:
+                    for language in Configuration.instance.languages:
                         label = translations(key, language)
                         if label:
                             og_type.set("title", label, language)
