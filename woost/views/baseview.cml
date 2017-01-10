@@ -186,6 +186,27 @@ from woost.models import Configuration, Publishable, Document
             # Add a CSS class based on the page's name
             if publishable.qname:
                 self.add_class(publishable.qname.replace(".", "-"))
+
+            # Setup client-side grid tracking
+            theme = app.theme
+            if theme is not None:
+                grid = theme.grid
+                if grid is not None:
+                    element.add_resource("woost://scripts/grid.js")
+                    element.set_client_variable("woost.grid.margin", 50)
+                    element.set_client_variable("woost.grid.columnCount", grid.column_count)
+                    element.set_client_variable(
+                        "woost.grid.sizes",
+                        [
+                            {
+                                "identifier": size.identifier,
+                                "minWidth": size.min_width,
+                                "columnWidth": size.column_width,
+                                "columnSpacing": size.column_spacing
+                            }
+                            for size in grid.sizes
+                        ]
+                    )
         ?>
     </py:ready>
 
