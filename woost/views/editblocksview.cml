@@ -93,12 +93,20 @@ from woost.models import Block, Configuration, block_type_groups
     <div
         py:id="block_picker_dialog"
         py:client_model="woost.views.blockPickerDialog">
+
         <py:ready>
             <?py
             if Configuration.instance.common_blocks:
                 element.add_class("with_common_blocks")
             ?>
         </py:ready>
+
+        <input type="search" py:local_id="search_box"/>
+
+        <button type="button" py:local_id="dialog_close_button">
+            <img src="@{normalize_resource_uri('cocktail://images/close.png')}"/>
+        </button>
+
         <div py:id="dialog_panels">
             <div py:local_id="new_blocks_panel">
                 <div py:local_id="panel_header">
@@ -141,11 +149,6 @@ from woost.models import Block, Configuration, block_type_groups
                             py:for="common_block in self._common_blocks"/>
                     </py:ready>
                 </form>
-            </div>
-            <div py:local_id="dialog_buttons">
-                <button py:local_id="cancel_button">
-                    ${translations("woost.views.EditBlocksView.dialog_buttons.cancel_button")}
-                </button>
             </div>
         </div>
     </div>

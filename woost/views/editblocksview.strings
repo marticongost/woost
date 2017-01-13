@@ -17,16 +17,16 @@
         en: Apply
 
     [new_blocks_panel.panel_header]
-    ca: Crear un nou bloc
-    es: Crear un bloque nuevo
-    en: Create a new block
+    ca: Bloc nou
+    es: Bloque nuevo
+    en: New block
 
     [common_blocks_panel.panel_header]
-    ca: Afegir un bloc existent
-    es: Añadir un bloque existente
-    en: Add an existing block
+    ca: Blocs comuns
+    es: Bloques comunes
+    en: Common blocks
 
-    [dialog_buttons.cancel_button]
+    [dialog_close_button]
     ca: Cancel·lar
     es: Cancelar
     en: Cancel
