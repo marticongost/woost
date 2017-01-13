@@ -12,6 +12,7 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
 
     var $dialog;
     var $searchBox;
+    var entrySelector = ".palette_entry, .common_block_entry";
 
     $slotList.find(".block_picker").click(function () {
 
@@ -22,9 +23,56 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
 
             $searchBox = $dialog.find(".search_box");
             cocktail.searchable($dialog, {
-                entriesSelector: ".palette_entry, .common_block_entry",
+                entriesSelector: entrySelector,
                 entryGroupsSelector: ".palette_group"
             });
+
+            var $selectedEntry = null;
+
+            function setSelectedEntry(entry) {
+                if ($selectedEntry) {
+                    jQuery($selectedEntry).removeClass("selected");
+                }
+                $selectedEntry = jQuery(entry)
+                    .addClass("selected")
+                    .scrollintoview();
+            }
+
+            $searchBox.on("keydown", function (e) {
+                var key = e.charCode || e.keyCode;
+                // Down
+                if (key == 40) {
+                    var $visibleEntries = $dialog[0].getSearchableEntries().filter(":visible");
+                    var index = $visibleEntries.index($selectedEntry);
+                    if (index + 1 < $visibleEntries.length) {
+                        setSelectedEntry($visibleEntries[index + 1]);
+                    }
+                    return false;
+                }
+                // Up
+                else if (key == 38) {
+                    var $visibleEntries = $dialog[0].getSearchableEntries().filter(":visible");
+                    var index = $visibleEntries.index($selectedEntry);
+                    if (index > 0) {
+                        setSelectedEntry($visibleEntries[index - 1]);
+                    }
+                    return false;
+                }
+                // Enter
+                else if (key == 13) {
+                    if ($selectedEntry) {
+                        $selectedEntry.find("button").click();
+                    }
+                }
+            });
+
+            $dialog.on("searched", function () {
+                var $visibleEntries = $dialog[0].getSearchableEntries().filter(":visible");
+                if (!($selectedEntry && $selectedEntry.is(":visible"))) {
+                    setSelectedEntry($visibleEntries.first());
+                }
+            });
+
             $dialog[0].applySearch("");
         }
 
