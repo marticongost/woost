@@ -11,13 +11,21 @@
 cocktail.bind(".EditBlocksSlotList", function ($slotList) {
 
     var $dialog;
+    var $searchBox;
 
     $slotList.find(".block_picker").click(function () {
 
         if (!$dialog) {
             $dialog = jQuery(cocktail.instantiate("woost.views.blockPickerDialog"));
             $dialog.addClass("EditBlocksSlotList-block_picker_dialog");
-            $dialog.find(".cancel_button").click(function () { cocktail.closeDialog(); });
+            $dialog.find(".dialog_close_button").on("click", function () { cocktail.closeDialog(); });
+
+            $searchBox = $dialog.find(".search_box");
+            cocktail.searchable($dialog, {
+                entriesSelector: ".palette_entry, .common_block_entry",
+                entryGroupsSelector: ".palette_group"
+            });
+            $dialog[0].applySearch("");
         }
 
         $dialog.find("[name=block_parent]").val($slotList.get(0).blockParent);
@@ -31,6 +39,7 @@ cocktail.bind(".EditBlocksSlotList", function ($slotList) {
 
         cocktail.showDialog($dialog);
         cocktail.center($dialog.get(0));
+        $searchBox.focus();
         return false;
     });
 });
