@@ -125,6 +125,24 @@
     padding: 0;
 }
 
+.block_picker_dialog .new_blocks_palette .palette_entry,
+.block_picker_dialog .common_blocks_panel .common_block_entry {
+    margin: 0 !important;
+    padding: 0.3em;
+    margin-left: -0.3em;
+}
+
+.block_picker_dialog .new_blocks_palette .palette_entry.selected,
+.block_picker_dialog .common_blocks_panel .common_block_entry.selected {
+    background-color: #666;
+    border-radius: 3px;
+}
+
+.block_picker_dialog .new_blocks_palette .palette_entry.selected .type_label,
+.block_picker_dialog .common_blocks_panel .common_block_entry.selected .text_wrapper {
+    color: white;
+}
+
 .block_picker_dialog .new_blocks_panel button,
 .block_picker_dialog .common_blocks_panel button {
     display: inline-block;
@@ -147,10 +165,6 @@
 
 .block_picker_dialog .new_blocks_panel .new_blocks_palette .palette_entry .type_label {
     font-size: 0.9em;
-}
-
-.block_picker_dialog .common_blocks_panel .common_block_entry.match ~ .common_block_entry.match {
-    margin-top: 0.3em;
 }
 
 .block_picker_dialog .common_blocks_panel .ItemLabel {
