@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    list_type = "div"
+    blocks = None
+    background_image = None
+    background_image_factory = None
+    link_destination = None
+    link_parameters = None
+    link_opens_in_new_window = False
+    ?>
+
+    <py:ready>
+        <?py
+        if self.background_image:
+            element.set_style(
+                "background-image",
+                "url('%s')" % self.background_image.get_image_uri(self.background_image_factory)
+            )
+
+        if self.link_parameters:
+
+            parameters = {}
+
+            for chunk in self.link_parameters.split("\n"):
+                parts = chunk.split("=")
+                if len(parts) == 2:
+                    parameters[parts[0].strip()] = parts[1].strip()
+
+            self.block_link.parameters = parameters
+        ?>
+    </py:ready>
+
+    <py:woost.views.Link
+        py:id="block_link"
+        py:inactive_behavior="${element.BECOME_TRANSPARENT}"
+        py:content_check="${element.NO_CHECK}"
+        py:value="@{self.link_destination}">
+
+        <py:woost.views.BlockList
+            py:id="blocks_list"
+            py:blocks="@{self.blocks}"/>
+
+    </py:woost.views.Link>
+
+</div>
+

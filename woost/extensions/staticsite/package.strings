@@ -1,0 +1,33 @@
+
+[woost.extensions.staticsite.StaticSiteExtension]
+ca: Lloc web estàtic
+es: Sitio web estático
+en: Static website
+
+    [plural]
+    ca: Lloc web estàtic
+    es: Sitio web estático
+    en: Static website
+
+    [members]
+
+        [file_extension]
+        ca: Extensió de fitxer
+        es: Extensión de fichero
+        en: File extension
+
+        [snapshoters]
+        ca: Exportadors
+        es: Exportadores
+        en: Exporters
+
+        [destinations]
+        ca: Destins
+        es: Destinos
+        en: Destinations
+
+[woost.actions.export_static]
+ca: Exportar contingut estàtic
+es: Exportar contenido estático
+en: Export static content
+

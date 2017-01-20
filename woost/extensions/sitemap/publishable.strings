@@ -1,0 +1,63 @@
+
+[woost.models.publishable.Publishable]
+
+    [members]
+
+        [sitemap_change_frequency]
+        ca: Freqüència d'actualització
+        es: Frecuencia de actualización
+        en: Change frequency
+
+            [values]
+
+                [always]
+                ca: Sempre
+                es: Siempre
+                en: Always
+
+                [hourly]
+                ca: Cada hora
+                es: Cada hora
+                en: Hourly
+
+                [daily]
+                ca: Diària
+                es: Diaria
+                en: Daily
+
+                [weekly]
+                ca: Setmanal
+                es: Semanal
+                en: Weekly
+
+                [monthly]
+                ca: Mensual
+                es: Mensual
+                en: Monthly
+
+                [yearly]
+                ca: Anual
+                es: Anual
+                en: Yearly
+
+                [never]
+                ca: Mai
+                es: Nunca
+                en: Never
+
+        [sitemap_priority]
+        ca: Prioritat
+        es: Prioridad
+        en: Priority
+
+            [explanation]
+            ca:
+                Prioritat relativa de l'element respecte la resta de pàgines del
+                lloc web. S'expressa com un valor decimal entre 0 i 1.
+            es:
+                Prioridad relativa del elemento respecto al resto de páginas del
+                sitio web. Se expresa como un valor decimal entre 0 y 1.
+            en:
+                Relative priority of the element, relative to other site content.
+                Expressed as a decimal number, ranging from 0 to 1.
+

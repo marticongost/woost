@@ -1,0 +1,8 @@
+
+[woost.views.ItemDisplay]
+
+    [toggle_button]
+    ca: Mostrar detalls de l'element
+    es: Mostrar detalles del elemento
+    en: Show details for this item
+

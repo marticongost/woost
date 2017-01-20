@@ -1,0 +1,8 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowTransitionView]
+
+    [transition_explanation]
+    ca: Es canviarà l'estat de les següents peticions:
+    es: Se cambiará el estado de las peticiones siguientes:
+    en: The state of the following requests will be changed:
+

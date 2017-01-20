@@ -1,0 +1,10 @@
+
+[woost.extensions.ecommerce.productcontroller]
+
+    [product_added_notice(product)]
+    ca: S'ha afegit <strong>t{product}</strong> a la cistella
+    es: Se ha añadido <strong>t{product}</strong> a la cesta
+    en: <strong>t{product}</strong> added to the shopping basket
+    fr: <strong>t{product}</strong> ajouté au panier
+    pt: Adicionado <strong>t{product}</strong> à cesta da compra
+

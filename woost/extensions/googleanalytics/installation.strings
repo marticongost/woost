@@ -1,0 +1,30 @@
+
+[woost.extensions.googleanalytics]
+
+    [default_custom_definitions]
+
+        [locale.title]
+        ca: Woost: idioma
+        es: Woost: idioma
+        en: Woost: locale
+
+        [roles.title]
+        ca: Woost: rols d'usuari
+        es: Woost: roles de usuario
+        en: Woost: user roles
+
+        [path.title]
+        ca: Woost: camí
+        es: Woost: camino
+        en: Woost: path
+
+        [publishable.title]
+        ca: Woost: publicable
+        es: Woost: publicable
+        en: Woost: publishable
+
+        [type.title]
+        ca: Woost: tipus
+        es: Woost: tipo
+        en: Woost: type
+

@@ -1,0 +1,79 @@
+
+[woost.extensions.attributes.attribute.Attribute]
+ca: Atribut
+es: Atributo
+en: Attribute
+
+    [plural]
+    ca: Atributs
+    es: Atributos
+    en: Attributes
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [enabled]
+        ca: Actiu
+        es: Activo
+        en: Active
+
+        [content_types]
+        ca: Continguts a etiquetar
+        es: Contenidos a etiquetar
+        en: Content types
+
+        [scope]
+        ca: Àmbit d'aplicació
+        es: Ámbito de aplicación
+        en: Application scope
+
+            [values]
+
+                [any]
+                ca: Pàgines i enllaços
+                es: Páginas y enlaces
+                en: Pages and references
+
+                [page]
+                ca: Només pàgines
+                es: Solo páginas
+                en: Pages only
+
+                [ref]
+                ca: Només enllaços
+                es: Solo enlaces
+                en: References only
+
+        [attribute_name]
+        ca: Nom de l'atribut
+        es: Nombre del atributo
+        en: Attribute name
+
+            [explanation]
+            ca:
+                El nom de l'atribut HTML que es generarà. Hauria de començar
+                per <code>data-</code> i constar només de lletres en minúscula,
+                números i guions. Es recomana utilitzar un sistema de prefixos.
+                Exemples: <code>data-woost-user</code>,
+                <code>data-myproject-myattribute</code>.
+            es:
+                El nombre del atributo HTML se generará. Debería empezar por
+                <code>data-</code> y constar únicamente de letras en minúscula,
+                números y guiones. Se recomienda utilizar un sistema de prefijos.
+                Ejemplos: <code>data-woost-user</code>,
+                <code>data-myproject-myattribute</code>.
+            en:
+                The name of the HTML attribute to generate. Should start with
+                <code>data-</code> and contain only lowercase letters, numbers and
+                dashes. Examples: <code>data-woost-user</code>,
+                <code>data-myproject-myattribute</code>.
+
+        [code]
+        ca: Valor
+        es: Valor
+        en: Value
+

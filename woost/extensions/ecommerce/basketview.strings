@@ -1,0 +1,98 @@
+
+[woost.extensions.ecommerce.BasketView]
+
+    [basket_table_total_header]
+    ca: Total
+    es: Total
+    en: Total
+	fr: Total
+    pt: Total
+
+    [delete_purchase_button]
+    ca: Treure
+    es: Quitar
+    en: Remove
+	fr: Supprimer
+    pt: Eliminar
+
+    [empty_basket_button]
+    ca: Buidar la cistella
+    es: Vaciar la cesta
+    en: Empty the basket
+	fr: Vider le panier
+    pt: Esvaziar a cesta
+
+    [set_quantities_button]
+    ca: Establir quantitats
+    es: Establecer cantidades
+    en: Set quantities
+	fr: Fixer les montants
+    pt: Indique quantidades
+
+    [empty_basket_notice]
+    ca: La cistella de la compra està buida.
+    es: La cesta de la compra está vacía.
+    en: The shopping basket is empty.
+	fr: Le panier est vide.
+    pt: A cesta està vazia.
+
+    [shipping_costs]
+    ca: Costos d'enviament
+    es: Costes de envío
+    en: Shipping costs
+    fr: Frais d'expédition
+    pt: Custos de envio
+
+    [taxes]
+    ca: Taxes
+    es: Tasas
+    en: Taxes
+	fr: Taux
+    pt: Impostos
+
+    [order_schema]
+
+        [members]
+
+            [product]
+            ca: Producte
+            es: Producto
+            en: Product
+            fr: Produit
+            pt: Produto
+
+            [quantity]
+            ca: Quantitat
+            es: Cantidad
+            en: Quantity
+            fr: Quantité
+            pt: Quantidade
+
+            [price]
+            ca: Preu
+            es: Precio
+            en: Price
+            fr: Prix
+            pt: Preço
+
+            [subtotal]
+            ca: Subtotal
+            es: Subtotal
+            en: Subtotal
+            fr: Sous-total
+            pt: Subtotal
+
+            [taxes]
+            ca: Taxes
+            es: Tasas
+            en: Taxes
+            fr: Impôts
+            pt: Impostos
+
+            [total]
+            ca: Total
+            es: Total
+            en: Total
+            fr: Total
+            pt: Total
+

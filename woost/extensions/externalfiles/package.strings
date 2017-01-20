@@ -1,0 +1,11 @@
+
+[woost.extensions.externalfiles.ExternalFilesExtension]
+ca: Fitxers externs
+es: Ficheros externos
+en: External files
+
+    [plural]
+    ca: Fitxers externs
+    es: Ficheros externos
+    en: External files
+

@@ -1,0 +1,11 @@
+
+[woost.extensions.mailer.MailerExtension]
+ca: Enviament de documents per correu electrònic
+es: Envio de documentos por correo electrónico
+en: Sending documents by email
+
+    [plural]
+    ca: Enviament de documents per correu electrònic
+    es: Envio de documentos por correo electrónico
+    en: Sending documents by email
+

@@ -1,0 +1,13 @@
+
+[woost.extensions.translationworkflow.TranslationWorkflowPathEditor]
+
+    [source_language_label]
+    ca: De
+    es: De
+    en: From
+
+    [target_language_label]
+    ca: a
+    es: a
+    en: to
+

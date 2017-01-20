@@ -1,0 +1,19 @@
+
+[woost.controllers.documentcontroller]
+
+    [redirection_title]
+    ca: Redirigint
+    es: Redirigiendo
+    en: Redirecting
+
+    [redirection_explanation(uri)]
+    ca:
+        Redirigint a la pàgina seleccionada. Si no s'obre, fes clic
+        <a id='woost-client-redirection' href='${uri}'>aquí</a>.
+    es:
+        Redirigiendo a la página seleccionada. Si no se abre, haz clic
+        <a id='woost-client-redirection' href='${uri}'>aquí</a>.
+    en:
+        Redirecting to the selected page. If it doesn't load, click "
+        <a id='woost-client-redirection' href='${uri}'>here</a>.
+
