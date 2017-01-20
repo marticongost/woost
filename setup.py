@@ -108,7 +108,8 @@ of its features include:\n"
             "forms = woost.extensions.forms:FormsExtension",
             "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension",
             "identity = woost.extensions.identity:IdentityExtension",
-            "attributes = woost.extensions.attributes:AttributesExtension"
+            "attributes = woost.extensions.attributes:AttributesExtension",
+            "nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
