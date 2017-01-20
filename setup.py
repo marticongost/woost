@@ -110,7 +110,8 @@ of its features include:\n"
             "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension",
             "identity = woost.extensions.identity:IdentityExtension",
             "attributes = woost.extensions.attributes:AttributesExtension",
-            "staticpub = woost.extensions.staticpub:StaticPubExtension"
+            "staticpub = woost.extensions.staticpub:StaticPubExtension",
+			"nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client
