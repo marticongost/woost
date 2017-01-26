@@ -7,6 +7,7 @@ u"""
 @since:			February 2009
 """
 from cocktail.translations import get_language, translate_locale
+from cocktail.events import when
 from cocktail.html.element import Element
 from cocktail.html import templates
 from cocktail.html.utils import rendering_xml
@@ -111,10 +112,10 @@ class LanguageSelector(LinkSelector):
         link["lang"] = value
         link["hreflang"] = value
 
-        @link.when_ready
-        def set_xml_lang():
+        @when(link.ready_stage)
+        def set_xml_lang(e):
             if rendering_xml():
-                link["xml:lang"] = value
+                e.source["xml:lang"] = value
 
         return link
 

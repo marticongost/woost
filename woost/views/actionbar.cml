@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?py
+from weakref import ref
 from itertools import chain
 from cocktail import schema
 from cocktail.pkgutils import get_full_name
@@ -32,21 +33,32 @@ from woost.controllers.backoffice.useractions import get_view_actions
 
     def connect_selectable(self, selectable):
 
-        @self.when_ready
-        def pass_selectable_to_client():
-            self.set_client_param(
-                "selectable",
-                "#" + selectable.require_id()
-            )
+        # Use weak references to prevent the event handlers from keeping the
+        # elements alive
+        action_bar_ref = ref(self)
+        selectable_ref = ref(selectable)
 
-        @selectable.when_binding
-        def update_selectable_action_context():
-            self.bind()
-            selectable.action_context = self.action_context
-            self.set_client_param(
-                "selectable",
-                "#" + selectable.require_id()
-            )
+        @when(self.ready_stage)
+        def pass_selectable_to_client(e):
+            selectable = selectable_ref()
+            action_bar = e.source
+            if selectable is not None:
+                action_bar.set_client_param(
+                    "selectable",
+                    "#" + selectable.require_id()
+                )
+
+        @when(selectable.binding_stage)
+        def update_selectable_action_context(e):
+            selectable = e.source
+            action_bar = action_bar_ref()
+            if action_bar is not None:
+                action_bar.bind()
+                selectable.action_context = action_bar.action_context
+                action_bar.set_client_param(
+                    "selectable",
+                    "#" + selectable.require_id()
+                )
 
     def get_actions(self, context):
         return [
