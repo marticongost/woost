@@ -40,6 +40,7 @@ from woost.models import (
     ?>
 
     <?resource cocktail://scripts/jquery.cookie.js ?>
+    <?resource cocktail://scripts/jquery.scrollintoview.min.js ?>
     <?resource woost://scripts/editblocksslotlist.js ?>
 
     <py:ready>
