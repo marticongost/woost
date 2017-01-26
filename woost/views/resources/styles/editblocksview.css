@@ -76,35 +76,47 @@
     height: auto;
 }
 
+.block_picker_dialog .dialog_close_button {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.block_picker_dialog .dialog_panels {
+    margin-top: 1.5em;
+}
+
 .block_picker_dialog .new_blocks_panel,
 .block_picker_dialog .common_blocks_panel {
     display: inline-block;
     vertical-align: top;
 }
 
+.block_picker_dialog .common_blocks_panel {
+    margin-left: 1em;
+}
+
 .block_picker_dialog .new_blocks_panel .new_blocks_palette,
 .block_picker_dialog .common_blocks_panel .common_blocks_form {
-    max-height: 40em;
+    height: 60vh;
+    height: 40em;
+    width: 40vw;
+    width: 30em;
     overflow: auto;
-    padding-right: 1em;
-}
-
-.block_picker_dialog .new_blocks_panel {
-    width: 20em;
-}
-
-.block_picker_dialog.with_common_blocks .new_blocks_panel {
-    padding-right: 1em;
-    border-right: 1px dotted #ccc;
-}
-
-.block_picker_dialog .common_blocks_panel {
-    padding-left: 1em;
+    border: 1px solid #ddd;
+    padding: 1em;
 }
 
 .block_picker_dialog .panel_header {
     font-weight: bold;
-    font-size: 1em;
+    font-size: 0.9em;
+    color: #333;
     margin-bottom: 0.8em;
 }
 
@@ -113,6 +125,23 @@
     padding: 0;
 }
 
+.block_picker_dialog .new_blocks_palette .palette_entry,
+.block_picker_dialog .common_blocks_panel .common_block_entry {
+    margin: 0 !important;
+    padding: 0.3em;
+    margin-left: -0.3em;
+}
+
+.block_picker_dialog .new_blocks_palette .palette_entry.selected,
+.block_picker_dialog .common_blocks_panel .common_block_entry.selected {
+    background-color: #666;
+    border-radius: 3px;
+}
+
+.block_picker_dialog .new_blocks_palette .palette_entry.selected .type_label,
+.block_picker_dialog .common_blocks_panel .common_block_entry.selected .text_wrapper {
+    color: white;
+}
 
 .block_picker_dialog .new_blocks_panel button,
 .block_picker_dialog .common_blocks_panel button {
@@ -126,12 +155,16 @@
     cursor: pointer;
 }
 
-.block_picker_dialog .new_blocks_panel .new_blocks_palette .palette_entry .type_label {
-    font-size: 0.9em;
+.block_picker_dialog .new_blocks_palette .palette_group .group_label {
+    margin-top: 0;
 }
 
-.block_picker_dialog .common_blocks_panel .common_block_entry + .common_block_entry {
-    margin-top: 0.3em;
+.block_picker_dialog .new_blocks_palette > li > ul > .palette_group.match ~ .palette_group.match {
+    margin-top: 1em;
+}
+
+.block_picker_dialog .new_blocks_panel .new_blocks_palette .palette_entry .type_label {
+    font-size: 0.9em;
 }
 
 .block_picker_dialog .common_blocks_panel .ItemLabel {
@@ -146,11 +179,6 @@
 
 .block_picker_dialog .common_blocks_panel .ItemLabel img {
     margin-right: 0.4em;
-}
-
-.block_picker_dialog .dialog_buttons {
-    margin-top: 1em;
-    text-align: right;
 }
 
 /* BlockDisplay
