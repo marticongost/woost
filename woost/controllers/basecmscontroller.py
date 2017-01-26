@@ -48,9 +48,12 @@ class BaseCMSController(Controller):
                     % (template, format))
 
         if self.render_as_fragment:
-            return self.view.render(renderer = renderer)
+            html = self.view.render(renderer = renderer)
         else:
-            return self.view.render_page(renderer = renderer)
+            html = self.view.render_page(renderer = renderer)
+
+        self.view.dispose()
+        return html
 
     def application_uri(self, *args, **kwargs):
         """Builds an absolute URI from a set of path components and parameters.
