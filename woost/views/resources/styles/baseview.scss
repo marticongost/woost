@@ -2,6 +2,14 @@
 @import "cocktail://styles/utils";
 @import "theme://";
 
+.ContainerBlockView {
+
+    & > .block_link {
+        display: block;
+        text-decoration: none;
+    }
+}
+
 .TextBlockView {
     overflow: hidden;
 
