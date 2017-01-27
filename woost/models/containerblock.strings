@@ -8,6 +8,18 @@ en: Container
     es: Contenedores
     en: Containers
 
+    [groups]
+
+        [background]
+        ca: Fons
+        es: Fondo
+        en: Background
+
+        [link]
+        ca: Enllaç
+        es: Enlace
+        en: Link
+
     [members]
 
         [blocks]
@@ -51,4 +63,30 @@ en: Container
         ca: Processat per la imatge de fons
         es: Procesado para la imagen de fondo
         en: Processing for the background image
+
+        [link_destination]
+        ca: Destí de l'enllaç
+        es: Destino del enlace
+        en: Linked resource
+
+        [link_parameters]
+        ca: Paràmetres addicionals per l'enllaç
+        es: Parámetros adicionales para el enlace
+        en: Additional URL parameters
+
+            [explanation]
+            ca:
+                Un paràmetre per línia, separant el nom i el valor amb un
+                caràcter '='.
+            es:
+                Un parámetro por linea, separando el nombre y el valor con un
+                caracter '='.
+            en:
+                One parameter per line, with key and value separated by a
+                '=' character.
+
+        [link_opens_in_new_window]
+        ca: Obrir l'enllaç a una nova finestra
+        es: Abrir el enlace en una ventana nueva
+        en: Open the link in a new window
 
