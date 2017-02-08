@@ -17,5 +17,5 @@ def add_sitemap_directives_to_robots_txt(e):
             if first:
                 e.file.write("\n")
                 first = False
-            e.file.write("Sitemap: %s\n" % str(sitemap.get_uri()))
+            e.file.write("Sitemap: %s\n" % str(sitemap.get_uri(host = "!")))
 
