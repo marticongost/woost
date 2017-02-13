@@ -40,7 +40,8 @@ class PaymentsExtension(Extension):
             pasat4b,
             sis,
             paypal,
-            transactionnotifiedtrigger
+            transactionnotifiedtrigger,
+            csrfexemption
         )
 
         # Setup payment controllers
