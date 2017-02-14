@@ -6,7 +6,7 @@ from cocktail.controllers.csrfprotection import (
     CSRFProtectionExemption
 )
 
-
+@when(CSRFProtection.deciding_validation)
 @when(CSRFProtection.deciding_injection)
 def exempt_payment_urls(e):
     url = get_request_url()
