@@ -1,14 +1,33 @@
 
+@init
+def get_field(member):
+    from woost.extensions.forms.fields import Field
+    field_id = member.original_member.field_id
+    return field_id and Field.get_instance(field_id) or None
+
+def field_property(member, *properties):
+
+    field = get_field(member)
+
+    if field:
+        for prop in properties:
+            value = field.get(prop)
+            if value:
+                return value
+
+    return None
+@end
+
 [woost.extensions.forms.fields]
 
     [field_translation(member, **kwargs)]
-    *: ${member.visible_title or member.title}
+    *: ${field_property(member, "visible_title", "title")}
 
         [explanation(member, **kwargs)]
-        *: ${member.explanation}
+        *: ${field_property(member, "explanation")}
 
         [none(member, **kwargs)]
-        *: ${member.empty_label}
+        *: ${field_property(member, "empty_label")}
 
     [FormSubmitDateMember.default_member_translation(member, **kwargs)]
     ca: Data
