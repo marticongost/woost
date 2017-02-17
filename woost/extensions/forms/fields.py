@@ -182,6 +182,7 @@ class Field(Item):
 
     def _init_member(self, member):
 
+        member.field_id = self.id
         member.required = self.is_required_field
 
         if self.__class__.get_member("field_default") is not None:
