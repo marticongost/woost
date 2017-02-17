@@ -286,6 +286,11 @@
             es: Nombre
             en: Name
 
+            [enabled]
+            ca: Activa
+            es: Activa
+            en: Enabled
+
     [EmailAddressField]
     ca: Camp d'adreça de correu electrònic
     es: Campo de dirección de correo electrónico
