@@ -480,7 +480,7 @@ body {
 }
 
 .scripted .ItemCollectionEditor .checkbox_wrapper input[type=checkbox] {
-    position: absolute;
+    position: fixed;
     left: -100px;
     top: -100px;
 }
