@@ -1,0 +1,22 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.nocaptcha]
+        ca: Google noCaptcha
+        es: Google noCaptcha
+        en: Google noCaptcha
+
+    [members]
+
+        [nocaptcha_public_key]
+        ca: Clau pública
+        es: Clave pública
+        en: Public key
+
+        [nocaptcha_private_key]
+        ca: Clau privada
+        es: Clave privada
+        en: Private key
+

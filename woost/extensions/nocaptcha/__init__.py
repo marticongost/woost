@@ -6,17 +6,7 @@ u"""
 from cocktail.translations import translations
 from woost.models import Extension
 
-translations.define("NoCaptchaExtension",
-    ca = u"noCaptcha",
-    es = u"noCaptcha",
-    en = u"noCaptcha"
-)
-
-translations.define("NoCaptchaExtension-plural",
-    ca = u"noCaptcha",
-    es = u"noCaptcha",
-    en = u"noCaptcha"
-)
+translations.load_bundle("woost.extensions.nocaptcha.package")
 
 class NoCaptchaExtension(Extension):
 
@@ -37,5 +27,5 @@ class NoCaptchaExtension(Extension):
         )
 
     def _load(self):
-        from woost.extensions.nocaptcha import configuration, strings, website
+        from woost.extensions.nocaptcha import configuration, website
 
