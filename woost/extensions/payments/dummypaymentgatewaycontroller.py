@@ -44,5 +44,5 @@ class DummyPaymentGatewayController(PaymentGatewayController):
         if redirection is None:
             redirection = app.website.home
 
-        redirection(redirection.get_uri(host = "!"))
+        redirect(redirection.get_uri(host = "!"))
 
