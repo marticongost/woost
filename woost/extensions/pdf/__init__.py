@@ -8,6 +8,7 @@
 """
 from cocktail.translations import translations
 from cocktail import schema
+from woost import app
 from woost.models import Extension
 
 translations.load_bundle("woost.extensions.pdf.package")
