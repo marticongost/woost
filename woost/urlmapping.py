@@ -27,6 +27,7 @@ class URLMapping(object):
         publishable = None,
         language = None,
         website = None,
+        scheme = None,
         host = "?",
         path = None,
         parameters = None,
@@ -47,8 +48,7 @@ class URLMapping(object):
                 website = Configuration.instance.websites[0]
 
         # HTTPS policy
-        scheme = None
-        if website:
+        if scheme is None and website:
             https_policy = website.https_policy
             if (
                 https_policy == "always"
