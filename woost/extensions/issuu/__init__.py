@@ -77,7 +77,10 @@ class IssuuExtension(Extension):
 
         from cocktail.html import templates
         from woost.extensions.issuu.issuudocument import IssuuDocument
-        from woost.views.viewfactory import publishable_view_factory
+        from woost.views.viewfactory import (
+            publishable_view_factory,
+            publishable_grid_view_factory
+        )
 
         def issuu_viewer(item, parameters):
             viewer = templates.new("cocktail.html.IssuuViewer")
@@ -86,6 +89,12 @@ class IssuuExtension(Extension):
             return viewer
 
         publishable_view_factory.register_first(
+            IssuuDocument,
+            "issuu_viewer",
+            issuu_viewer
+        )
+
+        publishable_grid_view_factory.register_first(
             IssuuDocument,
             "issuu_viewer",
             issuu_viewer
