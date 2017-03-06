@@ -163,7 +163,7 @@ class IssuuDocument(Publishable):
                     self.issuu_document_id = None
 
             if self.issuu_config_id is None:
-                url = URL(self.issuu_document_url).merge(query = {"e": 0})
+                url = URL(self.issuu_document_url).merge("?e=0")
                 response = urlopen(url, timeout = timeout)
                 status = response.getcode()
                 body = response.read()
