@@ -219,7 +219,7 @@ class ECommercePurchase(Item):
                 member is not cls.product
                 and member is not cls.order
                 and member.visible
-                and member.editable
+                and member.editable == schema.EDITABLE
                 and issubclass(member.schema, ECommercePurchase)
                 and get_current_user().has_permission(
                     ModifyMemberPermission,
