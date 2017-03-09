@@ -114,13 +114,13 @@ class BasketController(FormProcessor, Controller):
 
         def after_submit(self):
             purchase = self.instance["purchase"]
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.ecommerce.delete_purchase_notice",
                     product = self.deleted_product
                 ),
                 category = "success"
-            )
+            ).emit()
             Location.get_current().go("GET")
 
     class EmptyBasketForm(Form):
@@ -132,10 +132,10 @@ class BasketController(FormProcessor, Controller):
             Basket.empty()
 
         def after_submit(self):
-            notify_user(
+            Notification(
                 translations("woost.extensions.ecommerce."
                              "empty_basket_notice"),
                 category = "success"
-            )
+            ).emit()
             Location.get_current().go("GET")
 
