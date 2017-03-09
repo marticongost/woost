@@ -177,7 +177,7 @@ class ECommerceOrder(Item):
 
     total_price = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False,
         translate_value = _translate_amount
     )
@@ -188,12 +188,12 @@ class ECommerceOrder(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY,
     )
 
     total_shipping_costs = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False,
         translate_value = _translate_amount
     )
@@ -204,12 +204,12 @@ class ECommerceOrder(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY,
     )
 
     total_taxes = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         listed_by_default = False,
         translate_value = _translate_amount
     )
@@ -220,12 +220,12 @@ class ECommerceOrder(Item):
         related_end = schema.Collection(
             block_delete = True
         ),
-        editable = False
+        editable = schema.READ_ONLY
     )
 
     total = schema.Money(
         member_group = "billing",
-        editable = False,
+        editable = schema.READ_ONLY,
         translate_value = _translate_amount
     )
 
@@ -415,7 +415,20 @@ class ECommerceOrder(Item):
     def get_public_adapter(cls):
         user = get_current_user()
         adapter = schema.Adapter()
-        adapter.exclude(["website", "customer", "status", "purchases"])
+        adapter.exclude([
+            "website",
+            "customer",
+            "status",
+            "purchases",
+            "language",
+            "total_price",
+            "pricing",
+            "total_shipping_costs",
+            "shipping_costs",
+            "total_taxes",
+            "taxes",
+            "total"
+        ])
         adapter.exclude([
             member.name
             for member in cls.iter_members()
