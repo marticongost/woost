@@ -1,0 +1,11 @@
+--- productcontroller.py
++++ productcontroller.py
+@@ -24,7 +24,7 @@
+ 
+         @request_property
+         def product(self):
+-            return self.controller.context["publishable"]
++            return app.publishable
+ 
+         @request_property
+         def model(self):
