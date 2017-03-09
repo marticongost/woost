@@ -33,6 +33,7 @@ from cocktail import schema
                 self._adapter.copy(member.name)
 
             self._adapter.export_schema(model, adapted_schema)
+            self._adapted_schemas[model] = adapted_schema
         else:
             adapted_schema = self._adapted_schemas[model]
 
