@@ -133,7 +133,7 @@ from woost.extensions.ecommerce.basket import Basket
             ?>
         </py:binding>
 
-        <py:block py:def="product_display" py:args="purchase, member">
+        <py:block py:def="product_display" py:args="purchase, member, value, **context">
             <a
                 py:local_id="product_image_link"
                 href="${purchase.product.get_uri()}">
@@ -157,7 +157,7 @@ from woost.extensions.ecommerce.basket import Basket
 
         <?py
         @extend(basket_table)
-        def create_quantity_display(basket_table, purchase, member):
+        def create_quantity_display(basket_table, purchase, member, value, **context):
             if not self.editable:
                 return Content(str(purchase.quantity))
             else:
@@ -168,7 +168,7 @@ from woost.extensions.ecommerce.basket import Basket
                 return display
         ?>
 
-        <div py:def="actions_display" py:args="purchase, member">
+        <div py:def="actions_display" py:args="purchase, member, value, **context">
             <button
                 py:local_id="delete_purchase_button"
                 type="submit"
@@ -180,13 +180,13 @@ from woost.extensions.ecommerce.basket import Basket
 
         <py:new
             py:element="self.create_price_label(['purchases', purchase, 'price', 'cost'])"
-            py:def="price_display" py:args="purchase, member"/>
+            py:def="price_display" py:args="purchase, member, value, **context"/>
 
         <py:new
             py:element="self.create_price_label(['purchases', purchase, 'price', 'total'])"
-            py:def="subtotal_display" py:args="purchase, member"/>
+            py:def="subtotal_display" py:args="purchase, member, value, **context"/>
 
-        <div py:def="taxes_display" py:args="purchase, member">
+        <div py:def="taxes_display" py:args="purchase, member, value, **context">
             <ul>
                 <?py
                 purchase_taxes = purchase.calculate_costs()["taxes"]["concepts"]
@@ -199,7 +199,7 @@ from woost.extensions.ecommerce.basket import Basket
 
         <py:new
             py:element="self.create_price_label(['purchases', purchase, 'total'])"
-            py:def="total_display" py:args="purchase, member"/>
+            py:def="total_display" py:args="purchase, member, value, **context"/>
 
         <py:with py:element="basket_table.body">
             <py:ready>
