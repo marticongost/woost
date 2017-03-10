@@ -4,7 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Slot, Block, ElementType
+from woost.models import Slot, Block
 
 
 class OrderStepsContainerBlock(Block):
