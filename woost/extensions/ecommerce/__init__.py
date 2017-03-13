@@ -89,6 +89,7 @@ class ECommerceExtension(Extension):
         def ecommerce_state(self):
 
             cherrypy.response.headers["Content-Type"] = "text/javascript"
+            cherrypy.response.headers["Cache-Control"] = "no-cache"
             order = Basket.get(create_new = False)
             if order:
                 order.update_cost()
