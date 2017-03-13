@@ -25,11 +25,11 @@ def describe_agreement_subject(member, link = True):
 
     [FormAgreement.default_member_translation(member, **kwargs)]
     ca:
-        He llegit i accepto ${describe_agreement_subject(member)} d'aquest formulari.
+        He llegit i accepto ${describe_agreement_subject(member)}
     es:
-        He leído y acepto ${describe_agreement_subject(member)} de este formulario.
+        He leído y acepto ${describe_agreement_subject(member)}
     en:
-        I have read and agree to the ${describe_agreement_subject(member)} of this form.
+        I have read and agree to the ${describe_agreement_subject(member)}
 
     [ConsentNotGivenError.instance(error)]
     ca:
