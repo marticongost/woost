@@ -45,29 +45,31 @@
         en: Payment types
         fr: Moyen de paiement
 
-            [values]
+            [items]
 
-                [payment_gateway]
-                ca: Pagament en línia
-                es: Pago en línea
-                en: On-line payment
-                fr: Paiement on-line
+                [values]
 
-                [transfer]
-                ca: Transferència
-                es: Transferencia
-                en: Transfer
-                fr: Transfert
+                    [payment_gateway]
+                    ca: Pagament en línia
+                    es: Pago en línea
+                    en: On-line payment
+                    fr: Paiement on-line
 
-                [cash_on_delivery]
-                ca: Contra reemborsament
-                es: Contra reembolso
-                en: Cash on delivery
-                fr: Contre remboursement
-                pt: Pagamento à cobrança
+                    [transfer]
+                    ca: Transferència
+                    es: Transferencia
+                    en: Transfer
+                    fr: Transfert
 
-                [ecommerce_payment_gateway]
-                ca: Passarel·la de pagament per la botiga
-                es: Pasarela de pago para la tienda
-                en: Payment gateway for shop
+                    [cash_on_delivery]
+                    ca: Contra reemborsament
+                    es: Contra reembolso
+                    en: Cash on delivery
+                    fr: Contre remboursement
+                    pt: Pagamento à cobrança
+
+        [ecommerce_payment_gateway]
+        ca: Passarel·la de pagament per la botiga
+        es: Pasarela de pago para la tienda
+        en: Payment gateway for shop
 
