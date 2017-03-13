@@ -2,7 +2,7 @@
 @init
 def describe_agreement_subject(member, link = True):
     label = (
-        translations(member, suffix = "agreement_subject")
+        translations(member, suffix = ".agreement_subject")
         or translations("woost.controllers.formagreement.default_subject")
     )
     if member.agreement_document and link:
