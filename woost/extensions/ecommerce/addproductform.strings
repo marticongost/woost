@@ -5,6 +5,7 @@
     ca: Afegir a la cistella
     es: Añadir a la cesta
     en: Add to basket
+    pt: Adicionar à cesta
 	fr: Ajouter au panier
 
     [submit_button]
@@ -12,4 +13,5 @@
     es: Añadir
     en: Add
 	fr: Ajouter
+    pt: Adicionar
 
