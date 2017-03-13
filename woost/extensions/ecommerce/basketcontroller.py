@@ -49,7 +49,7 @@ class BasketController(FormProcessor, Controller):
         def model(self):
             model = schema.Schema("SetQuantitiesForm", members = [
                 schema.Collection("quantity",
-                    items = schema.Integer(min = 1),
+                    items = schema.Integer(min = 1, required = True),
                     length = len(Basket.get().purchases)
                 )
             ])
