@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 from decimal import Decimal
+from cocktail.translations import format_money
 from cocktail import schema
 from cocktail.html import Element, Content
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
@@ -23,7 +24,7 @@ from woost.extensions.ecommerce.basket import Basket
         schema.Decimal("total"),
         schema.Member("actions")
     ])
-    currency = u"€"
+    currency = u"EUR"
     editable = False
     embeded = False
     link_products = True
@@ -38,7 +39,7 @@ from woost.extensions.ecommerce.basket import Basket
     form_errors = ()
 
     def format_amount(self, amount):
-        return "%s %s" % (translations(amount.quantize(Decimal("1.00"))), self.currency)
+        return format_money(amount, self.currency)
 
     def create_subtotal_cell(self, member):
         factory = getattr(self, "create_%s_subtotal_cell" % member.name, None)
