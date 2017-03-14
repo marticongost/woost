@@ -26,6 +26,9 @@ from woost.extensions.ecommerce.basket import Basket
     currency = u"€"
     editable = False
     embeded = False
+    link_products = True
+    show_images = True
+    image_factory = "ecommerce_basket_thumbnail"
 
     apply_pricing = True
     apply_shipping_costs = True
@@ -60,6 +63,9 @@ from woost.extensions.ecommerce.basket import Basket
         cell = Element("td") if factory is None else factory()
         cell.add_class("%s_column" % member.name)
         return cell
+
+    def get_purchase_label(self, purchase):
+        return translations(purchase.product)
     ?>
 
     <py:ready>
@@ -133,27 +139,39 @@ from woost.extensions.ecommerce.basket import Basket
             ?>
         </py:binding>
 
-        <py:block py:def="product_display" py:args="purchase, member, value, **context">
-            <a
-                py:local_id="product_image_link"
-                href="${purchase.product.get_uri()}">
+        <div py:def="product_display" py:args="purchase, member, value, **context">
+
+            <py:woost.views.Link
+                py:local_id="product_link"
+                py:inactive_behavior="${element.BECOME_DIV}">
+                <?py
+                if self.link_products:
+                    element.value = purchase.product
+                ?>
+
                 <py:woost.views.Image
                     py:local_id="product_image"
                     py:image="${purchase.product.image}"
-                    py:image_factory="ecommerce_basket_thumbnail" />
-            </a>
-            <a
-                py:local_id="product_label"
-                href="${purchase.product.get_uri()}">
-                ${translations(purchase.product)}
-            </a>
-            <ul py:local_id="purchase_options" py:collapsible="${True}">
-                <py:new
-                    py:element="self.create_purchase_option(purchase, option)"
-                    py:for="option in purchase.get_options()"
-                    py:where="option is not purchase.__class__.quantity"/>
-            </ul>
-        </py:block>
+                    py:image_factory="${self.image_factory}">
+                    <?py
+                    if not self.show_images:
+                        element.visible = False
+                    ?>
+                </py:woost.views.Image>
+
+                <div py:local_id="product_label">
+                    ${self.get_purchase_label(purchase)}
+                </div>
+
+                <ul py:local_id="purchase_options" py:collapsible="${True}">
+                    <py:new
+                        py:element="self.create_purchase_option(purchase, option)"
+                        py:for="option in purchase.get_options()"
+                        py:where="option is not purchase.__class__.quantity"/>
+                </ul>
+
+            </py:woost.views.Link>
+        </div>
 
         <?py
         @extend(basket_table)
