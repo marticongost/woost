@@ -197,7 +197,7 @@ class ECommercePurchase(Item):
                 member is not cls.product
                 and member is not cls.order
                 and member.visible
-                and member.editable
+                and member.editable == schema.EDITABLE
                 and issubclass(member.schema, ECommercePurchase)
                 and app.user.has_permission(
                     ModifyMemberPermission,
@@ -207,11 +207,14 @@ class ECommercePurchase(Item):
                 yield member
 
 @translations.instances_of(ECommercePurchase)
-def translate_ecommerce_purchase(self, language, **kwargs):
+def translate_ecommerce_purchase(self, **kwargs):
+
+    if not self.quantity or not self.product:
+        return None
 
     desc = u"%d x %s" % (
         self.quantity,
-        translations(self.product, language)
+        translations(self.product)
     )
 
     options = []
@@ -219,8 +222,8 @@ def translate_ecommerce_purchase(self, language, **kwargs):
         if member is ECommercePurchase.quantity:
             continue
         options.append("%s: %s" % (
-            translations(member, language),
-            member.translate_value(self.get(member), language)
+            translations(member),
+            member.translate_value(self.get(member))
         ))
 
     if options:

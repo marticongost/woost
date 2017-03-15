@@ -47,26 +47,12 @@ class BasketController(FormProcessor, Controller):
 
         @request_property
         def model(self):
-            model = schema.Schema("SetQuantitiesForm", members = [
+            return schema.Schema("SetQuantitiesForm", members = [
                 schema.Collection("quantity",
-                    items = schema.Integer(min = 1),
+                    items = schema.Integer(min = 1, required = True),
                     length = len(Basket.get().purchases)
                 )
             ])
-
-            @extend(model["quantity"].items)
-            def translate_error(member, error, language = None, **kwargs):
-                if isinstance(error, schema.exceptions.MinValueError):
-                    return translations(
-                        "woost.extensions.ecommerce.basketcontroller."
-                        "min_quantity_error"
-                        language,
-                        **kwargs
-                    )
-                else:
-                    return call_base(error, language, **kwargs)
-
-            return model
 
         def submit(self):
             Form.submit(self)
@@ -119,14 +105,14 @@ class BasketController(FormProcessor, Controller):
 
         def after_submit(self):
             purchase = self.instance["purchase"]
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.ecommerce.basketcontroller."
                     "delete_purchase",
                     product = self.deleted_product
                 ),
                 category = "success"
-            )
+            ).emit()
             reload_request_url()
 
     class EmptyBasketForm(Form):
@@ -138,12 +124,12 @@ class BasketController(FormProcessor, Controller):
             Basket.empty()
 
         def after_submit(self):
-            notify_user(
+            Notification(
                 translations(
                     "woost.extensions.ecommerce.basketcontroller."
                     "empty_basket"
                 ),
                 category = "success"
-            )
+            ).emit()
             reload_request_url()
 
