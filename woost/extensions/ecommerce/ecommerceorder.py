@@ -45,6 +45,7 @@ def _get_default_payment_type():
 class ECommerceOrder(Item):
 
     type_group = "ecommerce"
+    backoffice_listing_includes_element_column = True
 
     bill = None
 
@@ -141,6 +142,7 @@ class ECommerceOrder(Item):
         editable = schema.READ_ONLY,
         default = schema.DynamicDefault(get_language),
         text_search = False,
+        listed_by_default = False,
         translate_value = lambda value, language = None, **kwargs:
             u"" if not value else translations(value, language, **kwargs)
     )
@@ -164,7 +166,8 @@ class ECommerceOrder(Item):
                 "ECommercePurchase",
         integral = True,
         bidirectional = True,
-        min = 1
+        min = 1,
+        listed_by_default = True
     )
 
     payment_type = schema.String(
@@ -384,4 +387,24 @@ class ECommerceOrder(Item):
             )
         else:
             return translations(self)
+
+    @classmethod
+    def backoffice_listing_default_tab(cls):
+        return "all"
+
+    @classmethod
+    def backoffice_listing_tabs(cls):
+
+        yield (
+            "all",
+            translations(cls, suffix = ".tabs.all"),
+            None
+        )
+
+        for status in cls.status.enumeration:
+            yield (
+                status,
+                cls.status.translate_value(status),
+                cls.status.equal(status)
+            )
 

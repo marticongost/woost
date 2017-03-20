@@ -17,6 +17,13 @@ fr: Commande
     en: Order at %s
     fr: Commande de %s
 
+    [tabs]
+
+        [all]
+        ca: Tots els estats
+        es: Todos los estados
+        en: All states
+
     [groups]
 
         [shipping_info]
