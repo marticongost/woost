@@ -47,10 +47,6 @@ class ImagesController(BaseCMSController):
                 cherrypy.url().replace("/" + id + "/", "/%d/" % item.id)
             )
 
-        # Handle legacy image requests (woost < 0.8)
-        if args or kwargs or "(" in processing:
-            raise cherrypy.HTTPError(410)
-
         # Parse the given processing string, splitting the image factory from
         # the image format (ie. "home_thumbnail.png" -> ("home_thumbnail", "PNG"))
         parts = processing.rsplit(".", 1)
