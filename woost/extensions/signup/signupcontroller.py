@@ -57,6 +57,7 @@ class SignUpController(FormProcessor, Controller):
                     name = "password_confirmation",
                     edit_control = "cocktail.html.PasswordBox",
                     required = adapted_schema.get_member("password"),
+                    member_group = "user_data",
                     after_member = "password"
                 )
                 adapted_schema.add_member(password_confirmation_member)
