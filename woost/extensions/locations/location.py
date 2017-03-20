@@ -234,6 +234,10 @@ class Location(Item):
 
         return location
 
+    @classmethod
+    def get_country(cls, iso_code):
+        return cls.select({"location_type": "country", "code": iso_code})[0]
+
     def list_level(self, depth):
 
         if depth == 1:
