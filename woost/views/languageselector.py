@@ -41,7 +41,7 @@ class LanguageSelector(LinkSelector):
             entry.append(link)
 
         if self.missing_translations != "redirect":
-            publishable = app.publishable
+            publishable = app.original_publishable or app.publishable
             value = self.get_item_value(item)
             if not publishable.is_accessible(language = value):
                 if self.missing_translations == "hide":
@@ -92,7 +92,7 @@ class LanguageSelector(LinkSelector):
 
     def get_entry_url(self, language):
 
-        publishable = app.publishable
+        publishable = app.original_publishable or app.publishable
 
         if (
             self.missing_translations == "redirect"
@@ -102,6 +102,7 @@ class LanguageSelector(LinkSelector):
             translation_url = publishable.get_uri(language = language)
         else:
             translation_url = app.url_mapping.transform_request_url(
+                publishable = publishable,
                 language = language
             )
 

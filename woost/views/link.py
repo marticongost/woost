@@ -20,6 +20,7 @@ class Link(Element):
     HIDE = 1
     BECOME_TRANSPARENT = 2
     BECOME_SPAN = 3
+    BECOME_DIV = 4
 
     tag = "a"
     value = None
@@ -67,6 +68,8 @@ class Link(Element):
             self.tag = None
         elif self.inactive_behavior == self.BECOME_SPAN:
             self.tag = "span"
+        elif self.inactive_behavior == self.BECOME_DIV:
+            self.tag = "div"
         elif self.inactive_behavior != self.NO_EFFECT:
             raise ValueError(
                 "Unsupported value for Link.inactive_behavior (%r)"

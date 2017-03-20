@@ -50,6 +50,13 @@
 	fr: Taux
     pt: Impostos
 
+    [subtotal]
+    ca: Subtotal
+    es: Subtotal
+    en: Subtotal
+    fr: Sous-total
+    pt: Subtotal
+
     [order_schema]
 
         [members]
@@ -76,11 +83,7 @@
             pt: Preço
 
             [subtotal]
-            ca: Subtotal
-            es: Subtotal
-            en: Subtotal
-            fr: Sous-total
-            pt: Subtotal
+            @reuse "woost.extensions.ecommerce.BasketView.subtotal"
 
             [taxes]
             ca: Taxes

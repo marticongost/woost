@@ -8,13 +8,6 @@
     fr: Les montants ont été mis à jour
     pt: Os valores foram atualizados
 
-    [min_quantity_error]
-    ca: No es pot demanar menys d'una unitat d'un producte
-    es: No se puede solicitar menos de una unidad de un producto
-    en: Can't request less than one unit of a product
-	fr: Vous ne pouvez pas demander moins d'une unité d'un produit
-    pt: Não é possível encomendar menos de uma unidade de um produto
-
     [delete_purchase(product)]
     ca:
         S'ha tret <strong>t{product}</strong> de la cistella
@@ -33,4 +26,21 @@
     en: The shopping basket has been cleared
     fr: Le panier a été effacé
     pt: A cesta està vazia
+
+    [BasketController]
+
+        [SetQuantitiesForm]
+
+            [members]
+
+                [min_quantity_error]
+
+                    [errors]
+
+                        [cocktail.schema.exceptions.MinValueError]
+                        ca: No es pot demanar menys d'una unitat d'un producte
+                        es: No se puede solicitar menos de una unidad de un producto
+                        en: Can't request less than one unit of a product
+                        fr: Vous ne pouvez pas demander moins d'une unité d'un produit
+                        pt: Não é possível encomendar menos de uma unidade de um produto
 

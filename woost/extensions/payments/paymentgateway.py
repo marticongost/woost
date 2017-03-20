@@ -35,7 +35,8 @@ class PaymentGateway(Item):
     members_order = [
         "label",
         "test_mode",
-        "currency"
+        "currency",
+        "https"
     ]
 
     label = schema.String(
@@ -55,6 +56,11 @@ class PaymentGateway(Item):
         text_search = False
     )
 
+    https = schema.Boolean(
+        required = True,
+        default = False
+    )
+
     def initiate_payment(self, payment_id):
         """Begin a payment transaction, redirecting the user to the payment
         gateway.
@@ -66,6 +72,7 @@ class PaymentGateway(Item):
 
     def get_payment_url(self, *args, **kwargs):
         return app.url_mapping.get_url(
+            scheme = "https" if self.https else None,
             host = "!",
             path = ["payments", str(self.id)] + list(args),
             parameters = kwargs

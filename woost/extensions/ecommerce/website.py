@@ -17,7 +17,18 @@ Website.add_member(
     schema.Collection(
         "ecommerce_payment_types",
         items = schema.String(
-            enumeration = ("payment_gateway", "transfer", "cash_on_delivery")
+            enumeration = ("payment_gateway", "transfer", "cash_on_delivery"),
+            translate_value = (
+                lambda value, language = None, **kwargs:
+                    translations(
+                        Website.ecommerce_payment_types,
+                        language = language,
+                        suffix = ".items.values." + value,
+                        **kwargs
+                    )
+                    if value
+                    else ""
+            )
         ),
         min = 1,
         listed_by_default = False,

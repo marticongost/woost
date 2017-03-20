@@ -102,7 +102,40 @@ class ECommerceBillingConcept(Item):
         return (self.start_date is None or self.start_date <= datetime.now()) \
            and (self.end_date is None or self.end_date > datetime.now())
 
-    def applies_to(self, item, costs = None):
+    def applies_to(self, target):
+
+        from .bill import Bill
+        from .ecommerceorder import ECommerceOrder
+        from .ecommerceproduct import ECommerceProduct
+        from .ecommercepurchase import ECommercePurchase
+
+        bill = None
+        order = None
+        purchase = None
+        product = None
+        is_order = False
+        is_purchase = False
+        is_product = False
+
+        if isinstance(target, Bill):
+            bill = target
+            item = bill.item
+        else:
+            item = target
+
+        if isinstance(item, ECommerceProduct):
+            is_product = True
+        elif isinstance(item, ECommerceOrder):
+            is_order = True
+        elif isinstance(item, ECommercePurchase):
+            is_purchase = True
+        else:
+            raise ValueError(
+                "ECommerceBillingConcept.applies_to() expected "
+                "an instance of Bill, ECommerceProduct or ECommerceOrder, "
+                "got %r instead"
+                % target
+            )
 
         if not self.enabled:
             return False
@@ -110,14 +143,7 @@ class ECommerceBillingConcept(Item):
         if not self.is_current():
             return False
 
-        from woost.extensions.ecommerce.ecommerceproduct \
-            import ECommerceProduct
-
-        order = None
-        purchase = None
-        product = None
-
-        if isinstance(item, ECommerceProduct):
+        if is_product:
 
             if self.eligible_products and item not in self.eligible_products:
                 return False
@@ -125,9 +151,8 @@ class ECommerceBillingConcept(Item):
             product = item
 
         elif self.scope == "order":
-            from woost.extensions.ecommerce.ecommerceorder \
-                import ECommerceOrder
-            if not isinstance(item, ECommerceOrder):
+
+            if not is_order:
                 return False
 
             if self.eligible_products and not any(
@@ -139,9 +164,8 @@ class ECommerceBillingConcept(Item):
             order = item
 
         elif self.scope == "purchase":
-            from woost.extensions.ecommerce.ecommercepurchase \
-                import ECommercePurchase
-            if not isinstance(item, ECommercePurchase):
+
+            if not is_purchase:
                 return False
 
             if self.eligible_products \
@@ -180,7 +204,7 @@ class ECommerceBillingConcept(Item):
                 "order": order,
                 "purchase": purchase,
                 "product": product,
-                "costs": costs,
+                "bill": bill,
                 "applies": True
             }
             exec self.condition in context
@@ -189,45 +213,48 @@ class ECommerceBillingConcept(Item):
 
         return True
 
-    def apply(self, item, costs):
+    def apply(self, bill_node):
 
-        costs["concepts"].append(self)
+        item = bill_node.bill.item
+        method, value = self.parse_implementation()
+        bill_node._concept_method = method
+        bill_node._concept_value = value
 
-        kind, value = self.parse_implementation()
+        if method == "override":
+            bill_node._delete_preceding(
+                lambda prev: prev.concept_method in ("add", "override")
+            )
+            bill_node._cost = value
 
-        if kind == "override":
-            applicable_concepts = []
-            for concept in costs["concepts"]:
-                concept_kind, concept_value = concept.parse_implementation()
-                if concept_kind not in ("add", "override") or concept is self:
-                    applicable_concepts.append(concept)
+        elif method == "add":
+            bill_node._cost += value
 
-            costs["concepts"] = applicable_concepts
-            costs["cost"] = value
+        elif method == "override_percentage":
+            bill_node._delete_preceding(
+                lambda prev: prev.concept_method in (
+                    "add_percentage",
+                    "override_percentage"
+                )
+            )
+            base_cost = bill_node.bill.pricing.base.cost
+            bill_node._cost = base_cost + base_cost * value / 100
 
-        elif kind == "add":
-            costs["cost"] += value
+        elif method == "add_percentage":
+            bill_node._cost += bill_node.bill.pricing.cost * value / 100
 
-        elif kind == "override_percentage":
-            applicable_concepts = []
-            for concept in costs["concepts"]:
-                concept_kind, concept_value = concept.parse_implementation()
-                if concept_kind not in ("add_percentage", "override_percentage") or concept is self:
-                    applicable_concepts.append(concept)
-
-            costs["concepts"] = applicable_concepts
-            costs["percentage"] = value
-
-        elif kind == "add_percentage":
-            costs["percentage"] += value
-
-        elif kind == "free_units":
+        elif method == "free_units":
             delivered, paid = value
             q, r = divmod(item.quantity, delivered)
-            costs["paid_units"] = q * paid + r
+            bill_node._paid_units = q * paid + r
 
-        elif kind == "custom":
-            context = {"self": self, "item": item, "costs": costs}
+        elif method == "custom":
+            context = {
+                "self": self,
+                "item": item,
+                "bill": bill_node.bill,
+                "bill_node": bill_node,
+                "Decimal": Decimal
+            }
             exec value in context
 
     def parse_implementation(self):

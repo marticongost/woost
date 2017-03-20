@@ -1,11 +1,12 @@
 #-*- coding: utf-8 -*-
 """
 
-@author:		Javier Marrero
-@contact:		javier.marrero@whads.com
-@organization:	Whads/Accent SL
-@since:			January 2010
+@author:	Javier Marrero
+@contact:	javier.marrero@whads.com
+@organization:  Whads/Accent SL
+@since:		January 2010
 """
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.controllers import (
     Controller,
@@ -20,6 +21,8 @@ from woost import app
 from woost.models import Item
 from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
 from woost.extensions.signup.signupconfirmationcontroller import generate_confirmation_hash
+
+translations.load_bundle("woost.extensions.signup.signupcontroller")
 
 
 class SignUpController(FormProcessor, Controller):
@@ -54,6 +57,7 @@ class SignUpController(FormProcessor, Controller):
                     name = "password_confirmation",
                     edit_control = "cocktail.html.PasswordBox",
                     required = adapted_schema.get_member("password"),
+                    member_group = "user_data",
                     after_member = "password"
                 )
                 adapted_schema.add_member(password_confirmation_member)
