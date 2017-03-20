@@ -6,6 +6,7 @@ u"""Defines the `PasswordChangeConfirmationController` class.
 import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler
+from cocktail.translations import translations
 from cocktail.persistence import datastore
 from cocktail.controllers import (
     request_property,
@@ -18,6 +19,8 @@ from woost.models.user import User
 from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
 from woost.controllers.documentcontroller import DocumentController
 from woost.controllers.passwordchangecontroller import generate_confirmation_hash
+
+translations.load_bundle("woost.controllers.passwordchangeconfirmationcontroller")
 
 
 class PasswordChangeConfirmationController(FormProcessor, DocumentController):
@@ -67,10 +70,14 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
         @request_property
         def schema(self):
 
-            form_schema = schema.Schema("PasswordChangeConfirmationForm")
+            form_schema = schema.Schema(
+                name = self.get_schema_name(),
+                schema_aliases = self.get_schema_aliases(),
+                members_order = ["password", "password_confirmation"]
+            )
 
             # New password
-            password_member = User.password.copy()
+            password_member = User.password.copy(member_group = None)
             password_member.required = True
             form_schema.add_member(password_member)
 
@@ -104,7 +111,7 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
             datastore.commit()
 
             # Log in the user (after all, we just made certain it's him/her)
-            self.controller.context["cms"].authentication.set_user_session(user)
+            app.authentication.set_user_session(user)
 
     @request_property
     def output(self):

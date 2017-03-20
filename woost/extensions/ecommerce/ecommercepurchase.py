@@ -16,6 +16,7 @@ from woost.models import (
 )
 from woost.extensions.ecommerce.ecommercebillingconcept \
     import ECommerceBillingConcept
+from .bill import PurchaseBill
 
 
 class ECommercePurchase(Item):
@@ -103,84 +104,6 @@ class ECommercePurchase(Item):
         editable = schema.READ_ONLY
     )
 
-    def calculate_costs(self,
-        apply_pricing = True,
-        apply_shipping_costs = True,
-        apply_taxes = True
-    ):
-        website = app.website
-
-        purchase_costs = {
-            "price": {
-                "cost": self.get_unit_price(),
-                "paid_units": self.quantity,
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            },
-            "shipping_costs": {
-                "cost": Decimal("0.00"),
-                "paid_units": self.quantity,
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            },
-            "taxes": {
-                "cost": Decimal("0.00"),
-                "paid_units": self.quantity,
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            }
-        }
-
-        # Price
-        purchase_price = purchase_costs["price"]
-
-        if apply_pricing:
-            for pricing in website.ecommerce_pricing:
-                if pricing.applies_to(self, purchase_costs):
-                    pricing.apply(self, purchase_price)
-
-        purchase_price["cost"] += \
-            purchase_price["cost"] * purchase_price["percentage"] / 100
-
-        purchase_price["total"] = \
-            purchase_price["cost"] * purchase_price["paid_units"]
-
-        # Shipping costs
-        purchase_shipping_costs = purchase_costs["shipping_costs"]
-
-        if apply_shipping_costs:
-            for shipping_cost in website.ecommerce_shipping_costs:
-                if shipping_cost.applies_to(self, purchase_costs):
-                    shipping_cost.apply(self, purchase_shipping_costs)
-
-        purchase_shipping_costs["cost"] += \
-            purchase_price["cost"] * purchase_shipping_costs["percentage"] / 100
-
-        purchase_shipping_costs["total"] = \
-            purchase_shipping_costs["cost"] * purchase_shipping_costs["paid_units"]
-
-        # Taxes
-        purchase_taxes = purchase_costs["taxes"]
-
-        if apply_taxes:
-            for tax in website.ecommerce_taxes:
-                if tax.applies_to(self, purchase_costs):
-                    tax.apply(self, purchase_taxes)
-
-        purchase_taxes["cost"] += \
-            purchase_price["cost"] * purchase_taxes["percentage"] / 100
-
-        purchase_taxes["total"] = \
-            purchase_taxes["cost"] * purchase_taxes["paid_units"]
-
-        # Total
-        purchase_costs["total"] = (
-            purchase_price["total"]
-          + purchase_shipping_costs["total"]
-          + purchase_taxes["total"]
-        )
-        return purchase_costs
-
     def get_unit_price(self):
         return self.product.price
 
@@ -197,7 +120,7 @@ class ECommercePurchase(Item):
                 member is not cls.product
                 and member is not cls.order
                 and member.visible
-                and member.editable
+                and member.editable == schema.EDITABLE
                 and issubclass(member.schema, ECommercePurchase)
                 and app.user.has_permission(
                     ModifyMemberPermission,
@@ -206,12 +129,16 @@ class ECommercePurchase(Item):
             ):
                 yield member
 
+
 @translations.instances_of(ECommercePurchase)
-def translate_ecommerce_purchase(self, language, **kwargs):
+def translate_ecommerce_purchase(self, **kwargs):
+
+    if not self.quantity or not self.product:
+        return None
 
     desc = u"%d x %s" % (
         self.quantity,
-        translations(self.product, language)
+        translations(self.product)
     )
 
     options = []
@@ -219,8 +146,8 @@ def translate_ecommerce_purchase(self, language, **kwargs):
         if member is ECommercePurchase.quantity:
             continue
         options.append("%s: %s" % (
-            translations(member, language),
-            member.translate_value(self.get(member), language)
+            translations(member),
+            member.translate_value(self.get(member))
         ))
 
     if options:

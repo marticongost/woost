@@ -9,7 +9,7 @@ from cocktail.controllers import (
     get_parameter,
     Pagination
 )
-from woost.models import Block, ElementType
+from woost.models import Block
 from woost.extensions.ecommerce.ecommerceproduct import ECommerceProduct
 
 
@@ -20,17 +20,15 @@ class ECommerceProductListing(Block):
     instantiable = True
     type_group = "blocks.ecommerce"
     block_display = "woost.extensions.ecommerce.ProductListingDisplay"
-    default_view_class = "woost.extensions.ecommerce.TextAndImageProductListing"
     views = [
-        "woost.extensions.ecommerce.CompactProductListing",
-        "woost.extensions.ecommerce.TextAndImageProductListing"
+        "woost.extensions.ecommerce.TextAndImageProductListing",
+        "woost.extensions.ecommerce.CompactProductListing"
     ]
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
 
     members_order = [
-        "element_type",
         "products",
         "item_accessibility",
         "listing_order",
@@ -40,10 +38,6 @@ class ECommerceProductListing(Block):
 
     default_controller = "woost.extensions.ecommerce" \
         ".ecommerceproductlistingcontroller.ECommerceProductListingController"
-
-    element_type = ElementType(
-        member_group = "content"
-    )
 
     products = schema.Collection(
         items = schema.Reference(type = ECommerceProduct),
@@ -88,7 +82,6 @@ class ECommerceProductListing(Block):
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.tag = self.element_type
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
 

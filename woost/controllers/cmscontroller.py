@@ -289,6 +289,9 @@ class CMSController(BaseCMSController):
 
         return None
 
+    def should_enforce_canonical_url(self):
+        return app.publishable is not None
+
     def _enforce_canonical_url(self):
         """Redirect the current request to the canonical URL for the selected
         publishable element.
@@ -366,7 +369,8 @@ class CMSController(BaseCMSController):
         cms = event.source
         publishable = app.publishable
 
-        event.source._enforce_canonical_url()
+        if cms.should_enforce_canonical_url():
+            cms._enforce_canonical_url()
 
         if publishable is not None:
 

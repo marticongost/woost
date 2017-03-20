@@ -31,3 +31,19 @@ en: Payment gateway
         es: Divisa
         en: Currency
 
+        [https]
+        ca: Utilitzar HTTPS
+        es: Utilizar HTTPS
+        en: Use HTTPS
+
+            [explanation]
+            ca:
+                Utilitzar HTTPS a les comunicacions entre passarel·la
+                bancària i la web. Requereix comptar amb un certificat SSL.
+            es:
+                Utilizar HTTPS en las comunicaciones entre la pasarela
+                bancaria y la web. Requiere disponer de un certificado SSL.
+            en:
+                Instruct the payment gateway to use HTTPS when connecting to
+                the website. Requires an SSL certificate.
+
