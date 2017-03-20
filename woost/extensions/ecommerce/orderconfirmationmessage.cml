@@ -12,6 +12,7 @@ from woost.models import Configuration
     <?py-class
     order = None
     summary_schema = None
+    show_images = False
     ?>
 
     <py:ready>
@@ -37,6 +38,33 @@ from woost.models import Configuration
     <py:woost.extensions.ecommerce.BasketView
         py:id="basket"
         py:order="@{self.order}">
+
+        <py:with py:def="cost_override">
+            <py:with py:element="element.base_label">
+                <?py
+                element.set_style("text-decoration", "line-through")
+                ?>
+            </py:with>
+            <br py:after="cost_override.base_label"/>
+        </py:with>
+
+        <py:with py:def="concept_label" py:args="concept">
+            <?py
+            element.set_style("text-align", "left")
+            element.set_style("font-weight", "normal")
+            element.set_style("padding", "3px 10px")
+
+            if concept is self.basket.bill.pricing.base:
+                element.set_style("padding-top", "7px")
+            ?>
+        </py:with>
+
+        <py:with py:def="concept_amount">
+            <?py
+            element.set_style("text-align", "right")
+            element.set_style("padding", "3px 10px")
+            ?>
+        </py:with>
 
         <py:with py:element="element.basket_table"
             cellspacing="0"
@@ -69,8 +97,7 @@ from woost.models import Configuration
                 ?>
             </py:with>
             <py:with py:def="product_display">
-                <py:with py:element="element.product_image_link" py:visible="${False}"/>
-                <py:with py:element="element.purchase_options">
+                <py:with py:element="element.product_link.purchase_options">
                     <?py
                     element.set_style("font-size", "0.8em")
                     element.set_style("margin-bottom", "0.2em")
@@ -86,14 +113,21 @@ from woost.models import Configuration
         </td>
         <py:with py:def="total_subtotal_cell" align="right"/>
         <py:with py:def="total_shipping_costs_cell" align="right"/>
+
         <td py:def="product_footer_cell" align="left">
+            <?py
+            element.set_style("padding", "7px 10px")
+            ?>
             ${translations("woost.extensions.ecommerce.OrderConfirmationMessage.product_footer_cell")}
         </td>
+
         <py:with py:def="total_footer_cell" align="right">
             <?py
+            element.set_style("padding", "7px 10px")
             element.set_style("font-weight", "bold")
             ?>
         </py:with>
+
     </py:woost.extensions.ecommerce.BasketView>
 
     <py:cocktail.html.PropertyTable
