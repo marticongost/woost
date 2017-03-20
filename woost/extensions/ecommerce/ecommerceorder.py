@@ -126,8 +126,7 @@ class ECommerceOrder(Item):
         default_order = "location_name",
         related_end = schema.Collection(),
         required = True,
-        listed_by_default = False,
-        user_filter = "cocktail.controllers.userfilter.MultipleChoiceFilter"
+        listed_by_default = False
     )
 
     postal_code = schema.String(
