@@ -7,6 +7,7 @@
 @since:			September 2009
 """
 from decimal import Decimal
+from copy import deepcopy
 from cocktail.translations import get_language, translations
 from cocktail import schema
 from cocktail.events import Event, event_handler
@@ -22,6 +23,7 @@ from woost.extensions.ecommerce.website import Website
 from woost.extensions.ecommerce.ecommercebillingconcept \
     import ECommerceBillingConcept
 from woost.extensions.payments import PaymentsExtension
+from .bill import OrderBill
 
 def _translate_amount(amount, language = None, **kwargs):
     if amount is None:
@@ -43,6 +45,8 @@ def _get_default_payment_type():
 class ECommerceOrder(Item):
 
     type_group = "ecommerce"
+
+    bill = None
 
     payment_types_completed_status = {
         "payment_gateway": "accepted",
@@ -228,135 +232,42 @@ class ECommerceOrder(Item):
         translate_value = _translate_amount
     )
 
-    def calculate_cost(self,
+    def update_cost(
+        self,
+        bill = None,
         apply_pricing = True,
         apply_shipping_costs = True,
         apply_taxes = True
     ):
-        """Calculates the costs for the order.
-        :rtype: dict
-        """
-        website = app.website
+        if bill is None:
+            bill = OrderBill(self)
 
-        order_costs = {
-            "price": {
-                "cost": Decimal("0.00"),
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            },
-            "shipping_costs": {
-                "cost": Decimal("0.00"),
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            },
-            "taxes": {
-                "cost": Decimal("0.00"),
-                "percentage": Decimal("0.00"),
-                "concepts": []
-            },
-            "purchases": {}
-        }
+        self.bill = bill
+        self.total_price = bill.pricing.total
+        self.pricing = bill.pricing.list_concepts()
 
-        # Per purchase costs:
-        for purchase in self.purchases:
-            purchase_costs = purchase.calculate_costs(
-                apply_pricing = apply_pricing,
-                apply_shipping_costs = apply_shipping_costs,
-                apply_taxes = apply_taxes
-            )
-            order_costs["purchases"][purchase] = purchase_costs
+        self.total_shipping_costs = bill.shipping.total
+        self.shipping_costs = bill.shipping.list_concepts()
 
-            order_costs["price"]["cost"] += purchase_costs["price"]["total"]
-            order_costs["shipping_costs"]["cost"] += \
-                purchase_costs["shipping_costs"]["total"]
-            order_costs["taxes"]["cost"] += purchase_costs["taxes"]["total"]
+        self.total_taxes = bill.taxes.total
+        self.taxes = bill.taxes.list_concepts()
 
-        # Order price
-        order_price = order_costs["price"]
+        self.total = bill.total
 
-        if apply_pricing:
-            for pricing in website.ecommerce_pricing:
-                if pricing.applies_to(self):
-                    pricing.apply(self, order_price)
-
-        order_price["cost"] += \
-            order_price["cost"] * order_price["percentage"] / 100
-
-        order_price["total"] = order_price["cost"]
-
-        # Order shipping costs
-        order_shipping_costs = order_costs["shipping_costs"]
-
-        if apply_shipping_costs:
-            for shipping_cost in website.ecommerce_shipping_costs:
-                if shipping_cost.applies_to(self):
-                    shipping_cost.apply(self, order_shipping_costs)
-
-        order_shipping_costs["total"] = (
-            order_shipping_costs["cost"]
-            + order_price["total"] * order_shipping_costs["percentage"] / 100
-        )
-
-        # Order taxes
-        order_taxes = order_costs["taxes"]
-
-        if apply_taxes:
-            for tax in website.ecommerce_taxes:
-                if tax.applies_to(self):
-                    tax.apply(self, order_taxes)
-
-        order_taxes["total"] = (
-            order_taxes["cost"]
-            + order_price["total"] * order_taxes["percentage"] / 100
-        )
-
-        # Total
-        order_costs["total"] = (
-            order_price["total"]
-          + order_shipping_costs["total"]
-          + order_taxes["total"]
-        )
-
-        return order_costs
-
-    def update_cost(self,
-        apply_pricing = True,
-        apply_shipping_costs = True,
-        apply_taxes = True
-    ):
-        costs = self.calculate_cost(
-            apply_pricing = apply_pricing,
-            apply_shipping_costs = apply_shipping_costs,
-            apply_taxes = apply_taxes
-        )
-
-        self.total_price = costs["price"]["total"]
-        self.pricing = list(costs["price"]["concepts"])
-
-        self.total_shipping_costs = costs["shipping_costs"]["total"]
-        self.shipping_costs = list(costs["shipping_costs"]["concepts"])
-
-        self.total_taxes = costs["taxes"]["total"]
-        self.taxes = list(costs["taxes"]["concepts"])
-
-        self.total = costs["total"]
-
-        for purchase, purchase_costs in costs["purchases"].iteritems():
-            purchase.total_price = purchase_costs["price"]["total"]
-            purchase.pricing = list(purchase_costs["price"]["concepts"])
+        for purchase, purchase_bill in bill.purchases.iteritems():
+            purchase.total_price = purchase_bill.pricing.total
+            purchase.pricing = purchase_bill.pricing.list_concepts()
             self.pricing.extend(purchase.pricing)
 
-            purchase.total_shipping_costs = \
-                purchase_costs["shipping_costs"]["total"]
-            purchase.shipping_costs = \
-                list(purchase_costs["shipping_costs"]["concepts"])
+            purchase.total_shipping_costs = purchase_bill.shipping.total
+            purchase.shipping_costs = purchase_bill.shipping.list_concepts()
             self.shipping_costs.extend(purchase.shipping_costs)
 
-            purchase.total_taxes = purchase_costs["taxes"]["total"]
-            purchase.taxes = list(purchase_costs["taxes"]["concepts"])
+            purchase.total_taxes = purchase_bill.taxes.total
+            purchase.taxes = purchase_bill.taxes.list_concepts()
             self.taxes.extend(purchase.taxes)
 
-            purchase.total = purchase_costs["total"]
+            purchase.total = purchase_bill.total
 
     def count_units(self):
         return sum(purchase.quantity for purchase in self.purchases)
