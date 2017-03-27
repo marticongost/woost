@@ -447,6 +447,7 @@ class OptionsField(Field):
     def _init_member(self, member):
         Field._init_member(self, member)
         member.type = OptionsFieldOption
+        member.default_order = None
         member.enumeration = lambda ctx: [
             option
             for option in self.options
