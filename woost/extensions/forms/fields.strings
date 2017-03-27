@@ -160,6 +160,11 @@ def field_property(member, *properties):
                     es: Lista de checks
                     en: Check list
 
+                    [cocktail.html.CollectionEditor]
+                    ca: Llista de mida variable
+                    es: Lista de mida variable
+                    en: Extensible list
+
                     [cocktail.html.DatePicker]
                     ca: Calendari desplegable
                     es: Calendario desplegable
