@@ -12,6 +12,13 @@ from woost import app
 from woost.models import *
 from woost.models.utils import *
 from woost.models.extension import load_extensions
+from woost.models.objectio import (
+    ExportMode,
+    UnknownMemberPolicy,
+    MissingObjectPolicy,
+    ObjectExporter,
+    ObjectImporter
+)
 
 def setup_shell(env):
     env["config"] = config = Configuration.instance
