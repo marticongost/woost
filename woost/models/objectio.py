@@ -476,10 +476,35 @@ class ObjectImporter(object):
     time_format = ObjectExporter.time_format
     datetime_format = ObjectExporter.datetime_format
 
-    def __init__(self):
+    def __init__(self,
+        file = None,
+        string = None,
+        unknown_member_policy = UnknownMemberPolicy.fail,
+        missing_object_policy = MissingObjectPolicy.fail,
+        language_subset = None,
+        date_format = ObjectExporter.date_format,
+        time_format = ObjectExporter.time_format,
+        datetime_format = ObjectExporter.datetime_format,
+        verbose = False
+    ):
         self.__qname_mapping = {}
         self.missing_references = Counter()
         self.missing_members = defaultdict(Counter)
+        self.objects = []
+
+        self.unknown_member_policy = unknown_member_policy
+        self.missing_object_policy = missing_object_policy
+        self.language_subset = language_subset
+        self.date_format = date_format
+        self.time_format = time_format
+        self.datetime_format = datetime_format
+        self.verbose = verbose
+
+        if file is not None:
+            self.load(file)
+
+        if string is not None:
+            self.loads(string)
 
     def load(self, file, encoding = "utf-8"):
 
@@ -508,11 +533,13 @@ class ObjectImporter(object):
         objects = []
 
         for object_data in object_list:
+            obj = self.resolve_object_ref(
+                object_data,
+                missing_object_policy = MissingObjectPolicy.create
+            )
+            self.objects.append(obj)
             objects.append((
-                self.resolve_object_ref(
-                    object_data,
-                    missing_object_policy = MissingObjectPolicy.create
-                ),
+                obj,
                 object_data
             ))
             if self.verbose:
