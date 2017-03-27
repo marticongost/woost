@@ -6,7 +6,7 @@ def describe_agreement_subject(member, link = True):
         or translations("woost.controllers.formagreement.default_subject")
     )
     if member.agreement_document and link:
-        label = '<a href="%s">%s</a>' % (
+        label = '<a href="%s" target="_blank">%s</a>' % (
             member.agreement_document.get_uri(),
             label
         )
