@@ -36,6 +36,7 @@ class Field(Item):
         "collection",
         "is_required_field",
         "field_edit_control",
+        "field_name",
         "field_initialization"
     ]
 
@@ -67,8 +68,8 @@ class Field(Item):
     )
 
     field_name = schema.String(
-        member_group = "field_structure",
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "administration"
     )
 
     field_set = schema.Reference(
@@ -110,7 +111,7 @@ class Field(Item):
     field_initialization = schema.CodeBlock(
         language = "python",
         listed_by_default = False,
-        member_group = "field_properties"
+        member_group = "administration"
     )
 
     @event_handler
@@ -301,17 +302,20 @@ class CollectionField(Field):
         bidirectional = True,
         integral = True,
         required = True,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "field_properties"
     )
 
     min = schema.Integer(
         min = 0,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "field_properties"
     )
 
     max = schema.Integer(
         min = min,
-        listed_by_default = False
+        listed_by_default = False,
+        member_group = "field_properties"
     )
 
     @classmethod
