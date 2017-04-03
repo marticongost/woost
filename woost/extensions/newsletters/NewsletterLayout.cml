@@ -24,7 +24,7 @@ from cocktail.html import EmbeddedResources
     self.add_resource("woost://styles/newsletters.css")
     ?>
 
-    <py:block py:def="content">
+    <py:block py:def="main_content">
         <tr py:id="newsletter_root_row">
             <td py:id="newsletter_root_cell">
                 <py:woost.extensions.newsletters.NewsletterBlockList
