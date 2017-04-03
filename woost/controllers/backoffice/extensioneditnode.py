@@ -12,6 +12,8 @@ from cocktail.translations import translations
 from woost.controllers.backoffice.editstack import EditNode
 from woost.controllers.notifications import Notification
 
+translations.load_bundle("woost.controllers.backoffice.extensioneditnode")
+
 
 class ExtensionEditNode(EditNode):
 
@@ -19,7 +21,7 @@ class ExtensionEditNode(EditNode):
         if change and "enabled" in change.changed_members:
             Notification(
                 translations(
-                    "woost.controllers.backoffice.ExtensionEditNode "
+                    "woost.controllers.backoffice.extensioneditnode."
                     "extension_%s_reload_notice"
                     % ("enabled" if self.item.enabled else "disabled"),
                     extension = self.item
