@@ -74,3 +74,6 @@ def edit(target):
     else:
         print "Can't edit object %r" % target
 
+def fetch(cls, *args, **kwargs):
+    return list(cls.select(*args, **kwargs))
+
