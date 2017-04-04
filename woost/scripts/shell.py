@@ -4,6 +4,9 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import sys
+from decimal import Decimal
+from datetime import date, datetime, time, timedelta
+from collections import Counter, defaultdict
 import webbrowser
 from cocktail.schema import TranslatedValues as T
 from cocktail.translations import *
