@@ -51,12 +51,16 @@ class Image(Element):
                 if inclusion == "inline":
                     self.tag = "div"
                     self.append(self.get_inline_svg())
-                elif inclusion == "object":
-                    self.tag = "object"
-                    self["type"] = "image/svg+xml"
-                    self["data"] = uri
-                elif inclusion == "img":
-                    self["src"] = uri
+                else:
+                    uri = self.image.get_uri(
+                        host = self.host
+                    )
+                    if inclusion == "object":
+                        self.tag = "object"
+                        self["type"] = "image/svg+xml"
+                        self["data"] = uri
+                    elif inclusion == "img":
+                        self["src"] = uri
             else:
                 self["src"] = self.image.get_image_uri(
                     image_factory = self.image_factory or "default",
