@@ -21,7 +21,7 @@ class Basket(object):
         An event triggered on the class when a new instance is created.
 
         @ivar basket: A reference to the new instance.
-        @type basket: L{Basket}
+        @type basket: `~woost.extensions.ecommerce.ecommerceorder.ECommerceOrder`
         """)
 
     @classmethod
