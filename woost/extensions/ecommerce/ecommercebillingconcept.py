@@ -34,7 +34,8 @@ class ECommerceBillingConcept(Item):
         "eligible_products",
         "eligible_roles",
         "condition",
-        "implementation"
+        "implementation",
+        "custom_title"
     ]
 
     visible_from_root = False
@@ -95,6 +96,10 @@ class ECommerceBillingConcept(Item):
     )
 
     implementation = schema.CodeBlock(
+        language = "python"
+    )
+
+    custom_title = schema.CodeBlock(
         language = "python"
     )
 
@@ -287,4 +292,21 @@ class ECommerceBillingConcept(Item):
             return ("free_units", (int(match.group(1)), int(match.group(2))))
 
         return ("custom", value)
+
+    def get_title(self, target):
+
+        title = self.title
+
+        # Customize the title using a Python code block
+        custom_title_code = self.custom_title
+        if custom_title_code:
+            context = ECommerceBillingConcept.custom_title.execute(self, {
+                "translations": translations,
+                "concept": self,
+                "target": target,
+                "title": title
+            })
+            title = context["title"]
+
+        return title
 
