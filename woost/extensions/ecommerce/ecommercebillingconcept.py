@@ -212,7 +212,7 @@ class ECommerceBillingConcept(Item):
                 "bill": bill,
                 "applies": True
             }
-            exec self.condition in context
+            ECommerceBillingConcept.condition.execute(self, context)
             if not context["applies"]:
                 return False
 
