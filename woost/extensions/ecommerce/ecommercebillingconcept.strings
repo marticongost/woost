@@ -93,3 +93,8 @@ fr: Concept de facturation
         en: Value
         fr: Valeur
 
+        [custom_title]
+        ca: Títol personalitzat
+        es: Título personalizado
+        en: Custom title
+

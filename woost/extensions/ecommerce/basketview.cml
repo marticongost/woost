@@ -107,7 +107,7 @@ from woost.extensions.ecommerce.bill import OrderBill
         if bill_node is self.bill.pricing.base:
             return view_translations("subtotal")
         else:
-            return translations(bill_node.concept)
+            return bill_node.concept.get_title(bill_node.bill.item)
 
     def get_concept_amount(self, bill_node):
         if bill_node.section == "pricing" and bill_node is not self.bill.pricing.base:
@@ -253,7 +253,7 @@ from woost.extensions.ecommerce.bill import OrderBill
                 <li
                     py:for="tax in self.bill.purchases[purchase].taxes.list_concepts()"
                     py:where="not tax.hidden">
-                    ${translations(tax)}
+                    ${tax.get_title(purchase)}
                 </li>
             </ul>
         </div>
