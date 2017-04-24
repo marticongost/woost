@@ -9,7 +9,6 @@ from cocktail.controllers import (
     Form
 )
 from woost import app
-from woost.controllers.notifications import pop_user_notifications
 
 
 class OrderStepForm(Form):
@@ -30,7 +29,6 @@ class OrderStepForm(Form):
             return steps[pos + 1]
 
     def proceed(self):
-        pop_user_notifications()
         next_step = self.next_step
         if next_step is not None:
             redirect(next_step.get_uri())
