@@ -476,6 +476,12 @@ class NumericField(Field):
     instantiable = False
     visible_from_root = False
 
+    field_edit_controls = [
+        "cocktail.html.NumberBox",
+        "cocktail.html.DropdownSelector",
+        "cocktail.html.RadioSelector"
+    ]
+
     members_order = [
         "min",
         "max"
