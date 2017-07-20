@@ -105,12 +105,6 @@ class Publishable(Item):
             "html_resource",
             "other"
         ),
-        translate_value = lambda value, language = None, **kwargs:
-            u"" if not value else translations(
-                "woost.models.Publishable.resource_type " + value,
-                 language,
-                **kwargs
-            ),
         listed_by_default = False,
         member_group = "presentation.format"
     )
