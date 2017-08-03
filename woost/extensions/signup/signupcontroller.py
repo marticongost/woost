@@ -120,11 +120,11 @@ class SignUpController(FormProcessor, Controller):
 
         @request_property
         def confirmation_url(self):
-            uri = self.controller.block.confirmation_page.get_uri()
-            location = Location.get_current(relative=False)
-            location.path_info = uri
-            location.query_string = {
-                "email": self.instance.email,
-                "hash": generate_confirmation_hash(self.instance.email)
-            }
-            return str(location)
+            return self.controller.block.confirmation_page.get_uri(
+                host = "!",
+                parameters = {
+                    "email": self.instance.email,
+                    "hash": generate_confirmation_hash(self.instance.email)
+                }
+            )
+
