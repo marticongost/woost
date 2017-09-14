@@ -7,53 +7,29 @@ from woost.models import Configuration
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?py-class
-    search_engine_id = None
-    search_control_type = "searchresults-only" # search, searchbox, searchresults, searchbox-only, searchresults-only
-    search_options = {"linkTarget": "_self"}
-    ?>
+    <?resource http://code.whads.com/google-cse-client/v1/scripts/search.js ?>
 
-    <?py
-    self.search_options = self.search_options.copy()
+    <?py-class
+    api_key = None
+    search_engine_id = None
     ?>
 
     <py:ready>
         <?py
-        if self.search_engine_id is None:
-            self.search_engine_id = Configuration.instance.get_setting("google_search_engine_id")
+        self.require_id()
+        config = Configuration.instance
 
-        if not self.search_engine_id:
+        search_engine_id = self.search_engine_id or config.get_setting("google_search_engine_id")
+        api_key = self.api_key or Configuration.instance.get_setting("google_search_api_key")
+
+        if not api_key or not search_engine_id:
             self.visible = False
+        else:
+            self.set_client_param("googleSearchAPIKey", api_key)
+            self.set_client_param("googleSearchEngineId", search_engine_id)
+            self.add_client_code("whads.search.setup(this.googleSearchAPIKey, this.googleSearchEngineId, this)")
         ?>
     </py:ready>
 
-    <?py
-    @self.when_document_ready
-    def add_google_cse_script(document):
-        if not hasattr(document, "google_cse_script"):
-            script = Element("script", type = "text/javascript")
-            script.append("""
-                (function () {
-                var gcse = document.createElement('script');
-                gcse.type = 'text/javascript';
-                gcse.async = true;
-                gcse.src = document.location.protocol + '//www.google.com/cse/cse.js?cx=%s';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(gcse, s);
-                })();
-                """ % self.search_engine_id
-            )
-            document.google_cse_script = script
-            document.scripts_container.append(script)
-    ?>
-    <div>
-        <py:binding>
-            <?py
-            element.add_class("gcse-" + self.search_control_type)
-            for key, value in self.search_options.iteritems():
-                element["data-" + key] = value
-            ?>
-        </py:binding>
-    </div>
 </div>
 
