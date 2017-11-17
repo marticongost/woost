@@ -46,6 +46,7 @@ class NewslettersExtension(Extension):
         )
 
         from woost.extensions.newsletters import (
+            item,
             imagefactory,
             newsletter,
             newslettercontent,
