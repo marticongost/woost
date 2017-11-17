@@ -121,6 +121,9 @@ class Export(Item):
             if task["state"] != "pending":
                 completed += 1
 
+        if not total:
+            return 0.0
+
         return float(completed) / total
 
     def create_export_job(self):
