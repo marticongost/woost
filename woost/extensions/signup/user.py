@@ -14,6 +14,7 @@ User.add_member(
         "confirmed_email",
         default = False,
         required = True,
+        listed_by_default = False,
         after_member = "enabled",
         member_group = "user_data"
     )

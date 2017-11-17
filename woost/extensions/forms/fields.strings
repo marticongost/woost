@@ -135,6 +135,11 @@ def field_property(member, *properties):
                     es: Caja de texto
                     en: Text box
 
+                    [cocktail.html.NumberBox]
+                    ca: Caixa numèrica
+                    es: Caja numérica
+                    en: Number box
+
                     [cocktail.html.TextArea]
                     ca: Caixa de text multilínia
                     es: Caja de texto multilinea

@@ -8,6 +8,7 @@ try:
 except ImportError:
     from backport_collections import Counter
 
+from functools import wraps
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageChops
 from cocktail.events import event_handler
 from cocktail import schema
@@ -118,6 +119,33 @@ def resolve_color(value):
     return value
 
 
+def requires_rgb(func):
+    """A decorator that temporarily converts images to RGB.
+
+    The decorator is intended to be applied to the `ImageFactory.apply` method.
+    It converts palette based images into RGB, so they can be worked on, and
+    then back to their original mode.
+    """
+
+    @wraps(func)
+    def decorated(self, image):
+
+        original_mode = image.mode
+        uses_palette = original_mode in "PL1"
+
+        if uses_palette:
+            image = image.convert("RGB")
+
+        image = func(self, image)
+
+        if uses_palette:
+            image = image.convert(original_mode)
+
+        return image
+
+    return decorated
+
+
 class Thumbnail(ImageEffect):
 
     instantiable = True
@@ -139,6 +167,7 @@ class Thumbnail(ImageEffect):
 
     filter = Image.ANTIALIAS
 
+    @requires_rgb
     def apply(self, image):
 
         source_width, source_height = image.size
@@ -309,6 +338,7 @@ class Fill(ImageEffect):
 
     filter = Image.ANTIALIAS
 
+    @requires_rgb
     def apply(self, image):
 
         source_width, source_height = image.size
@@ -412,6 +442,7 @@ class Rotate(ImageEffect):
 
     filter = Image.BICUBIC
 
+    @requires_rgb
     def apply(self, image):
         if image.mode != "RGBA":
             image = image.convert("RGBA")
@@ -426,6 +457,7 @@ class Color(ImageEffect):
         required = True
     )
 
+    @requires_rgb
     def apply(self, image):
         return ImageEnhance.Color(image).enhance(self.level)
 
@@ -438,6 +470,7 @@ class Brightness(ImageEffect):
         required = True
     )
 
+    @requires_rgb
     def apply(self, image):
         return ImageEnhance.Brightness(image).enhance(self.level)
 
@@ -462,6 +495,7 @@ class Sharpness(ImageEffect):
         required = True
     )
 
+    @requires_rgb
     def apply(self, image):
         return ImageEnhance.Sharpness(image).enhance(self.level)
 
@@ -504,6 +538,7 @@ class Frame(ImageEffect):
         default = "#000000"
     )
 
+    @requires_rgb
     def apply(self, image):
 
         edge_color = resolve_color(self.edge_color)
@@ -566,6 +601,7 @@ class Shadow(ImageEffect):
 
     iterations = 3
 
+    @requires_rgb
     def apply(self, image):
 
         # Create the backdrop image -- a box in the background colour with a

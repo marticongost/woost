@@ -476,6 +476,12 @@ class NumericField(Field):
     instantiable = False
     visible_from_root = False
 
+    field_edit_controls = [
+        "cocktail.html.NumberBox",
+        "cocktail.html.DropdownSelector",
+        "cocktail.html.RadioSelector"
+    ]
+
     members_order = [
         "min",
         "max"
@@ -487,14 +493,20 @@ class NumericField(Field):
         if cls.get_member("min") is None:
             min_member = cls.member_type(
                 "min",
-                listed_by_default = False
+                listed_by_default = False,
+                member_group = "field_properties",
+                custom_translation_key =
+                    "woost.extensions.forms.fields.NumericField.members.min"
             )
             max_member = cls.member_type("max",
                 min = min_member,
-                listed_by_default = False
+                listed_by_default = False,
+                member_group = "field_properties",
+                custom_translation_key =
+                    "woost.extensions.forms.fields.NumericField.members.max"
             )
-            cls.add_member(min_member)
-            cls.add_member(max_member)
+            cls.add_member(min_member, append = True)
+            cls.add_member(max_member, append = True)
 
     def _init_member(self, member):
         Field._init_member(self, member)

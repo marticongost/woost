@@ -11,8 +11,16 @@ translations.load_bundle("woost.extensions.googlesearch.configuration")
 
 Configuration.members_order.extend([
     "google_search_engine_id",
+    "google_search_api_key",
     "google_search_results_page"
 ])
+
+Configuration.add_member(
+    schema.String("google_search_api_key",
+        member_group = "services.google_cse",
+        listed_by_default = False
+    )
+)
 
 Configuration.add_member(
     schema.String("google_search_engine_id",
