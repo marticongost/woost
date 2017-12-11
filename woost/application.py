@@ -35,6 +35,9 @@ __        __ ___   ___   ___ | |_
 http://woost.info
 """
 
+    default_remote_host = None
+    default_remote_python_executable = None
+
     def __init__(self):
         self._thread_data = local()
 
