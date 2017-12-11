@@ -67,7 +67,7 @@ class URI(Publishable):
     ):
         url = URL(self.get("language_specific_uri", language) or self.uri)
 
-        if not url.hostname:
+        if not url.hostname and url.hierarchical:
             url = (
                 app.url_mapping.get_url(language = language, **kwargs)
                 .merge(url)
