@@ -4,12 +4,32 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
+from ast import literal_eval
 from cocktail.translations import translations
 from woost.models import Extension
 
 translations.load_bundle("woost.extensions.variables.package")
 
-variable_regex = re.compile("{{([a-z0-9A-Z.-_]+)}}")
+variable_regex = re.compile(
+    r"""
+    # Start of variable markup (double { character)
+    {{
+
+    # Identifier
+    (?P<identifier>[a-z0-9A-Z.-_]+)
+
+    # Optional parameters, wrapped by parenthesis
+    (
+        \(
+            (?P<parameters>.+)
+        \)
+    )?
+
+    # End of variable markup (double } character)
+    }}
+    """,
+    re.VERBOSE
+)
 
 
 class VariablesExtension(Extension):
@@ -54,7 +74,16 @@ class VariablesExtension(Extension):
         return variable_regex.sub(self.__replacement, content)
 
     def __replacement(self, match):
+
         from woost.extensions.variables.variable import Variable
-        variable = Variable.require_instance(identifier = match.group(1))
-        return variable.get_value()
+        identifier = match.group("identifier")
+        parameters = match.group("parameters")
+
+        variable = Variable.require_instance(identifier = identifier)
+        return variable.get_value(
+            parameters =
+                literal_eval(u"(%s,)" % parameters)
+                if parameters
+                else ()
+        )
 
