@@ -245,6 +245,23 @@ class Item(PersistentObject):
         member_group = "administration"
     )
 
+    def consolidate_translations(self, root_language = None, members = None):
+
+        # Exclude last_translation_update_time by default
+        if members is None:
+            members = [
+                member
+                for member in self.__class__.iter_members()
+                if member.translated
+                and member is not Item.last_translation_update_time
+            ]
+
+        return PersistentObject.consolidate_translations(
+            self,
+            root_language,
+            members
+        )
+
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
