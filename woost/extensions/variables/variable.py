@@ -37,19 +37,19 @@ class Variable(Item):
         language = "python"
     )
 
-    def get_value(self):
+    def get_value(self, parameters = ()):
 
         text = self.translated_text or self.text
 
-        expr = self.dynamic_value
-        if expr:
-            code_object = compile(
-                self.dynamic_value,
-                "%r.dynamic_value" % self,
-                "exec"
+        if self.dynamic_value:
+            context = self.__class__.dynamic_value.execute(
+                self,
+                {
+                    "self": self,
+                    "text": text,
+                    "parameters": parameters
+                }
             )
-            context = {"self": self, "text": text}
-            exec code_object in context
             text = context["text"]
 
         return text

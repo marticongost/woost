@@ -55,6 +55,11 @@ en: Variable
                             El text que s'utilitzarà com a valor per la variable.
                             Inicialitzat al text que es retornaria normalment.
                         </dd>
+                        <dt><code>parameters</code></dt>
+                        <dd>
+                            Una tupla amb els paràmetres posicionals que s'hagin passat
+                            a la variable.
+                        </dd>
                     </dl>
                 </detalls>
             es:
@@ -79,6 +84,11 @@ en: Variable
                         <dd>
                             El texto que se utilitzará como valor para la variable.
                             Inicializado con el texto que se devolvería normalmente.
+                        </dd>
+                        <dt><code>parameters</code></dt>
+                        <dd>
+                            Una tupla con los parámetros posicionales que se hayan
+                            pasado a la variable.
                         </dd>
                     </dl>
                 </detalls>
@@ -105,6 +115,11 @@ en: Variable
                             The text that will be produced by this variable.
                             Initialized to the text that would be produced if the
                             expression field was empty.
+                        </dd>
+                        <dt><code>parameters</code></dt>
+                        <dd>
+                            A tuple containing the positional parameters passed to the
+                            variable.
                         </dd>
                     </dl>
                 </detalls>
