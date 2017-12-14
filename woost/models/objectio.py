@@ -12,6 +12,7 @@ from warnings import warn
 from collections import Sequence, Set, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
+from itertools import izip_longest
 import sys
 import base64
 import json
@@ -239,13 +240,32 @@ class ObjectExporter(object):
                 value = self._get_object_ref(node)
                 if expand_object:
                     self.add(node)
-            elif not isinstance(value, basestring) and isinstance(
-                value,
-                (
-                    Sequence,
-                    Set,
-                    ListWrapper,
-                    SetWrapper
+            elif isinstance(node.member, schema.Tuple):
+                value = [
+                    self._export_value(
+                        ExportNode(
+                            self,
+                            item,
+                            parent = node,
+                            member = item_member,
+                            index = index
+                        )
+                    )
+                    for index, (item, item_member) in enumerate(
+                        izip_longest(value, node.member.items)
+                    )
+                ]
+            elif (
+                not isinstance(value, basestring)
+                and not isinstance(node.member, schema.Tuple)
+                and isinstance(
+                    value,
+                    (
+                        Sequence,
+                        Set,
+                        ListWrapper,
+                        SetWrapper
+                    )
                 )
             ):
                 items = []
@@ -672,9 +692,19 @@ class ObjectImporter(object):
                 SetWrapper
             ))
         ):
-            return member.default_type(
-                imported_item
-                for imported_item in (
+            if isinstance(member, schema.Tuple):
+                sequence_type = tuple
+                imported_items = (
+                    self.import_object_value(
+                        obj,
+                        item_member,
+                        item
+                    )
+                    for item, item_member in izip_longest(value, member.items)
+                )
+            else:
+                sequence_type = member.default_type
+                imported_items = (
                     self.import_object_value(
                         obj,
                         member.items,
@@ -682,8 +712,13 @@ class ObjectImporter(object):
                     )
                     for item in value
                 )
+
+            return sequence_type(
+                imported_item
+                for imported_item in imported_items
                 if imported_item is not ExportMode.ignore
             )
+
         elif isinstance(member, schema.Reference):
             if member.class_family:
                 return resolve(value)
