@@ -1,6 +1,10 @@
 
 @import "cocktail.ui://styles/common";
 
+:host {
+    user-select: none;
+}
+
 #list {
     border: 1px solid #ddd;
     border-top: none;
@@ -14,5 +18,10 @@
     padding: 0.3em;
     margin: 0 !important;
     @include alternate-background-color;
+
+    &[selected] {
+        background: $selection-background;
+        color: $selection-foreground;
+    }
 }
 

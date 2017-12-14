@@ -30,6 +30,7 @@
     </ui:cocktail.ui.ActionList>
 
     <?js
+    this.selectionContainer = this.list;
     this.toolbar.selectable = this;
     ?>
 
