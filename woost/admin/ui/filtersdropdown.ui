@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:requires component="cocktail.ui.sorting"/>
+
+    <?on action:changed
+    this.model = newValue.model;
+    ?>
+
+    <ui:property
+        name="model"
+        reflected="false"
+        final="true">
+        <?on changed
+        for (
+            let filter of cocktail.ui.sorting.localeSort(
+                woost.admin.filters.getFilters(newValue),
+                (filter) => filter.translate()
+            )
+        ) {
+            this.addFilter(filter);
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    addFilter(filter) {
+        let entry = this.createEntry(filter);
+        this.filtersList.appendChild(entry);
+        return entry;
+    }
+
+    createEntry(filter) {
+        let entry = this.constructor.Filter.create();
+        entry.filter = filter;
+        return entry;
+    }
+    ?>
+
+    <ui:with ui:element="dropdownPanel">
+        <ul id="filtersList"/>
+    </ui:with>
+
+    <li ui:component="Filter">
+
+        <ui:property
+            name="filter"
+            reflected="false"
+            final="true">
+            <?on changed
+            this.button.innerHTML = newValue.translate();
+            ?>
+        </ui:property>
+
+        <button id="button" type="button">
+            <?on click
+            instance.parentInstance.action.view.addFilter(instance.filter, null, true);
+            instance.parentInstance.dropdownPanel.expanded = false;
+            ?>
+        </button>
+    </li>
+
+</ui:cocktail.ui.ActionListDropdown>
+

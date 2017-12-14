@@ -1,0 +1,88 @@
+
+[woost.admin.ui.actions]
+
+    [new]
+    ca: Crear
+    es: Crear
+    en: New
+
+    [edit]
+    ca: Editar
+    es: Editar
+    en: Edit
+
+    [blocks]
+    ca: Editar blocs
+    es: Editar bloques
+    en: Edit blocks
+
+    [open-url]
+    ca: Veure publicat
+    es: Ver publicado
+    en: Open in browser
+
+    [delete]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+
+    [refresh]
+    ca: Actualitzar
+    es: Actualizar
+    en: Refresh
+
+    [excel]
+    ca: Exportar a MS Excel
+    es: Exportar a MS Excel
+    en: Export to MS Excel
+
+    [locales]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+    [fields]
+    ca: Camps
+    es: Campos
+    en: Fields
+
+    [filters]
+    ca: Filtres
+    es: Filtros
+    en: Filters
+
+    [translations]
+    ca: Traduccions
+    es: Traducciones
+    en: Translations
+
+    [add-block-before]
+    ca: Afegir davant
+    es: Añadir delante
+    en: Add before
+
+    [add-block-after]
+    ca: Afegir darrere
+    es: Añadir detrás
+    en: Add after
+
+    [save]
+    ca: Desar
+    es: Guardar
+    en: Save
+
+    [accept]
+    ca: Acceptar
+    es: Aceptar
+    en: Accept
+
+    [cancel]
+    ca: Cancel·lar
+    es: Cancelar
+    en: Cancel
+
+    [close]
+    ca: Tancar
+    es: Cerrar
+    en: Close
+

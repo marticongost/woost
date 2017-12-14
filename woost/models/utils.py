@@ -527,3 +527,10 @@ def get_matching_website(item):
 
     return None
 
+def get_model_dotted_name(model):
+    name = model.get_qualified_name(include_ns = True)
+    parts = name.split(".")
+    if len(parts) >= 2 and parts[-2] == parts[-1].lower():
+        parts.pop(-2)
+    return ".".join(parts)
+

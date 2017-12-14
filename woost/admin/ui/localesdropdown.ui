@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?on action:changed
+    this.checkList.dataBinding = {
+        member: newValue.view.navigationNode.queryParameters.locales,
+        value: newValue.view.locales
+    };
+
+    cocktail.ui.link(
+        newValue.view,
+        this.checkList,
+        ["locales", "value"],
+        (view, checkList) => {
+            checkList.value = view.locales;
+        },
+        (checkList, view) => {
+            // Changes to the check list are not applied until the 'Apply' button is clicked
+        },
+        // No need to set the value again
+        false
+    );
+    ?>
+
+    <ui:with ui:element="dropdownPanel" footerVisible="true">
+
+        <ui:cocktail.ui.CheckList
+            id="checkList"
+            selectionControlsVisible="true">
+
+            <?on value:changed
+            // Disable the 'Apply' button if the selection is empty
+            let value = this.value;
+            let count = 0;
+            if (value instanceof Array) {
+                count = value.length;
+            }
+            else if (value instanceof Set) {
+                count = value.size;
+            }
+            instance.applyButton.disabled = !count;
+            ?>
+
+        </ui:cocktail.ui.CheckList>
+
+        <ui:cocktail.ui.Button id="applyButton" slot="footer">
+            <ui:translation attribute="text"/>
+            <?on click
+            instance.dropdownPanel.expanded = false;
+            instance.action.view.locales = Array.from(instance.checkList.value);
+            ?>
+        </ui:cocktail.ui.Button>
+
+    </ui:with>
+
+</ui:cocktail.ui.ActionListDropdown>
+

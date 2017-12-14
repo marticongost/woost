@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   data-name="Layer 1"
+   viewBox="0 0 65.5 85.5"
+   x="0px"
+   y="0px"
+   id="svg3464"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="files.svg"
+   width="65.5"
+   height="85.5">
+  <metadata
+     id="metadata3476">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>01</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3474" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview3472"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1"
+     inkscape:cx="14.100059"
+     inkscape:cy="50.086233"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3464" />
+  <title
+     id="title3466">01</title>
+  <path
+     d="m 0,85.5 65.5,0 L 65.5,0 21.94,0 0,21.94 Z m 21.6,-77.84 0,13.94 -13.94,0 z M 6,25.6 l 19.6,0 0,-19.6 33.9,0 0,73.5 -53.5,0 z"
+     id="path3468"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccccccc" />
+  <polygon
+     points="46,76.53 54,76.53 54,54.56 59.8,59.42 64.93,53.29 50,40.77 35.07,53.29 35.07,53.29 40.2,59.42 46,54.56 "
+     id="polygon3470"
+     transform="translate(-17.25,-7.25)" />
+</svg>

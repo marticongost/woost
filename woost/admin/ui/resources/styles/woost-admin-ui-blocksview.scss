@@ -1,0 +1,41 @@
+
+#headerContent {
+    justify-content: flex-end;
+}
+
+#actionList {
+    flex: 1 1 auto;
+}
+
+#main {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    justify-content: stretch;
+}
+
+#sidePanel {
+    flex: 0 0 auto;
+    width: 40em;
+}
+
+#previewPanel {
+}
+
+#previewPanel {
+    display: flex;
+    justify-content: stretch;
+    padding: 1.5em;
+    flex: 1 1 auto;
+    border-left: 1px solid #ddd;
+    background-color: #eee;
+}
+
+#previewFrame {
+    flex: 1 1 auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    overflow: auto;
+    box-shadow: 4px 4px 8px rgba(black, 0.3);
+}
+

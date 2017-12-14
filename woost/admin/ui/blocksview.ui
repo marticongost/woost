@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?on navigationNode:changed
+    let selection = [newValue.item];
+
+    this.actionList.actionParameters.selection = selection;
+    this.actionList.actions = Array.from(woost.admin.actions.forContext({
+        view: this,
+        slot: "blocksToolbar",
+        model: newValue.model,
+        item: newValue.item
+    }));
+
+    this.navigationActionList.actionParameters.selection = selection;
+    this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
+        view: this,
+        slot: "blocksNavigationToolbar",
+        model: newValue.model,
+        item: newValue.item
+    }));
+
+    let url = this.getPreviewURL();
+    if (url) {
+        this.previewFrame.src = url;
+    }
+    ?>
+
+    <?class
+    get editedItem() {
+        return this.navigationNode.item;
+    }
+
+    get editedModel() {
+        return this.navigationNode.model;
+    }
+
+    getPreviewURL() {
+        if (this.editedModel.isSchema(woost.models.Publishable)) {
+            return this.editedItem.url;
+        }
+    }
+    ?>
+
+    <ui:with ui:element="headerContent">
+        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText"/>
+        <ui:cocktail.ui.ActionList id="navigationActionList" buttonStyle="iconAboveText"/>
+    </ui:with>
+
+    <ui:with ui:element="main">
+        <div id="sidePanel"/>
+        <div id="previewPanel">
+            <iframe id="previewFrame"/>
+        </div>
+    </ui:with>
+
+</ui:woost.admin.ui.StackNode>
+

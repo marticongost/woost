@@ -1,0 +1,80 @@
+
+[woost.admin.filters]
+
+    [default]
+
+        [equal]
+        ca: igual a
+        es: igual a
+        en: equals
+
+        [not_equal]
+        ca: diferent de
+        es: distinto de
+        en: distinct from
+
+        [one_of]
+        ca: un de
+        es: uno de
+        en: one of
+
+        [not_one_of]
+        ca: cap de
+        es: ninguno de
+        en: none of
+
+        [greater]
+        ca: major que
+        es: mayor que
+        en: greater than
+
+        [greater_equal]
+        ca: major o igual que
+        es: mayor o igual que
+        en: greater or equal than
+
+        [lower]
+        ca: menor que
+        es: menor que
+        en: lower than
+
+        [lower_equal]
+        ca: menor o igual que
+        es: menor o igual que
+        en: lower or equal than
+
+        [starts_with]
+        ca: comença per
+        es: empieza por
+        en: starts with
+
+        [ends_with]
+        ca: acaba en
+        es: acaba en
+        en: ends with
+
+        [regexp]
+        ca: coincideix amb expressió regular
+        es: coincide con expresión regular
+        en: matches regular expression
+
+        [contains]
+        ca: conté
+        es: contiene
+        en: contains
+
+        [lacks]
+        ca: no conté
+        es: no contiene
+        en: lacks
+
+        [contains_any]
+        ca: conté qualsevol
+        es: contiene cualquiera
+        en: contains any
+
+        [contains_all]
+        ca: conté tots
+        es: contiene todos
+        en: contains all
+

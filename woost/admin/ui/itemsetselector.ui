@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.List
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectionType="multiple"
+    selectableEntriesSelector="#list > .Entry">
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+
+    <?tail
+    cls.prototype.itemsDisplayFactory = woost.admin.ui.itemSetSelectorDisplays;
+    ?>
+
+    <?on dataBinding:changed
+    this.toolbar.actions = Array.from(woost.admin.actions.forContext({
+        view: this,
+        slot: "collectionToolbar",
+        model: newValue.member.items.type
+    }));
+    ?>
+
+    <ui:cocktail.ui.ActionList
+        id="toolbar"
+        ui:placement="before list">
+        <?js
+        element.classList.add("secondary");
+        element.classList.add("compact");
+        ?>
+    </ui:cocktail.ui.ActionList>
+
+    <?js
+    this.toolbar.selectable = this;
+    ?>
+
+</ui:cocktail.ui.List>
+

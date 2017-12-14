@@ -16,7 +16,15 @@ class CMSResourcesController(Controller):
         resource_filename("cocktail.html", "resources")
     )
 
+    cocktail_ui = folder_publisher(
+        resource_filename("cocktail.ui", "resources")
+    )
+
     woost = folder_publisher(
         resource_filename("woost.views", "resources")
+    )
+
+    woost_admin_ui = folder_publisher(
+        resource_filename("woost.admin.ui", "resources")
     )
 

@@ -1,0 +1,18 @@
+
+@import "cocktail.ui://styles/common";
+
+#list {
+    border: 1px solid #ddd;
+    border-top: none;
+
+    :host([empty='true']) & {
+        display: none;
+    }
+}
+
+.Entry {
+    padding: 0.3em;
+    margin: 0 !important;
+    @include alternate-background-color;
+}
+

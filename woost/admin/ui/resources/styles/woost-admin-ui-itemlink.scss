@@ -1,0 +1,33 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host {
+    text-decoration: none;
+    color: inherit;
+}
+
+:host([empty='true']) {
+    display: none;
+}
+
+:host(:hover) {
+    color: $hl-foreground;
+
+    #label {
+        border-bottom-color: lighten($hl-foreground, 30);
+    }
+}
+
+:host-context(.cocktail-ui-selected):host(:hover) {
+    color: $selection-hl-foreground;
+
+    #label {
+        border-bottom-color: darken($selection-hl-foreground, 10);
+    }
+}
+
+#label {
+    padding-bottom: 0.1em;
+    border-bottom: 1px dotted #ccc;
+}
+

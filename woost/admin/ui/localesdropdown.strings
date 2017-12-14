@@ -1,0 +1,13 @@
+
+[woost.admin.ui.LocalesDropdown]
+
+    [label]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+    [applyButton]
+    ca: Aplicar
+    es: Aplicar
+    en: Apply
+

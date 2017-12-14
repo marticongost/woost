@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:using mixin="cocktail.ui.DataDisplay"/>
+
+    <ui:property
+        name="imageType"
+        type="string"
+        reflected="true"
+        default="none"/>
+
+    <ui:property
+        name="empty"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
+        name="interactive"
+        type="boolean"
+        reflected="true"
+        default="true">
+        <?on changed
+        if (newValue) {
+            this.setAttribute("tabindex", "0");
+        }
+        else {
+            this.removeAttribute("tabindex");
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    getThumbnailURL() {
+        return this.value._thumbnail;
+    }
+
+    getIconURL() {
+        let model = cocktail.schema.getSchemaByName(this.value._class);
+        return model[woost.admin.ui.modelIconURL];
+    }
+
+    getLabelText() {
+        return this.dataBinding.member.translateValue(this.value);
+    }
+
+    describeType() {
+        return this.dataBinding.member.type[woost.admin.ui.describeType](this.value);
+    }
+
+    activate() {
+        cocktail.navigation.extendPath(this.value.id);
+    }
+    ?>
+
+    <?on value:changed
+    if (!newValue) {
+        this.empty = true;
+        this.thumbnail.src = null;
+        this.icon.src = null;
+        this.label.innerHTML = "";
+        this.typeLabel.innerHTML = "";
+        this.imageType = "none";
+    }
+    else {
+        this.empty = false;
+
+        let thumbnailURL = this.getThumbnailURL();
+
+        if (thumbnailURL) {
+            this.thumbnail.src = thumbnailURL;
+            this.imageType = "thumbnail";
+        }
+        else {
+            let iconURL = this.getIconURL();
+            if (iconURL) {
+                this.icon.src = iconURL;
+                this.imageType = "icon";
+            }
+            else {
+                this.imageType = "none";
+            }
+        }
+
+        this.label.innerHTML = this.getLabelText();
+        this.typeLabel.innerHTML = this.describeType();
+    }
+    ?>
+
+    <?on click
+    if (this.interactive) {
+        e.stopPropagation();
+    }
+    ?>
+
+    <?on click
+    if (this.interactive) {
+        this.activate();
+        e.stopPropagation();
+    }
+    ?>
+
+    <div id="imageFrame">
+        <img id="thumbnail"/>
+        <ui:cocktail.ui.SVG id="icon"/>
+    </div>
+
+    <div id="info">
+        <div id="label"/>
+        <div id="typeLabel"/>
+    </div>
+</div>
+
