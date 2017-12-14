@@ -1,0 +1,28 @@
+
+[woost.admin.models.admin.Admin]
+ca: Panell d'administració
+es: Panel de administración
+en: Administration panel
+
+    [plural]
+    ca: Panells d'administració
+    es: Paneles de administración
+    en: Administration panels
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [default_language]
+        ca: Idioma per defecte
+        es: Idioma por defecto
+        en: Default language
+
+        [sections]
+        ca: Seccions
+        es: Secciones
+        en: Sections
+

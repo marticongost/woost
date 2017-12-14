@@ -455,21 +455,24 @@ class Item(PersistentObject):
         image_factory = None,
         parameters = None,
         include_extension = True,
-        host = None
+        host = None,
+        check_can_render = False
     ):
         image = self.resolve_representative_image(image_factory)
         return image._get_image_uri(
             image_factory = image_factory,
             parameters = parameters,
             include_extension = include_extension,
-            host = host
+            host = host,
+            check_can_render = check_can_render
         )
 
     def _get_image_uri(self,
         image_factory = None,
         parameters = None,
         include_extension = True,
-        host = None
+        host = None,
+        check_can_render = False
     ):
         ext = None
 
@@ -485,6 +488,9 @@ class Item(PersistentObject):
             from woost.models.rendering import ImageFactory
             image_factory = \
                 ImageFactory.require_instance(identifier = image_factory)
+
+        if check_can_render and not image_factory.can_render(self):
+            return None
 
         if include_extension:
             from woost.models.rendering.formats import (

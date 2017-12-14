@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:symbol name="COLLECT_FILTERS"/>
+
+    <ui:property
+        name="empty"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
+        name="filters"
+        reflected="false">
+        <?on changed
+        this.empty = !newValue.length;
+        let currentEntry = this.filtersList.firstChild;
+        for (let filter of newValue) {
+            while (currentEntry && currentEntry.dataBinding.member !== filter.member) {
+                let nextEntry = currentEntry.nextSibling;
+                this.filtersList.removeChild(currentEntry);
+                currentEntry = nextEntry;
+            }
+            if (currentEntry) {
+                currentEntry.value = filter.value;
+                currentEntry = currentEntry.nextSibling;
+            }
+            else {
+                let entry = this.createEntry(filter);
+                this.filtersList.appendChild(entry);
+                cocktail.ui.trigger(this, "entryAdded", {entry});
+            }
+        }
+        while (currentEntry) {
+            let nextEntry = currentEntry.nextSibling;
+            this.filtersList.removeChild(currentEntry);
+            currentEntry = nextEntry;
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    [COLLECT_FILTERS]() {
+        if (!this.constructor.filters.isChanging(this)) {
+            this.filters = Array.from(
+                this.filtersList.childNodes,
+                (entry) => ({
+                    member: entry.entryForm.dataBinding.member,
+                    value: entry.entryForm.value
+                })
+            );
+        }
+    }
+
+    createEntry(filter) {
+        let entry = this.constructor.Entry.create();
+        entry.dataBinding = filter;
+        cocktail.ui.link(
+            this,
+            entry,
+            ["filters", "value"],
+            (filterBar, entry) => {
+            },
+            (entry, filterBar) => {
+                filterBar[COLLECT_FILTERS]();
+            }
+        );
+        return entry;
+    }
+    ?>
+
+    <ul id="filtersList"/>
+
+    <li ui:component="Entry" tabindex="0">
+
+        <ui:using mixin="cocktail.ui.DataDisplay"/>
+        <ui:symbol name="..COLLECT_FILTERS"/>
+
+        <ui:cocktail.ui.Form
+            id="entryForm"
+            formLayout="verticalTable"/>
+
+        <span id="removeButton">
+            <?svg woost.admin.ui://images/remove.svg ?>
+            <ui:translation attribute="title"/>
+            <?on click
+            let filterBar = instance.parentInstance;
+            instance.parentNode.removeChild(instance);
+            filterBar[COLLECT_FILTERS]();
+            ?>
+        </span>
+
+        <?js
+        this.linkDisplay(this.entryForm);
+        ?>
+
+    </li>
+
+</div>
+

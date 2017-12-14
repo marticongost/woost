@@ -1,0 +1,100 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host([isStackRoot='true']) {
+    overflow: hidden;
+    box-shadow: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    #stackNodeContent {
+        border: none;
+    }
+
+    #header {
+        margin-right: 3em;
+        border: 1px solid $panel-border-color;
+    }
+
+    #main {
+        margin-right: 3em;
+        margin-bottom: 2em;
+        padding: 0;
+        padding-top: 1em;
+    }
+
+    #stackDescendants {
+        left: 0;
+        top: 0;
+    }
+}
+
+#stackDescendants {
+    top: 4em;
+}
+
+#header {
+    font-size: 1em;
+}
+
+#headingWrapper {
+    display: flex;
+    align-items: center;
+}
+
+#headingElement {
+    flex: 1 1;
+    display: flex;
+    margin: 0;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.Heading {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+}
+
+.Heading .icon {
+    margin-right: 0.8em;
+    display: flex;
+    --height: 1.8em;
+    align-items: center;
+    justify-content: center;
+    color: rgba(#111, 0.4);
+}
+
+.Heading .label {
+    margin: 0;
+    font-size: 1.7em;
+    font-weight: bold;
+    max-width: 24em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#headerContent {
+    $toolbar-separation: 2em;
+    align-items: center;
+
+    flex: 1 1 auto;
+
+    & > * {
+        font-size: 1.4em;
+        color: $panel-action-color;
+
+        &:not(:first-child) {
+            margin-left: $toolbar-separation;
+        }
+    }
+
+    .cocktail-ui-ActionList {
+        align-self: stretch;
+    }
+}
+

@@ -9,6 +9,11 @@ en: File
     es: Ficheros
     en: Files
 
+    [new]
+    ca: Nou fitxer
+    es: Nuevo fichero
+    en: New file
+
     [groups]
 
         [content]

@@ -1,0 +1,20 @@
+
+#headerContent {
+    justify-content: flex-end;
+}
+
+#actionList {
+    flex: 1 1 auto;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+#editForm {
+    flex: 1 1 auto;
+    font-size: 1.3em;
+}
+

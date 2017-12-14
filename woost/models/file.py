@@ -28,6 +28,7 @@ class File(Publishable):
     cacheable_server_side = False
     type_group = "resource"
     backoffice_listing_includes_thumbnail_column = True
+    ui_display = "woost.admin.ui.ItemCard"
 
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"

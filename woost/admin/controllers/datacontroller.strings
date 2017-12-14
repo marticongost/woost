@@ -1,0 +1,13 @@
+
+@init
+from cocktail.stringutils import decapitalize
+from cocktail.translations.helpers import plural2
+@end
+
+[woost.admin.controllers.datacontroller]
+
+    [count(model, count)]
+    ca: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
+    es: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
+    en: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
+

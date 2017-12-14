@@ -262,6 +262,26 @@ class Publishable(Item):
         member_group = "publication"
     )
 
+    @classmethod
+    def init_instance(
+        cls,
+        instance,
+        values = None,
+        accessor = None,
+        excluded_members = None
+    ):
+        # Don't set the default for full_path if path is given
+        if values is not None and values.get("path"):
+            values["full_path"] = schema.undefined
+
+        schema.SchemaClass.init_instance(
+            cls,
+            instance,
+            values = values,
+            accessor = accessor,
+            excluded_members = excluded_members
+        )
+
     def get_effective_caching_policy(self, **context):
 
         from woost.models import Configuration

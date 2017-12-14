@@ -1,0 +1,65 @@
+
+@import "woost.admin.ui://styles/common";
+
+#main {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    &, :host([isStackRoot='true']) & {
+        padding-top: 0.3em;
+    }
+}
+
+#actionList {
+    flex: 1 1 auto;
+}
+
+#filterButton {
+    @include transparent-button;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0.5em;
+
+    svg {
+        width: auto;
+        height: 1.7em;
+        fill: $panel-icon-color;
+    }
+
+    &:hover svg {
+        fill: $panel-icon-strong-color;
+    }
+}
+
+:host([empty='true']) {
+    #fieldsDropdown,
+    #localesDropdown {
+        display: none;
+    }
+}
+
+#resultCountLabel {
+    font-size: 1.2em;
+    margin-right: 1em;
+    min-width: 6em;
+    text-align: center;
+
+    :host([empty='true']) & {
+        visibility: hidden;
+    }
+}
+
+#filtersBar {
+    margin-bottom: 0.3em;
+
+    &[empty='true'] {
+        display: none;
+    }
+}
+
+#table {
+    flex: 1 1 auto;
+    font-size: 1.4em;
+}
+

@@ -1,0 +1,10 @@
+--- cmscontroller.py
++++ cmscontroller.py
+@@ -56,6 +56,7 @@
+ from woost.controllers.imagescontroller import ImagesController
+ from woost.controllers.autocomplete import AutocompleteController
+ from woost.controllers.cmsmetadatacontroller import CMSMetadataController
++from woost.admin.controllers.admincontroller import AdminController
+ 
+ 
+ class CMSController(BaseCMSController):

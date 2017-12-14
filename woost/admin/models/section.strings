@@ -1,0 +1,48 @@
+
+[woost.admin.models.section.Section]
+ca: Secció del panell de control
+es: Sección del panel de control
+en: Control panel section
+
+    [plural]
+    ca: Seccions del panell de control
+    es: Secciones del panel de control
+    en: Control panel sections
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [path]
+        ca: Ruta
+        es: Ruta
+        en: Path
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+
+        [ui_node]
+        ca: Classe de node
+        es: Clase de node
+        en: Node class
+
+        [ui_component]
+        ca: Classe de visualització
+        es: Clase de visualización
+        en: Display class
+
+        [parent]
+        ca: Secció pare
+        es: Sección padre
+        en: Parent section
+
+        [children]
+        ca: Subseccions
+        es: Subsecciones
+        en: Subsections
+

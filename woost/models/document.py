@@ -68,6 +68,10 @@ class Document(Publishable):
             "height": "70px"
         },
         listed_by_default = False,
+        ui_form_control = (
+            "cocktail.ui.HTMLEditor",
+            {"multiline": False}
+        ),
         member_group = "content"
     )
 

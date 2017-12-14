@@ -1,0 +1,8 @@
+
+[woost.admin.ui.Listing]
+
+    [filterButton]
+    ca: Filtres
+    es: Filtros
+    en: Filters
+
