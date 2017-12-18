@@ -16,7 +16,8 @@
     this.toolbar.actions = Array.from(woost.admin.actions.forContext({
         view: this,
         slot: "collectionToolbar",
-        model: newValue.member.items.type
+        model: newValue.member.items.type,
+        collection: newValue.member
     }));
     ?>
 

@@ -10,30 +10,62 @@
 
     <ui:requires-translation-bundle name="woost.admin.filters.filters"/>
     <ui:symbol name="NAVIGATING"/>
+    <ui:symbol name="UPDATE"/>
+    <ui:symbol name="UPDATED_AT_LEAST_ONCE"/>
+
+    <?class
+    get actionSlotPrefix() {
+        return "listing";
+    }
+
+    getToolbarActions() {
+        return Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: this.actionSlotPrefix + "Toolbar",
+            model: this.model
+        }));
+    }
+
+    getControlsActions() {
+        return Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: this.actionSlotPrefix + "Controls",
+            model: this.model
+        }));
+    }
+
+    [UPDATE](previousNode = null) {
+
+        this[UPDATED_AT_LEAST_ONCE] = true;
+
+        let node = this.navigationNode;
+        this.members = node.members;
+        this.locales = node.locales;
+
+        if (!this.searchBox.dataBinding) {
+            this.searchBox.dataBinding = {
+                member: node.queryParameters.search,
+                value: node.search
+            };
+        }
+        else {
+            this.search = node.search;
+        }
+
+        this.model = node.listedModel;
+        this.filters = node.filters;
+
+        if (!previousNode || previousNode.queryString != node.queryString) {
+            this.table.reset();
+        }
+    }
+    ?>
 
     <?on navigationNode:changed
     this[NAVIGATING] = true;
     try {
-        if (!oldValue || newValue === cocktail.navigation.node) {
-            this.members = newValue.members;
-            this.locales = newValue.locales;
-
-            if (!this.searchBox.dataBinding) {
-                this.searchBox.dataBinding = {
-                    member: newValue.queryParameters.search,
-                    value: newValue.search
-                };
-            }
-            else {
-                this.search = newValue.search;
-            }
-
-            this.model = newValue.model;
-            this.filters = newValue.filters;
-
-            if (!oldValue || oldValue.queryString != newValue.queryString) {
-                this.table.reset();
-            }
+        if (newValue === cocktail.navigation.node) {
+            this[UPDATE](oldValue);
         }
     }
     finally {
@@ -46,16 +78,8 @@
         reflected="false">
         <?on changed
         this.table.model = newValue;
-        this.actionList.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
-            slot: "listingToolbar",
-            model: newValue
-        }));
-        this.listingControls.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
-            slot: "listingControls",
-            model: newValue
-        }));
+        this.actionList.actions = this.getToolbarActions();
+        this.listingControls.actions = this.getControlsActions();
         ?>
     </ui:property>
 
@@ -145,7 +169,7 @@
 
         <ui:cocktail.ui.ActionList
             id="listingControls"
-            buttonStyle="iconAboveText"/>
+            buttonStyle="textOnly"/>
 
         <ui:cocktail.ui.SearchInput id="searchBox">
             <?on keydown
@@ -173,6 +197,9 @@
     </ui:with>
 
     <?on nodeExposed
+    if (!this[UPDATED_AT_LEAST_ONCE]) {
+        this[UPDATE]();
+    }
     cocktail.ui.focus(this.searchBox);
     ?>
 
@@ -210,7 +237,7 @@
 
         selectionActivated() {
             let listing = this.parentInstance;
-            listing.actionList.getAction(listing.defaultAction).invoke({selection: this.selectedValues});
+            listing.defaultActionList.getAction(listing.defaultAction).invoke({selection: this.selectedValues});
         }
         ?>
 
@@ -226,6 +253,10 @@
         ?>
 
     </ui:cocktail.ui.Table>
+
+    <?js
+    this.defaultActionList = this.actionList;
+    ?>
 
 </ui:woost.admin.ui.StackNode>
 

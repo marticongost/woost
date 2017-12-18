@@ -433,6 +433,12 @@ class SchemaExport(MemberExport):
         yield prefix
         yield prefix + ".none"
 
+        if isinstance(member, schema.Collection):
+            yield (
+                prefix + ".add",
+                lambda: translations(member, suffix = ".add")
+            )
+
         if (
             member.translatable_enumeration
             and member.enumeration

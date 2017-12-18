@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.Listing
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    defaultAction="add-selection">
+
+    <?class
+    get actionSlotPrefix() {
+        return "relationSelector";
+    }
+
+    getNavigationActions() {
+        return Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: this.actionSlotPrefix + "Navigation",
+            model: this.model
+        }));
+    }
+    ?>
+
+    <?on model:changed
+    this.navigationActionList.actions = this.getNavigationActions();
+    ?>
+
+    <ui:with ui:element="headerContent">
+
+        <ui:cocktail.ui.ActionList
+            id="navigationActionList"
+            buttonStyle="iconAboveText"/>
+
+    </ui:with>
+
+    <?js
+    this.navigationActionList.selectable = this.table;
+    this.defaultActionList = this.navigationActionList;
+    ?>
+
+</ui:woost.admin.ui.Listing>
+
