@@ -7,6 +7,37 @@ $image-separation: 1em;
 $image-width: 5.2em;
 $icon-padding: 0.5em;
 
+@keyframes dimStackHeading {
+    from {
+        color: $stacknode-exposed-heading-color;
+    }
+    to {
+        color: $stacknode-covered-heading-color;
+    }
+}
+
+@keyframes fadeTypeLabel {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeImageFrame {
+    from {
+        flex-basis: 5.2em;
+        opacity: 1;
+        margin-right: 1em;
+    }
+    to {
+        flex-basis: 0;
+        opacity: 0;
+        margin-right: 0;
+    }
+}
+
 :host {
     max-width: $card-width;
     display: flex;
@@ -16,7 +47,7 @@ $icon-padding: 0.5em;
 
 }
 
-:host-context(h1)  {
+:host-context(.cocktail-ui-StackNode-header)  {
     max-width: none;
 }
 
@@ -38,6 +69,20 @@ $icon-padding: 0.5em;
         background-color: #f5f5f5;
         flex-basis: $image-width;
         overflow: hidden;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        flex-basis: 0;
+        opacity: 0;
+        margin-right: 0;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration fadeImageFrame;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse fadeImageFrame;
     }
 }
 
@@ -77,6 +122,22 @@ $icon-padding: 0.5em;
     max-height: 2.3em;
     overflow: hidden;
 
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='exposed']) & {
+        color: $stacknode-exposed-heading-color;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        color: $stacknode-covered-heading-color;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration dimStackHeading;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) & {
+        animation: $stacknode-animation-duration reverse dimStackHeading;
+    }
+
     :host-context(h1) & {
         font-size: 1.4em;
         max-height: none;
@@ -98,6 +159,18 @@ $icon-padding: 0.5em;
 
     :host-context(.cocktail-ui-selected) & {
         color: darken($selection-foreground, 25);
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        opacity: 0;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration fadeTypeLabel;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse fadeTypeLabel;
     }
 }
 

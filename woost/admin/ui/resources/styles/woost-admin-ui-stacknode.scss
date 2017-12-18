@@ -1,6 +1,17 @@
 
 @import "woost.admin.ui://styles/common";
 
+$covered-heading-padding-top: 0.6em;
+
+@keyframes displaceHeading {
+    from {
+        padding-top: 1em;
+    }
+    to {
+        padding-top: $covered-heading-padding-top;
+    }
+}
+
 :host([isStackRoot='true']) {
     overflow: hidden;
     box-shadow: none;
@@ -37,11 +48,24 @@
 
 #header {
     font-size: 1em;
+    min-height: 6.7em;
 }
 
 #headingWrapper {
     display: flex;
     align-items: center;
+
+    :host([animationType='slide'][stackNodeVisibility='covered']) & {
+        padding-top: $covered-heading-padding-top;
+    }
+
+    :host([animationType='slide'][animationState='childOpening']) & {
+        animation: $stacknode-animation-duration displaceHeading;
+    }
+
+    :host([animationType='slide'][animationState='childClosing']) & {
+        animation: $stacknode-animation-duration reverse displaceHeading;
+    }
 }
 
 #headingElement {
