@@ -12,7 +12,7 @@
     <ui:requires component="woost.admin.ui.ItemLink"/>
     <ui:requires component="woost.admin.ui.ItemCard"/>
     <ui:requires component="woost.admin.ui.ItemSetSelector"/>
-    <ui:requires component="woost.admin.ui.Autocomplete"/>
+    <ui:requires component="woost.admin.ui.ItemSelector"/>
     <ui:requires component="woost.admin.ui.Listing"/>
     <ui:requires component="woost.admin.ui.RelationSelector"/>
     <ui:requires component="woost.admin.ui.EditView"/>

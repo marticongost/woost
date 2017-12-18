@@ -81,6 +81,16 @@
     es: Añadir
     en: Add
 
+    [list]
+    ca: Llistar
+    es: Listar
+    en: List
+
+    [clear]
+    ca: Buidar
+    es: Vaciar
+    en: Clear
+
     [cancel]
     ca: Cancel·lar
     es: Cancelar

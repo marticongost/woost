@@ -25,7 +25,7 @@ cocktail.declare("woost.admin.ui");
             return cocktail.ui.CollectionEditor;
         }
     }
-    cocktail.schema.Reference[woost.admin.ui.formControl] = () => woost.admin.ui.Autocomplete;
+    cocktail.schema.Reference[woost.admin.ui.formControl] = () => woost.admin.ui.ItemSelector;
 
     woost.admin.ui.itemSetSelectorDisplays = cocktail.ui.inertDisplays.extend("woost.admin.ui.itemSetSelectorDisplay");
 
