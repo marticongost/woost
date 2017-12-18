@@ -242,6 +242,10 @@ woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Ac
 
 woost.admin.actions.ClearAction = class ClearAction extends woost.admin.actions.Action {
 
+    getState(context) {
+        return !context.item ? "hidden" : super.getState(context);
+    }
+
     invoke(context) {
         this.view.clearValue();
     }

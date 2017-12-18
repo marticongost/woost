@@ -30,6 +30,11 @@
     }));
     ?>
 
+    <?on value:changed
+    this.actionList.actionParameters.item = newValue;
+    this.actionList.updateEntries();
+    ?>
+
     <?js
     this.linkDisplay(this.autocomplete);
     ?>
