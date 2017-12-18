@@ -5,9 +5,12 @@
     user-select: none;
 }
 
+#toolbar {
+    margin-bottom: 0.2em;
+}
+
 #list {
     border: 1px solid #ddd;
-    border-top: none;
 
     :host([empty='true']) & {
         display: none;
