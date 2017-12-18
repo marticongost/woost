@@ -25,7 +25,7 @@
         id="toolbar"
         ui:placement="before list">
         <?js
-        element.classList.add("secondary");
+        element.classList.add("without-frame");
         element.classList.add("compact");
         ?>
     </ui:cocktail.ui.ActionList>
