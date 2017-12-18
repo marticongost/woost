@@ -438,6 +438,11 @@ class SchemaExport(MemberExport):
                 prefix + ".add",
                 lambda: translations(member, suffix = ".add")
             )
+        elif isinstance(member, schema.Reference) and not member.class_family:
+            yield (
+                prefix + ".select",
+                lambda: translations(member, suffix = ".select")
+            )
 
         if (
             member.translatable_enumeration

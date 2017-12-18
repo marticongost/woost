@@ -373,7 +373,14 @@ woost.admin.nodes.ItemNode = class ItemNode extends cocktail.navigation.StackTra
 woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woost.admin.nodes.Listing(woost.admin.nodes.StackNode) {
 
     get title() {
-        return this.relation.translate(".add");
+        let suffix;
+        if (this.relation instanceof cocktail.schema.Collection) {
+            suffix = ".add";
+        }
+        else if (this.relation instanceof cocktail.schema.Reference) {
+            suffix = ".select";
+        }
+        return this.relation.translate(suffix);
     }
 
     get listedModel() {

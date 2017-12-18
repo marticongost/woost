@@ -233,6 +233,20 @@ woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Acti
     }
 }
 
+woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
+
+    invoke(context) {
+        cocktail.navigation.extendPath("select", this.reference.name);
+    }
+}
+
+woost.admin.actions.ClearAction = class ClearAction extends woost.admin.actions.Action {
+
+    invoke(context) {
+        this.view.clearValue();
+    }
+}
+
 woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Action {
 
     get min() {
@@ -400,7 +414,7 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
     }
 }
 
-woost.admin.actions.AddSelectionAction = class CancelSelectionAction extends woost.admin.actions.Action {
+woost.admin.actions.AcceptSelectionAction = class CancelSelectionAction extends woost.admin.actions.Action {
 
     get translationKey() {
         return `${this.translationPrefix}.accept`;
@@ -465,6 +479,16 @@ woost.admin.actions.NewAction.register({
 woost.admin.actions.AddAction.register({
     id: "add",
     slots: ["collectionToolbar"]
+});
+
+woost.admin.actions.ListAction.register({
+    id: "list",
+    slots: ["referenceToolbar"]
+});
+
+woost.admin.actions.ClearAction.register({
+    id: "clear",
+    slots: ["referenceToolbar"]
 });
 
 woost.admin.actions.EditAction.register({
@@ -566,8 +590,8 @@ woost.admin.actions.CancelAction.register({
     slots: ["editNavigationToolbar", "blocksNavigationToolbar"]
 });
 
-woost.admin.actions.AddSelectionAction.register({
-    id: "add-selection",
+woost.admin.actions.AcceptSelectionAction.register({
+    id: "accept-selection",
     slots: ["relationSelectorNavigation"]
 });
 
