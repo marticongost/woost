@@ -121,10 +121,16 @@ class Export(object):
             self.__ref_fields[model] = fields
             return fields
 
-    def select_root(self, model):
-        return model.select(
-            filters = [PermissionExpression(app.user, ReadPermission)]
-        )
+    def select_root(self, model, relation = None):
+
+        if relation:
+            owner, member = relation
+            root = member.select_constraint_instances(parent = owner)
+        else:
+            root = model.select()
+
+        root.add_filter(PermissionExpression(app.user, ReadPermission))
+        return root
 
     def export_object(self, obj):
         return dict(
@@ -320,7 +326,13 @@ def file_ref_fields(exporter, model):
 
 class PageTreeExport(Export):
 
-    def select_root(self, model):
+    def select_root(self, model, relation = None):
+
+        if relation:
+            raise ValueError(
+                "PageTreeExport doesn't support relation constraints"
+            )
+
         return [
             website.home
             for website in Configuration.instance.websites

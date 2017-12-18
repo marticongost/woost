@@ -11,7 +11,7 @@ from cocktail.persistence import PersistentObject, Query
 from cocktail.controllers import Controller, get_parameter
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
-from woost.models import ReadPermission
+from woost.models import Item, ReadPermission
 from woost.models.utils import get_model_dotted_name
 from woost.admin.models.dataexport import (
     Export,
@@ -44,6 +44,7 @@ class DataController(Controller):
         page = None,
         page_size = None,
         search = None,
+        relation = None,
         **kwargs
     ):
         language = (
@@ -57,6 +58,7 @@ class DataController(Controller):
         export = self._resolve_export(export, locales)
         rng = self._resolve_range(page, page_size, implicit = not id)
         filters = self._resolve_filters(model, kwargs)
+        relation = self._resolve_relation(relation)
 
         # Returning a single object
         if id:
@@ -78,6 +80,13 @@ class DataController(Controller):
                     "Can't apply filters when retrieving a single element"
                 )
 
+            if relation:
+                raise cherrypy.HTTPError(
+                    400,
+                    "Can't apply relation constraints when retrieving a "
+                    "single element"
+                )
+
             try:
                 id = int(id)
             except ValueError:
@@ -96,7 +105,7 @@ class DataController(Controller):
 
         # Returning a list of objects
         else:
-            results = export.select_root(model)
+            results = export.select_root(model, relation)
             results.verbose = True
 
             if search:
@@ -231,6 +240,28 @@ class DataController(Controller):
                     filters.append(filter)
 
         return filters
+
+    def _resolve_relation(self, relation):
+
+        if relation:
+            rel_name, id = relation.split("-", 1)
+
+            try:
+                owner_id = int(id)
+            except TypeError:
+                raise cherrypy.HTTPError(400, "Invalid relation owner")
+
+            owner = Item.get_instance(owner_id)
+            if owner is None:
+                raise cherrypy.HTTPError(404, "Relation owner not found")
+
+            member = owner.__class__.get_member(rel_name)
+            if member is None:
+                raise cherrypy.HTTPError(404, "Relation not found")
+
+            return owner, member
+
+        return None
 
     def _parse_filter(self, filter_class, param_value):
 
