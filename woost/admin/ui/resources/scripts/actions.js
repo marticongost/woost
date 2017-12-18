@@ -261,6 +261,13 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
         return 1;
     }
 
+    getState(context) {
+        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     invoke(context) {
         cocktail.navigation.extendPath(context.selection[0].id);
     }
@@ -291,6 +298,13 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
         return [woost.models.Publishable];
     }
 
+    getState(context) {
+        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     invoke(context) {
         for (let publishable of context.selection) {
             window.open(publishable._url, "woost.admin.open-url." + publishable.id);
@@ -302,6 +316,13 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
 
     get min() {
         return 1;
+    }
+
+    getState(context) {
+        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+            return "hidden";
+        }
+        return super.getState(context);
     }
 }
 

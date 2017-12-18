@@ -21,6 +21,12 @@
     }));
     ?>
 
+    <?on value:changed
+    this.toolbar.actionParameters.items = newValue;
+    this.toolbar.actionParameters.collectionIsEmpty = cocktail.isEmptyValue(newValue);
+    this.toolbar.updateEntries();
+    ?>
+
     <ui:cocktail.ui.ActionList
         id="toolbar"
         ui:placement="before list">
