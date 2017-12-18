@@ -52,6 +52,8 @@
             this.search = node.search;
         }
 
+        this.relation = node.relation;
+        this.relationOwner = node.item;
         this.model = node.listedModel;
         this.filters = node.filters;
 
@@ -82,6 +84,14 @@
         this.listingControls.actions = this.getControlsActions();
         ?>
     </ui:property>
+
+    <ui:property
+        name="relation"
+        reflected="false"/>
+
+    <ui:property
+        name="relationOwner"
+        reflected="false"/>
 
     <ui:property
         name="members"
@@ -231,6 +241,9 @@
                     options.parameters,
                     cocktail.navigation.node.getQueryValuesForFilters(listing.filters)
                 )
+            }
+            if (listing.relation) {
+                options.parameters.relation = `${listing.relation.name}-${listing.relationOwner.id}`;
             }
             return options;
         }
