@@ -76,6 +76,11 @@
     es: Aceptar
     en: Accept
 
+    [add]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
     [cancel]
     ca: Cancel·lar
     es: Cancelar

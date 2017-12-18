@@ -192,7 +192,6 @@ cocktail.declare("woost.admin.actions");
 
             while (model) {
                 if (matchingModels.has(model)) {
-                    console.groupEnd();
                     return true;
                 }
                 model = model.base;
@@ -224,6 +223,13 @@ woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Acti
 
     translate() {
         return this.model.translate(".new") || super.translate();
+    }
+}
+
+woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Action {
+
+    invoke(context) {
+        cocktail.navigation.extendPath("select", this.collection.name);
     }
 }
 
@@ -362,7 +368,6 @@ woost.admin.actions.AcceptAction = class AcceptAction extends woost.admin.action
     }
 
     invoke() {
-        console.log("Accept");
         let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
         cocktail.navigation.push(parentURL);
     }
@@ -375,7 +380,6 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
     }
 
     invoke() {
-        console.log("Cancel");
         let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
         cocktail.navigation.push(parentURL);
     }
@@ -396,6 +400,58 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
     }
 }
 
+woost.admin.actions.AddSelectionAction = class CancelSelectionAction extends woost.admin.actions.Action {
+
+    get translationKey() {
+        return `${this.translationPrefix}.accept`;
+    }
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
+    }
+
+    invoke(context) {
+
+        const form = cocktail.ui.root.stack.stackTop.stackParent.editForm;
+
+        form.awaitFields().then((fields) => {
+            const relation = cocktail.navigation.node.relation;
+            const field = fields.get(relation.name);
+            const oldValue = field.value;
+            let newValue;
+            if (relation instanceof cocktail.schema.Collection) {
+                newValue = cocktail.ui.copyValue(oldValue);
+                if (newValue instanceof Array) {
+                    newValue.push(...context.selection);
+                }
+                else if (newValue instanceof Set) {
+                    for (let item of context.selection) {
+                        newValue.add(item);
+                    }
+                }
+            }
+            else if (relation instanceof cocktail.schema.Reference) {
+                newValue = context.selection[0];
+            }
+            field.value = newValue;
+        });
+
+        let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
+        cocktail.navigation.push(parentURL);
+    }
+}
+
+woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends woost.admin.actions.CloseAction {
+
+    get translationKey() {
+        return `${this.translationPrefix}.cancel`;
+    }
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
+    }
+}
+
 // -- Action registration --
 
 woost.admin.actions.NewAction.register({
@@ -404,6 +460,11 @@ woost.admin.actions.NewAction.register({
         "listingToolbar",
         "collectionToolbar"
     ]
+});
+
+woost.admin.actions.AddAction.register({
+    id: "add",
+    slots: ["collectionToolbar"]
 });
 
 woost.admin.actions.EditAction.register({
@@ -423,6 +484,7 @@ woost.admin.actions.OpenURLAction.register({
     id: "open-url",
     slots: [
         "listingToolbar",
+        "relationSelectorToolbar",
         "editToolbar",
         "collectionToolbar"
     ]
@@ -439,7 +501,7 @@ woost.admin.actions.DeleteAction.register({
 
 woost.admin.actions.RefreshAction.register({
     id: "refresh",
-    slots: ["listingToolbar"],
+    slots: ["listingToolbar", "relationSelectorToolbar"],
     parameters: {position: "extra"}
 });
 
@@ -451,17 +513,17 @@ woost.admin.actions.ExcelAction.register({
 
 woost.admin.actions.FieldsAction.register({
     id: "fields",
-    slots: ["listingControls"]
+    slots: ["listingControls", "relationSelectorControls"]
 });
 
 woost.admin.actions.LocalesAction.register({
     id: "locales",
-    slots: ["listingControls"]
+    slots: ["listingControls", "relationSelectorControls"]
 });
 
 woost.admin.actions.FiltersAction.register({
     id: "filters",
-    slots: ["listingControls"]
+    slots: ["listingControls", "relationSelectorControls"]
 });
 
 woost.admin.actions.TranslationsAction.register({
@@ -502,6 +564,16 @@ woost.admin.actions.AcceptAction.register({
 woost.admin.actions.CancelAction.register({
     id: "cancel",
     slots: ["editNavigationToolbar", "blocksNavigationToolbar"]
+});
+
+woost.admin.actions.AddSelectionAction.register({
+    id: "add-selection",
+    slots: ["relationSelectorNavigation"]
+});
+
+woost.admin.actions.CancelSelectionAction.register({
+    id: "cancel-selection",
+    slots: ["relationSelectorNavigation"]
 });
 
 woost.admin.actions.CloseAction.register({
