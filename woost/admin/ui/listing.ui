@@ -38,8 +38,6 @@
 
     [UPDATE](previousNode = null) {
 
-        this[UPDATED_AT_LEAST_ONCE] = true;
-
         let node = this.navigationNode;
         this.members = node.members;
         this.locales = node.locales;
@@ -60,6 +58,7 @@
         this.filters = node.filters;
 
         if (!previousNode || previousNode.queryString != node.queryString) {
+            this[UPDATED_AT_LEAST_ONCE] = true;
             this.table.reset();
         }
     }
