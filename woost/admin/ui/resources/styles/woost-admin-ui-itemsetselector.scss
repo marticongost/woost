@@ -3,6 +3,7 @@
 
 :host {
     user-select: none;
+    display: inline-block;
 }
 
 #toolbar {
@@ -11,6 +12,9 @@
 
 #list {
     border: 1px solid #ddd;
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 100%;
 
     :host([empty='true']) & {
         display: none;
