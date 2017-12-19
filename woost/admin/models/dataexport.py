@@ -128,7 +128,7 @@ class Export(object):
     def select_root(self, model, relation = None):
 
         if relation:
-            owner, member = relation
+            member, owner = relation
             root = member.select_constraint_instances(parent = owner)
         else:
             root = model.select()

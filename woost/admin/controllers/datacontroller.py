@@ -244,22 +244,34 @@ class DataController(Controller):
     def _resolve_relation(self, relation):
 
         if relation:
-            rel_name, id = relation.split("-", 1)
+            pos = relation.find("-")
+            if pos == -1:
+                owner = None
+                try:
+                    model_name, rel_name = relation.rsplit(".", 1)
+                    model = self._resolve_model(model_name)
+                except ValueError:
+                    raise cherrypy.HTTPError(400, "Invalid relation")
+            else:
+                id = relation[:pos]
+                rel_name = relation[pos + 1:]
 
-            try:
-                owner_id = int(id)
-            except TypeError:
-                raise cherrypy.HTTPError(400, "Invalid relation owner")
+                try:
+                    owner_id = int(id)
+                except TypeError:
+                    raise cherrypy.HTTPError(400, "Invalid relation owner")
 
-            owner = Item.get_instance(owner_id)
-            if owner is None:
-                raise cherrypy.HTTPError(404, "Relation owner not found")
+                owner = Item.get_instance(owner_id)
+                if owner is None:
+                    raise cherrypy.HTTPError(404, "Relation owner not found")
 
-            member = owner.__class__.get_member(rel_name)
+                model = owner.__class__
+
+            member = model.get_member(rel_name)
             if member is None:
                 raise cherrypy.HTTPError(404, "Relation not found")
 
-            return owner, member
+            return member, owner
 
         return None
 
