@@ -7,13 +7,15 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 441.619 211.74529"
+   viewBox="0 0 441.619 441.619"
    version="1.1"
    x="0px"
    y="0px"
    id="svg4330"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="controllers.svg">
+   sodipodi:docname="type-woost-models-controller-Controller.svg"
+   width="441.61899"
+   height="441.61899">
   <metadata
      id="metadata4340">
     <rdf:RDF>
@@ -22,6 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -36,19 +39,19 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="754"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
      id="namedview4336"
      showgrid="false"
      inkscape:zoom="0.5"
      inkscape:cx="220.80949"
-     inkscape:cy="111.87264"
+     inkscape:cy="117.87264"
      inkscape:window-x="0"
      inkscape:window-y="27"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg4330" />
   <g
-     transform="translate(-185.915,-343.8428)"
+     transform="translate(-185.91501,-228.90596)"
      id="g4332">
     <path
        d="m 291.825,343.8428 c -58.534,0 -105.91,47.4582 -105.91,105.9092 0,58.4507 47.376,105.8283 105.91,105.8283 30.861,0 58.571,-13.3424 77.833,-34.3861 0.107,0 0.183,-0.073 0.183,-0.073 43.662,-28.6247 73.826,0 73.95,0 19.304,21.1683 47.134,34.4669 77.995,34.4669 58.41,0 105.748,-47.4187 105.748,-105.8282 0,-58.4096 -47.338,-105.9092 -105.748,-105.9092 l -229.941,0 z m -26.296,54.6943 35.357,0 0,33.577 33.658,0 0,35.3572 -33.658,0 0,33.5766 -35.357,0 0,-33.5766 -33.496,0 0,-35.3572 33.496,0 0,-33.577 z m 224.441,27.0234 c 13.296,0 24.11,10.7697 24.11,24.1915 -0.03,13.2975 -10.814,24.1919 -24.11,24.1919 -13.422,0 -24.193,-10.8944 -24.193,-24.1919 0,-13.4634 10.771,-24.1915 24.193,-24.1915 z m 80.584,0 c 13.297,0 24.191,10.7697 24.191,24.1915 0.04,13.2975 -10.894,24.1919 -24.191,24.1919 -13.298,0 -24.191,-10.8944 -24.191,-24.1919 0,-13.4634 10.893,-24.1915 24.191,-24.1915 z"
