@@ -1,7 +1,26 @@
 
+@import "woost.admin.ui://styles/common";
+
 :host {
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
+}
+
+:host(:focus) {
+    outline: none !important;
+
+    #autocomplete {
+        border: 1px solid $focus-color;
+    }
+}
+
+#autocomplete {
+    border: 1px solid #ddd;
+    cursor: pointer;
+
+    &:hover {
+        border-color: $focus-color;
+    }
 }
 
 #actionList {
