@@ -1,7 +1,6 @@
 
 @import "woost.admin.ui://styles/common";
 
-$card-width: 20em;
 $card-height: 3.5em;
 $image-separation: 1em;
 $image-width: 5.2em;
@@ -39,19 +38,13 @@ $icon-padding: 0.5em;
 }
 
 :host {
-    max-width: $card-width;
     display: flex;
     flex-direction: row;
     align-items: center;
     color: inherit;
-
 }
 
-:host-context(.cocktail-ui-StackNode-header)  {
-    max-width: none;
-}
-
-:host([empty='true']) {
+:host([autohide='true'][empty='true']) {
     display: none;
 }
 
@@ -64,10 +57,14 @@ $icon-padding: 0.5em;
         display: none;
     }
 
+    :host([imageType='icon']) &,
+    :host([imageType='thumbnail']) & {
+        flex-basis: $image-width;
+    }
+
     :host([imageType='thumbnail']) & {
         border: 1px solid #ddd;
         background-color: #f5f5f5;
-        flex-basis: $image-width;
         overflow: hidden;
     }
 
