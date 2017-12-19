@@ -10,6 +10,22 @@
     cls.delegatesFocus = true;
     ?>
 
+    <?class
+    getDataSourceParameters(searchText) {
+        let parameters = super.getDataSourceParameters(searchText);
+        let relation;
+        let owner = this.dataBinding.object;
+        if (owner && owner.id) {
+            relation = `${owner.id}-${this.dataBinding.member.name}`;
+        }
+        else {
+            relation = this.dataBinding.member.fullName;
+        }
+        parameters.parameters.relation = relation;
+        return parameters;
+    }
+    ?>
+
     <ui:woost.admin.ui.ItemCard
         id="itemCard"
         ui:placement="before panelWrapper"

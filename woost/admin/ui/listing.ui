@@ -243,7 +243,13 @@
                 )
             }
             if (listing.relation) {
-                options.parameters.relation = `${listing.relation.name}-${listing.relationOwner.id}`;
+                let owner = listing.relationOwner;
+                if (owner && owner.id) {
+                    options.parameters.relation = `${owner.id}-${listing.relation.name}`;
+                }
+                else {
+                    options.parameters.relation = listing.relation.fullName;
+                }
             }
             return options;
         }
