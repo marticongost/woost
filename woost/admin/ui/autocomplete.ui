@@ -3,5 +3,32 @@
 <ui:cocktail.ui.Autocomplete
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    searchParameter="search"/>
+    searchParameter="search"
+    tabindex="0">
+
+    <?tail
+    cls.delegatesFocus = true;
+    ?>
+
+    <ui:woost.admin.ui.ItemCard
+        id="itemCard"
+        ui:placement="before panelWrapper"
+        interactive="false"
+        autohide="false">
+        <?js
+        element.info.insertBefore(this.input, element.label);
+        ?>
+    </ui:woost.admin.ui.ItemCard>
+
+    <?on dataBinding:changed
+    this.itemCard.dataBinding = newValue;
+    ?>
+
+    <?on value:changed
+    if (this.itemCard.dataBinding) {
+        this.itemCard.value = newValue;
+    }
+    ?>
+
+</ui:cocktail.ui.Autocomplete>
 
