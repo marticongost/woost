@@ -40,7 +40,7 @@
     ?>
 
     <?on value:changed
-    this.actionList.actionParameters.item = newValue;
+    this.actionList.actionParameters.selection = newValue ? [newValue] : null;
     this.actionList.updateEntries();
     ?>
 
