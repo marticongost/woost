@@ -19,6 +19,8 @@ from woost.models import (
     Publishable,
     Page,
     File,
+    Controller,
+    Template,
     ReadPermission,
     ReadMemberPermission,
     PermissionExpression
@@ -30,7 +32,9 @@ from woost.admin.models import Admin, Section
 excluded_members = set([
     Item.changes,
     Item.translations,
-    User.password
+    User.password,
+    Controller.published_items,
+    Template.documents
 ])
 
 
