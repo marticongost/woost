@@ -243,7 +243,7 @@ woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Ac
 woost.admin.actions.ClearAction = class ClearAction extends woost.admin.actions.Action {
 
     getState(context) {
-        return !context.item ? "hidden" : super.getState(context);
+        return !context.selection.length ? "hidden" : super.getState(context);
     }
 
     invoke(context) {
@@ -262,7 +262,10 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     }
 
     getState(context) {
-        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+        if (
+            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
+            || (this.slot == "referenceToolbar" && !context.selection.length)
+        ) {
             return "hidden";
         }
         return super.getState(context);
@@ -299,7 +302,10 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
     }
 
     getState(context) {
-        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+        if (
+            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
+            || (this.slot == "referenceToolbar" && !context.selection.length)
+        ) {
             return "hidden";
         }
         return super.getState(context);
@@ -319,7 +325,10 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
     }
 
     getState(context) {
-        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+        if (
+            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
+            || (this.slot == "referenceToolbar" && !context.selection.length)
+        ) {
             return "hidden";
         }
         return super.getState(context);
@@ -497,6 +506,7 @@ woost.admin.actions.NewAction.register({
     id: "new",
     slots: [
         "listingToolbar",
+        "referenceToolbar",
         "collectionToolbar"
     ]
 });
@@ -520,6 +530,7 @@ woost.admin.actions.EditAction.register({
     id: "edit",
     slots: [
         "listingToolbar",
+        "referenceToolbar",
         "collectionToolbar"
     ]
 });
@@ -535,6 +546,7 @@ woost.admin.actions.OpenURLAction.register({
         "listingToolbar",
         "relationSelectorToolbar",
         "editToolbar",
+        "referenceToolbar",
         "collectionToolbar"
     ]
 });
@@ -544,6 +556,7 @@ woost.admin.actions.DeleteAction.register({
     slots: [
         "listingToolbar",
         "editToolbar",
+        "referenceToolbar",
         "collectionToolbar"
     ]
 });
