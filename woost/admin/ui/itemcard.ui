@@ -19,6 +19,12 @@
         default="true"/>
 
     <ui:property
+        name="autohide"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
         name="interactive"
         type="boolean"
         reflected="true"
@@ -60,10 +66,10 @@
     if (!newValue) {
         this.empty = true;
         this.thumbnail.src = null;
-        this.icon.src = null;
+        this.icon.src = this.autohide ? "" : "woost.admin.ui://images/empty-set.svg";
         this.label.innerHTML = "";
         this.typeLabel.innerHTML = "";
-        this.imageType = "none";
+        this.imageType = this.autohide ? "none" : "icon";
     }
     else {
         this.empty = false;
