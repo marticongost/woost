@@ -49,6 +49,6 @@ class Template(Item):
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
         synchronizable = False,
-        visible_in_reference_list = False
+        visible = False
     )
 
