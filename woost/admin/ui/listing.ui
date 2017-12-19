@@ -22,7 +22,8 @@
         return Array.from(woost.admin.actions.forContext({
             view: this,
             slot: this.actionSlotPrefix + "Toolbar",
-            model: this.model
+            model: this.model,
+            selectable: this.table
         }));
     }
 
@@ -30,7 +31,8 @@
         return Array.from(woost.admin.actions.forContext({
             view: this,
             slot: this.actionSlotPrefix + "Controls",
-            model: this.model
+            model: this.model,
+            selectable: this.table
         }));
     }
 
