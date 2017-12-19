@@ -182,7 +182,7 @@ woost.admin.nodes.Listing = (cls) => class Listing extends cls {
                 woost.admin.filters.getFilters(this.listedModel),
                 (filter) => new woost.admin.filters.FilterParameter({
                     name: filter.parameterName,
-                    items: filter,
+                    items: filter.copy(),
                     defaultValue: undefined
                 })
             )
