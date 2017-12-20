@@ -479,23 +479,14 @@ woost.admin.actions.AcceptSelectionAction = class CancelSelectionAction extends 
         form.awaitFields().then((fields) => {
             const relation = cocktail.navigation.node.relation;
             const field = fields.get(relation.name);
-            const oldValue = field.value;
-            let newValue;
             if (relation instanceof cocktail.schema.Collection) {
-                newValue = cocktail.ui.copyValue(oldValue);
-                if (newValue instanceof Array) {
-                    newValue.push(...context.selection);
-                }
-                else if (newValue instanceof Set) {
-                    for (let item of context.selection) {
-                        newValue.add(item);
-                    }
+                for (let item of context.selection) {
+                    field.control.addEntry(item);
                 }
             }
             else if (relation instanceof cocktail.schema.Reference) {
-                newValue = context.selection[0];
+                field.value = context.selection[0];
             }
-            field.value = newValue;
         });
 
         let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
