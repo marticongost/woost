@@ -81,7 +81,8 @@
 
         <ui:cocktail.ui.Form
             id="entryForm"
-            formLayout="verticalTable"/>
+            formLayout="verticalTable"
+            fieldsExplanationDisposition="hidden"/>
 
         <span id="removeButton">
             <?svg woost.admin.ui://images/remove.svg ?>

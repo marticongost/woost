@@ -434,6 +434,7 @@ class SchemaExport(MemberExport):
         prefix = ".members." + member.name
         yield prefix
         yield prefix + ".none"
+        yield prefix + ".explanation"
 
         if isinstance(member, schema.Collection):
             yield (
