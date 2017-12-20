@@ -124,7 +124,8 @@
     <ui:with ui:element="main">
         <ui:cocktail.ui.Form
             id="editForm"
-            tabbed="true">
+            tabbed="true"
+            defaultGroup="item">
             <?js
             element.displayFactory = woost.admin.ui.formControls;
             element.tabs.queryParameter = "tab";
