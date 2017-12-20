@@ -5,6 +5,7 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:using mixin="cocktail.ui.DataDisplay"/>
+    <ui:using mixin="woost.admin.ui.ContextMenuSource"/>
 
     <ui:property
         name="imageType"

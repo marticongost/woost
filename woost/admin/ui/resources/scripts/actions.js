@@ -533,6 +533,7 @@ woost.admin.actions.ClearAction.register({
 woost.admin.actions.EditAction.register({
     id: "edit",
     slots: [
+        "contextMenu",
         "listingToolbar",
         "referenceToolbar",
         "collectionToolbar"
@@ -547,6 +548,7 @@ woost.admin.actions.EditBlocksAction.register({
 woost.admin.actions.OpenURLAction.register({
     id: "open-url",
     slots: [
+        "contextMenu",
         "listingToolbar",
         "relationSelectorToolbar",
         "editToolbar",
@@ -558,6 +560,7 @@ woost.admin.actions.OpenURLAction.register({
 woost.admin.actions.DeleteAction.register({
     id: "delete",
     slots: [
+        "contextMenu",
         "listingToolbar",
         "editToolbar",
         "referenceToolbar",

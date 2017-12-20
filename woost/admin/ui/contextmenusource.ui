@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:mixin
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:symbol name="EXPANDED_INSTANCE"/>
+    <ui:symbol name="CONTEXT_MENU"/>
+
+    <ui:property
+        name="contextMenuEnabled"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
+        name="contextMenuExpanded"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <?tail
+    window.addEventListener("click", (e) => {
+        if (mixin[EXPANDED_INSTANCE]) {
+            mixin[EXPANDED_INSTANCE].contextMenuExpanded = false;
+        }
+    }, true);
+    ?>
+
+    <?class
+    resolveContextMenuEvent(e) {
+        let target = this.resolveContextMenuTarget(e);
+        if (target) {
+            return {
+                model: target.dataBinding.member.relatedType,
+                item: target.value,
+                position: this.resolveContextMenuPosition(e)
+            };
+        }
+        else {
+            return null;
+        }
+    }
+
+    resolveContextMenuTarget(e) {
+        return this;
+    }
+
+    resolveContextMenuPosition(e) {
+        let position;
+        if (e.button) {
+            const rect = this.getBoundingClientRect();
+            position = {x: e.pageX - rect.left, y: e.pageY - rect.top};
+        }
+        return position;
+    }
+
+    getContextMenuActionParameters(model, item) {
+        return {
+            selection: [item]
+        };
+    }
+
+    expandContextMenu(model, item, position = null) {
+
+        // Don't create the menu until it is expanded for the first time
+        if (mixin[EXPANDED_INSTANCE]) {
+            mixin[EXPANDED_INSTANCE].contextMenuExpanded = false;
+        }
+
+        let menu = this[CONTEXT_MENU];
+        if (!menu) {
+            menu = mixin.ContextMenu.create();
+            this[CONTEXT_MENU] = menu;
+            menu.actionList.actionParameters = this.getContextMenuActionParameters(model, item);
+            menu.actionList.actions = Array.from(woost.admin.actions.forContext({
+                view: this,
+                slot: "contextMenu",
+                model: model
+            }));
+            this.shadowRoot.appendChild(menu);
+        }
+        else {
+            menu.actionList.actionParameters = this.getContextMenuActionParameters(model, item);
+            menu.actionList.updateEntries();
+        }
+
+        if (position) {
+            menu.style.left = position.x + "px";
+            menu.style.top = position.y + "px";
+        }
+        else {
+            menu.style.left = "0";
+            menu.style.top = "100%";
+        }
+
+        setTimeout(() => {
+            this.contextMenuExpanded = true;
+            mixin[EXPANDED_INSTANCE] = this;
+        }, 100);
+    }
+
+    hideContextMenu() {
+        if (mixin[EXPANDED_INSTANCE] === this) {
+            mixin[EXPANDED_INSTANCE] = null;
+        }
+        this.contextMenuExpanded = false;
+    }
+    ?>
+
+    <?on contextmenu
+    if (this.contextMenuEnabled) {
+        let resolution = this.resolveContextMenuEvent(e);
+        if (resolution) {
+            this.expandContextMenu(
+                resolution.model,
+                resolution.item,
+                resolution.position
+            );
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+    ?>
+
+    <div ui:component="ContextMenu">
+        <div id="panel">
+            <ui:cocktail.ui.ActionList id="actionList">
+                <?js
+                element.classList.add("vertical");
+                ?>
+                <?on click
+                instance.parentInstance.hideContextMenu();
+                e.stopPropagation();
+                ?>
+            </ui:cocktail.ui.ActionList>
+        </div>
+    </div>
+
+</ui:mixin>
+
