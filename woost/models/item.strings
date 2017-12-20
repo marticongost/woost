@@ -21,6 +21,11 @@ en: Generic element
 
     [groups]
 
+        [item]
+        ca: General
+        es: General
+        en: General
+
         [administration]
         ca: Administració
         es: Administración

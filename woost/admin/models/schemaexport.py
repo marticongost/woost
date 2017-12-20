@@ -406,6 +406,7 @@ class SchemaExport(MemberExport):
             trans("")
             trans(".plural")
             trans(".new")
+            trans(".groups.item")
 
             for member in self.get_members(model, True):
                 if member.member_group:
