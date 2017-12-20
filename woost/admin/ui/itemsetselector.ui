@@ -8,8 +8,20 @@
 
     <ui:using mixin="cocktail.ui.Selectable"/>
 
+    <ui:property
+        name="defaultAction"
+        type="string"
+        reflected="true"
+        default="edit"/>
+
     <?tail
     cls.prototype.itemsDisplayFactory = woost.admin.ui.itemSetSelectorDisplays;
+    ?>
+
+    <?class
+    selectionActivated() {
+        this.toolbar.getAction(this.defaultAction).invoke({selection: this.selectedValues});
+    }
     ?>
 
     <?on dataBinding:changed
