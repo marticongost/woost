@@ -264,7 +264,7 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     getState(context) {
         if (
             (this.slot == "collectionToolbar" && context.collectionIsEmpty)
-            || (this.slot == "referenceToolbar" && !context.selection.length)
+            || this.slot == "referenceToolbar"
         ) {
             return "hidden";
         }
@@ -302,10 +302,7 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
     }
 
     getState(context) {
-        if (
-            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
-            || (this.slot == "referenceToolbar" && !context.selection.length)
-        ) {
+        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
             return "hidden";
         }
         return super.getState(context);
@@ -325,10 +322,7 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
     }
 
     getState(context) {
-        if (
-            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
-            || (this.slot == "referenceToolbar" && !context.selection.length)
-        ) {
+        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
             return "hidden";
         }
         return super.getState(context);
@@ -552,7 +546,6 @@ woost.admin.actions.OpenURLAction.register({
         "listingToolbar",
         "relationSelectorToolbar",
         "editToolbar",
-        "referenceToolbar",
         "collectionToolbar"
     ]
 });
@@ -563,7 +556,6 @@ woost.admin.actions.DeleteAction.register({
         "contextMenu",
         "listingToolbar",
         "editToolbar",
-        "referenceToolbar",
         "collectionToolbar"
     ]
 });
