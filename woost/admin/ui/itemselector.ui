@@ -44,6 +44,12 @@
     this.actionList.updateEntries();
     ?>
 
+    <?on dblclick
+    if (this.value) {
+        this.actionList.getAction("edit").invoke({selection: [this.value]});
+    }
+    ?>
+
     <?js
     this.linkDisplay(this.autocomplete);
     ?>
