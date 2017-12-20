@@ -233,6 +233,22 @@ woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Acti
     }
 }
 
+woost.admin.actions.RemoveAction = class AddAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        if (context.collectionIsEmpty) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
+    invoke(context) {
+        for (let item of context.selection) {
+            context.selectable.removeEntry(item);
+        }
+    }
+}
+
 woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
 
     invoke(context) {
@@ -511,6 +527,11 @@ woost.admin.actions.NewAction.register({
 
 woost.admin.actions.AddAction.register({
     id: "add",
+    slots: ["collectionToolbar"]
+});
+
+woost.admin.actions.RemoveAction.register({
+    id: "remove",
     slots: ["collectionToolbar"]
 });
 

@@ -81,6 +81,11 @@
     es: Añadir
     en: Add
 
+    [remove]
+    ca: Treure
+    es: Quitar
+    en: Remove
+
     [list]
     ca: Llistar
     es: Listar
