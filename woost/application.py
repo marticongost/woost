@@ -135,7 +135,11 @@ http://woost.info
                 um.Sequence([
                     um.Optional(um.WebsiteInHostname()),
                     um.Optional(um.LocaleInPath()),
-                    um.Optional(
+                    um.Conditional(
+                        (
+                            lambda publishable, **kwargs:
+                            publishable is not None
+                        ),
                         um.OneOf([
                             um.Home(),
                             um.HierarchyInPath(),
