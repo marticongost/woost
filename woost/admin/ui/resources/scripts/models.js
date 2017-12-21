@@ -64,7 +64,7 @@ cocktail.declare("woost.admin.ui");
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
                 dataSource = new woost.models.ModelDataSource({
-                    url: "/admin/data/" + this.name
+                    url: woost.admin.url + "/data/" + this.name
                 });
                 this[DATA_SOURCE] = dataSource;
             }
