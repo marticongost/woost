@@ -16,10 +16,10 @@
         let relation;
         let owner = this.dataBinding.object;
         if (owner && owner.id) {
-            relation = `${owner.id}-${this.dataBinding.member.name}`;
+            relation = `${owner.id}-${this.dataBinding.member.originalMember.name}`;
         }
         else {
-            relation = this.dataBinding.member.fullName;
+            relation = this.dataBinding.member.originalMember.fullName;
         }
         parameters.parameters.relation = relation;
         return parameters;
