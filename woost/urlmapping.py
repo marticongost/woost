@@ -514,7 +514,7 @@ class IdInPath(URLComponent):
         publishable = None,
         **kwargs
     ):
-        if publishable:
+        if publishable and publishable.id:
             string = str(publishable.id)
 
             if self.include_file_extensions:
@@ -567,7 +567,7 @@ class DescriptiveIdInPath(URLComponent):
         language = None,
         **kwargs
     ):
-        if publishable:
+        if publishable and publishable.id:
             title = self.get_title(publishable, language)
 
             if title:
