@@ -70,7 +70,7 @@ class Image(Element):
     def get_inline_svg(self):
         svg_path = self.image.file_path
         with open(svg_path) as file:
-            svg = file.read()
+            svg = file.read().decode("utf-8")
             svg = svg.replace("\r\n", "\n")
             svg = xml_pi_regex.sub("", svg)
             svg = xml_doctype_regex.sub("", svg)
