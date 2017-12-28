@@ -9,6 +9,7 @@ u"""
 from warnings import warn
 import os
 import hashlib
+from weakref import WeakKeyDictionary
 from mimetypes import guess_type
 from shutil import copy, copyfileobj
 from urllib import urlopen
@@ -235,6 +236,34 @@ class File(Publishable):
 
         return file
 
+    def create_copy(self, *args, **kwargs):
+
+        clone = Publishable.create_copy(self, *args, **kwargs)
+
+        # Copy the phisical file once the transaction is complete
+        if self.id:
+            key = "woost.models.File.duplicates"
+            dup_files = datastore.get_transaction_value(key)
+
+            if dup_files is None:
+                dup_files = WeakKeyDictionary()
+                datastore.set_transaction_value(key, dup_files)
+                datastore.unique_after_commit_hook(
+                    "woost.models.File.duplicate",
+                    _duplicate_files_after_commit,
+                    dup_files
+                )
+
+            dup_files[clone] = self
+
+        return clone
+
+
+def _duplicate_files_after_commit(success, dup_files):
+    if success:
+        for clone, source in dup_files.iteritems():
+            if clone.is_inserted:
+                copy(source.file_path, clone.file_path)
 
 def file_hash(source, algorithm = "md5", chunk_size = 1024):
     """Obtains a hash for the contents of the given file.
