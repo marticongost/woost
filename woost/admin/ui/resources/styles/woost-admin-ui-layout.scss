@@ -72,12 +72,11 @@ $submenu-width: 30em;
 
         &[inSelectionPath='true'] {
             & > .entryDescription {
-                background-color: #e8cb95;
-                border-color: #dab46d;
+                background-color: #23211e;
+                border-color: transparent;
 
                 svg {
-                    fill: white;
-                    filter: drop-shadow(0 0 4px rgba(#9a5609, 0.8));
+                    fill: #ece3d0;
                 }
 
                 & > .moreSign svg {
