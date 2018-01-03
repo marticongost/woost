@@ -90,6 +90,10 @@ $covered-heading-padding-top: 0.6em;
     align-items: center;
     justify-content: center;
     color: rgba(#111, 0.4);
+
+    &:not([src]) {
+        display: none;
+    }
 }
 
 .Heading .label {
