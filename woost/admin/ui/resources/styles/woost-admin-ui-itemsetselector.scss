@@ -8,6 +8,10 @@
 
 #toolbar {
     margin-bottom: 0.2em;
+
+    :host([error]) & {
+        @include input-with-error;
+    }
 }
 
 #list {
