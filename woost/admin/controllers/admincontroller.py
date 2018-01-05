@@ -8,6 +8,7 @@ from cocktail.translations import (
     translations,
     translate_locale
 )
+from cocktail.events import event_handler
 from cocktail.ui import components
 from woost import app
 from woost.models import Configuration
@@ -19,14 +20,17 @@ from .datacontroller import DataController
 
 class AdminController(PublishableController):
 
-    def __call__(self, *args, **kwargs):
-
-        config = Configuration.instance
-        url = unicode(app.publishable.get_uri()).rstrip("/")
+    @event_handler
+    def handle_traversed(cls, e):
         set_language(
             app.user.prefered_language
             or app.publishable.default_language
         )
+
+    def __call__(self, *args, **kwargs):
+
+        config = Configuration.instance
+        url = unicode(app.publishable.get_uri()).rstrip("/")
 
         # Collect UI component dependencies for the admin sections
         dependencies = set(

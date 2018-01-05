@@ -71,6 +71,26 @@
     es: Guardar
     en: Save
 
+        [workingNotice]
+        ca: Desant els canvis...
+        es: Guardando los cambios...
+        en: Saving changes...
+
+        [createdNotice]
+        ca: S'ha creat l'objecte
+        es: Se ha creado el objeto
+        en: Object created
+
+        [modifiedNotice]
+        ca: S'han desat els canvis
+        es: Se han guardado los cambios
+        en: Changes saved
+
+        [errorNotice]
+        ca: S'ha produït un error que ha impedit que es guardessin els canvis
+        es: Se ha producido un error que ha impedido que se guarden los cambios
+        en: An error prevented the changes from being saved
+
     [accept]
     ca: Acceptar
     es: Aceptar

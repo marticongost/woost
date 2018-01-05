@@ -224,6 +224,10 @@ woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Acti
     translate() {
         return this.model.translate(".new") || super.translate();
     }
+
+    invoke(context) {
+        cocktail.navigation.extendPath("new", this.model.name);
+    }
 }
 
 woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Action {
@@ -318,9 +322,15 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
     }
 
     getState(context) {
+
+        if (this.slot == "editToolbar" && context.selection[0]._new) {
+            return "hidden";
+        }
+
         if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
             return "hidden";
         }
+
         return super.getState(context);
     }
 
@@ -338,9 +348,15 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
     }
 
     getState(context) {
+
+        if (this.slot == "editToolbar" && context.selection[0]._new) {
+            return "hidden";
+        }
+
         if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
             return "hidden";
         }
+
         return super.getState(context);
     }
 }
@@ -449,8 +465,57 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
 
 woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Action {
 
-    invoke() {
-        console.log("Save");
+    invoke(context) {
+
+        cocktail.ui.Lock.show({
+            icon: this.iconURL,
+            message: cocktail.ui.translations[this.translationKey + ".workingNotice"]
+        });
+
+        const form = this.view.editForm;
+
+        const state = form.getJSONValue();
+        state.id = this.item.id;
+        state._new = this.item._new;
+
+        this.model.save(state)
+            .then((newState) => {
+                form.value = newState;
+                cocktail.ui.Lock.clear();
+                if (state._new) {
+                    cocktail.ui.Notice.show({
+                        summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
+                        category: "success"
+                    });
+                    cocktail.ui.objectCreated(this.model, newState);
+                    const editURL = cocktail.navigation.node.parent.parent.url + "/" + newState.id;
+                    cocktail.navigation.replace(editURL);
+                }
+                else {
+                    cocktail.ui.Notice.show({
+                        summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
+                        category: "success"
+                    });
+                    cocktail.ui.objectModified(
+                        this.model,
+                        this.item.id,
+                        state,
+                        newState
+                    );
+                }
+            })
+            .catch((e) => {
+                cocktail.ui.Lock.clear();
+                if (e instanceof woost.models.ValidationError) {
+                    form.errors = e.errors;
+                }
+                else {
+                    cocktail.ui.Notice.show({
+                        summary: cocktail.ui.translations[this.translationKey + ".errorNotice"],
+                        category: "error"
+                    });
+                }
+            });
     }
 }
 

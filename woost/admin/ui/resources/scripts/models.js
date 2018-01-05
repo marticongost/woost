@@ -74,6 +74,39 @@ cocktail.declare("woost.admin.ui");
         set dataSource(value) {
             this[DATA_SOURCE] = value;
         }
+
+        loadDefaults(locales = null) {
+            return cocktail.ui.request({
+                url: woost.admin.url + "/data/defaults/" + this.name,
+                responseType: "json",
+                parameters: locales ? {locales: locales.join(" ")} : null
+            })
+                .then((xhr) => xhr.response);
+        }
+
+        save(obj, deletedTranslations = null) {
+            return cocktail.ui.request({
+                url: woost.admin.url + "/data/" + (obj._new ? this.name : obj.id),
+                method: obj._new ? "PUT" : "POST",
+                parameters: deletedTranslations ? {deleted_translations: deletedTranslations.join(" ")} : null,
+                data: obj,
+                responseType: "json"
+            })
+                .then((xhr) => {
+                    if (xhr.response.errors.length) {
+                        throw new woost.models.ValidationError(obj, xhr.response.errors);
+                    }
+                    return xhr.response.state;
+                });
+        }
+    }
+
+    woost.models.ValidationError = class ValidationError {
+
+        constructor(state, errors) {
+            this.state = state;
+            this.errors = errors;
+        }
     }
 }
 
