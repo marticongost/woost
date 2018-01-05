@@ -52,6 +52,16 @@
             member: newValue.editSchema,
             value: newValue.item
         };
+
+        this.addEventListener(
+            "nodeExposed",
+            () => {
+                this.editForm.awaitFields().then(() => {
+                    this.editForm.focusFirstControl();
+                });
+            },
+            {once: true}
+        );
     }
     ?>
 
