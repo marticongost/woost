@@ -18,7 +18,8 @@ class Admin(Publishable):
     members_order = [
         "title",
         "default_language",
-        "sections"
+        "sections",
+        "ui_components"
     ]
 
     default_access_level = schema.DynamicDefault(lambda:
@@ -43,5 +44,9 @@ class Admin(Publishable):
         items = schema.Reference(type = Section),
         related_end = schema.Collection(),
         integral = True
+    )
+
+    ui_components = schema.Collection(
+        items = schema.String()
     )
 
