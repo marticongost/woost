@@ -29,7 +29,10 @@ class AdminController(PublishableController):
         )
 
         # Collect UI component dependencies for the admin sections
-        dependencies = set()
+        dependencies = set(
+            components.get(component_name)
+            for component_name in app.publishable.ui_components
+        )
 
         def collect_section_ui_components(section):
             component_name = section.ui_component

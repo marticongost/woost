@@ -26,3 +26,19 @@ en: Administration panel
         es: Secciones
         en: Sections
 
+        [ui_components]
+        ca: Components visuals
+        es: Componentes visuales
+        en: UI components
+
+            [explanation]
+            ca:
+                Una llista de components de <em>cocktail.ui</em> addicionals que s'haurian
+                d'incloure en generar la interfície d'usuari per l'administració.
+            es:
+                Una lista de componentes de <em>cocktail.ui</em> adicionales que deberían
+                incluírse al generar la interfaz de usuario de la administración.
+            en:
+                A list of extra <em>cocktail.ui</em> components that should be included as
+                dependencies when generating the user interface for the administration.
+
