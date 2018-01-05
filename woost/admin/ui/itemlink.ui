@@ -18,6 +18,12 @@
     activate() {
         cocktail.navigation.extendPath(this.value.id);
     }
+
+    invalidation(change) {
+        if (change.type == "modify") {
+            this.value = change.newState;
+        }
+    }
     ?>
 
     <?on click
