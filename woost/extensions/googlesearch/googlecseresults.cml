@@ -7,7 +7,7 @@ from woost.models import Configuration
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?resource http://code.whads.com/google-cse-client/v1/scripts/search.js ?>
+    <?resource //code.whads.com/google-cse-client/v1/scripts/search.js ?>
 
     <?py-class
     api_key = None
