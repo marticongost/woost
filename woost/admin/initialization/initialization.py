@@ -25,7 +25,7 @@ _section_tree = [
             es = u"Noticias"
         ),
         "ui_node": "woost.admin.nodes.CRUD",
-        "data": """{"model": u"woost.models.News"}"""
+        "data": """{"model": "woost.models.News"}"""
     },
     {
         "path": "events",
@@ -35,7 +35,7 @@ _section_tree = [
             es = u"Eventos"
         ),
         "ui_node": "woost.admin.nodes.CRUD",
-        "data": """{"model": u"woost.models.Event"}"""
+        "data": """{"model": "woost.models.Event"}"""
     },
     {
         "path": "files",
@@ -45,7 +45,7 @@ _section_tree = [
             es = u"Ficheros"
         ),
         "ui_node": "woost.admin.nodes.CRUD",
-        "data": """{"model": u"woost.models.File"}"""
+        "data": """{"model": "woost.models.File"}"""
     },
     {
         "path": "config",
