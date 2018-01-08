@@ -21,6 +21,8 @@ cocktail.declare("woost.admin.filters");
 
     woost.admin.filters.getFilters = function *getFilters(member, recursive = true, includeMembers = true) {
 
+        member = member.originalMember;
+
         if (member instanceof cocktail.schema.Schema) {
             if (recursive && member.base) {
                 yield* woost.admin.filters.getFilters(member.base, true, includeMembers);

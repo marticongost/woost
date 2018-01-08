@@ -199,116 +199,203 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
     }
 }
 
-woost.admin.nodes.Listing = (cls) => class Listing extends cls {
+{
+    const ADAPTED_MODEL = Symbol.for("woost.admin.nodes.Listing.ADAPTED_MODEL");
 
-    constructor(...args) {
-        super(...args);
-        this.filters = [];
-    }
+    woost.admin.nodes.Listing = (cls) => class Listing extends cls {
 
-    get iconURL() {
-        return this.listedModel[woost.admin.ui.modelIconURL];
-    }
+        constructor(...args) {
+            super(...args);
+            this.filters = [];
+        }
 
-    get title() {
-        return this.listedModel.translate(".plural");
-    }
+        get iconURL() {
+            return this.adaptedModel[woost.admin.ui.modelIconURL];
+        }
 
-    defineQueryParameters() {
-        return [
-            new cocktail.schema.Collection({
-                name: "locales",
-                items: new cocktail.schema.Locale(),
-                defaultValue: [cocktail.getLanguage()]
-            }),
-            new cocktail.schema.Collection({
-                name: "members",
-                items: new cocktail.schema.MemberReference({
-                    sourceSchema: this.listedModel
+        get title() {
+            return this.adaptedModel.translate(".plural");
+        }
+
+        get adaptedModel() {
+            return this[ADAPTED_MODEL] || (this.listedModel && (this[ADAPTED_MODEL] = this.adaptModel(this.listedModel)));
+        }
+
+        adaptModel(model) {
+
+            const options = this.getAdapterOptions(model);
+            let hasOptions = false;
+
+            for (let key in options) {
+                hasOptions = true;
+                break;
+            }
+
+            if (hasOptions) {
+                if (!options.name) {
+                    options.name = model.name + ".admin.listing";
+                }
+                model = model.copy(options);
+            }
+
+            return model;
+        }
+
+        getAdapterOptions(model) {
+
+            const options = {};
+            const extraMembers = this.getExtraMembers(model);
+
+            if (extraMembers.length) {
+                const members = [...extraMembers, ...model.orderedMembers()];
+                options.membersOrder = Array.from(members, (member) => member.name);
+                options[cocktail.schema.MEMBERS] = members;
+            }
+
+            return options;
+        }
+
+        getExtraMembers(model) {
+
+            const extraMembers = [];
+
+            if (model[woost.admin.ui.showThumbnails]) {
+                extraMembers.push(
+                    new class ThumbnailColumn extends cocktail.schema.String {
+
+                        get translationKey() {
+                            return "woost.admin.ui.Listing.thumbnailColumn";
+                        }
+
+                        get [cocktail.ui.dataSourceFields]() {
+                            return [];
+                        }
+
+                        getObjectValue(object, language = null, index = null) {
+                            return object;
+                        }
+                    }({
+                        name: "_thumbnail",
+                        [cocktail.ui.display]: () => woost.admin.ui.Thumbnail
+                    })
+                );
+            }
+
+            if (model[woost.admin.ui.showDescriptions]) {
+                extraMembers.push(
+                    new class ElementColumn extends cocktail.schema.String {
+
+                        get translationKey() {
+                            return "woost.admin.ui.Listing.labelColumn";
+                        }
+
+                        get [cocktail.ui.dataSourceFields]() {
+                            return [];
+                        }
+
+                    }({name: "_label"})
+                );
+            }
+
+            return extraMembers;
+        }
+
+        defineQueryParameters() {
+            return [
+                new cocktail.schema.Collection({
+                    name: "locales",
+                    items: new cocktail.schema.Locale(),
+                    defaultValue: [cocktail.getLanguage()]
                 }),
-                defaultValue: Array.from(this.listedModel.orderedMembers()).filter(
-                    (member) => member[cocktail.ui.listedByDefault]
+                new cocktail.schema.Collection({
+                    name: "members",
+                    items: new cocktail.schema.MemberReference({
+                        sourceSchema: this.adaptedModel
+                    }),
+                    defaultValue: Array.from(this.adaptedModel.orderedMembers()).filter(
+                        (member) => member[cocktail.ui.listedByDefault]
+                    )
+                }),
+                new cocktail.schema.String({
+                    name: "search"
+                }),
+                ...Array.from(
+                    woost.admin.filters.getFilters(this.listedModel),
+                    (filter) => new woost.admin.filters.FilterParameter({
+                        name: filter.parameterName,
+                        items: filter.copy(),
+                        defaultValue: undefined
+                    })
                 )
-            }),
-            new cocktail.schema.String({
-                name: "search"
-            }),
-            ...Array.from(
-                woost.admin.filters.getFilters(this.listedModel),
-                (filter) => new woost.admin.filters.FilterParameter({
-                    name: filter.parameterName,
-                    items: filter.copy(),
-                    defaultValue: undefined
-                })
-            )
-        ];
-    }
+            ];
+        }
 
-    applyQueryParameter(parameter, value) {
-        if (parameter instanceof woost.admin.filters.FilterParameter) {
-            if (value) {
-                for (let filterValues of value) {
-                    this.filters.push({
-                        member: parameter.items,
-                        value: filterValues
-                    });
+        applyQueryParameter(parameter, value) {
+            if (parameter instanceof woost.admin.filters.FilterParameter) {
+                if (value) {
+                    for (let filterValues of value) {
+                        this.filters.push({
+                            member: parameter.items,
+                            value: filterValues
+                        });
+                    }
                 }
             }
-        }
-        else {
-            super.applyQueryParameter(parameter, value);
-        }
-    }
-
-    updateQueryStringWithFilters(filters) {
-
-        let queryValues = {};
-
-        // Set parameters for defined filters
-        for (let filter of filters) {
-            let valueList = queryValues[filter.member.parameterName];
-            if (valueList === undefined) {
-                valueList = [];
-                queryValues[filter.member.parameterName] = valueList;
-            }
-            valueList.push(filter.value);
-        }
-
-        // Clear undefined filters
-        for (let filterMember of woost.admin.filters.getFilters(this.listedModel)) {
-            if (queryValues[filterMember.parameterName] === undefined) {
-                queryValues[filterMember.parameterName] = undefined;
+            else {
+                super.applyQueryParameter(parameter, value);
             }
         }
 
-        return cocktail.navigation.changeQuery(queryValues);
-    }
+        updateQueryStringWithFilters(filters) {
 
-    getQueryValuesForFilters(filters) {
+            let queryValues = {};
 
-        let groupedValues = new Map();
-
-        for (let filter of filters) {
-            let parameter = this.queryParameters[filter.member.parameterName];
-            let valueList = groupedValues.get(parameter);
-            if (valueList === undefined) {
-                valueList = [];
-                groupedValues.set(parameter, valueList);
+            // Set parameters for defined filters
+            for (let filter of filters) {
+                let valueList = queryValues[filter.member.parameterName];
+                if (valueList === undefined) {
+                    valueList = [];
+                    queryValues[filter.member.parameterName] = valueList;
+                }
+                valueList.push(filter.value);
             }
-            valueList.push(filter.value);
+
+            // Clear undefined filters
+            for (let filterMember of woost.admin.filters.getFilters(this.listedModel)) {
+                if (queryValues[filterMember.parameterName] === undefined) {
+                    queryValues[filterMember.parameterName] = undefined;
+                }
+            }
+
+            return cocktail.navigation.changeQuery(queryValues);
         }
 
-        let queryValues = {};
+        getQueryValuesForFilters(filters) {
 
-        for (let [parameter, filterValues] of groupedValues) {
-            queryValues[parameter.name] = parameter.serializeValue(filterValues);
+            let groupedValues = new Map();
+
+            for (let filter of filters) {
+                let parameter = this.queryParameters[filter.member.parameterName];
+                let valueList = groupedValues.get(parameter);
+                if (valueList === undefined) {
+                    valueList = [];
+                    groupedValues.set(parameter, valueList);
+                }
+                valueList.push(filter.value);
+            }
+
+            let queryValues = {};
+
+            for (let [parameter, filterValues] of groupedValues) {
+                queryValues[parameter.name] = parameter.serializeValue(filterValues);
+            }
+
+            return queryValues;
         }
 
-        return queryValues;
-    }
-
-    get defaultComponent() {
-        return woost.admin.ui.Listing;
+        get defaultComponent() {
+            return woost.admin.ui.Listing;
+        }
     }
 }
 

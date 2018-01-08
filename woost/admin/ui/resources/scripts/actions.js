@@ -189,6 +189,7 @@ cocktail.declare("woost.admin.actions");
         matchesModel(model) {
 
             let matchingModels = this[MATCHING_MODELS];
+            model = model.originalMember;
 
             while (model) {
                 if (matchingModels.has(model)) {

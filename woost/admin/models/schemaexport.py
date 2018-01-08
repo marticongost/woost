@@ -56,6 +56,9 @@ schema.Member.ui_item_set_selector_display = None
 schema.Member.ui_collection_editor_control = None
 schema.Member.ui_autocomplete_display = None
 
+schema.SchemaObject.admin_show_descriptions = False
+schema.SchemaObject.admin_show_thumbnails = False
+
 def exports_member(member_type):
     def decorator(cls):
         member_exporters[member_type] = cls
@@ -365,6 +368,12 @@ class SchemaExport(MemberExport):
             u"[woost.admin.ui.modelIconURL]",
             dumps(app.icon_resolver.find_icon_url(member, "scalable"))
         )
+
+        if member.admin_show_descriptions:
+            yield (u"[woost.admin.ui.showDescriptions]", "true")
+
+        if member.admin_show_thumbnails:
+            yield (u"[woost.admin.ui.showThumbnails]", "true")
 
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):

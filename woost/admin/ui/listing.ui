@@ -54,7 +54,7 @@
 
         this.relation = node.relation;
         this.relationOwner = node.item;
-        this.model = node.listedModel;
+        this.model = node.adaptedModel;
         this.filters = node.filters;
 
         if (!previousNode || previousNode.queryString != node.queryString) {
