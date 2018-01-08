@@ -27,7 +27,7 @@ class File(Publishable):
     instantiable = True
     cacheable_server_side = False
     type_group = "resource"
-    backoffice_listing_includes_thumbnail_column = True
+    admin_show_thumbnails = True
     ui_display = "woost.admin.ui.ItemCard"
 
     edit_node_class = \
