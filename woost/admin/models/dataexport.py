@@ -193,8 +193,16 @@ class Export(object):
                 else:
                     return items_exporter.export_object_ref_list(member, value)
             elif isinstance(member, schema.JSON):
-                return json.loads(value)
-
+                try:
+                    return json.loads(value)
+                except ValueError, e:
+                    raise ValueError(
+                        str(e) + " (at object %r, member %r, language %r)" % (
+                            obj,
+                            member,
+                            language
+                        )
+                    )
         try:
             return self.export_value(value)
         except ValueError, e:
