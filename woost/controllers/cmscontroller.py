@@ -351,6 +351,7 @@ class CMSController(BaseCMSController):
         app.publishable = None
         app.original_publishable = None
         app.website = None
+        app.theme = None
         app.navigation_point = None
 
         # Set the default language
