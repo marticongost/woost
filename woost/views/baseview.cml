@@ -72,6 +72,10 @@ from woost.models import Configuration, Publishable, Document
         if app.splash:
             document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
 
+        # Edit mode
+        if app.editing:
+            document.add_class("woost-admin-edit")
+
         # Links
         home = app.website.home
         document.head_start_link = Element("link", rel = "start", title = translations(home), href = home.get_uri() or "/")
@@ -223,8 +227,6 @@ from woost.models import Configuration, Publishable, Document
             ?>
         </py:binding>
     </py:cocktail.html.GridRulers>
-
-    <py:woost.views.EditPanel py:id="cms_edit_panel"/>
 
     <div py:id="main_content">
         <py:woost.views.BlockList

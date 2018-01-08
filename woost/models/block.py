@@ -287,8 +287,7 @@ class Block(Item):
         view.block = self
 
         block_proxy = self.get_block_proxy(view)
-        block_proxy.set_client_param("blockId", self.id)
-        block_proxy.add_class("block")
+        block_proxy["data-woost-block"] = self.id
 
         if self.element_type:
             block_proxy.tag = self.element_type
@@ -344,8 +343,6 @@ class Block(Item):
 
         for style in self.styles:
             block_proxy.add_class(style.class_name)
-
-        block_proxy.add_class("block%d" % self.id)
 
         if self.qname:
             block_proxy.add_class(self.qname.replace(".", "-"))

@@ -352,6 +352,7 @@ class CMSController(BaseCMSController):
         app.original_publishable = None
         app.website = None
         app.theme = None
+        app.editing = cherrypy.request.params.get("woost.admin.edit") == "1"
         app.navigation_point = None
 
         # Set the default language

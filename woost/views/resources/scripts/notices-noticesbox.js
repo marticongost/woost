@@ -35,13 +35,13 @@ if (window.localStorage && window.JSON) {
             }
 
             if (_persist) {
-                hiddenNotices[notice.blockId] = true;
+                hiddenNotices[notice.getAttribute("data-woost-block")] = true;
                 localStorage[STORAGE_KEY] = JSON.stringify(hiddenNotices);
             }
         }
 
         for (var blockId in hiddenNotices) {
-            jQuery(".block" + blockId).each(function () {
+            jQuery("[data-woost-block='" + blockId + "']").each(function () {
                 $noticesBox.get(0).hideNotice(this);
             });
         }
