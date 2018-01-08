@@ -33,7 +33,8 @@ class Grid(Item):
     sizes = schema.Collection(
         items = "woost.models.GridSize",
         bidirectional = True,
-        integral = True
+        integral = True,
+        listed_by_default = True
     )
 
     def get_sass_code(self):
