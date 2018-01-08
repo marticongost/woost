@@ -20,6 +20,36 @@ woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackN
         return heading;
     }
 
+    traverse() {
+        // Redirection after creating a new object. Overriden
+        // to change the animation type to fade
+        if (this.url == woost.admin.ui.redirectionAfterInsertion) {
+            woost.admin.ui.redirectionAfterInsertion = null;
+
+            const stack = this.stack;
+            const createNode = stack.stackTop;
+            createNode.animationType = "fade";
+
+            const targetNode = this.createStackNode();
+            this.stackNode = targetNode;
+            targetNode.navigationNode = this;
+
+            const prevAnimationType = targetNode.animationType;
+            targetNode.animationType = "fade";
+            targetNode.addEventListener(
+                "animationend",
+                () => targetNode.animationType = prevAnimationType,
+                {once: true}
+            );
+
+            stack.pop(createNode);
+            stack.push(targetNode);
+        }
+        else {
+            super.traverse();
+        }
+    }
+
     activate() {
         super.activate();
         cocktail.setShortcutIcon(this.iconURL, "image/svg+xml");

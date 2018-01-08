@@ -480,28 +480,43 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
 
         this.model.save(state)
             .then((newState) => {
-                form.value = newState;
-                cocktail.ui.Lock.clear();
                 if (state._new) {
-                    cocktail.ui.Notice.show({
-                        summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
-                        category: "success"
-                    });
                     cocktail.ui.objectCreated(this.model, newState);
-                    const editURL = cocktail.navigation.node.parent.parent.url + "/" + newState.id;
-                    cocktail.navigation.replace(editURL);
+
+                    const newNode = cocktail.ui.root.stack.stackTop;
+                    newNode.animationType = "fade";
+
+                    const editURL = (
+                        cocktail.navigation.node.parent.parent.url
+                        + "/" + newState.id
+                        + "/edit?"
+                        + form.tabs.queryParameter
+                        + "="
+                        + form.tabs.selectedTab.tabId
+                    );
+
+                    woost.admin.ui.redirectionAfterInsertion = editURL;
+                    cocktail.navigation.replace(editURL).then(() => {
+                        cocktail.ui.Lock.clear();
+                        cocktail.ui.Notice.show({
+                            summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
+                            category: "success"
+                        });
+                    });
                 }
                 else {
-                    cocktail.ui.Notice.show({
-                        summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
-                        category: "success"
-                    });
+                    form.value = newState;
                     cocktail.ui.objectModified(
                         this.model,
                         this.item.id,
                         state,
                         newState
                     );
+                    cocktail.ui.Lock.clear();
+                    cocktail.ui.Notice.show({
+                        summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
+                        category: "success"
+                    });
                 }
             })
             .catch((e) => {
