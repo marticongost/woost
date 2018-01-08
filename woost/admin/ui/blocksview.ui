@@ -61,7 +61,7 @@
 
     getPreviewURL() {
         if (this.editedModel.isSchema(woost.models.Publishable)) {
-            return this.editedItem.url;
+            return URI(this.editedItem._url).addQuery({"woost.admin.edit": 1});
         }
     }
     ?>
