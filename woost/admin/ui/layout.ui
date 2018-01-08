@@ -11,6 +11,7 @@
     <ui:requires component="cocktail.ui.navigation"/>
     <ui:requires component="cocktail.ui.Lock"/>
     <ui:requires component="cocktail.ui.Notice"/>
+    <ui:requires component="woost.admin.ui.Thumbnail"/>
     <ui:requires component="woost.admin.ui.ItemLink"/>
     <ui:requires component="woost.admin.ui.ItemCard"/>
     <ui:requires component="woost.admin.ui.ItemSetSelector"/>
