@@ -150,7 +150,7 @@ woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
     }
 }
 
-woost.admin.nodes.Section = class Section extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
+woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
 
     static createSectionClass(section) {
         let cls = class Section extends this {};
@@ -179,6 +179,12 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.ItemContaine
         }
         return map;
     }
+}
+
+woost.admin.nodes.Folder = class Folder extends woost.admin.nodes.BaseSectionNode(cocktail.navigation.StackTransparentNode) {
+}
+
+woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode)) {
 
     get component() {
         if (this.section.ui_component) {
