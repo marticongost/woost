@@ -1,6 +1,45 @@
 
-#headingsRow > th:first-child,
-#body > tr > td:first-child {
-    padding-left: 1.3rem;
+#headingsRow > th,
+#body > tr > td {
+
+    &:first-child {
+        padding-left: 1.3rem;
+    }
+
+    &[member='_thumbnail'] {
+        flex: 0 0 5.2em;
+        padding-right: 1.3em;
+    }
+
+    &[memberType~='Number'] {
+        flex: 0 0 8em;
+    }
+
+    &[memberType~='Boolean'] {
+        flex: 0 0 6em;
+    }
+
+    &[memberType~='Date'] {
+        flex: 0 0 6em;
+    }
+
+    &[memberType~='Time'] {
+        flex: 0 0 6em;
+    }
+
+    &[memberType~='DateTime'] {
+        flex: 0 0 10em;
+    }
+
+    &[memberType~='HTML'] {
+
+        & > :first-child {
+            margin-top: 0;
+        }
+
+        & > :last-child {
+            margin-bottom: 0;
+        }
+    }
 }
 
