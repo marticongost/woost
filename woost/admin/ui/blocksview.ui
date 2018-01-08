@@ -4,6 +4,26 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:requires component="cocktail.ui.Lock"/>
+
+    <ui:property
+        name="previewState"
+        type="string"
+        reflected="true"
+        default="empty">
+        <?on changed
+        if (newValue == "loading") {
+            cocktail.ui.Lock.show({
+                parent: this.previewPanel,
+                message: cocktail.ui.translations[cls.fullName + ".loadingPreview"]
+            });
+        }
+        else if (oldValue == "loading") {
+            cocktail.ui.Lock.clear();
+        }
+        ?>
+    </ui:property>
+
     <?on navigationNode:changed
     let selection = [newValue.item];
 
@@ -25,6 +45,7 @@
 
     let url = this.getPreviewURL();
     if (url) {
+        this.previewState = "loading";
         this.previewFrame.src = url;
     }
     ?>
@@ -53,7 +74,11 @@
     <ui:with ui:element="main">
         <div id="sidePanel"/>
         <div id="previewPanel">
-            <iframe id="previewFrame"/>
+            <iframe id="previewFrame">
+                <?on load
+                instance.previewState = "loaded";
+                ?>
+            </iframe>
         </div>
     </ui:with>
 
