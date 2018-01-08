@@ -54,6 +54,7 @@ _section_tree = [
             en = u"Configuration",
             es = u"Configuración"
         ),
+        "ui_node": "woost.admin.nodes.Folder",
         "children": [
             {
                 "path": "languages",
@@ -78,6 +79,7 @@ _section_tree = [
                     en = u"Publication",
                     es = u"Publicación"
                 ),
+                "ui_node": "woost.admin.nodes.Folder",
                 "children": [
                     {
                         "path": "special-pages",
@@ -109,7 +111,9 @@ _section_tree = [
                             ca = u"Controladors",
                             en = u"Controllers",
                             es = u"Controladores"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.Controller"}"""
                     }
                 ]
             },
@@ -120,6 +124,7 @@ _section_tree = [
                     en = u"Access control",
                     es = u"Control de acceso"
                 ),
+                "ui_node": "woost.admin.nodes.Folder",
                 "children": [
                     {
                         "path": "users",
@@ -127,7 +132,9 @@ _section_tree = [
                             ca = u"Usuaris",
                             en = u"Users",
                             es = u"Usuarios"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.User"}"""
                     },
                     {
                         "path": "roles",
@@ -135,7 +142,9 @@ _section_tree = [
                             ca = u"Rols",
                             en = u"Roles",
                             es = u"Roles"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.Role"}"""
                     },
                     {
                         "path": "access-levels",
@@ -143,7 +152,9 @@ _section_tree = [
                             ca = u"Nivells d'accés",
                             en = u"Access levels",
                             es = u"Niveles de acceso"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.AccessLevel"}"""
                     }
                 ]
             },
@@ -154,6 +165,7 @@ _section_tree = [
                     en = u"Look and feel",
                     es = u"Apariencia"
                 ),
+                "ui_node": "woost.admin.nodes.Folder",
                 "children": [
                     {
                         "path": "templates",
@@ -169,7 +181,9 @@ _section_tree = [
                             ca = u"Plantilles de correu",
                             en = u"Email templates",
                             es = u"Plantillas de correo"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.EmailTemplate"}"""
                     },
                     {
                         "path": "grids",
@@ -177,7 +191,9 @@ _section_tree = [
                             ca = u"Graelles",
                             en = u"Grids",
                             es = u"Matrices"
-                        )
+                        ),
+                        "ui_node": "woost.admin.nodes.CRUD",
+                        "data": """{"model": "woost.models.Grid"}"""
                     },
                     {
                         "path": "images",
