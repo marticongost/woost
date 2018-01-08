@@ -15,6 +15,8 @@ cocktail.declare("woost.admin.ui");
 
     woost.models.permissions = Symbol.for("woost.models.permissions");
     woost.admin.ui.modelIconURL = Symbol.for("woost.admin.ui.modelIconURL");
+    woost.admin.ui.showDescriptions = Symbol.for("woost.admin.ui.showDescriptions");
+    woost.admin.ui.showThumbnails = Symbol.for("woost.admin.ui.showThumbnails");
 
     woost.admin.ui.formControls = cocktail.ui.formControls.extend("woost.admin.ui.formControl");
     cocktail.schema.Collection[woost.admin.ui.formControl] = (dataBinding) => {
@@ -64,7 +66,7 @@ cocktail.declare("woost.admin.ui");
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
                 dataSource = new woost.models.ModelDataSource({
-                    url: woost.admin.url + "/data/" + this.name
+                    url: woost.admin.url + "/data/" + this.originalMember.name
                 });
                 this[DATA_SOURCE] = dataSource;
             }

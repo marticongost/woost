@@ -1,6 +1,16 @@
 
 [woost.admin.ui.Listing]
 
+    [labelColumn]
+    ca: Element
+    es: Elemento
+    en: Element
+
+    [thumbnailColumn]
+    ca: Miniatura
+    es: Miniatura
+    en: Thumbnail
+
     [filterButton]
     ca: Filtres
     es: Filtros

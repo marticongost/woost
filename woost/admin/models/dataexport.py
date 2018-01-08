@@ -267,6 +267,9 @@ def object_fields(exporter, model):
 
     yield (lambda obj: ("_class", get_model_dotted_name(obj.__class__)))
 
+    if model.admin_show_descriptions:
+        yield (lambda obj: ("_label", any_translation(obj)))
+
     for member in model.iter_members():
         if exporter.should_include_member(member):
             yield _object_field(exporter, member)
