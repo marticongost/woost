@@ -266,7 +266,8 @@ class FieldSet(Field):
             except:
                 return call_base(group)
             else:
-                return translations(FieldSet.require_instance(field_set_id))
+                fieldset = FieldSet.require_instance(field_set_id)
+                return fieldset.visible_title or translations(fieldset)
 
     def create_form_model(self):
 
