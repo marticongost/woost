@@ -792,8 +792,7 @@ class DuplicateAction(UserAction):
         "item_buttons"
     ])
     excluded = UserAction.excluded | frozenset([
-        "new_item",
-        "collection"
+        "new_item"
     ])
     min = 1
     max = 1
