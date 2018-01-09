@@ -824,6 +824,32 @@ class DuplicateAction(UserAction):
             return copy
 
         copy = duplicate()
+
+        # Update the parent edit session to include the duplicate
+        stack = controller.edit_stack
+        if stack:
+            source_id = selection[0].id
+            relations = [
+                (
+                    member,
+                    (copy.get(member).id,)
+                    if isinstance(member, schema.Reference)
+                    else [item.id for item in copy.get(member)]
+                )
+                for member in copy.__class__.iter_members()
+                if isinstance(member, schema.RelationMember)
+                and member.related_end
+                and copy.get(member)
+            ]
+            for node in stack:
+                if isinstance(node, EditNode):
+                    for relation, rel_ids in relations:
+                        if (
+                            isinstance(node.item, relation.related_type)
+                            and node.item_id in rel_ids
+                        ):
+                            node.relate(relation.related_end, copy)
+
         Notification(
             translations(
                 "woost.duplicate_created_notice",
