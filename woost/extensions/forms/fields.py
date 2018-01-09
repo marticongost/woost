@@ -227,6 +227,7 @@ class FieldSet(Field):
     fields = schema.Collection(
         items = "woost.extensions.forms.fields.Field",
         bidirectional = True,
+        integral = True,
         member_group = "field_structure",
         listed_by_default = False
     )
