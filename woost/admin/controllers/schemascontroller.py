@@ -5,6 +5,7 @@ u"""
 """
 from json import dumps
 import cherrypy
+from threading import Lock
 from cocktail.modeling import camel_to_underscore
 from cocktail import schema
 from cocktail.translations import set_language
@@ -20,6 +21,8 @@ from woost.admin.filters import (
     MultiValueFilter
 )
 
+_lock = Lock()
+_output = None
 _standard_filter_templates = (Filter, MultiValueFilter)
 
 
@@ -27,6 +30,14 @@ class SchemasController(Controller):
 
     @no_csrf_token_injection
     def __call__(self):
+        global _output
+        if not _output:
+            with _lock:
+                if not _output:
+                    _output = "".join(self.produce_output())
+        return _output
+
+    def produce_output(self):
 
         language = (
             app.user.prefered_language
