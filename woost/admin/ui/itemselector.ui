@@ -20,10 +20,6 @@
         ?>
     </ui:cocktail.ui.ActionList>
 
-    <?tail
-    cls.delegatesFocus = true;
-    ?>
-
     <?class
     clearValue() {
         this.autocomplete.clearValue();

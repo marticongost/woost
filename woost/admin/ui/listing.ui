@@ -230,12 +230,18 @@
         selectionType="multiple"
         paging="infiniteScroll">
 
-        <ui:using mixin="woost.admin.ui.ContextMenuSource"/>
+        <ui:using mixin="woost.admin.ui.ObjectSource"/>
 
         <?class
-        resolveContextMenuTarget(e) {
+        createRow(record) {
+            const row = super.createRow(record);
+            row.draggable = true;
+            return row;
+        }
+
+        resolveObjectSourceTarget(e) {
             for (let element of e.path) {
-                if (element.classList.contains("cocktail-ui-Table-Row")) {
+                if (element.classList && element.classList.contains("cocktail-ui-Table-Row")) {
                     return element;
                 }
             }

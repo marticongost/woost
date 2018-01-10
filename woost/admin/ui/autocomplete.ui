@@ -6,8 +6,10 @@
     searchParameter="search"
     tabindex="0">
 
+    <ui:using mixin="woost.admin.ui.ObjectDropArea"/>
+
     <?tail
-    cls.delegatesFocus = true;
+    cls.delegatesFocus = false;
     ?>
 
     <?class
@@ -50,6 +52,10 @@
     if (this.itemCard.dataBinding) {
         this.itemCard.errors = newValue;
     }
+    ?>
+
+    <?on click
+    cocktail.ui.focus(this.input);
     ?>
 
 </ui:cocktail.ui.Autocomplete>
