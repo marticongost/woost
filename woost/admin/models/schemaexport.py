@@ -55,6 +55,7 @@ schema.Member.ui_read_only_form_control = None
 schema.Member.ui_item_set_selector_display = None
 schema.Member.ui_collection_editor_control = None
 schema.Member.ui_autocomplete_display = None
+schema.Member.ui_column_width = None
 
 schema.SchemaObject.admin_show_descriptions = False
 schema.SchemaObject.admin_show_thumbnails = False
@@ -218,6 +219,12 @@ class MemberExport(object):
             yield (
                 u"[cocktail.ui.listedByDefault]",
                 "false"
+            )
+
+        if member.ui_column_width:
+            yield (
+                u"[cocktail.ui.columnWidth]",
+                dumps(member.ui_column_width)
             )
 
         if self.permissions:
