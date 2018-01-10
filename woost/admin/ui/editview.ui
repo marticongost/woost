@@ -57,7 +57,9 @@
             "nodeExposed",
             () => {
                 this.editForm.awaitFields().then(() => {
-                    this.editForm.focusFirstControl();
+                    this.editForm.focusFirstControl(
+                        this.editForm.tabs.selectedTab.tabId
+                    );
                 });
             },
             {once: true}
