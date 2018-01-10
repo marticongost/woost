@@ -240,6 +240,10 @@ woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Acti
 
 woost.admin.actions.RemoveAction = class AddAction extends woost.admin.actions.Action {
 
+    get min() {
+        return 1;
+    }
+
     getState(context) {
         if (context.collectionIsEmpty) {
             return "hidden";
