@@ -2,7 +2,8 @@
 
 <ui:mixin
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    draggable="true">
 
     <ui:symbol name="EXPANDED_INSTANCE"/>
     <ui:symbol name="CONTEXT_MENU"/>
@@ -28,13 +29,16 @@
     ?>
 
     <?class
-    resolveContextMenuEvent(e) {
-        let target = this.resolveContextMenuTarget(e);
+    resolveObjectSourceEvent(e) {
+        let target = this.resolveObjectSourceTarget(e);
         if (target) {
             return {
+                target: target,
                 model: target.dataBinding.member.relatedType,
                 item: target.value,
-                position: this.resolveContextMenuPosition(e)
+                referrer: target.dataBinding.object,
+                relation: target.dataBinding.member,
+                position: this.resolveObjectSourceMousePosition(e)
             };
         }
         else {
@@ -42,11 +46,11 @@
         }
     }
 
-    resolveContextMenuTarget(e) {
+    resolveObjectSourceTarget(e) {
         return this;
     }
 
-    resolveContextMenuPosition(e) {
+    resolveObjectSourceMousePosition(e) {
         let position;
         if (e.button) {
             const rect = this.getBoundingClientRect();
@@ -108,9 +112,23 @@
     }
     ?>
 
+    <?on dragstart
+    const resolution = this.resolveObjectSourceEvent(e);
+    if (resolution) {
+        e.dataTransfer.setDragImage(resolution.target, 5, 5);
+        e.dataTransfer.setData("application/x-woost-object", JSON.stringify({
+            model: resolution.model.originalMember.fullName,
+            item: resolution.item,
+            referrer: resolution.referrer,
+            relation: resolution.relation.originalMember.fullName,
+            position: resolution.position
+        }));
+    }
+    ?>
+
     <?on contextmenu
     if (this.contextMenuEnabled) {
-        let resolution = this.resolveContextMenuEvent(e);
+        const resolution = this.resolveObjectSourceEvent(e);
         if (resolution) {
             this.expandContextMenu(
                 resolution.model,

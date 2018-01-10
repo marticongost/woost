@@ -5,7 +5,7 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:using mixin="cocktail.ui.DataDisplay"/>
-    <ui:using mixin="woost.admin.ui.ContextMenuSource"/>
+    <ui:using mixin="woost.admin.ui.ObjectSource"/>
 
     <ui:property
         name="imageType"
@@ -51,11 +51,14 @@
     }
 
     getLabelText() {
-        return this.dataBinding.member.translateValue(this.value);
+        return this.dataBinding.member.translateValue(this.value, {
+            type: cocktail.schema.getSchemaByName(this.value._class)
+        });
     }
 
     describeType() {
-        return this.dataBinding.member.type[woost.admin.ui.describeType](this.value);
+        const model = cocktail.schema.getSchemaByName(this.value._class);
+        return model[woost.admin.ui.describeType](this.value);
     }
 
     activate() {
@@ -105,20 +108,24 @@
 
     <?on click
     if (this.interactive) {
-        e.stopPropagation();
-    }
-    ?>
-
-    <?on click
-    if (this.interactive) {
         this.activate();
         e.stopPropagation();
     }
     ?>
 
     <div id="imageFrame">
-        <img id="thumbnail"/>
-        <ui:cocktail.ui.SVG id="icon"/>
+
+        <img id="thumbnail">
+            <?js
+            element.draggable = false;
+            ?>
+        </img>
+
+        <ui:cocktail.ui.SVG id="icon">
+            <?js
+            element.draggable = false;
+            ?>
+        </ui:cocktail.ui.SVG>
     </div>
 
     <div id="info">

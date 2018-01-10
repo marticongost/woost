@@ -4,6 +4,7 @@
 :host {
     user-select: none;
     display: inline-block;
+    position: relative;
 }
 
 #toolbar {
@@ -34,5 +35,13 @@
         background: $selection-background;
         color: $selection-foreground;
     }
+}
+
+#dropMarker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 1px dashed $focus-color;
 }
 

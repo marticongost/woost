@@ -6,7 +6,7 @@
     href="javascript:">
 
     <ui:using mixin="cocktail.ui.DataDisplay"/>
-    <ui:using mixin="woost.admin.ui.ContextMenuSource"/>
+    <ui:using mixin="woost.admin.ui.ObjectSource"/>
 
     <ui:property
         name="empty"
