@@ -48,7 +48,6 @@ class Template(Item):
         items = "woost.models.Document",
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         visible = False
     )
 

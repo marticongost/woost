@@ -55,10 +55,6 @@ schema.Member.affects_last_update_time = True
 # Extension property that allows hiding relations in the ReferenceList view
 schema.RelationMember.visible_in_reference_list = True
 
-# Extension property to select which members should be synchronizable across
-# separate site installations
-schema.Member.synchronizable = True
-
 # Extension property to customize the autocomplete behavior of members
 schema.SchemaObject.autocomplete_class = \
     "woost.controllers.autocomplete.CMSAutocompleteSource"

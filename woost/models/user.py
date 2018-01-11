@@ -83,7 +83,6 @@ class User(Item):
         listed_by_default = False,
         searchable = False,
         text_search = False,
-        synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = display_factory(
