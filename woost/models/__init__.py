@@ -22,7 +22,6 @@ def _hide_self_contained_relations(event):
     if event.anonymous:
         event.source.visible = False
         event.source.versioned = False
-        event.source.synchronizable = False
 
 from woost.models.typegroups import (
     TypeGroup,
@@ -40,7 +39,6 @@ from .websitesession import (
     get_current_website,
     set_current_website
 )
-from .siteinstallation import SiteInstallation
 from .changesets import ChangeSet, Change, changeset_context
 from .item import Item
 from .userview import UserView
@@ -83,7 +81,6 @@ from .permission import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     ReadHistoryPermission,
-    InstallationSyncPermission,
     restricted_modification_context,
     delete_validating,
     PermissionExpression,
@@ -127,11 +124,6 @@ from .caching import CachingPolicy
 
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings
-from .synchronization import (
-    Synchronization,
-    get_manifest,
-    rebuild_manifest
-)
 from . import staticpublication
 
 # Blocks

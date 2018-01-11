@@ -100,7 +100,6 @@ class Website(Item):
     hosts = schema.Collection(
         items = schema.String(required = True),
         min = 1,
-        synchronizable = False,
         member_group = "website"
     )
 
@@ -141,7 +140,6 @@ class Website(Item):
         default_type = set,
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         related_key = "websites"
     )
 

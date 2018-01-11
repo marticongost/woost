@@ -76,8 +76,7 @@ class ImageFactory(Item):
     fallback_referers = schema.Collection(
         items = "woost.models.rendering.ImageFactory",
         bidirectional = True,
-        visible = False,
-        synchronizable = False
+        visible = False
     )
 
     applicable_to_blocks = schema.Boolean(

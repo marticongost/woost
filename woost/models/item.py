@@ -45,7 +45,7 @@ schema.Member.affects_cache_expiration = False
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
-    authorship, modification timestamps, versioning and synchronization.
+    authorship, modification timestamps and versioning.
     """
     type_group = "setup"
     instantiable = False
@@ -54,7 +54,6 @@ class Item(PersistentObject):
         "id",
         "qname",
         "global_id",
-        "synchronizable",
         "author",
         "creation_time",
         "last_update_time",
@@ -134,7 +133,6 @@ class Item(PersistentObject):
         unique = True,
         indexed = True,
         normalized_index = False,
-        synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
         text_search = False,
@@ -152,17 +150,6 @@ class Item(PersistentObject):
             )
 
         self.global_id = "%s-%d" % (app.installation_id, self.id)
-
-    synchronizable = schema.Boolean(
-        required = True,
-        indexed = True,
-        synchronizable = False,
-        default = True,
-        shadows_attribute = True,
-        invalidates_cache = False,
-        listed_by_default = False,
-        member_group = "administration"
-    )
 
     # Backoffice customization
     #--------------------------------------------------------------------------
@@ -205,7 +192,6 @@ class Item(PersistentObject):
         required = True,
         versioned = False,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
         invalidates_cache = False,
@@ -217,7 +203,6 @@ class Item(PersistentObject):
         versioned = False,
         indexed = True,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
         member_group = "administration"
@@ -227,7 +212,6 @@ class Item(PersistentObject):
         indexed = True,
         versioned = False,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
         member_group = "administration"
@@ -238,7 +222,6 @@ class Item(PersistentObject):
         indexed = True,
         versioned = False,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
         listed_by_default = False,
@@ -256,7 +239,6 @@ class Item(PersistentObject):
             member.versioned = False
             member.editable = schema.NOT_EDITABLE
             member.searchable = False
-            member.synchronizable = False
             member.backoffice_display = "woost.views.TranslationsList"
             member.member_group = "administration"
         PersistentClass._add_member(cls, member)
@@ -751,7 +733,6 @@ class Item(PersistentObject):
 
 Item.id.versioned = False
 Item.id.editable = schema.READ_ONLY
-Item.id.synchronizable = False
 Item.id.listed_by_default = False
 Item.id.member_group = "administration"
 Item.changes.visible = False

@@ -37,7 +37,6 @@ class Controller(Item):
         items = "woost.models.Publishable",
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         visible = False
     )
 

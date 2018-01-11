@@ -1406,3 +1406,83 @@ def set_robots_should_index_setting(e):
     from woost.models import Configuration, Website
     Configuration.instance.robots_should_index = True
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Remove installation synchronization")
+
+@when(step.executing)
+def remove_synchronization(e):
+
+    from ZODB.broken import Broken
+    from cocktail.persistence import datastore
+    from cocktail.persistence.utils import is_broken
+    from woost.models import (
+        Item,
+        Role,
+        Permission,
+        ContentPermission,
+        MemberPermission
+    )
+
+    r = datastore.root
+
+    # Delete the object manifest
+    try:
+        del r["woost.manifest"]
+    except KeyError:
+        pass
+
+    # Delete the SiteInstallation model
+    ids = r.get("woost.models.siteinstallation.SiteInstallation-keys")
+    if ids:
+        for id in ids:
+            Item.keys.remove(id)
+            Item.index.remove(id)
+
+    for key in list(r):
+        if key.startswith("woost.models.siteinstallation."):
+            del r[key]
+
+    for perm in ContentPermission.select():
+        if issubclass(perm.content_type, Broken):
+            perm.delete()
+
+    for perm in MemberPermission.select():
+        if perm.matching_members:
+            for member_name in perm.matching_members:
+                if member_name.startswith("woost.models.siteinstallation."):
+                    perm.delete()
+
+    # Delete the synchronizable member
+    try:
+        del r["woost.models.Item.synchronizable"]
+    except KeyError:
+        pass
+
+    for item in Item.select():
+        try:
+            del item._synchronizable
+        except AttributeError:
+            pass
+
+    # Delete the InstallationSyncPermission model
+    ids = r.get("woost.models.permission.InstallationSyncPermission-keys")
+    if ids:
+        for id in ids:
+            Item.keys.remove(id)
+            Item.index.remove(id)
+            Permission.keys.remove(id)
+
+        for role in Role.select():
+            role.permissions = [
+                p
+                for p in role.permissions
+                if not is_broken(p)
+            ]
+
+    for key in list(r):
+        if key.startswith(
+            "woost.models.permission.InstallationSyncPermission"
+        ):
+            del r[key]
+

@@ -65,7 +65,6 @@ from woost.models import (
     Extension,
     Trigger,
     TriggerResponse,
-    SiteInstallation,
     VideoPlayerSettings,
     rendering,
     load_extensions
@@ -105,7 +104,6 @@ class SiteInitializer(object):
         Controller,
         Permission,
         CachingPolicy,
-        SiteInstallation,
         Theme,
         Grid,
         GridSize,
@@ -133,7 +131,6 @@ class SiteInitializer(object):
     restricted_members = [
         "woost.models.item.Item.qname",
         "woost.models.item.Item.global_id",
-        "woost.models.item.Item.synchronizable",
         "woost.models.publishable.Publishable.encoding",
         "woost.models.publishable.Publishable.login_page",
         "woost.models.publishable.Publishable.requires_https",
