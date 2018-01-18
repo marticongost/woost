@@ -43,10 +43,6 @@ class SignUpController(FormProcessor, Controller):
         def schema(self):
             adapted_schema = Form.schema(self)
 
-            # Set schema name in order to keep always the same value
-            # although change value of form_model member
-            adapted_schema.name = u"SignUpForm"
-
             # Adding extra field for password confirmation
             if adapted_schema.get_member("password"):
 
