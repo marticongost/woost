@@ -29,7 +29,7 @@ from woost.models import (
     Configuration,
     Item,
     SiteInstallation,
-    Publishable,
+    PublishableObject,
     Document,
     URI,
     File,
@@ -885,14 +885,14 @@ class PreviewAction(UserAction):
     included = frozenset([
         ("item_buttons", "edit")
     ])
-    content_type = (Publishable, Block)
+    content_type = (PublishableObject, Block)
     show_as_primary_action = "always"
 
 
 class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = (Publishable, SiteInstallation, Block)
+    content_type = (PublishableObject, SiteInstallation, Block)
     included = frozenset([
         "toolbar",
         "item_buttons",
@@ -910,12 +910,12 @@ class OpenResourceAction(UserAction):
     def get_url(self, controller, selection):
         target = selection[0]
 
-        if isinstance(target, Publishable):
+        if isinstance(target, PublishableObject):
             return target.get_uri(host = "?")
         elif isinstance(target, Block):
             for path in target.find_paths():
                 container = path[0][0]
-                if isinstance(container, Publishable):
+                if isinstance(container, PublishableObject):
                     return container.get_uri(host = "?")
             else:
                 return "/"
@@ -1190,7 +1190,13 @@ class EditBlocksAction(UserAction):
 
     def is_primary(self, target, context):
         return (
-            target in (Publishable, Document)
+            (
+                target is Document
+                or (
+                    isinstance(target, type)
+                    and issubclass(target, PublishableObject)
+                )
+            )
             or UserAction.is_primary(self, target, context)
         )
 

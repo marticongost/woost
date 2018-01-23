@@ -9,7 +9,13 @@ from cocktail.translations import translations, get_language, require_language
 from cocktail.urls import URL, URLBuilder
 from cocktail.controllers import get_request_url
 from woost import app
-from woost.models import Configuration, Publishable
+from woost.models import (
+    Configuration,
+    Item,
+    PublishableObject,
+    get_publishable,
+    get_publishable_by_full_path
+)
 from woost.models.utils import get_matching_website
 
 NO_MATCH = 0
@@ -505,7 +511,7 @@ class IdInPath(URLComponent):
             except ValueError:
                 pass
             else:
-                publishable = Publishable.get_instance(id)
+                publishable = get_publishable(id)
                 if publishable:
                     resolution.publishable = publishable
                     resolution.consume_segment()
@@ -574,7 +580,7 @@ class DescriptiveIdInPath(URLComponent):
                 except ValueError:
                     pass
                 else:
-                    publishable = Publishable.get_instance(id)
+                    publishable = get_publishable(id)
                     if publishable:
                         resolution.publishable = publishable
                         resolution.consume_segment()
@@ -631,7 +637,7 @@ class HierarchyInPath(URLComponent):
         path = list(resolution.remaining_segments)
 
         while path:
-            publishable = Publishable.get_instance(full_path = u"/".join(path))
+            publishable = get_publishable_by_full_path( u"/".join(path))
             if publishable:
                 resolution.publishable = publishable
                 for segment in path:
@@ -644,6 +650,7 @@ class HierarchyInPath(URLComponent):
 
     def get_path(self, publishable, **kwargs):
         return publishable.full_path
+
 
 def strip_extension(string):
     pos = string.find(".")
