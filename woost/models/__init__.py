@@ -46,6 +46,11 @@ from .item import Item
 from .userview import UserView
 from .grid import Grid, GridSize
 from .style import Style
+from .publishableobject import (
+    PublishableObject,
+    get_publishable,
+    get_publishable_by_full_path
+)
 from .publishable import (
     Publishable,
     IsPublishedExpression,
