@@ -18,6 +18,7 @@ import base64
 import json
 import argparse
 import enum
+from decimal import Decimal
 from cocktail.typemapping import TypeMapping
 from cocktail.styled import styled, ProgressBar
 from cocktail.pkgutils import get_full_name, resolve
@@ -724,6 +725,8 @@ class ObjectImporter(object):
                 return resolve(value)
             else:
                 return self.resolve_object_ref(value)
+        elif isinstance(member, schema.Decimal):
+            return Decimal(value)
         elif isinstance(member, schema.DateTime):
             return datetime.strptime(value, self.datetime_format)
         elif isinstance(member, schema.Date):
