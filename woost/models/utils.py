@@ -530,6 +530,9 @@ def import_remote(
                 "app.default_remote_python_executable is not set"
             )
 
+    if isinstance(expr, int):
+        expr = "req(%d)" % expr
+
     remote_command = (
         "%s -c 'from %s.scripts.shell import *; print export_json(%s)'"
         % (python_executable, app.package, expr)
