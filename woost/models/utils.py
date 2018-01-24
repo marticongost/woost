@@ -495,6 +495,7 @@ def import_json(json, importer = None, **kwargs):
         setattr(importer, key, value)
 
     importer.loads(json)
+    return importer
 
 def copy_to_clipboard(*args, **kwargs):
     import clipboard
