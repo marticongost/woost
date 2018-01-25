@@ -25,6 +25,7 @@ from cocktail.pkgutils import get_full_name, resolve
 from cocktail.modeling import (
     ListWrapper,
     SetWrapper,
+    DictWrapper,
     GenericMethod,
     GenericClassMethod,
     frozen
@@ -287,6 +288,35 @@ class ObjectExporter(object):
                         )
                         items.append(item_copy)
                 value = items
+            elif isinstance(value, DictWrapper):
+                items = {}
+                for k, v in value.iteritems():
+                    v_node = ExportNode(
+                        self,
+                        v,
+                        parent = node,
+                        member = node.member.values,
+                        language = node.language,
+                        index = k
+                    )
+                    if v_node.export_mode != ExportMode.ignore:
+                        k_node = ExportNode(
+                            self,
+                            k,
+                            parent = node,
+                            member = node.member.keys,
+                            language = node.language
+                        )
+                        k = self._export_value(k_node)
+                        v = self._export_value(
+                            v_node,
+                            expand_object =
+                                (v_node.export_mode == ExportMode.expand)
+                        )
+                        items[k] = v
+                value = items
+            elif isinstance(value, Decimal):
+                return str(value)
             elif isinstance(value, datetime):
                 return value.strftime(self.datetime_format)
             elif isinstance(value, date):
@@ -719,7 +749,14 @@ class ObjectImporter(object):
                 for imported_item in imported_items
                 if imported_item is not ExportMode.ignore
             )
-
+        elif isinstance(member, schema.Mapping) and isinstance(value, dict):
+            return dict(
+                (
+                    self.import_object_value(obj, member.keys, k),
+                    self.import_object_value(obj, member.values, v)
+                )
+                for k, v in value.iteritems()
+            )
         elif isinstance(member, schema.Reference):
             if member.class_family:
                 return resolve(value)
