@@ -686,6 +686,10 @@ body.modal {
     margin-bottom: 1em;
 }
 
+.BackOfficeLayout .Form div.field.translated .field_label {
+    padding: 0.2em;
+}
+
 .BackOfficeLayout .Form div.field:after {
     content: ".";
     display: block;
