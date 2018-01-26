@@ -4247,3 +4247,13 @@ div.success_label {
     right: -1.4em;
 }
 
+.BackOfficeLayout .SuggestionList .radio_entry {
+    margin-top: 0.4em;
+}
+
+.BackOfficeLayout .SuggestionList .custom_value_display {
+    position: relative;
+    top: 0.1em;
+    left: 0.6em;
+}
+
