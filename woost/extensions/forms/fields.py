@@ -7,7 +7,7 @@ from cocktail.events import event_handler
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
+from cocktail.html import templates
 from woost.models import Item
 
 translations.load_bundle("woost.extensions.forms.fields")
@@ -96,14 +96,20 @@ class Field(Item):
 
     field_edit_controls = None
 
+    def _edit_control_suggestion_list(ui_generation, obj, member, value, **context):
+        field = context.get("persistent_object")
+        controls = field and field.field_edit_controls
+        if controls:
+            control = templates.new("cocktail.html.SuggestionList")
+            control.suggestions_selector.empty_option_displayed = True
+            control.suggestions = controls
+        else:
+            control = templates.new("cocktail.html.TextBox")
+        return control
+
     field_edit_control = schema.String(
-        enumeration = lambda ctx:
-            ctx.get("persistent_object")
-            and ctx.get("persistent_object").field_edit_controls,
-        edit_control = display_factory(
-            "cocktail.html.RadioSelector",
-            empty_option_displayed = True
-        ),
+        translatable_values = True,
+        edit_control = _edit_control_suggestion_list,
         member_group = "field_properties",
         listed_by_default = False
     )
