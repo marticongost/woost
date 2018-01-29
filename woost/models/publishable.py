@@ -55,6 +55,8 @@ class Publishable(Item, PublishableObject):
         "woost.controllers.backoffice.enabledtranslationseditnode."
         "EnabledTranslationsEditNode"
     )
+    cacheable = True
+    cacheable_server_side = True
 
     groups_order = [
         "content",
