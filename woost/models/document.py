@@ -200,7 +200,9 @@ class Document(Publishable):
         for key, value in values.iteritems():
             setattr(view, key, value)
 
-        return view.render_page()
+        html = view.render_page()
+        view.dispose()
+        return html
 
     def find_redirection_target(self):
         mode = self.redirection_mode

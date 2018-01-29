@@ -18,6 +18,12 @@ from woost import app
 class BaseCMSController(Controller):
     """Base class for all CMS controllers."""
 
+    @event_handler
+    def handle_after_request(cls, e):
+        view = e.source.view
+        if view:
+            view.dispose()
+
     @request_property
     def view(self):
         if self.view_class:
