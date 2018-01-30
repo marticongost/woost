@@ -20,7 +20,7 @@ class BaseCMSController(Controller):
 
     @event_handler
     def handle_after_request(cls, e):
-        view = e.source.view
+        view = e.source.__class__.view.get_current_value(e.source)
         if view:
             view.dispose()
 
