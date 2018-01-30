@@ -185,6 +185,65 @@ def field_property(member, *properties):
             es: Inicialización
             en: Initialization
 
+                [explanation]
+                ca:
+                    <p>Un bloc de codi Python que permet inicialitzar el membre de l'esquema generat per aquest camp.</p>
+                    <details>
+                        <summary>Detalls</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                Aquest objecte (instància de <code>woost.extensions.forms.fields.Field</code>).
+                                No s'hauria de modificar!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                El membre de l'esquema generat que es vol modificar
+                                (instància de <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
+                es:
+                    <p>
+                        Un bloque de código Python que permite inicializar el miembro del esquema generado
+                        por este campo.
+                    </p>
+                    <details>
+                        <summary>Detalles</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                Este objeto (instance de <code>woost.extensions.forms.fields.Field</code>).
+                                No debe modificarse!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                El miembro del esquema generado que se quiere modificar
+                                (instancia de <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
+                en:
+                    <p>
+                        A Python snippet that makes it possible to initialize the schema member generated
+                        by this field.
+                    </p>
+                    <details>
+                        <summary>Details</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                This object (an instance of <code>woost.extensions.forms.fields.Field</code>).
+                                Shouldn't be modified!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                The generated schema member to be modified
+                                (an instance of <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
+
     [FieldSet]
     ca: Conjunt de camps
     es: Conjunto de campos
