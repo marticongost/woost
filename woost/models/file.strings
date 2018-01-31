@@ -39,9 +39,9 @@ en: File
         en: Checksum
 
         [file_size]
-        ca: Mida del fitxer
-        es: Tamaño de fichero
-        en: File size
+        ca: Mida
+        es: Tamaño
+        en: Size
 
         [local_path]
         ca: Fitxer local
