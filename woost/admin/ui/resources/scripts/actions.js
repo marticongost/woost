@@ -521,9 +521,9 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
                     newNode.animationType = "fade";
 
                     const editURL = (
-                        cocktail.navigation.node.parent.parent.url
+                        cocktail.navigation.node.parent.url
                         + "/" + newState.id
-                        + "/edit?"
+                        + "?"
                         + form.tabs.queryParameter
                         + "="
                         + form.tabs.selectedTab.tabId
