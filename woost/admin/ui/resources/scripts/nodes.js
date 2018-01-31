@@ -131,7 +131,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
     getItemNodeClass(model, item) {
         let itemNodeClass = model[woost.admin.nodes.itemNodeClass];
         if (itemNodeClass === undefined) {
-            itemNodeClass = woost.admin.nodes.ItemNode;
+            itemNodeClass = woost.admin.nodes.EditNode;
         }
         return itemNodeClass;
     }
@@ -429,30 +429,6 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
         let cls = super.createSectionClass(section);
         cls.model = cocktail.schema.getSchemaByName(section.data.model);
         return cls;
-    }
-}
-
-woost.admin.nodes.ItemNode = class ItemNode extends cocktail.navigation.StackTransparentNode {
-
-    activate() {
-        cocktail.navigation.extendPath(this.defaultPath);
-    }
-
-    get defaultPath() {
-        return "edit";
-    }
-
-    static get children() {
-        return {
-            edit: woost.admin.nodes.EditNode
-        };
-    }
-
-    createChild(nodeClass) {
-        let child = super.createChild(nodeClass);
-        child.model = this.model;
-        child.item = this.item;
-        return child;
     }
 }
 
