@@ -233,19 +233,26 @@ woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Acti
 
 woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Action {
 
+    getState(context) {
+        if (this.collection.integral) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     invoke(context) {
         cocktail.navigation.extendPath("select", this.collection.name);
     }
 }
 
-woost.admin.actions.RemoveAction = class AddAction extends woost.admin.actions.Action {
+woost.admin.actions.RemoveAction = class RemoveAction extends woost.admin.actions.Action {
 
     get min() {
         return 1;
     }
 
     getState(context) {
-        if (context.collectionIsEmpty) {
+        if (context.collectionIsEmpty || this.collection.integral) {
             return "hidden";
         }
         return super.getState(context);
@@ -259,6 +266,13 @@ woost.admin.actions.RemoveAction = class AddAction extends woost.admin.actions.A
 }
 
 woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        if (this.reference.integral) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
 
     invoke(context) {
         cocktail.navigation.extendPath("select", this.reference.name);
