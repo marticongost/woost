@@ -223,7 +223,7 @@ woost.admin.actions.ActionRegistrationError = class ActionRegistrationError {
 woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
 
     invoke(context) {
-        cocktail.navigation.extendPath("new", this.model.name);
+        cocktail.navigation.extendPath("new", this.model.originalMember.name);
     }
 }
 
