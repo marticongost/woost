@@ -218,6 +218,7 @@ class Publishable(Item):
         bidirectional = True,
         related_key = "specific_content",
         edit_control = "cocktail.html.CheckList",
+        ui_form_control = "cocktail.ui.CheckList",
         member_group = "publication"
     )
 
