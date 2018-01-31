@@ -12,6 +12,10 @@ $covered-heading-padding-top: 0.6em;
     }
 }
 
+#header {
+    flex-basis: 7em;
+}
+
 :host([isStackRoot='true']) {
     overflow: hidden;
     box-shadow: none;
@@ -55,15 +59,15 @@ $covered-heading-padding-top: 0.6em;
     display: flex;
     align-items: center;
 
-    :host([animationType='slide'][stackNodeVisibility='covered']) & {
+    :host([stackNodeVisibility='covered'][animationState='none']) & {
         padding-top: $covered-heading-padding-top;
     }
 
-    :host([animationType='slide'][animationState='childOpening']) & {
+    :host([animationState='childOpening'][isStackRoot='false']) & {
         animation: $stacknode-animation-duration displaceHeading;
     }
 
-    :host([animationType='slide'][animationState='childClosing']) & {
+    :host([animationState='childClosing'][isStackRoot='false']) & {
         animation: $stacknode-animation-duration reverse displaceHeading;
     }
 }
