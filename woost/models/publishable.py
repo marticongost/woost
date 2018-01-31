@@ -207,6 +207,7 @@ class Publishable(Item):
         default_type = set,
         indexed = True,
         edit_control = "woost.views.EnabledTranslationsSelector",
+        ui_form_control = "cocktail.ui.SplitSelector",
         listed_by_default = False,
         member_group = "publication"
     )
