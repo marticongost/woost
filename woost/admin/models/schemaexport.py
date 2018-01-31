@@ -421,7 +421,6 @@ class SchemaExport(MemberExport):
         with language_context(locale):
             trans("")
             trans(".plural")
-            trans(".new")
             trans(".groups.item")
 
             for member in self.get_members(model, True):

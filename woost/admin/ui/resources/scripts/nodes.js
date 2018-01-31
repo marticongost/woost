@@ -481,7 +481,7 @@ woost.admin.nodes.ItemNode = class ItemNode extends cocktail.navigation.StackTra
 
         get title() {
             if (this.item._new) {
-                return this.model.translate(".new");
+                return cocktail.ui.translations["woost.admin.ui.EditView.creating"].replace("MODEL", this.model.translate().toLowerCase());
             }
             else {
                 return this.model.translateValue(this.item);
