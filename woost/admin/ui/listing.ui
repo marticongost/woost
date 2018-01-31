@@ -54,6 +54,8 @@
 
         this.relation = node.relation;
         this.relationOwner = node.item;
+        this.table.exporter = node.exporter;
+        this.table.treeChildrenCollection = node.treeChildrenCollection;
         this.model = node.adaptedModel;
         this.filters = node.filters;
 
@@ -269,6 +271,9 @@
                     options.parameters.relation = listing.relation.fullName;
                 }
             }
+            if (this.exporter) {
+                options.parameters["export"] = this.exporter;
+            }
             return options;
         }
 
@@ -288,6 +293,27 @@
         <?on resultCount:changed
         this.parentInstance.resultCountLabel.innerHTML = newValue && newValue.label || "";
         ?>
+
+        <ui:cocktail.ui.Table.TreeRow ui:component="TreeRow">
+
+            <ui:property
+                name="treeFiltersMatch"
+                type="string"
+                reflected="true"/>
+
+            <?class
+            getRowLabel() {
+                return this.translateValue({
+                    type: cocktail.schema.getSchemaByName(this.value._class)
+                });
+            }
+            ?>
+
+            <?on value:changed
+            this.treeFiltersMatch = newValue._match;
+            ?>
+
+        </ui:cocktail.ui.Table.TreeRow>
 
     </ui:cocktail.ui.Table>
 

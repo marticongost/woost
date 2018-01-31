@@ -1,6 +1,6 @@
 
-#headingsRow > th,
-#body > tr > td {
+.Heading,
+.Cell {
 
     &:first-child {
         padding-left: 1.3rem;
@@ -10,36 +10,12 @@
         flex: 0 0 5.2em;
         padding-right: 1.3em;
     }
+}
 
-    &[memberType~='Number'] {
-        flex: 0 0 8em;
-    }
+.TreeRow[treeFiltersMatch='descendants'] {
 
-    &[memberType~='Boolean'] {
-        flex: 0 0 6em;
-    }
-
-    &[memberType~='Date'] {
-        flex: 0 0 6em;
-    }
-
-    &[memberType~='Time'] {
-        flex: 0 0 6em;
-    }
-
-    &[memberType~='DateTime'] {
-        flex: 0 0 10em;
-    }
-
-    &[memberType~='HTML'] {
-
-        & > :first-child {
-            margin-top: 0;
-        }
-
-        & > :last-child {
-            margin-bottom: 0;
-        }
+    & > .rowContent .rowLabel {
+        color: #999;
     }
 }
 

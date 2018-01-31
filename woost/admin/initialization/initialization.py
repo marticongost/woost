@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from pkg_resources import resource_filename
+from cocktail.stringutils import normalize_indentation as ni
 from cocktail.schema import TranslatedValues as T
 from woost.models import Controller, AccessLevel, File
 from woost.admin.models import Admin, Section
@@ -15,7 +16,15 @@ _section_tree = [
             ca = u"Arbre del web",
             en = u"Site tree",
             es = u"Árbol de la web"
-        )
+        ),
+        "ui_node": "woost.admin.nodes.CRUD",
+        "data": ni("""
+            {
+                "model": "woost.models.Publishable",
+                "treeChildrenCollection": "children",
+                "exporter": "page_tree"
+            }
+        """)
     },
     {
         "path": "news",

@@ -217,6 +217,14 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return this.adaptedModel.translate(".plural");
         }
 
+        get exporter() {
+            return null;
+        }
+
+        get treeChildrenCollection() {
+            return null;
+        }
+
         get adaptedModel() {
             return this[ADAPTED_MODEL] || (this.listedModel && (this[ADAPTED_MODEL] = this.adaptModel(this.listedModel)));
         }
@@ -407,6 +415,14 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
 
     get listedModel() {
         return this.model;
+    }
+
+    get exporter() {
+        return this.section.data.exporter;
+    }
+
+    get treeChildrenCollection() {
+        return this.section.data.treeChildrenCollection;
     }
 
     static createSectionClass(section) {
