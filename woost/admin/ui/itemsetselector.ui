@@ -84,6 +84,10 @@
             this[DROP_MARKER] = null;
         }
     }
+
+    get selectionContainer() {
+        return this.list;
+    }
     ?>
 
     <?on dragleave
@@ -119,7 +123,6 @@
     </ui:cocktail.ui.ActionList>
 
     <?js
-    this.selectionContainer = this.list;
     this.toolbar.selectable = this;
     ?>
 

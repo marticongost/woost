@@ -97,11 +97,10 @@ class ListingController(Controller):
 
         # Returning a list of objects
         else:
-            results = export.select_root(model, relation)
-            results.verbose = True
+            filter_expressions = []
 
             if search:
-                results.add_filter(
+                filter_expressions.append(
                     Self.search(
                         search,
                         match_mode = "prefix",
@@ -113,15 +112,13 @@ class ListingController(Controller):
                 for filter in filters:
                     expr = filter.filter_expression()
                     if expr is not None:
-                        results.add_filter(expr)
+                        filter_expression.append(expr)
 
-            count = len(results)
-
-            if rng:
-                if isinstance(results, Query):
-                    results.range = rng
-                else:
-                    results = results[rng[0]:rng[1]]
+            export.model = model
+            export.relation = relation
+            export.filters = filter_expressions
+            export.range = rng
+            results, count = export.get_results()
 
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
@@ -140,10 +137,10 @@ class ListingController(Controller):
             yield u'"records": [\n'
             glue = u""
 
-            for obj in results:
+            for record in results:
                 yield glue
                 glue = u",\n"
-                yield json.dumps(export.export_object(obj))
+                yield json.dumps(record)
 
             yield u"]}"
 
