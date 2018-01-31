@@ -5,6 +5,7 @@ $card-height: 3.5em;
 $image-separation: 1em;
 $image-width: 5.2em;
 $icon-padding: 0.5em;
+$icon-height: $card-height - $icon-padding * 2;
 
 @keyframes dimStackHeading {
     from {
@@ -37,6 +38,19 @@ $icon-padding: 0.5em;
     }
 }
 
+@keyframes collapseIcon {
+    from {
+        --height: $icon-height;
+        padding: $icon-padding;
+        opacity: 1;
+    }
+    to {
+        --height: 0;
+        padding: 0;
+        opacity: 0;
+    }
+}
+
 :host {
     display: flex;
     flex-direction: row;
@@ -60,6 +74,10 @@ $icon-padding: 0.5em;
     :host([imageType='icon']) &,
     :host([imageType='thumbnail']) & {
         flex-basis: $image-width;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header) & {
+        flex-basis: auto;
     }
 
     :host([imageType='thumbnail']) & {
@@ -96,12 +114,26 @@ $icon-padding: 0.5em;
 
 #icon {
     flex: 0 0;
-    --height: $card-height - $icon-padding * 2;
+    --height: $icon-height;
     padding: $icon-padding;
     color: #999;
 
     :host(:not([imageType='icon'])) & {
         display: none;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        padding: 0;
+        --height: 0;
+        opacity: 0;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration collapseIcon;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse collapseIcon;
     }
 }
 
