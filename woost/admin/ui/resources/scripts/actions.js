@@ -311,6 +311,25 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
         return 1;
     }
 
+    getState(context) {
+
+        const model = cocktail.schema.getSchemaByName(context.selection[0]._class);
+        let hasSlots = false;
+
+        for (let member of model.members()) {
+            if (member instanceof woost.models.Slot && member[woost.models.permissions].read) {
+                hasSlots = true;
+                break;
+            }
+        }
+
+        if (!hasSlots) {
+            return "hidden";
+        }
+
+        return super.getState(context);
+    }
+
     invoke(context) {
         cocktail.navigation.extendPath("blocks");
     }
