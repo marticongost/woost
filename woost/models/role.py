@@ -24,6 +24,7 @@ class Role(Item):
     possible to grow a site's access policy by means of specialization.
     """
     type_group = "users"
+    admin_show_descriptions = False
 
     members_order = [
         "title",

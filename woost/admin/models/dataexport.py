@@ -275,9 +275,7 @@ def _object_field(exporter, member):
 def object_fields(exporter, model, ref = False):
 
     yield (lambda obj, path: ("_class", get_model_dotted_name(obj.__class__)))
-
-    if ref or model.admin_show_descriptions:
-        yield (lambda obj, path: ("_label", any_translation(obj)))
+    yield (lambda obj, path: ("_label", any_translation(obj)))
 
     if ref:
         yield (lambda obj, path: ("id", obj.id))

@@ -49,6 +49,7 @@ class Item(PersistentObject):
     """
     type_group = "setup"
     instantiable = False
+    admin_show_descriptions = True
 
     members_order = [
         "id",
