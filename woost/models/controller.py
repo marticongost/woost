@@ -13,6 +13,7 @@ from .item import Item
 class Controller(Item):
 
     type_group = "customization"
+    admin_show_descriptions = False
 
     members_order = [
         "title",

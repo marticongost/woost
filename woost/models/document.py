@@ -21,6 +21,7 @@ class Document(Publishable):
 
     instantiable = True
     type_group = "document"
+    admin_show_descriptions = False
     default_per_language_publication = True
 
     groups_order = list(Publishable.groups_order) + [

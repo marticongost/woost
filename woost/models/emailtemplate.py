@@ -26,6 +26,7 @@ class EmailTemplate(Item):
 
     type_group = "customization"
     encoding = "utf-8"
+    admin_show_descriptions = False
 
     members_order = [
         "title",

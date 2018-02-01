@@ -18,6 +18,7 @@ from .slot import Slot
 class Website(Item):
 
     instantiable = True
+    admin_show_descriptions = False
     visible_from_root = False
 
     groups_order = [
