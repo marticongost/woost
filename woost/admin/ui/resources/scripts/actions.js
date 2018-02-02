@@ -227,6 +227,36 @@ woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Acti
     }
 }
 
+woost.admin.actions.NewRelatedAction = class NewRelatedAction extends woost.admin.actions.Action {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/new.svg`)
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.new`;
+    }
+
+    invoke(context) {
+        const relation = this.reference || this.collection;
+        cocktail.navigation.extendPath("rel", relation.name, "new", this.model.originalMember.name);
+    }
+}
+
+woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        if (this.reference.integral) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
+    invoke(context) {
+        cocktail.navigation.extendPath("rel", this.reference.name, "select");
+    }
+}
+
 woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Action {
 
     getState(context) {
@@ -237,7 +267,7 @@ woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Acti
     }
 
     invoke(context) {
-        cocktail.navigation.extendPath("select", this.collection.name);
+        cocktail.navigation.extendPath("rel", this.collection.name, "select");
     }
 }
 
@@ -258,20 +288,6 @@ woost.admin.actions.RemoveAction = class RemoveAction extends woost.admin.action
         for (let item of context.selection) {
             context.selectable.removeEntry(item);
         }
-    }
-}
-
-woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
-
-    getState(context) {
-        if (this.reference.integral) {
-            return "hidden";
-        }
-        return super.getState(context);
-    }
-
-    invoke(context) {
-        cocktail.navigation.extendPath("select", this.reference.name);
     }
 }
 
@@ -517,26 +533,34 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
                 if (state._new) {
                     cocktail.ui.objectCreated(this.model, newState);
 
-                    const newNode = cocktail.ui.root.stack.stackTop;
-                    newNode.animationType = "fade";
-
-                    const editURL = (
-                        cocktail.navigation.node.parent.url
-                        + "/" + newState.id
-                        + "?"
-                        + form.tabs.queryParameter
-                        + "="
-                        + form.tabs.selectedTab.tabId
-                    );
-
-                    woost.admin.ui.redirectionAfterInsertion = editURL;
-                    cocktail.navigation.replace(editURL).then(() => {
+                    const showOutcome = () => {
                         cocktail.ui.Lock.clear();
                         cocktail.ui.Notice.show({
                             summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
                             category: "success"
                         });
-                    });
+                    }
+
+                    if (this.relation) {
+                        woost.admin.actions.addToRelation([newState]);
+                        showOutcome();
+                    }
+                    else {
+                        const newNode = cocktail.ui.root.stack.stackTop;
+                        newNode.animationType = "fade";
+
+                        const editURL = (
+                            cocktail.navigation.node.parent.url
+                            + "/" + newState.id
+                            + "?"
+                            + form.tabs.queryParameter
+                            + "="
+                            + form.tabs.selectedTab.tabId
+                        );
+
+                        woost.admin.ui.redirectionAfterInsertion = editURL;
+                        cocktail.navigation.replace(editURL).then(showOutcome);
+                    }
                 }
                 else {
                     form.value = newState;
@@ -576,7 +600,28 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
     }
 }
 
-woost.admin.actions.AcceptSelectionAction = class CancelSelectionAction extends woost.admin.actions.Action {
+woost.admin.actions.addToRelation = function (selection) {
+
+    const form = cocktail.ui.root.stack.stackTop.stackParent.editForm;
+
+    form.awaitFields().then((fields) => {
+        const relation = cocktail.navigation.node.relation;
+        const field = fields.get(relation.name);
+        if (relation instanceof cocktail.schema.Collection) {
+            for (let item of selection) {
+                field.control.addEntry(item);
+            }
+        }
+        else if (relation instanceof cocktail.schema.Reference) {
+            field.value = selection[0];
+        }
+    });
+
+    let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
+    cocktail.navigation.push(parentURL);
+}
+
+woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends woost.admin.actions.Action {
 
     get translationKey() {
         return `${this.translationPrefix}.accept`;
@@ -587,24 +632,7 @@ woost.admin.actions.AcceptSelectionAction = class CancelSelectionAction extends 
     }
 
     invoke(context) {
-
-        const form = cocktail.ui.root.stack.stackTop.stackParent.editForm;
-
-        form.awaitFields().then((fields) => {
-            const relation = cocktail.navigation.node.relation;
-            const field = fields.get(relation.name);
-            if (relation instanceof cocktail.schema.Collection) {
-                for (let item of context.selection) {
-                    field.control.addEntry(item);
-                }
-            }
-            else if (relation instanceof cocktail.schema.Reference) {
-                field.value = context.selection[0];
-            }
-        });
-
-        let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
-        cocktail.navigation.push(parentURL);
+        woost.admin.actions.addToRelation(context.selection);
     }
 }
 
@@ -624,7 +652,13 @@ woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends 
 woost.admin.actions.NewAction.register({
     id: "new",
     slots: [
-        "listingToolbar",
+        "listingToolbar"
+    ]
+});
+
+woost.admin.actions.NewRelatedAction.register({
+    id: "new-related",
+    slots: [
         "referenceToolbar",
         "collectionToolbar"
     ]

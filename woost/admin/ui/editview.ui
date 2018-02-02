@@ -31,21 +31,22 @@
             }
         }
 
-        this.actionList.actionParameters.selection = selection;
-        this.actionList.actions = Array.from(woost.admin.actions.forContext({
+        const actionListContext = {
             view: this,
-            slot: "editToolbar",
             model: newValue.model,
-            item: newValue.item
-        }));
+            item: newValue.item,
+            relation: newValue.relation
+        };
+
+        this.actionList.actionParameters.selection = selection;
+        this.actionList.actions = Array.from(woost.admin.actions.forContext(
+            Object.assign({slot: "editToolbar"}, actionListContext)
+        ));
 
         this.navigationActionList.actionParameters.selection = selection;
-        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
-            slot: "editNavigationToolbar",
-            model: newValue.model,
-            item: newValue.item
-        }));
+        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
+            Object.assign({slot: "editNavigationToolbar"}, actionListContext)
+        ));
 
         this.editForm.locales = this.visibleLocales;
         this.editForm.dataBinding = {
