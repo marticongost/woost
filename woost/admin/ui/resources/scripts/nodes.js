@@ -79,50 +79,63 @@ woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackN
 
 woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class ItemContainer extends cls {
 
+    get canEditNewObjects() {
+        return true;
+    }
+
+    get canEditExistingObjects() {
+        return true;
+    }
+
     resolveChild(path) {
 
         // Create a new object
-        if (path.length >= 2 && path[0] == "new") {
-            const model = cocktail.schema.getSchemaByName(path[1]);
-            if (!model) {
-                throw `Can't find model ${path[1]}`;
+        if (this.canEditNewObjects) {
+            if (path.length >= 2 && path[0] == "new") {
+                const model = cocktail.schema.getSchemaByName(path[1]);
+                if (!model) {
+                    throw `Can't find model ${path[1]}`;
+                }
+                return model.loadDefaults([cocktail.getLanguage()])
+                    .then((item) => {
+                        item._new = true;
+                        const itemNodeClass = this.getItemNodeClass(model, item);
+                        if (itemNodeClass) {
+                            const itemNode = this.createChild(itemNodeClass);
+                            itemNode.model = model;
+                            itemNode.item = item;
+                            itemNode.relation = this.relation;
+                            itemNode.consumePathSegment(path);
+                            itemNode.consumePathSegment(path);
+                            return itemNode.resolvePath(path);
+                        }
+                        else {
+                            throw `Missing woost.admin.nodes.itemNodeClass for ${model.name} #${item.id}`;
+                        }
+                    });
             }
-            return model.loadDefaults([cocktail.getLanguage()])
-                .then((item) => {
-                    item._new = true;
-                    const itemNodeClass = this.getItemNodeClass(model, item);
-                    if (itemNodeClass) {
-                        const itemNode = new itemNodeClass(this);
-                        itemNode.item = item;
-                        itemNode.model = model;
-                        itemNode.consumePathSegment(path);
-                        itemNode.consumePathSegment(path);
-                        return itemNode.resolvePath(path);
-                    }
-                    else {
-                        throw `Missing woost.admin.nodes.itemNodeClass for ${model.name} #${item.id}`;
-                    }
-                });
         }
 
         // Edit an existing object
-        const id = Number(path[0]);
-        if (!isNaN(id)) {
-            return woost.models.Item.getInstance(id)
-                .then((item) => {
-                    let model = cocktail.schema.getSchemaByName(item._class);
-                    let itemNodeClass = this.getItemNodeClass(model, item);
-                    if (itemNodeClass) {
-                        let itemNode = new itemNodeClass(this);
-                        itemNode.item = item;
-                        itemNode.model = model;
-                        itemNode.consumePathSegment(path);
-                        return itemNode.resolvePath(path);
-                    }
-                    else {
-                        throw `Missing woost.admin.nodes.itemNodeClass for ${model.name} #${item.id}`;
-                    }
-                });
+        if (this.canEditExistingObjects) {
+            const id = Number(path[0]);
+            if (!isNaN(id)) {
+                return woost.models.Item.getInstance(id)
+                    .then((item) => {
+                        let model = cocktail.schema.getSchemaByName(item._class);
+                        let itemNodeClass = this.getItemNodeClass(model, item);
+                        if (itemNodeClass) {
+                            let itemNode = this.createChild(itemNodeClass);
+                            itemNode.item = item;
+                            itemNode.model = model;
+                            itemNode.consumePathSegment(path);
+                            return itemNode.resolvePath(path);
+                        }
+                        else {
+                            throw `Missing woost.admin.nodes.itemNodeClass for ${model.name} #${item.id}`;
+                        }
+                    });
+            }
         }
 
         return super.resolveChild(path);
@@ -432,22 +445,46 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
     }
 }
 
+woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.ItemContainer(cocktail.navigation.StackTransparentNode) {
+
+    constructor(parent = null) {
+        super(parent);
+        if (parent) {
+            this.model = parent.model;
+            this.item = parent.item;
+        }
+    }
+
+    get canEditExistingObjects() {
+        return false;
+    }
+
+    static get children() {
+        return {
+            "select": woost.admin.nodes.RelationSelectorNode
+        };
+    }
+
+    defineParameters() {
+        let modelRelations = Array.from(this.model.members()).filter((member) => member.relatedType);
+        return [
+            new cocktail.schema.MemberReference({
+                name: "relation",
+                sourceSchema: this.model,
+                enumeration: modelRelations
+            })
+        ];
+    }
+}
+
 {
     const EDIT_SCHEMA = Symbol.for("woost.admin.nodes.EditNode.EDIT_SCHEMA");
 
     woost.admin.nodes.EditNode = class EditNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
 
-        createChild(nodeClass) {
-            let child = super.createChild(nodeClass);
-            child.model = this.model;
-            child.item = this.item;
-            return child;
-        }
-
         static get children() {
             return {
-                blocks: woost.admin.nodes.BlocksNode,
-                select: woost.admin.nodes.RelationSelectorNode
+                rel: woost.admin.nodes.RelationNode
             };
         }
 
@@ -510,6 +547,15 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
 
 woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woost.admin.nodes.Listing(woost.admin.nodes.StackNode) {
 
+    constructor(parent = null) {
+        super(parent);
+        if (parent) {
+            this.model = parent.model;
+            this.item = parent.item;
+            this.relation = parent.relation;
+        }
+    }
+
     get title() {
         let suffix;
         if (this.relation instanceof cocktail.schema.Collection) {
@@ -523,17 +569,6 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
 
     get listedModel() {
         return this.relation.relatedType;
-    }
-
-    defineParameters() {
-        let modelRelations = Array.from(this.model.members()).filter((member) => member.relatedType);
-        return [
-            new cocktail.schema.MemberReference({
-                name: "relation",
-                sourceSchema: this.model,
-                enumeration: modelRelations
-            })
-        ];
     }
 
     get defaultComponent() {
