@@ -11,7 +11,7 @@ from cocktail.persistence import PersistentObject, Query
 from cocktail.controllers import Controller, get_parameter
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
-from woost.models import Item, ReadPermission
+from woost.models import Item, ReadPermission, Configuration
 from woost.models.utils import get_model_dotted_name
 from woost.admin.models.dataexport import (
     Export,
@@ -37,7 +37,7 @@ class ListingController(Controller):
         model,
         id = None,
         export = None,
-        locales = None,
+        locales = "_object",
         members = None,
         page = None,
         page_size = None,
@@ -104,7 +104,9 @@ class ListingController(Controller):
                     Self.search(
                         search,
                         match_mode = "prefix",
-                        languages = locales
+                        languages =
+                            locales
+                            or [None] + list(Configuration.instance.languages)
                     )
                 )
 
@@ -157,6 +159,9 @@ class ListingController(Controller):
 
     def _resolve_locales(self, locales):
 
+        if locales == "_object":
+            return None
+
         if isinstance(locales, basestring):
             return locales.split()
 
@@ -175,9 +180,6 @@ class ListingController(Controller):
 
         if not export_class:
             raise ValueError("Missing export class")
-
-        if isinstance(languages, basestring):
-            languages = languages.split(",")
 
         return export_class(languages = languages)
 
