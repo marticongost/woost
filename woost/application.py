@@ -333,12 +333,12 @@ http://woost.info
         from woost.controllers.cmsresourcescontroller import CMSResourcesController
         resource_repositories.define(
             repository_name,
-            "/resources/" + repository_name,
+            "/resources/" + repository_name.replace(".", "/"),
             repository_path
         )
         setattr(
             CMSResourcesController,
-            repository_name.replace(".", "-"),
+            repository_name.replace(".", "_"),
             folder_publisher(repository_path)
         )
         if repository_name == self.package:
