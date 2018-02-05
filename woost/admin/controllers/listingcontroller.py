@@ -93,7 +93,7 @@ class ListingController(Controller):
 
                 cherrypy.response.headers["Content-Type"] = \
                     "application/json; charset=utf-8"
-                yield json.dumps(export.export_object(obj))
+                return json.dumps(export.export_object(obj))
 
         # Returning a list of objects
         else:
@@ -123,7 +123,7 @@ class ListingController(Controller):
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
 
-            yield u'{"count": {"value": %d, "label": %s}, ' % (
+            html = [u'{"count": {"value": %d, "label": %s}, "records": [\n' % (
                 count,
                 json.dumps(
                     translations(
@@ -132,17 +132,17 @@ class ListingController(Controller):
                         count = count
                     )
                 )
-            )
+            )]
 
-            yield u'"records": [\n'
             glue = u""
 
             for record in results:
-                yield glue
+                html.append(glue)
                 glue = u",\n"
-                yield json.dumps(record)
+                html.append(json.dumps(record))
 
-            yield u"]}"
+            html.append(u"]}")
+            return u"".join(html)
 
     def _resolve_model(self, model_name):
 
