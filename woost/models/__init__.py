@@ -59,6 +59,7 @@ from .publishable import (
     user_has_access_level
 )
 from .document import Document
+from .defaulttemplate import with_default_template
 from .theme import Theme
 from .template import Template
 from .controller import Controller
