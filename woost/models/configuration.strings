@@ -101,21 +101,6 @@ en: Configuration
         es: Tema visual
         en: Visual theme
 
-        [default_page_template]
-        ca: Plantilla de pàgina per defecte
-        es: Plantilla de página por defecto
-        en: Default page template
-
-        [default_news_template]
-        ca: Plantilla de notícia per defecte
-        es: Plantilla de noticia por defecto
-        en: Default news template
-
-        [default_event_template]
-        ca: Plantilla d'esdeveniment per defecte
-        es: Plantilla de evento por defecto
-        en: Default event template
-
         [login_page]
         ca: Pàgina d'autenticació
         es: Página de autenticación

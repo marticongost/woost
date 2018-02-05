@@ -5,16 +5,10 @@ u"""
 """
 from .document import Document
 from .slot import Slot
-from .configuration import Configuration
+from .defaulttemplate import with_default_template
 
 
+@with_default_template("page")
 class Page(Document):
-
     blocks = Slot()
-
-    def get_default_template(self):
-        return (
-            Configuration.instance.get_setting("default_page_template")
-            or Document.get_default_template(self)
-        )
 
