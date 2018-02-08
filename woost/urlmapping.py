@@ -530,6 +530,7 @@ class DescriptiveIdInPath(URLComponent):
     title_splitter_regexp = re.compile(r"\W+", re.UNICODE)
     normalized = True
     include_file_extensions = True
+    allow_slashes_in_title = False
 
     def build_url(
         self,
@@ -560,31 +561,34 @@ class DescriptiveIdInPath(URLComponent):
 
         if resolution.remaining_segments:
 
-            parts = (
-                resolution.remaining_segments[0]
-                .rsplit(self.id_separator, 1)
-            )
+            for n, segment in enumerate(resolution.remaining_segments):
 
-            if len(parts) == 1:
-                id_string = parts[0]
-            elif len(parts) == 2:
-                id_string = parts[1]
-            else:
-                id_string = None
+                if n > 0 and not self.allow_slashes_in_title:
+                    break
 
-            if id_string:
-                if self.include_file_extensions:
-                    id_string = strip_extension(id_string)
-                try:
-                    id = int(id_string)
-                except ValueError:
-                    pass
+                parts = segment.rsplit(self.id_separator, 1)
+
+                if len(parts) == 1:
+                    id_string = parts[0]
+                elif len(parts) == 2:
+                    id_string = parts[1]
                 else:
-                    publishable = get_publishable(id)
-                    if publishable:
-                        resolution.publishable = publishable
-                        resolution.consume_segment()
-                        return MATCH
+                    id_string = None
+
+                if id_string:
+                    if self.include_file_extensions:
+                        id_string = strip_extension(id_string)
+                    try:
+                        id = int(id_string)
+                    except ValueError:
+                        pass
+                    else:
+                        publishable = get_publishable(id)
+                        if publishable:
+                            resolution.publishable = publishable
+                            for _ in range(n + 1):
+                                resolution.consume_segment()
+                            return MATCH
 
         return NO_MATCH
 
