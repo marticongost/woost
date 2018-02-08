@@ -532,6 +532,9 @@ class DescriptiveIdInPath(URLComponent):
     include_file_extensions = True
     allow_slashes_in_title = False
 
+    def applies_to_publishable(self, publishable):
+        return True
+
     def build_url(
         self,
         url_builder,
@@ -539,7 +542,7 @@ class DescriptiveIdInPath(URLComponent):
         language = None,
         **kwargs
     ):
-        if publishable:
+        if publishable and self.applies_to_publishable(publishable):
             title = self.get_title(publishable, language)
 
             if title:
@@ -584,7 +587,10 @@ class DescriptiveIdInPath(URLComponent):
                         pass
                     else:
                         publishable = get_publishable(id)
-                        if publishable:
+                        if (
+                            publishable
+                            and self.applies_to_publishable(publishable)
+                        ):
                             resolution.publishable = publishable
                             for _ in range(n + 1):
                                 resolution.consume_segment()
