@@ -345,13 +345,7 @@ class CMSController(BaseCMSController):
         cms.context.update(cms = cms)
 
         # Reset all contextual properties
-        app.error = None
-        app.traceback = None
-        app.user = None
-        app.publishable = None
-        app.original_publishable = None
-        app.website = None
-        app.navigation_point = None
+        app.clear_context()
 
         # Set the default language
         language = app.language.infer_language()
