@@ -597,14 +597,19 @@ class DescriptiveIdInPath(URLComponent):
         )
 
         if title:
+            title = self.escape_title(title)
 
-            if self.normalized:
-                title = normalize(title)
+        return title
 
-            title = self.title_splitter_regexp.sub(
-                self.word_separator,
-                title
-            )
+    def escape_title(self, title):
+
+        if self.normalized:
+            title = normalize(title)
+
+        title = self.title_splitter_regexp.sub(
+            self.word_separator,
+            title
+        )
 
         return title
 
