@@ -36,6 +36,10 @@ cocktail.declare("woost.admin.ui");
         translateValue(value, params = null) {
             return value && value._label || super.translateValue(value, params);
         }
+
+        getTypeOfValue(value) {
+            return cocktail.schema.getSchemaByName(value._class);
+        }
     }
 
     woost.models.Slot = class Slot extends cocktail.schema.Collection {
