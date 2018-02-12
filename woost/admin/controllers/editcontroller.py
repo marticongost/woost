@@ -8,7 +8,7 @@ import cherrypy
 from ZODB.POSException import ConflictError
 from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
-from cocktail.schema.exceptions import ValidationError
+from cocktail.schema.exceptions import ValidationError, ValueRequiredError
 from cocktail.persistence import datastore, InstanceNotFoundError
 from cocktail.controllers import Controller, request_property
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
@@ -28,8 +28,7 @@ class EditController(Controller):
     def __call__(
         self,
         target,
-        action = "save",
-        deleted_translations = None
+        action = "save"
     ):
         # Create a new object, or load an existing one
         obj = self._resolve_target(target)
@@ -47,11 +46,10 @@ class EditController(Controller):
 
         # Only report validation errors
         if action == "validate":
-            self._import_object(obj, data, deleted_translations)
-            obj.insert()
+            self._import_object(obj, data)
             response_data = {
-                "state": data,
-                "errors": self._export_errors(obj)
+                "state": self._export_object(obj),
+                "errors": self._export_errors(obj, action)
             }
         # Commit the changes
         elif action == "save":
@@ -60,11 +58,11 @@ class EditController(Controller):
             while True:
 
                 # Import data
-                self._import_object(obj, data, deleted_translations)
+                self._import_object(obj, data)
                 obj.insert()
 
                 # Validate errors
-                errors = self._export_errors(obj)
+                errors = self._export_errors(obj, action)
                 if errors:
                     response_data = {"state": data, "errors": errors}
                     break
@@ -108,22 +106,29 @@ class EditController(Controller):
             except (ValueError, InstanceNotFoundError):
                 raise cherrypy.HTTPError(404, "Invalid object id: " + target)
 
-    def _import_object(self, obj, data, deleted_translations = ()):
+    def _import_object(self, obj, data):
         import_object_data(
             obj,
             data,
-            deleted_translations = deleted_translations,
             user = app.user
         )
 
     def _export_object(self, obj):
         return Export().export_object(obj)
 
-    def _export_errors(self, obj):
+    def _export_errors(self, obj, action):
         return [
             self._export_error(error)
             for error in obj.__class__.get_errors(obj)
+            if not self._should_ignore_error(action, error)
         ]
+
+    def _should_ignore_error(self, action, error):
+        return (
+            action == "validate"
+            and isinstance(error, ValueRequiredError)
+            and error.member in (Item.id, Item.global_id)
+        )
 
     def _export_error(self, error):
 

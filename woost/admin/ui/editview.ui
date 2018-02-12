@@ -21,8 +21,16 @@
         let selection = [newValue.item];
         let localeStates = this[LOCALE_STATES];
 
+        if (newValue.item._deleted_translations) {
+            for (let locale of newValue.item._deleted_translations) {
+                localeStates.set(locale, "deleted");
+            }
+        }
+
         for (let locale of cocktail.schema.getLocales(newValue.item, newValue.model)) {
-            localeStates.set(locale, "visible");
+            if (!localeStates.get(locale)) {
+                localeStates.set(locale, "visible");
+            }
         }
 
         for (let locale of cocktail.ui.locales) {
@@ -35,7 +43,7 @@
             view: this,
             model: newValue.model,
             item: newValue.item,
-            relation: newValue.relation
+            objectPath: newValue.objectPath
         };
 
         this.actionList.actionParameters.selection = selection;
@@ -69,6 +77,11 @@
     ?>
 
     <?class
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        woost.admin.editState.clear(this.editedItem);
+    }
+
     get editedItem() {
         return this.navigationNode.item;
     }
@@ -119,6 +132,13 @@
         let previousState = this[LOCALE_STATES].get(locale);
         if (previousState != newState) {
             this[LOCALE_STATES].set(locale, newState);
+            const deletedTranslations = this.editForm.value._deleted_translations;
+            if (previousState == "deleted") {
+                deletedTranslations.splice(deletedTranslations.indexOf(locale), 1);
+            }
+            else if (newState == "deleted") {
+                deletedTranslations.push(locale);
+            }
             this.editForm.locales = this.visibleLocales;
             cocktail.ui.trigger(this, "localeChanged", {locale, previousState, newState});
         }
@@ -139,6 +159,9 @@
             id="editForm"
             tabbed="true"
             defaultGroup="item">
+            <?on value:changed
+            woost.admin.editState.set(newValue);
+            ?>
             <?js
             element.displayFactory = woost.admin.ui.formControls;
             element.tabs.queryParameter = "tab";

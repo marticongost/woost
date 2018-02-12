@@ -94,11 +94,21 @@ cocktail.declare("woost.admin.ui");
                 .then((xhr) => xhr.response);
         }
 
-        save(obj, deletedTranslations = null) {
+        save(obj, validateOnly = false) {
+
+            let parameters;
+
+            if (validateOnly) {
+                parameters = {action: "validate"};
+            }
+
+            const hasTemporaryId = obj.id && String(obj.id).charAt(0) == "_";
+            const isNew = obj._new || hasTemporaryId;
+
             return cocktail.ui.request({
-                url: woost.admin.url + "/data/" + (obj._new ? this.name : obj.id),
-                method: obj._new ? "PUT" : "POST",
-                parameters: deletedTranslations ? {deleted_translations: deletedTranslations.join(" ")} : null,
+                url: woost.admin.url + "/data/" + (isNew ? this.name : obj.id),
+                method: isNew ? "PUT" : "POST",
+                parameters,
                 data: obj,
                 responseType: "json"
             })
