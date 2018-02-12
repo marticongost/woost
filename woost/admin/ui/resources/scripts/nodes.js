@@ -99,12 +99,12 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                 return model.loadDefaults([cocktail.getLanguage()])
                     .then((item) => {
                         item._new = true;
+                        item._deleted_translations = [];
                         const itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
-                            itemNode.relation = this.relation;
                             itemNode.consumePathSegment(path);
                             itemNode.consumePathSegment(path);
                             return itemNode.resolvePath(path);
@@ -118,10 +118,14 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
 
         // Edit an existing object
         if (this.canEditExistingObjects) {
-            const id = Number(path[0]);
-            if (!isNaN(id)) {
-                return woost.models.Item.getInstance(id)
+            const key = path[0];
+            let objectResolution = this.getExistingObject(key);
+            if (objectResolution) {
+                return Promise.resolve(objectResolution)
                     .then((item) => {
+                        if (!item._deleted_translations) {
+                            item._deleted_translations = [];
+                        }
                         let model = cocktail.schema.getSchemaByName(item._class);
                         let itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
@@ -139,6 +143,11 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
         }
 
         return super.resolveChild(path);
+    }
+
+    getExistingObject(key) {
+        const id = Number(key);
+        return isNaN(id) ? null : woost.models.Item.getInstance(id);
     }
 
     getItemNodeClass(model, item) {
@@ -455,8 +464,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
         }
     }
 
-    get canEditExistingObjects() {
-        return false;
+    createChild(nodeClass) {
+        const child = super.createChild(nodeClass);
+        child.objectPath = this.objectPath;
+        return child;
     }
 
     static get children() {
@@ -468,12 +479,23 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
     defineParameters() {
         let modelRelations = Array.from(this.model.members()).filter((member) => member.relatedType);
         return [
-            new cocktail.schema.MemberReference({
-                name: "relation",
-                sourceSchema: this.model,
-                enumeration: modelRelations
+            new woost.admin.nodes.ObjectPath({
+                name: "objectPath",
+                rootObject: woost.admin.editState.get(this.item)
             })
         ];
+    }
+
+    getExistingObject(key) {
+
+        // Editing an existing object is only available to integral relations;
+        // objects in regular relations must be able to be edited independently
+        // of the relation they are accessed from.
+        if (this.objectPath[0].member.integral) {
+            return cocktail.ui.copyValue(this.objectPath[this.objectPath.length - 1].item);
+        }
+
+        return null;
     }
 }
 
@@ -552,7 +574,7 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
         if (parent) {
             this.model = parent.model;
             this.item = parent.item;
-            this.relation = parent.relation;
+            this.relation = parent.objectPath[0].member;
         }
     }
 
@@ -609,4 +631,66 @@ window.addEventListener("navigationNodeChanged", (e) => {
     }
     document.title = title;
 });
+
+woost.admin.nodes.ObjectPath = class ObjectPath extends cocktail.schema.Member {
+
+    parseValue(value) {
+
+        if (!value || !this.rootObject) {
+            return null;
+        }
+
+        const parts = value.split("-");
+        const path = [];
+        let obj = this.rootObject;
+        let model = cocktail.schema.getSchemaByName(obj._class);
+        let i = 0;
+
+        while (i < parts.length) {
+
+            if (!obj) {
+                return null;
+            }
+
+            const member = model.getMember(parts[i]);
+            if (!member) {
+                return null;
+            }
+            const step = {member};
+            path.push(step);
+            i++;
+
+            const value = obj[member.name];
+
+            if (member instanceof cocktail.schema.Reference) {
+                obj = value;
+            }
+            else if (i < parts.length) {
+                const index = Number(parts[i]);
+                if (isNaN(index)) {
+                    return null;
+                }
+                step.index = index;
+                obj = value[index];
+                i++;
+            }
+            model = obj && cocktail.schema.getSchemaByName(obj._class);
+            step.item = obj;
+            step.model = model;
+        }
+
+        return path;
+    }
+
+    serializeValue(value) {
+        const chunks = [];
+        for (let step of value) {
+            chunks.push(step.member.name);
+            if (step.index !== undefined) {
+                chunks.push(step.index);
+            }
+        }
+        return chunks.join("-");
+    }
+}
 

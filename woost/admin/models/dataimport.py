@@ -6,6 +6,7 @@ u"""
 from datetime import date, time, datetime
 from decimal import Decimal
 from fractions import Fraction
+from collections import defaultdict
 from cocktail import schema
 from woost.models import (
     Item,
@@ -25,7 +26,7 @@ def import_object_data(
     deleted_translations = None,
     user = None
 ):
-    Import(
+    return Import(
         obj,
         data,
         deleted_translations = deleted_translations,
@@ -41,6 +42,7 @@ class Import(object):
     new_translations = None
     deleted_translations = None
     user = None
+    permission_check = True
 
     def __init__(
         self,
@@ -49,35 +51,45 @@ class Import(object):
         deleted_translations = None,
         user = None
     ):
-        self.__allowed_translations_cache = set()
+        self.__allowed_translations_cache = defaultdict(set)
         self.obj = obj
         self.data = data
         self.creating_new_object = not obj.is_inserted
-        self.new_translations = set()
-        self.deleted_translations = deleted_translations
+        self.new_translations = defaultdict(set)
+        self.deleted_translations = defaultdict(set)
         self.user = user
-        self._import_data()
+        self._import_object(obj, data)
 
-    def _import_data(self):
+    def _import_object(self, obj, data):
 
-        if self.user:
-            self._check_permissions_before_importing_data()
+        if self.permission_check and self.user:
+            self._check_permissions_before_importing_data(obj)
 
-        self._import_members()
-        self._delete_translations()
+        self._import_members(obj, data)
+        self._delete_translations(obj, data.get("_deleted_translations"))
 
-        if self.user:
-            self._check_permissions_after_importing_data()
+        if self.permission_check and self.user:
+            self._check_permissions_after_importing_data(obj)
 
-    def _check_permissions_before_importing_data(self):
-        self._main_permission_check()
+    def _edit_permission_check(self, obj):
+        self.user.require_permission(
+            CreatePermission
+                if obj.is_inserted
+                else ModifyPermission,
+            target = obj
+        )
 
-    def _check_permissions_after_importing_data(self):
-        self._main_permission_check()
+    def _check_permissions_before_importing_data(self, obj):
+        self._edit_permission_check(obj)
 
-    def _check_translation_permission(self, language):
+    def _check_permissions_after_importing_data(self, obj):
+        self._edit_permission_check(obj)
 
-        if language not in self.__allowed_translations_cache:
+    def _check_translation_permission(self, obj, language):
+
+        perm_cache = self.__allowed_translations_cache[obj]
+
+        if language not in perm_cache:
 
             if language in self.obj.translations:
                 self.user.require_permission(
@@ -89,48 +101,36 @@ class Import(object):
                     CreateTranslationPermission,
                     language = language
                 )
-                self.new_translations.add(language)
+                self.new_translations[obj].add(language)
 
-            self.__allowed_translations_cache.add(language)
+            perm_cache.add(language)
 
-    def _main_permission_check(self):
-        self.user.require_permission(
-            CreatePermission
-                if self.creating_new_object
-                else ModifyPermission,
-            target = self.obj
-        )
-
-    def _import_members(self):
-        for member in self.obj.__class__.iter_members():
-            if self.should_import_member(member):
+    def _import_members(self, obj, data):
+        for member in obj.__class__.iter_members():
+            if self.should_import_member(obj, member):
                 try:
-                    value = self.data[member.name]
+                    value = data[member.name]
                 except KeyError:
                     pass
                 else:
-                    self._import_member_value(member, value)
+                    self._import_member_value(obj, member, value)
 
-    def _import_member_value(self, member, value, language = None):
+    def _import_member_value(self, obj, member, value, language = None):
 
         if member.translated and not language:
             self._require_value_type(member, dict, value)
             for language, language_value in value.iteritems():
-                self._import_member_value(member, language_value, language)
+                self._import_member_value(obj, member, language_value, language)
         else:
             # Skip forbidden languages
-            if language and self.user:
-                self._check_translation_permission(language)
+            if language and self.permission_check and self.user:
+                self._check_translation_permission(obj, language)
 
             parsed_value = self.parse_member_value(member, value)
-            from cocktail.styled import styled
-            print styled(member.name.ljust(30), "yellow"),
-            print styled((language or "").ljust(3), "pink"),
-            print styled(parsed_value, "bright_green")
 
             # TODO: Make sure integral objects are automatically deleted
             # / inserted
-            self.obj.set(member, parsed_value, language)
+            obj.set(member, parsed_value, language)
 
     def parse_member_value(self, member, value):
 
@@ -194,37 +194,57 @@ class Import(object):
                 pass
         elif isinstance(member, schema.Reference):
             if member.class_family:
-                for cls in Item.schema_tree():
-                    if get_model_dotted_name(cls) == value:
-                        value = cls
-                        break
+                value = self._get_model_by_dotted_name(
+                    value,
+                    member.class_family
+                )
             else:
                 id = None
 
                 if isinstance(value, int):
+                    read_child_data = False
                     id = value
                 elif isinstance(value, dict):
-                    # TODO: import nested object trees
-                    try:
-                        id = value["id"]
-                    except KeyError:
-                        pass
+                    read_child_data = True
+                    id = value.get("id") or None
 
-                if id:
-                    item = Item.get_instance(id)
+                    # Ignore the temporary IDs generated client side by the
+                    # backoffice
+                    if isinstance(id, basestring) and id.startswith("_"):
+                        id = None
+                else:
+                    raise ValueError(
+                        "Invalid data type for member %s" % member
+                    )
 
-                    if item:
-                        if self.user:
-                            self.user.require_permission(
-                                ReadPermission,
-                                target = item
+                item = id and member.related_type.get_instance(id)
+
+                if item is None:
+                    if read_child_data:
+                        model_name = value.get("_class")
+                        if model_name:
+                            model = self._get_model_by_dotted_name(
+                                model_name,
+                                member.related_type
                             )
+                        else:
+                            model = member.related_type
 
-                        value = item
+                        item = model.new()
+                elif self.permission_check and self.user:
+                    self.user.require_permission(
+                        ReadPermission,
+                        target = item
+                    )
+
+                if read_child_data:
+                    self._import_object(item, value)
+
+                value = item
 
         return value
 
-    def should_import_member(self, member):
+    def should_import_member(self, obj, member):
         return (
             member.editable == schema.EDITABLE
             and (
@@ -236,16 +256,17 @@ class Import(object):
             )
         )
 
-    def _delete_translations(self):
-        if self.deleted_translations:
-            for language in self.deleted_translations:
-                if language in self.obj.translations:
+    def _delete_translations(self, obj, deleted_translations):
+        if deleted_translations:
+            for language in deleted_translations:
+                if language in obj.translations:
                     if self.permission_check:
                         self.user.require_permission(
                             DeleteTranslationPermission,
                             language = language
                         )
-                    del self.obj.translations[language]
+                    del obj.translations[language]
+                    self.deleted_translations[obj].add(language)
 
     def _require_value_type(self, member, expected_type, value):
         if not isinstance(value, expected_type):
@@ -254,4 +275,12 @@ class Import(object):
                 "Expected %s, found %r instead"
                 % (member, expected_type, value)
             )
+
+    def _get_model_by_dotted_name(self, name, root_model = Item):
+
+        for cls in root_model.schema_tree():
+            if get_model_dotted_name(cls) == name:
+                return cls
+
+        return None
 

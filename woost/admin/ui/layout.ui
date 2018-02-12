@@ -23,6 +23,7 @@
 
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
 
+    <ui:resource href="woost.admin.ui://scripts/editstate.js"/>
     <ui:resource href="woost.admin.ui://scripts/filters.js"/>
     <ui:resource href="woost.admin.ui://scripts/models.js"/>
     <ui:resource href="woost.admin.ui://scripts/nodes.js"/>

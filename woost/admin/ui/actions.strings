@@ -91,6 +91,21 @@
         es: Se ha producido un error que ha impedido que se guarden los cambios
         en: An error prevented the changes from being saved
 
+    [save-integral-child]
+    ca: Acceptar
+    es: Aceptar
+    en: Accept
+
+        [workingNotice]
+        ca: Validant...
+        es: Validando...
+        en: Validating...
+
+        [errorNotice]
+        ca: S'ha produït un error durant la validació
+        es: Se ha producido un error durante la validación
+        en: An error occurred during data validation
+
     [accept]
     ca: Acceptar
     es: Aceptar

@@ -223,23 +223,16 @@ woost.admin.actions.ActionRegistrationError = class ActionRegistrationError {
 woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
 
     invoke(context) {
-        cocktail.navigation.extendPath("new", this.model.originalMember.name);
-    }
-}
-
-woost.admin.actions.NewRelatedAction = class NewRelatedAction extends woost.admin.actions.Action {
-
-    get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/new.svg`)
-    }
-
-    get translationKey() {
-        return `${this.translationPrefix}.new`;
-    }
-
-    invoke(context) {
         const relation = this.reference || this.collection;
-        cocktail.navigation.extendPath("rel", relation.name, "new", this.model.originalMember.name);
+
+        // Create an object and add it to a relation
+        if (relation) {
+            cocktail.navigation.extendPath("rel", relation.name, "new", this.model.originalMember.name);
+        }
+        // Create an object outside a relation context
+        else {
+            cocktail.navigation.extendPath("new", this.model.originalMember.name);
+        }
     }
 }
 
@@ -278,7 +271,7 @@ woost.admin.actions.RemoveAction = class RemoveAction extends woost.admin.action
     }
 
     getState(context) {
-        if (context.collectionIsEmpty || this.collection.integral) {
+        if (context.collectionIsEmpty) {
             return "hidden";
         }
         return super.getState(context);
@@ -323,7 +316,20 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     }
 
     invoke(context) {
-        cocktail.navigation.extendPath(context.selection[0].id);
+        // Edit an item in an integral collection
+        if (this.collection && this.collection.integral) {
+            const element = this.view.selectedElement;
+            cocktail.navigation.extendPath("rel", this.collection.name + "-" + element.dataBinding.index);
+        }
+        // Edit an item in an integral reference
+        else if (this.reference && this.reference.integral) {
+            const element = this.view.selectedElement;
+            cocktail.navigation.extendPath("rel", this.reference.name);
+        }
+        // Non integral relation
+        else {
+            cocktail.navigation.extendPath(context.selection[0].id);
+        }
     }
 }
 
@@ -403,7 +409,7 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
             return "hidden";
         }
 
-        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+        if (this.slot == "collectionToolbar" && (context.collectionIsEmpty || this.collection.integral)) {
             return "hidden";
         }
 
@@ -489,18 +495,6 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
     }
 }
 
-woost.admin.actions.AcceptAction = class AcceptAction extends woost.admin.actions.Action {
-
-    getState(context) {
-        return context.pendingChanges ? super.getState(context) : "hidden";
-    }
-
-    invoke() {
-        let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
-        cocktail.navigation.push(parentURL);
-    }
-}
-
 woost.admin.actions.CancelAction = class CancelAction extends woost.admin.actions.Action {
 
     getState(context) {
@@ -513,7 +507,11 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
     }
 }
 
-woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Action {
+woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.actions.Action {
+
+    get editingIntegralChild() {
+        return false;
+    }
 
     invoke(context) {
 
@@ -525,25 +523,35 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
         const form = this.view.editForm;
 
         const state = form.getJSONValue();
-        state.id = this.item.id;
+        const id = this.item.id
+        state.id = id;
         state._new = this.item._new;
 
-        this.model.save(state)
+        this.model.save(state, this.editingIntegralChild)
             .then((newState) => {
                 if (state._new) {
-                    cocktail.ui.objectCreated(this.model, newState);
 
-                    const showOutcome = () => {
-                        cocktail.ui.Lock.clear();
-                        cocktail.ui.Notice.show({
-                            summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
-                            category: "success"
-                        });
+                    if (!newState.id) {
+                        newState.id = id;
                     }
 
-                    if (this.relation) {
-                        woost.admin.actions.addToRelation([newState]);
-                        showOutcome();
+                    if (!this.editingIntegralChild) {
+                        cocktail.ui.objectCreated(this.model, newState);
+                    }
+
+                    const cleanup = () => {
+                        cocktail.ui.Lock.clear();
+                        if (!this.editingIntegralChild) {
+                            cocktail.ui.Notice.show({
+                                summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
+                                category: "success"
+                            });
+                        }
+                    }
+
+                    if (this.editingIntegralChild) {
+                        woost.admin.actions.addToParent([newState]);
+                        cleanup();
                     }
                     else {
                         const newNode = cocktail.ui.root.stack.stackTop;
@@ -559,22 +567,29 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
                         );
 
                         woost.admin.ui.redirectionAfterInsertion = editURL;
-                        cocktail.navigation.replace(editURL).then(showOutcome);
+                        cocktail.navigation.replace(editURL).then(cleanup);
                     }
                 }
                 else {
                     form.value = newState;
-                    cocktail.ui.objectModified(
-                        this.model,
-                        this.item.id,
-                        state,
-                        newState
-                    );
+                    if (this.editingIntegralChild) {
+                        woost.admin.actions.addToParent([newState]);
+                    }
+                    else {
+                        cocktail.ui.objectModified(
+                            this.model,
+                            this.item.id,
+                            state,
+                            newState
+                        );
+                    }
                     cocktail.ui.Lock.clear();
-                    cocktail.ui.Notice.show({
-                        summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
-                        category: "success"
-                    });
+                    if (!this.editingIntegralChild) {
+                        cocktail.ui.Notice.show({
+                            summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
+                            category: "success"
+                        });
+                    }
                 }
             })
             .catch((e) => {
@@ -592,6 +607,34 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ac
     }
 }
 
+woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.BaseSaveAction {
+
+    getState(context) {
+        if (this.objectPath) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+}
+
+woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction extends woost.admin.actions.BaseSaveAction {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
+    }
+
+    get editingIntegralChild() {
+        return true;
+    }
+
+    getState(context) {
+        if (!this.objectPath) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+}
+
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
     invoke() {
@@ -600,21 +643,47 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
     }
 }
 
-woost.admin.actions.addToRelation = function (selection) {
+woost.admin.actions.addToParent = function (selection) {
 
-    const form = cocktail.ui.root.stack.stackTop.stackParent.editForm;
+    const parentForm = cocktail.ui.root.stack.stackTop.stackParent.editForm;
+    const path = Array.from(cocktail.navigation.node.objectPath);
 
-    form.awaitFields().then((fields) => {
-        const relation = cocktail.navigation.node.relation;
-        const field = fields.get(relation.name);
-        if (relation instanceof cocktail.schema.Collection) {
-            for (let item of selection) {
-                field.control.addEntry(item);
+    parentForm.awaitFields().then((fields) => {
+
+        const rootStep = path[0];
+        const rootKey = rootStep.member.name;
+        const root = {[rootKey]: cocktail.ui.copyValue(parentForm.value[rootKey])};
+        const lastStep = path.pop();
+        const lastKey = lastStep.member.name;
+        let value = root;
+
+        for (let step of path) {
+            value = value[step.member.name];
+            if (step.index !== undefined) {
+                value = value[step.index];
             }
         }
-        else if (relation instanceof cocktail.schema.Reference) {
-            field.value = selection[0];
+
+        if (lastStep.index === undefined) {
+            if (lastStep.member instanceof cocktail.schema.Collection) {
+                let lst = value[lastKey];
+                if (lst) {
+                    lst.push(...selection);
+                }
+                else {
+                    value[lastKey] = [...selection];
+                }
+            }
+            else {
+                value[lastKey] = selection[0];
+            }
         }
+        else {
+            value[lastKey][lastStep.index] = selection[0];
+        }
+
+        const field = fields.get(rootKey);
+        field.value = root[rootKey];
     });
 
     let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
@@ -632,7 +701,7 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
     }
 
     invoke(context) {
-        woost.admin.actions.addToRelation(context.selection);
+        woost.admin.actions.addToParent(context.selection);
     }
 }
 
@@ -652,13 +721,7 @@ woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends 
 woost.admin.actions.NewAction.register({
     id: "new",
     slots: [
-        "listingToolbar"
-    ]
-});
-
-woost.admin.actions.NewRelatedAction.register({
-    id: "new-related",
-    slots: [
+        "listingToolbar",
         "referenceToolbar",
         "collectionToolbar"
     ]
@@ -777,9 +840,9 @@ woost.admin.actions.SaveAction.register({
     slots: ["editNavigationToolbar"]
 });
 
-woost.admin.actions.AcceptAction.register({
-    id: "accept",
-    slots: ["blocksNavigationToolbar"]
+woost.admin.actions.SaveIntegralChildAction.register({
+    id: "save-integral-child",
+    slots: ["editNavigationToolbar"]
 });
 
 woost.admin.actions.CancelAction.register({
