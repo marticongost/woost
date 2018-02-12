@@ -237,6 +237,29 @@ class File(Publishable):
 
         return file
 
+    @event_handler
+    def handle_deleted(cls, e):
+        TRANSACTION_KEY = "woost.models.File.deleted_instances"
+        deleted_files = datastore.get_transaction_value(TRANSACTION_KEY)
+        if deleted_files is None:
+            deleted_files = {e.source}
+            datastore.set_transaction_value(TRANSACTION_KEY, deleted_files)
+            datastore.unique_after_commit_hook(
+                "woost.models.File.delete_files",
+                _delete_files_after_commit,
+                deleted_files
+            )
+        else:
+            deleted_files.add(e.source)
+
+
+def _delete_files_after_commit(success, deleted_instances):
+    if success:
+        for file in deleted_instances:
+            try:
+                os.remove(file.file_path)
+            except OSError:
+                warn("Couldn't delete file %s" % file.file_path)
 
 def file_hash(source, algorithm = "md5", chunk_size = 1024):
     """Obtains a hash for the contents of the given file.
