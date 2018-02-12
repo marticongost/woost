@@ -66,6 +66,10 @@ cocktail.declare("woost.admin.ui");
 
     woost.models.Model = class Model extends cocktail.schema.Schema {
 
+        translateValue(value, params = null) {
+            return value && value._label || super.translateValue(value, params);
+        }
+
         get dataSource() {
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
