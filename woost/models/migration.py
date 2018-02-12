@@ -1486,3 +1486,14 @@ def remove_synchronization(e):
         ):
             del r[key]
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_file_deletion_trigger")
+
+@when(step.executing)
+def remove_file_deletion_trigger(e):
+    from woost.models import Trigger
+    trigger = Trigger.get_instance(qname = "woost.file_deletion_trigger")
+    if trigger:
+        trigger.delete()
+
