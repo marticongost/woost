@@ -82,7 +82,7 @@ class Export(object):
         thumbnail_factory = "admin_thumbnail"
     ):
         self.__model_fields = {}
-        self.__languages = set(languages) if languages else None
+        self.__languages = set(languages or Configuration.instance.languages)
 
         self.model_exporters = self.model_exporters.new_child()
         if model_exporters is not None:
@@ -174,7 +174,7 @@ class Export(object):
                     self.export_member(obj, member, language, path)
                 )
                 for language in obj.translations
-                if self.__languages is None or language in self.__languages
+                if language in self.__languages
             )
 
         path += (member,)
