@@ -311,7 +311,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 );
             }
 
-            if (model[woost.admin.ui.showDescriptions]) {
+            if (model[woost.admin.ui.showDescriptions] && !this.treeChildrenCollection) {
                 extraMembers.push(
                     new class ElementColumn extends cocktail.schema.String {
 
