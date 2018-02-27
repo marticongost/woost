@@ -67,19 +67,22 @@ class DocumentController(PublishableController):
             else:
                 redirect(uri)
 
-        # Override visual theme
-        theme = app.publishable.theme
+        # Override the visual theme
+        theme = self.get_document_theme()
         if theme:
             app.theme = theme
-        else:
-            template = self.page_template
-            if template:
-                template_theme = template.theme
-                if template_theme:
-                    app.theme = template_theme
 
         # No redirection, serve the document normally
         return PublishableController.__call__(self)
+
+    def get_document_theme(self):
+
+        doc_theme = app.publishable.theme
+        if doc_theme:
+            return doc_theme
+
+        template = self.page_template
+        return template and template.theme
 
     @cached_getter
     def page_template(self):
