@@ -85,6 +85,7 @@ class Configuration(Item):
         "backoffice_language",
         "backoffice_language_chain",
         "theme",
+        "global_styles",
         "default_page_template",
         "default_news_template",
         "default_event_template",
@@ -284,6 +285,12 @@ class Configuration(Item):
     theme = schema.Reference(
         type = Theme,
         related_end = schema.Collection(),
+        member_group = "presentation.appearence"
+    )
+
+    global_styles = schema.CodeBlock(
+        language = "scss",
+        listed_by_default = False,
         member_group = "presentation.appearence"
     )
 

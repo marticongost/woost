@@ -101,6 +101,11 @@ en: Configuration
         es: Tema visual
         en: Visual theme
 
+        [global_styles]
+        ca: Estils globals
+        es: Estilos globales
+        en: Global styles
+
         [default_page_template]
         ca: Plantilla de pàgina per defecte
         es: Plantilla de página por defecto
