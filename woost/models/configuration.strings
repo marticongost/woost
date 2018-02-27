@@ -101,6 +101,11 @@ en: Configuration
         es: Tema visual
         en: Visual theme
 
+        [global_styles]
+        ca: Estils globals
+        es: Estilos globales
+        en: Global styles
+
         [login_page]
         ca: Pàgina d'autenticació
         es: Página de autenticación
