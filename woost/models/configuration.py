@@ -85,6 +85,7 @@ class Configuration(Item):
         "backoffice_language",
         "backoffice_language_chain",
         "theme",
+        "global_styles",
         "renderers",
         "image_factories",
         "video_player_settings",
@@ -283,6 +284,13 @@ class Configuration(Item):
         related_end = schema.Collection(),
         member_group = "presentation.appearence"
     )
+
+    global_styles = schema.CodeBlock(
+        language = "scss",
+        listed_by_default = False,
+        member_group = "presentation.appearence"
+    )
+
 
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
