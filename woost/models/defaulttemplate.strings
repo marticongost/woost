@@ -1,0 +1,12 @@
+
+@init
+from cocktail.translations.helpers import ca_possessive
+@end
+
+[woost.models.defaulttemplate]
+
+    [field(member)]
+    ca: Plantilla ${ca_possessive(translations(member.template_owner).lower())} per defecte
+    es: Plantilla de ${translations(member.template_owner).lower()} por defecto
+    en: Default ${translations(member.template_owner).lower()} template
+
