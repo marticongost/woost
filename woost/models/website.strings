@@ -208,6 +208,11 @@ en: Website
         es: Página no encontrada
         en: Not found error page
 
+        [gone_error_page]
+        ca: Pàgina per continguts retirats
+        es: Página para contenidos retirados
+        en: Page for gone content
+
         [forbidden_error_page]
         ca: Pàgina d'error per accés restringit
         es: Página de error por acceso restringido
