@@ -632,62 +632,79 @@ class ObjectImporter(object):
             print
 
     def import_object_data(self, obj, data):
-
         for key, value in data.iteritems():
+            try:
+                self.import_object_key(obj, key, value)
+            except Exception, e:
+                if self.verbose:
+                    sys.stderr.write(
+                        styled(
+                            "Error while parsing %s.%s = %r\n"
+                            % (
+                                obj.__class__.__name__,
+                                key,
+                                value
+                            ),
+                            "magenta"
+                        )
+                    )
+                raise
 
-            if isinstance(key, unicode):
-                key = str(key)
+    def import_object_key(self, obj, key, value):
 
-            if key.startswith("@"):
+        if isinstance(key, unicode):
+            key = str(key)
 
-                # Store file contents once the current transaction is comitted
-                # successfully
-                if key == "@file_data":
+        if key.startswith("@"):
 
-                    datastore.unique_after_commit_hook(
-                        "woost.models.objectio.store_file_contents",
-                        _store_file_contents_after_commit
+            # Store file contents once the current transaction is comitted
+            # successfully
+            if key == "@file_data":
+
+                datastore.unique_after_commit_hook(
+                    "woost.models.objectio.store_file_contents",
+                    _store_file_contents_after_commit
+                )
+
+                file_contents = datastore.get_transaction_value(
+                    "woost.models.objectio.file_contents"
+                )
+
+                if file_contents is None:
+                    file_contents = {}
+                    datastore.set_transaction_value(
+                        "woost.models.objectio.file_contents",
+                        file_contents
                     )
 
-                    file_contents = datastore.get_transaction_value(
-                        "woost.models.objectio.file_contents"
+                bdata = base64.decodestring(value)
+                file_contents[obj.id] = bdata
+
+            return
+
+        member = obj.__class__.get_member(key)
+        if member is None:
+            self._handle_unknown_member(obj, key)
+            return
+
+        if member.translated:
+            for lang, lang_value in value.iteritems():
+                if (
+                    self.language_subset is None
+                    or lang in self.language_subset
+                ):
+                    imported_value = self.import_object_value(
+                        obj,
+                        member,
+                        lang_value,
+                        lang
                     )
-
-                    if file_contents is None:
-                        file_contents = {}
-                        datastore.set_transaction_value(
-                            "woost.models.objectio.file_contents",
-                            file_contents
-                        )
-
-                    bdata = base64.decodestring(value)
-                    file_contents[obj.id] = bdata
-
-                continue
-
-            member = obj.__class__.get_member(key)
-            if member is None:
-                self._handle_unknown_member(obj, key)
-                continue
-
-            if member.translated:
-                for lang, lang_value in value.iteritems():
-                    if (
-                        self.language_subset is None
-                        or lang in self.language_subset
-                    ):
-                        imported_value = self.import_object_value(
-                            obj,
-                            member,
-                            lang_value,
-                            lang
-                        )
-                        if imported_value is not ExportMode.ignore:
-                            obj.set(key, imported_value, lang)
-            else:
-                imported_value = self.import_object_value(obj, member, value)
-                if imported_value is not ExportMode.ignore:
-                    obj.set(key, imported_value)
+                    if imported_value is not ExportMode.ignore:
+                        obj.set(key, imported_value, lang)
+        else:
+            imported_value = self.import_object_value(obj, member, value)
+            if imported_value is not ExportMode.ignore:
+                obj.set(key, imported_value)
 
     def _handle_unknown_member(self, obj, key):
         if self.unknown_member_policy == UnknownMemberPolicy.fail:
