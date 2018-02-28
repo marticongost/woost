@@ -60,6 +60,7 @@ class Website(Item):
         "login_page",
         "generic_error_page",
         "not_found_error_page",
+        "gone_error_page",
         "forbidden_error_page",
 
         # publication.maintenance
@@ -232,6 +233,13 @@ class Website(Item):
     )
 
     not_found_error_page = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        listed_by_default = False,
+        member_group = "publication.pages"
+    )
+
+    gone_error_page = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
         listed_by_default = False,
