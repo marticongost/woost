@@ -651,7 +651,6 @@ class ObjectImporter(object):
                 raise
 
     def import_object_key(self, obj, key, value):
-
         if isinstance(key, unicode):
             key = str(key)
 
@@ -700,11 +699,18 @@ class ObjectImporter(object):
                         lang
                     )
                     if imported_value is not ExportMode.ignore:
-                        obj.set(key, imported_value, lang)
+                        member.apply_imported_value(
+                            obj,
+                            imported_value,
+                            lang
+                        )
         else:
             imported_value = self.import_object_value(obj, member, value)
             if imported_value is not ExportMode.ignore:
-                obj.set(key, imported_value)
+                member.apply_imported_value(
+                    obj,
+                    imported_value
+                )
 
     def _handle_unknown_member(self, obj, key):
         if self.unknown_member_policy == UnknownMemberPolicy.fail:
@@ -931,4 +937,10 @@ def _store_file_contents_after_commit(successful):
 
             with open(file.file_path, "wb") as f:
                 f.write(data)
+
+
+def _apply_imported_value(member, obj, value, language = None):
+    obj.set(member, value, language = language)
+
+schema.Member.apply_imported_value = _apply_imported_value
 
