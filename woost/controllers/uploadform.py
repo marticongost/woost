@@ -95,7 +95,7 @@ class UploadForm(Form):
 
         def adapt_object(self, context):
             if context.consume(self.key):
-                value = context.get(self.key)
+                value = context.get(self.key, default = None)
                 if value:
                     source_member = context.source_schema[self.key]
                     if isinstance(source_member, schema.Collection):
