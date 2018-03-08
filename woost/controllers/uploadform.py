@@ -45,8 +45,7 @@ class UploadForm(Form):
 
         for member in self.upload_members:
             key = member.name
-            export_rule = self.ExportUploadInfo(self, key)
-            adapter.export_rules.add_rule(export_rule)
+            adapter.export_rules.add_rule(self.ExportUploadInfo(self, key))
             adapter.import_rules.add_rule(self.ImportUploadInfo(self, key))
 
         return adapter
