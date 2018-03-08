@@ -55,6 +55,14 @@ class UploadForm(Form):
         options.update(self.upload_options)
         return options
 
+    def get_upload_member_options(self, source_member):
+        options = self.get_upload_options()
+        member_options = getattr(source_member, "upload_options", None)
+        if member_options is not None:
+            options.update(member_options)
+        options.setdefault("required", source_member.required)
+        return options
+
     class ExportUploadInfo(schema.Rule):
 
         def __init__(self, form, key):
@@ -66,8 +74,8 @@ class UploadForm(Form):
             if context.consume(self.key):
                 source_member = context.source_schema[self.key]
 
-                upload_options = self.form.get_upload_options()
-                upload_options["required"] = source_member.required
+                upload_options = \
+                    self.form.get_upload_member_options(source_member)
                 upload_options["get_file_destination"] = \
                     self.form.get_temp_path
 
@@ -156,7 +164,11 @@ class UploadForm(Form):
             file_type = member.related_type
             if not issubclass(file_type, File):
                 file_type = File
-            return file_type()
+            file = file_type()
+            init_file = getattr(member, "init_uploaded_file", None)
+            if init_file:
+                init_file(file)
+            return file
 
     def submit(self):
         Form.submit(self)
