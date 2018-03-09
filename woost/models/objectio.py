@@ -37,6 +37,8 @@ from woost.models import (
     File,
     User,
     Slot,
+    Controller,
+    Document,
     changeset_context
 )
 
@@ -126,7 +128,9 @@ class ObjectExporter(object):
         Item.translations: ExportMode.ignore,
         Item.last_update_time: ExportMode.ignore,
         Item.last_translation_update_time: ExportMode.ignore,
-        Item.changes: ExportMode.ignore
+        Item.changes: ExportMode.ignore,
+        Controller.published_items: ExportMode.ignore,
+        Template.documents: ExportMode.ignore
     }
 
     def __init__(self):
