@@ -121,14 +121,16 @@ class ObjectExporter(object):
     datetime_format = date_format + " " + time_format
     json_encoder_defaults = {"check_circular": False}
 
+    default_member_export_modes = {
+        Item.id: ExportMode.ignore,
+        Item.translations: ExportMode.ignore,
+        Item.last_update_time: ExportMode.ignore,
+        Item.last_translation_update_time: ExportMode.ignore,
+        Item.changes: ExportMode.ignore
+    }
+
     def __init__(self):
-        self.__member_export_modes = {
-            Item.id: ExportMode.ignore,
-            Item.translations: ExportMode.ignore,
-            Item.last_update_time: ExportMode.ignore,
-            Item.last_translation_update_time: ExportMode.ignore,
-            Item.changes: ExportMode.ignore
-        }
+        self.__member_export_modes = self.default_member_export_modes.copy()
         self.__model_export_modes = TypeMapping()
         self.__exported_data = {}
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
