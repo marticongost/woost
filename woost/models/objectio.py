@@ -9,7 +9,7 @@ except ImportError:
     from StringIO import StringIO
 
 from warnings import warn
-from collections import Sequence, Set, defaultdict, Counter
+from collections import Sequence, Mapping, Set, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
 from itertools import izip_longest
@@ -259,7 +259,7 @@ class ObjectExporter(object):
                 ]
             elif (
                 not isinstance(value, basestring)
-                and not isinstance(node.member, schema.Tuple)
+                and not isinstance(value, (Mapping, DictWrapper))
                 and isinstance(
                     value,
                     (
@@ -270,24 +270,27 @@ class ObjectExporter(object):
                     )
                 )
             ):
-                items = []
-                for index, item in enumerate(value):
-                    item_node = ExportNode(
-                        self,
-                        item,
-                        parent = node,
-                        member = node.member.items,
-                        language = node.language,
-                        index = index
-                    )
-                    if item_node.export_mode != ExportMode.ignore:
-                        item_copy = self._export_value(
-                            item_node,
-                            expand_object =
-                                (item_node.export_mode == ExportMode.expand)
+                if node.member and node.member.items:
+                    items = []
+                    for index, item in enumerate(value):
+                        item_node = ExportNode(
+                            self,
+                            item,
+                            parent = node,
+                            member = node.member.items,
+                            language = node.language,
+                            index = index
                         )
-                        items.append(item_copy)
-                value = items
+                        if item_node.export_mode != ExportMode.ignore:
+                            item_copy = self._export_value(
+                                item_node,
+                                expand_object =
+                                    (item_node.export_mode == ExportMode.expand)
+                            )
+                            items.append(item_copy)
+                    value = items
+                else:
+                    value = list(value)
             elif isinstance(value, DictWrapper):
                 items = {}
                 for k, v in value.iteritems():
