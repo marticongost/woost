@@ -5,41 +5,21 @@ u"""
 """
 import cherrypy
 from cocktail.translations import translations
-from cocktail.controllers import Controller
+from cocktail.controllers import HTTPMethodController
 from .listingcontroller import ListingController
-from .defaultscontroller import DefaultsController
 from .editcontroller import EditController
 from .deletecontroller import DeleteController
+from .defaultscontroller import DefaultsController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
 
 
-class DataController(Controller):
+class DataController(HTTPMethodController):
+
+    GET = ListingController
+    PUT = EditController
+    POST = EditController
+    DELETE = DeleteController
 
     defaults = DefaultsController
-
-    def resolve(self, path):
-
-        method = cherrypy.request.method
-
-        if method == "GET":
-            return ListingController
-        elif method == "PUT":
-            controller = EditController()
-            controller.creating_new_object = True
-            return controller
-        elif method == "POST":
-            controller = EditController()
-            controller.creating_new_object = False
-            return controller
-        elif method == "DELETE":
-            return DeleteController
-        elif method == "OPTIONS":
-            return self
-        else:
-            raise cherrypy.HTTPError(405)
-
-    def __call__(self):
-        cherrypy.response.headers["Allow"] = "OPTIONS, GET, POST, PUT, DELETE"
-        return ""
 

@@ -21,8 +21,11 @@ from woost.admin.models.dataimport import import_object_data
 
 class EditController(Controller):
 
-    creating_new_object = False
     max_transaction_attempts = 3
+
+    @property
+    def creating_new_object(self):
+        return cherrypy.request.method == "PUT"
 
     @no_csrf_token_injection
     def __call__(
