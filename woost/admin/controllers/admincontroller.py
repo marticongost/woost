@@ -38,16 +38,12 @@ class AdminController(PublishableController):
             for component_name in app.publishable.ui_components
         )
 
-        def collect_section_ui_components(section):
-            component_name = section.ui_component
-            if component_name:
-                component = components.get(component_name)
-                dependencies.add(component)
-                for child in section.children:
-                    collect_section_ui_components(child)
-
-        for section in app.publishable.sections:
-            collect_section_ui_components(section)
+        root_section = app.publishable.create_root_section()
+        dependencies.update(
+            components.get(section.ui_component)
+            for section in root_section.descend_tree()
+            if section.ui_component
+        )
 
         return components.get("woost.admin.ui.Layout").render_page(
             title = translations("woost.admin.ui.Layout.heading"),

@@ -163,10 +163,13 @@ woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
 
     static get children() {
         let map = {};
-        for (let section of woost.admin.data.sections) {
-            let baseSectionClass = cocktail.getVariable(section.ui_node);
+        for (let section of woost.admin.data._root_section.children) {
+            let baseSectionClass = cocktail.getVariable(section.node);
+            if (!baseSectionClass) {
+                throw `Can't find node class "${section.node}" (requested by section ${section.url})`;
+            }
             let sectionClass = baseSectionClass.createSectionClass(section)
-            map[section.path] = sectionClass;
+            map[section.id] = sectionClass;
         }
         return map;
     }
@@ -195,9 +198,9 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
     static get children() {
         let map = {};
         for (let section of this.section.children) {
-            let baseSectionClass = cocktail.getVariable(section.ui_node);
+            let baseSectionClass = cocktail.getVariable(section.node);
             let sectionClass = baseSectionClass.createSectionClass(section);
-            map[section.path] = sectionClass;
+            map[section.id] = sectionClass;
         }
         return map;
     }
@@ -440,16 +443,16 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
     }
 
     get exporter() {
-        return this.section.data.exporter;
+        return this.section.exporter;
     }
 
     get treeChildrenCollection() {
-        return this.section.data.treeChildrenCollection;
+        return this.section.tree_children_collection;
     }
 
     static createSectionClass(section) {
         let cls = super.createSectionClass(section);
-        cls.model = cocktail.schema.getSchemaByName(section.data.model);
+        cls.model = cocktail.schema.getSchemaByName(section.model);
         return cls;
     }
 }
@@ -615,6 +618,9 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     createStackNode() {
         return this.component.create();
     }
+}
+
+woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.Section {
 }
 
 // Set the document title

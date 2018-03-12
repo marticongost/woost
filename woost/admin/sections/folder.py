@@ -3,5 +3,9 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from .admin import Admin
+from .section import Section
+
+
+class Folder(Section):
+    node = "woost.admin.nodes.Folder"
 

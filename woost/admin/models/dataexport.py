@@ -29,7 +29,7 @@ from woost.models import (
 )
 from woost.models.rendering import ImageFactory
 from woost.models.utils import any_translation, get_model_dotted_name
-from woost.admin.models import Admin, Section
+from woost.admin.models import Admin
 
 excluded_members = set([
     Item.changes,
@@ -424,16 +424,13 @@ class PageTreeExport(TreeExport):
 
 
 class AdminExport(Export):
+    pass
 
-    def should_expand(self, obj, member, value, path = ()):
-        return (
-            member in (Admin.sections, Section.children)
-            or Export.should_expand(self, obj, member, value, path)
-        )
 
-    def should_include_member(self, member):
-        return (
-            member is not Section.parent
-            and Export.should_include_member(self, member)
+@AdminExport.fields_for(Admin)
+def admin_fields(exporter, model, ref = False):
+    if not ref:
+        yield (lambda obj, path:
+            ("_root_section", obj.create_root_section().export_data())
         )
 
