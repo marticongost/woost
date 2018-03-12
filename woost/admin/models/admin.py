@@ -4,13 +4,13 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+from cocktail.pkgutils import import_object
 from woost.models import (
     Publishable,
     Controller,
     AccessLevel,
     LocaleMember
 )
-from .section import Section
 
 
 class Admin(Publishable):
@@ -18,7 +18,7 @@ class Admin(Publishable):
     members_order = [
         "title",
         "default_language",
-        "sections",
+        "root_section",
         "ui_components"
     ]
 
@@ -40,13 +40,16 @@ class Admin(Publishable):
         required = True
     )
 
-    sections = schema.Collection(
-        items = schema.Reference(type = Section),
-        related_end = schema.Collection(),
-        integral = True
+    root_section = schema.String(
+        required = True,
+        default = "woost.admin.sections.rootsection.RootSection"
     )
 
     ui_components = schema.Collection(
         items = schema.String()
     )
+
+    def create_root_section(self):
+        section_class = import_object(self.root_section)
+        return section_class(None)
 

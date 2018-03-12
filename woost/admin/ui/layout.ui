@@ -70,20 +70,20 @@
     <?class
     static main(container) {
 
-        function processSectionTree(parent, sections) {
-            for (let section of sections) {
-                section.url = (parent ? parent.url : woost.admin.url) + "/" + section.path;
-                section.parent = parent;
-                section.root = parent ? parent.root : section;
-                processSectionTree(section, section.children);
+        function processSectionTree(parent, section) {
+            section.url = (parent ? parent.url : woost.admin.url) + (section.id ? "/" + section.id : "");
+            section.parent = parent;
+            section.root = parent ? parent.root : section;
+            for (let child of section.children) {
+                processSectionTree(section, child);
             }
         }
 
         woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
-            processSectionTree(null, admin.sections);
+            processSectionTree(null, admin._root_section);
             woost.admin.data = admin;
             cocktail.navigation.prefix = woost.admin.url;
-            cocktail.navigation.tree = woost.admin.nodes.Root;
+            cocktail.navigation.tree = cocktail.getVariable(admin._root_section.node);
             super.main(container);
         });
     }
@@ -123,15 +123,19 @@
             final="true">
 
             <?on changed
-            let title = newValue.title[cocktail.getLanguage()];
-            if (newValue.parent) {
+            let title = newValue.title;
+            if (newValue.parent.parent) {
                 this.heading.innerHTML = title;
             }
             else {
                 this.entryDescription.title = title;
             }
+
             this.sectionURL = newValue.url;
-            cocktail.loadSVG(newValue.image._url, this.icon);
+
+            if (newValue.icon) {
+                cocktail.loadSVG(newValue.icon, this.icon);
+            }
 
             for (let subsection of newValue.children) {
                 let subsectionEntry = woost.admin.ui.Layout.MenuEntry.create();
@@ -198,7 +202,7 @@
         <?class
         [ACTIVATE]() {
             if (this.hasSubsections) {
-                if (!this.section.parent) {
+                if (!this.section.parent.parent) {
                     if (this.parentInstance.closeMenu() !== this) {
                         this.menuExpanded = !this.menuExpanded;
                     }
@@ -224,7 +228,7 @@
 
     <?js
     // Create sections
-    for (let section of woost.admin.data.sections) {
+    for (let section of woost.admin.data._root_section.children) {
         let entry = this.constructor.MenuEntry.create();
         entry.section = section;
         this.menuEntries.appendChild(entry);

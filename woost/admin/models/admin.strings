@@ -21,10 +21,10 @@ en: Administration panel
         es: Idioma por defecto
         en: Default language
 
-        [sections]
-        ca: Seccions
-        es: Secciones
-        en: Sections
+        [root_section]
+        ca: Arbre de seccions
+        es: Árbol de secciones
+        en: Section tree
 
         [ui_components]
         ca: Components visuals
