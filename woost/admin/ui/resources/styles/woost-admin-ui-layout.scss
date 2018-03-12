@@ -3,7 +3,7 @@
 
 $bar-color: #333;
 $bar-width: 5.4em;
-$submenu-width: 30em;
+$submenu-width: 40em;
 
 * {
     box-sizing: border-box;
@@ -131,6 +131,7 @@ $submenu-width: 30em;
             position: fixed;
             z-index: 1000;
             overflow: hidden;
+            overflow-y: auto;
             left: $bar-width;
             top: 0;
             bottom: 0;
