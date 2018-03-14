@@ -25,6 +25,7 @@ def with_default_template(template_name, **field_kwargs):
                     type = Template,
                     related_end = schema.Reference(),
                     template_owner = cls,
+                    listed_by_default = False,
                     member_group = "presentation.appearence",
                     custom_translation_key =
                         "woost.models.defaulttemplate.field",
