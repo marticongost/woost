@@ -19,6 +19,7 @@ from woost.admin.models.dataexport import (
     AdminExport
 )
 from woost.admin.filters import get_filters
+from .utils import resolve_object_ref
 
 
 class ListingController(Controller):
@@ -79,21 +80,14 @@ class ListingController(Controller):
                     "single element"
                 )
 
-            try:
-                id = int(id)
-            except ValueError:
-                raise cherrypy.HTTPError(400, "Non numeric ID")
-            else:
-                obj = model.get_instance(id)
-                if obj is None:
-                    raise cherrypy.HTTPError(404, "Object not found")
+            obj = resolve_object_ref(id)
 
-                if not app.user.has_permission(ReadPermission, target = obj):
-                    raise cherrypy.HTTPError(403, "Unauthorized object access")
+            if not app.user.has_permission(ReadPermission, target = obj):
+                raise cherrypy.HTTPError(403, "Unauthorized object access")
 
-                cherrypy.response.headers["Content-Type"] = \
-                    "application/json; charset=utf-8"
-                return json.dumps(export.export_object(obj))
+            cherrypy.response.headers["Content-Type"] = \
+                "application/json; charset=utf-8"
+            return json.dumps(export.export_object(obj))
 
         # Returning a list of objects
         else:

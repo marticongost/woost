@@ -9,7 +9,7 @@ from ZODB.POSException import ConflictError
 from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
 from cocktail.schema.exceptions import ValidationError, ValueRequiredError
-from cocktail.persistence import datastore, InstanceNotFoundError
+from cocktail.persistence import datastore
 from cocktail.controllers import Controller, request_property
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
@@ -17,6 +17,7 @@ from woost.models import Item, ReadPermission
 from woost.models.utils import get_model_dotted_name
 from woost.admin.models.dataexport import Export
 from woost.admin.models.dataimport import import_object_data
+from .utils import resolve_object_ref
 
 
 class EditController(Controller):
@@ -103,11 +104,7 @@ class EditController(Controller):
                 raise cherrypy.HTTPError(404, "Unknown model: " + target)
 
         # Update an existing object
-        else:
-            try:
-                return Item.require_instance(int(target))
-            except (ValueError, InstanceNotFoundError):
-                raise cherrypy.HTTPError(404, "Invalid object id: " + target)
+        return resolve_object_ref(target)
 
     def _import_object(self, obj, data):
         import_object_data(
