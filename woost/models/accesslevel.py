@@ -10,8 +10,7 @@ from woost.models import Item
 
 class AccessLevel(Item):
 
-    type_group = "users"
-    backoffice_listing_includes_element_column = True
+    admin_show_descriptions = True
 
     members_order = [
         "title",
@@ -24,18 +23,20 @@ class AccessLevel(Item):
         unique = True,
         indexed = True,
         spellcheck = True,
-        normalized_index = False
+        normalized_index = False,
+        listed_by_default = False
     )
 
     roles_with_access = schema.Collection(
         items = "woost.models.Role",
+        listed_by_default = True,
         bidirectional = True
     )
 
     restricted_content = schema.Collection(
         items = "woost.models.Publishable",
         bidirectional = True,
-        editable = schema.NOT_EDITABLE
+        visible = False
     )
 
 

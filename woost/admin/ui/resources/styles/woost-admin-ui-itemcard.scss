@@ -1,0 +1,221 @@
+
+@import "woost.admin.ui://styles/common";
+
+$card-height: 3.5em;
+$image-separation: 1em;
+$image-width: 5.2em;
+$icon-padding: 0.5em;
+$icon-height: $card-height - $icon-padding * 2;
+
+@keyframes dimStackHeading {
+    from {
+        color: $stacknode-exposed-heading-color;
+    }
+    to {
+        color: $stacknode-covered-heading-color;
+    }
+}
+
+@keyframes fadeTypeLabel {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeImageFrame {
+    from {
+        flex-basis: 5.2em;
+        opacity: 1;
+        margin-right: 1em;
+    }
+    to {
+        flex-basis: 0;
+        opacity: 0;
+        margin-right: 0;
+    }
+}
+
+@keyframes collapseIcon {
+    from {
+        --height: $icon-height;
+        padding: $icon-padding;
+        opacity: 1;
+    }
+    to {
+        --height: 0;
+        padding: 0;
+        opacity: 0;
+    }
+}
+
+:host {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: inherit;
+}
+
+:host([autohide='true'][empty='true']) {
+    display: none;
+}
+
+#imageFrame {
+    flex: 0 0;
+    margin-right: $image-separation;
+    text-align: center;
+
+    :host([imageType='none']) & {
+        display: none;
+    }
+
+    :host([imageType='icon']) &,
+    :host([imageType='thumbnail']) & {
+        flex-basis: $image-width;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header) & {
+        flex-basis: auto;
+    }
+
+    :host([imageType='thumbnail']) & {
+        border: 1px solid #ddd;
+        background-color: #f5f5f5;
+        overflow: hidden;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        flex-basis: 0;
+        opacity: 0;
+        margin-right: 0;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration fadeImageFrame;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse fadeImageFrame;
+    }
+}
+
+#thumbnail {
+    display: block;
+    margin: auto;
+    width: auto;
+    height: $card-height;
+
+    :host(:not([imageType='thumbnail'])) & {
+        display: none;
+    }
+}
+
+#icon {
+    flex: 0 0;
+    --height: $icon-height;
+    padding: $icon-padding;
+    color: #999;
+
+    :host(:not([imageType='icon'])) & {
+        display: none;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        padding: 0;
+        --height: 0;
+        opacity: 0;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration collapseIcon;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse collapseIcon;
+    }
+}
+
+#info {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#label {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #444;
+    max-height: 2.3em;
+    overflow: hidden;
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='exposed']) & {
+        color: $stacknode-exposed-heading-color;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        color: $stacknode-covered-heading-color;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration dimStackHeading;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) & {
+        animation: $stacknode-animation-duration reverse dimStackHeading;
+    }
+
+    :host-context(h1) & {
+        font-size: 1.4em;
+        max-height: none;
+        max-width: 20em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    :host-context(.cocktail-ui-selected) & {
+        color: darken($selection-foreground, 10);
+    }
+}
+
+#typeLabel {
+    margin-top: 0.2em;
+    font-size: 0.85em;
+    color: #666;
+
+    :host-context(.cocktail-ui-selected) & {
+        color: darken($selection-foreground, 25);
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        display: none;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration fadeTypeLabel;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse fadeTypeLabel;
+    }
+}
+
+:host([interactive='true']) {
+    cursor: pointer;
+}
+
+:host([interactive='true']:hover) {
+    #label {
+        color: $hl-foreground;
+    }
+}
+
+:host([interactive='true']:hover):host-context(.cocktail-ui-selected) {
+    #label {
+        color: $selection-hl-foreground;
+    }
+}
+

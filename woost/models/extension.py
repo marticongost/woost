@@ -72,6 +72,7 @@ class Extension(Item):
     __metaclass__ = ExtensionMetaclass
 
     instantiable = False
+    admin_show_descriptions = False
     type_group = "setup"
     collapsed_backoffice_menu = True
     backoffice_listing_includes_element_column = True

@@ -1,0 +1,8 @@
+
+[woost.admin.ui.EditView]
+
+    [creating]
+    ca: Creant MODEL
+    es: Creando MODEL
+    en: Creating MODEL
+

@@ -28,7 +28,6 @@ from woost import app
 from woost.models import (
     Configuration,
     Item,
-    SiteInstallation,
     PublishableObject,
     Document,
     URI,
@@ -40,8 +39,7 @@ from woost.models import (
     ModifyPermission,
     DeletePermission,
     ModifyMemberPermission,
-    ReadHistoryPermission,
-    InstallationSyncPermission
+    ReadHistoryPermission
 )
 from woost.models.blockutils import (
     add_block,
@@ -600,17 +598,6 @@ class NewAction(CreateAction):
         redirect(controller.edit_uri(type))
 
 
-class InstallationSyncAction(UserAction):
-    included = frozenset(["toolbar", "item_buttons"])
-    content_type = SiteInstallation
-    min = 1
-    max = 1
-    show_as_primary_action = "on_content_type"
-
-    def is_permitted(self, user, target):
-        return user.has_permission(InstallationSyncPermission)
-
-
 class SelectRelatedObjectAction(UserAction):
     excluded = frozenset(["integral"])
     ignores_selection = True
@@ -892,7 +879,7 @@ class PreviewAction(UserAction):
 class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = (PublishableObject, SiteInstallation, Block)
+    content_type = (PublishableObject, Block)
     included = frozenset([
         "toolbar",
         "item_buttons",
@@ -1505,7 +1492,6 @@ AddBlockAfterAction("add_block_after").register()
 EditAction("edit").register()
 EditBlocksAction("edit_blocks").register()
 DuplicateAction("duplicate").register()
-InstallationSyncAction("installation_sync").register()
 CopyBlockAction("copy_block").register()
 CutBlockAction("cut_block").register()
 PasteBlockAction("paste_block").register()

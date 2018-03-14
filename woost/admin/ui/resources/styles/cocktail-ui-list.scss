@@ -1,0 +1,50 @@
+
+@import "woost.admin.ui://styles/common";
+
+#list {
+    padding: 0;
+
+    li + li {
+        margin-top: 0.5em;
+    }
+
+    :host([itemsType~='Reference']) & {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+:host(.cocktail-ui-Selectable) {
+    #list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        .Entry {
+            cursor: pointer;
+            white-space: nowrap;
+            padding: 0.5em;
+            margin: 0 !important;
+
+            &[selected] {
+                font-weight: bold;
+            }
+
+            &:hover {
+                background-color: darken($panel-background-color, 10);
+            }
+        }
+    }
+
+    &:host-context(.cocktail-ui-DropdownPanel) {
+        #list {
+            margin: -1em -1.3em;
+
+            .Entry {
+                padding: 0.7em 1.3em;
+            }
+        }
+    }
+}
+

@@ -72,6 +72,11 @@ en: Website
         es: Contenido específico
         en: Specific content
 
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
         [site_name]
         ca: Nom del lloc
         es: Nombre del sitio

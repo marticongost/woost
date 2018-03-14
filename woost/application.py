@@ -140,7 +140,11 @@ http://woost.info
                 um.Sequence([
                     um.Optional(um.WebsiteInHostname()),
                     um.Optional(um.LocaleInPath()),
-                    um.Optional(
+                    um.Conditional(
+                        (
+                            lambda publishable, **kwargs:
+                            publishable is not None
+                        ),
                         um.OneOf([
                             um.Home(),
                             um.HierarchyInPath(),
@@ -164,6 +168,27 @@ http://woost.info
     def clear_context(self):
         for prop in self._contextual_properties:
             setattr(self, prop.attr, None)
+
+    # Edit mode
+    def _get_editing(self):
+        return getattr(self._thread_data, "editing", False)
+
+    def _set_editing(self, value):
+        self._thread_data.editing = value
+
+    editing = property(_get_editing, _set_editing, doc =
+        """Determines if the current context is editing a publishable.
+
+        This can be used by controllers and templates to temporarily change the
+        state for the publishable to reflect the current edit session, or to
+        toggle the visibility of inline editing aids.
+
+        "Context" is typically an HTTP request, but the property can also be
+        used outside a web request/response cycle.
+
+        .. type:: bool
+        """
+    )
 
     def add_resources_repository(self, repository_name, repository_path):
         from woost.controllers.cmsresourcescontroller import CMSResourcesController

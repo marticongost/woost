@@ -1,0 +1,42 @@
+
+$hl-foreground: #db8417;
+$hl-background: #dba55f;
+$hl-shadow: #bb6200;
+$selection-hl-foreground: lighten($hl-foreground, 40);
+$focus-color: #d2a265;
+
+@import "cocktail://styles/utils";
+@import "cocktail.ui://styles/common";
+
+$panel-icon-color: lighten(desaturate($panel-action-color, 5), 15);
+$panel-icon-strong-color: $panel-action-color;
+$panel-heading-color: lighten(desaturate($panel-action-color, 15), 10);
+
+@mixin icon-dropdown {
+
+    #button {
+
+        #label {
+            svg {
+                width: 2em;
+                height: auto;
+                fill: $panel-icon-color;
+
+                :host([expanded='true']) & {
+                    fill: $panel-icon-strong-color;
+                }
+            }
+        }
+
+        &:hover {
+            #label svg {
+                fill: $panel-icon-strong-color;
+            }
+        }
+
+        #arrow {
+            display: none;
+        }
+    }
+}
+

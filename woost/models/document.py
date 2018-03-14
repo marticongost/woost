@@ -21,6 +21,7 @@ class Document(Publishable):
 
     instantiable = True
     type_group = "document"
+    admin_show_descriptions = False
     default_per_language_publication = True
 
     groups_order = list(Publishable.groups_order) + [
@@ -68,6 +69,10 @@ class Document(Publishable):
             "height": "70px"
         },
         listed_by_default = False,
+        ui_form_control = (
+            "cocktail.ui.HTMLEditor",
+            {"multiline": False}
+        ),
         member_group = "content"
     )
 
