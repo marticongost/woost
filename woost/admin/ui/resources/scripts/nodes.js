@@ -190,11 +190,11 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
     }
 
     get title() {
-        return this.section.title[cocktail.getLanguage()];
+        return this.section.title;
     }
 
     get iconURL() {
-        return this.section.image && this.section.image._url;
+        return this.section.icon;
     }
 
     static get children() {
