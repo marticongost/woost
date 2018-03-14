@@ -98,6 +98,14 @@ class Website(Item):
         member_group = "website"
     )
 
+    identifier = schema.String(
+        required = True,
+        indexed = True,
+        normalized_index = False,
+        unique = True,
+        member_group = "website"
+    )
+
     hosts = schema.Collection(
         items = schema.String(required = True),
         min = 1,
