@@ -43,7 +43,8 @@
             view: this,
             model: newValue.model,
             item: newValue.item,
-            objectPath: newValue.objectPath
+            objectPath: newValue.objectPath,
+            editingTranslatedContent: Array.from(newValue.editSchema.members()).some((member) => member.translated)
         };
 
         this.actionList.actionParameters.selection = selection;

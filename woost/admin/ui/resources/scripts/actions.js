@@ -454,6 +454,13 @@ woost.admin.actions.TranslationsAction = class TranslationsAction extends woost.
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/locales.svg`)
     }
 
+    getState(context) {
+        if (!this.editingTranslatedContent) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     createEntry() {
         return woost.admin.ui.TranslationsDropdown.create();
     }
