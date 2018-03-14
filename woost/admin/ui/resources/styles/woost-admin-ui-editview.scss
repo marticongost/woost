@@ -16,5 +16,9 @@
 #editForm {
     flex: 1 1 auto;
     font-size: 1.3em;
+
+    &[tabbed='false'] {
+        margin: 1.3rem;
+    }
 }
 
