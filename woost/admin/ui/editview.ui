@@ -77,7 +77,7 @@
             () => {
                 this.editForm.awaitFields().then(() => {
                     this.editForm.focusFirstControl(
-                        this.editForm.tabs.selectedTab.tabId
+                        this.editForm.tabbed ? this.editForm.tabs.selectedTab && this.editForm.tabs.selectedTab.tabId : null
                     );
                 });
             },
