@@ -615,7 +615,8 @@ class UploadField(Field):
         member.type = File
         member.display = display_factory(
             "woost.views.PublishableLink",
-            host = "!"
+            host = "!",
+            content_check = 0
         )
         member.upload_options = {
             "max_size": "%dMB" % self.max_file_size,
