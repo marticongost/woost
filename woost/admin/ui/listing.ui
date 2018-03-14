@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:requires component="woost.admin.ui.FieldsDropdown"/>
+    <ui:requires component="woost.admin.ui.LocalesDropdown"/>
+    <ui:requires component="woost.admin.ui.FiltersDropdown"/>
+
+    <ui:requires-translation-bundle name="woost.admin.filters.filters"/>
+    <ui:symbol name="NAVIGATING"/>
+    <ui:symbol name="UPDATE"/>
+    <ui:symbol name="UPDATED_AT_LEAST_ONCE"/>
+
+    <?class
+    get actionSlotPrefix() {
+        return "listing";
+    }
+
+    getToolbarActions() {
+        return Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: this.actionSlotPrefix + "Toolbar",
+            model: this.model,
+            selectable: this.table
+        }));
+    }
+
+    getControlsActions() {
+        return Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: this.actionSlotPrefix + "Controls",
+            model: this.model,
+            selectable: this.table
+        }));
+    }
+
+    [UPDATE](previousNode = null) {
+
+        let node = this.navigationNode;
+        this.members = node.members;
+        this.locales = node.locales;
+
+        if (!this.searchBox.dataBinding) {
+            this.searchBox.dataBinding = {
+                member: node.queryParameters.search,
+                value: node.search
+            };
+        }
+        else {
+            this.search = node.search;
+        }
+
+        this.relation = node.relation;
+        this.relationOwner = node.item;
+        this.table.exporter = node.exporter;
+        this.table.treeChildrenCollection = node.treeChildrenCollection;
+        this.model = node.adaptedModel;
+        this.filters = node.filters;
+
+        if (!previousNode || previousNode.queryString != node.queryString) {
+            this[UPDATED_AT_LEAST_ONCE] = true;
+            this.table.reset();
+        }
+    }
+    ?>
+
+    <?on navigationNode:changed
+    this[NAVIGATING] = true;
+    try {
+        if (newValue === cocktail.navigation.node) {
+            this[UPDATE](oldValue);
+        }
+    }
+    finally {
+        this[NAVIGATING] = false;
+    }
+    ?>
+
+    <ui:property
+        name="model"
+        reflected="false">
+        <?on changed
+        this.table.model = newValue;
+        this.actionList.actions = this.getToolbarActions();
+        this.listingControls.actions = this.getControlsActions();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="relation"
+        reflected="false"/>
+
+    <ui:property
+        name="relationOwner"
+        reflected="false"/>
+
+    <ui:property
+        name="members"
+        reflected="false">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({members: newValue});
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="locales"
+        reflected="false">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({locales: newValue});
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="search"
+        type="string"
+        reflected="false">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({search: newValue || undefined});
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="filters"
+        reflected="false">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.node.updateQueryStringWithFilters(newValue);
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="empty"
+        type="boolean"
+        reflected="true"/>
+
+    <ui:property
+        name="defaultAction"
+        type="string"
+        reflected="true"
+        default="edit"/>
+
+    <?class
+    addFilter(filter, filterValues = null, edit = false) {
+
+        if (typeof(filter) == "string") {
+            filter = woost.admin.filters.getFilter(this.model, filter);
+        }
+
+        if (!filterValues) {
+            filterValues = filter.defaults();
+        }
+
+        if (edit) {
+            this.filtersBar.addEventListener(
+                "entryAdded",
+                (e) => e.detail.entry.entryForm.awaitFields().then(
+                    () => e.detail.entry.entryForm.focusFirstControl()
+                ),
+                {once: true}
+            );
+        }
+
+        let filters = [...this.filters, {member: filter, value: filterValues}];
+        return cocktail.navigation.node.updateQueryStringWithFilters(filters);
+    }
+    ?>
+
+    <ui:with ui:element="headerContent">
+
+        <ui:cocktail.ui.ActionList
+            id="actionList"
+            buttonStyle="iconAboveText"/>
+
+        <ui:cocktail.ui.ActionList
+            id="listingControls"
+            buttonStyle="textOnly"/>
+
+        <ui:cocktail.ui.SearchInput id="searchBox">
+            <?on keydown
+            if (e.which == cocktail.ui.keys.DOWN) {
+                if (!instance.table.selectedElements.size) {
+                    let first = instance.table.getFirstSelectableElement();
+                    if (first) {
+                        instance.table.selectedElements = [first];
+                    }
+                }
+                cocktail.ui.focus(instance.table);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            ?>
+        </ui:cocktail.ui.SearchInput>
+
+        <div id="resultCountLabel"/>
+
+    </ui:with>
+
+    <ui:with ui:element="main">
+        <ui:woost.admin.ui.FiltersBar id="filtersBar"/>
+        <ui:Table id="table"/>
+    </ui:with>
+
+    <?on nodeExposed
+    if (!this[UPDATED_AT_LEAST_ONCE]) {
+        this[UPDATE]();
+    }
+    cocktail.ui.focus(this.searchBox);
+    ?>
+
+    <?js
+    cocktail.ui.link(this, this.table, "empty");
+    cocktail.ui.link(this, this.table, ["members", "visibleMembers"]);
+    cocktail.ui.link(this, this.table, ["locales", "visibleLocales"]);
+    cocktail.ui.link(this, this.searchBox, ["search", "value"]);
+    cocktail.ui.link(this, this.filtersBar, "filters");
+
+    this.actionList.selectable = this.table;
+    ?>
+
+    <ui:cocktail.ui.Table
+        ui:component="Table"
+        tabindex="0"
+        selectionType="multiple"
+        paging="infiniteScroll">
+
+        <ui:using mixin="woost.admin.ui.ObjectSource"/>
+
+        <?class
+        createRow(record) {
+            const row = super.createRow(record);
+            row.draggable = true;
+            return row;
+        }
+
+        resolveObjectSourceTarget(e) {
+            for (let element of e.path) {
+                if (element.classList && element.classList.contains("cocktail-ui-Table-Row")) {
+                    return element;
+                }
+            }
+            return null;
+        }
+
+        getDataSourceOptions(page) {
+            let options = super.getDataSourceOptions(page);
+            let listing = this.parentInstance;
+            if (listing.search) {
+                options.parameters.search = listing.search;
+            }
+            if (listing.filters.length) {
+                Object.assign(
+                    options.parameters,
+                    cocktail.navigation.node.getQueryValuesForFilters(listing.filters)
+                )
+            }
+            if (listing.relation) {
+                let owner = listing.relationOwner;
+                if (owner && owner.id) {
+                    options.parameters.relation = `${owner.id}-${listing.relation.name}`;
+                }
+                else {
+                    options.parameters.relation = listing.relation.fullName;
+                }
+            }
+            if (this.exporter) {
+                options.parameters["export"] = this.exporter;
+            }
+            return options;
+        }
+
+        selectionActivated() {
+            let listing = this.parentInstance;
+            listing.defaultActionList.getAction(listing.defaultAction).invoke({selection: this.selectedValues});
+        }
+        ?>
+
+        <?on keyboardSelectionOverflow
+        // The up arrow moves the focus to the search box
+        if (e.detail.direction == "up") {
+            cocktail.ui.focus(this.parentInstance.searchBox);
+        }
+        ?>
+
+        <?on resultCount:changed
+        this.parentInstance.resultCountLabel.innerHTML = newValue && newValue.label || "";
+        ?>
+
+        <ui:cocktail.ui.Table.TreeRow ui:component="TreeRow">
+
+            <ui:property
+                name="treeFiltersMatch"
+                type="string"
+                reflected="true"/>
+
+            <?class
+            getRowLabel() {
+                return this.translateValue({
+                    type: cocktail.schema.getSchemaByName(this.value._class)
+                });
+            }
+            ?>
+
+            <?on value:changed
+            this.treeFiltersMatch = newValue._match;
+            ?>
+
+        </ui:cocktail.ui.Table.TreeRow>
+
+    </ui:cocktail.ui.Table>
+
+    <?js
+    this.defaultActionList = this.actionList;
+    ?>
+
+</ui:woost.admin.ui.StackNode>
+

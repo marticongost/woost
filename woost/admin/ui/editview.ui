@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:requires component="woost.admin.ui.TranslationsDropdown"/>
+    <ui:requires component="woost.admin.ui.SettingsScopeDropdown"/>
+
+    <ui:symbol name="LOCALE_STATES"/>
+
+    <ui:property
+        name="locales"
+        reflected="false">
+        <?on changed
+        this.editForm.locales = newValue;
+        ?>
+    </ui:property>
+
+    <?on navigationNode:changed
+    if (!oldValue) {
+        let selection = [newValue.item];
+        let localeStates = this[LOCALE_STATES];
+
+        if (newValue.item._deleted_translations) {
+            for (let locale of newValue.item._deleted_translations) {
+                localeStates.set(locale, "deleted");
+            }
+        }
+
+        for (let locale of cocktail.schema.getLocales(newValue.item, newValue.model)) {
+            if (!localeStates.get(locale)) {
+                localeStates.set(locale, "visible");
+            }
+        }
+
+        for (let locale of cocktail.ui.locales) {
+            if (!localeStates.get(locale)) {
+                localeStates.set(locale, "undefined");
+            }
+        }
+
+        const editingSettings = newValue instanceof woost.admin.nodes.EditSettingsNode;
+
+        const actionListContext = {
+            view: this,
+            model: newValue.model,
+            item: newValue.item,
+            objectPath: newValue.objectPath,
+            editingTranslatedContent: Array.from(newValue.editSchema.members()).some((member) => member.translated),
+            editingSettings: editingSettings
+        };
+
+        this.actionList.actionParameters.selection = selection;
+        this.actionList.actions = Array.from(woost.admin.actions.forContext(
+            Object.assign({slot: "editToolbar"}, actionListContext)
+        ));
+
+        this.navigationActionList.actionParameters.selection = selection;
+        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
+            Object.assign({slot: "editNavigationToolbar"}, actionListContext)
+        ));
+
+        if (editingSettings) {
+            this.editForm.tabbed = false;
+            this.editForm.grouped = false;
+        }
+
+        this.editForm.locales = this.visibleLocales;
+        this.editForm.dataBinding = {
+            member: newValue.editSchema,
+            value: newValue.item
+        };
+
+        this.addEventListener(
+            "nodeExposed",
+            () => {
+                this.editForm.awaitFields().then(() => {
+                    this.editForm.focusFirstControl(
+                        this.editForm.tabbed ? this.editForm.tabs.selectedTab && this.editForm.tabs.selectedTab.tabId : null
+                    );
+                });
+            },
+            {once: true}
+        );
+    }
+    ?>
+
+    <?class
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        woost.admin.editState.clear(this.editedItem);
+    }
+
+    get editedItem() {
+        return this.navigationNode.item;
+    }
+
+    get visibleLocales() {
+        return new Set(this.localesInState("visible"));
+    }
+
+    get hiddenLocales() {
+        return new Set(this.localesInState("hidden"));
+    }
+
+    get definedLocales() {
+        let definedLocales = new Set();
+        for (let [locale, localeState] of this[LOCALE_STATES]) {
+            if (localeState != "undefined" && localeState != "deleted") {
+                definedLocales.add(locale);
+            }
+        }
+        return definedLocales;
+    }
+
+    get undefinedLocales() {
+        return new Set(this.localesInState("undefined"));
+    }
+
+    get deletedLocales() {
+        return new Set(this.localesInState("deleted"));
+    }
+
+    *localesInState(searchedState) {
+        for (let [locale, localeState] of this[LOCALE_STATES]) {
+            if (localeState == searchedState) {
+                yield locale;
+            }
+        }
+    }
+
+    get localeStates() {
+        return Object.freeze(this[LOCALE_STATES]);
+    }
+
+    getLocaleState(locale) {
+        return this[LOCALE_STATES].get(locale);
+    }
+
+    setLocaleState(locale, newState) {
+        let previousState = this[LOCALE_STATES].get(locale);
+        if (previousState != newState) {
+            this[LOCALE_STATES].set(locale, newState);
+            const deletedTranslations = this.editForm.value._deleted_translations;
+            if (previousState == "deleted") {
+                deletedTranslations.splice(deletedTranslations.indexOf(locale), 1);
+            }
+            else if (newState == "deleted") {
+                deletedTranslations.push(locale);
+            }
+            this.editForm.locales = this.visibleLocales;
+            cocktail.ui.trigger(this, "localeChanged", {locale, previousState, newState});
+        }
+    }
+    ?>
+
+    <?on isStackRoot:changed
+    this.navigationActionList.updateEntries();
+    ?>
+
+    <?js
+    this[LOCALE_STATES] = new Map();
+    ?>
+
+    <ui:with ui:element="headerContent">
+        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText"/>
+        <ui:cocktail.ui.ActionList id="navigationActionList" buttonStyle="iconAboveText"/>
+    </ui:with>
+
+    <ui:with ui:element="main">
+        <ui:cocktail.ui.Form
+            id="editForm"
+            tabbed="true"
+            defaultGroup="item">
+            <?on value:changed
+            woost.admin.editState.set(newValue);
+            ?>
+            <?js
+            element.displayFactory = woost.admin.ui.formControls;
+            element.tabs.queryParameter = "tab";
+            ?>
+        </ui:cocktail.ui.Form>
+    </ui:with>
+
+</ui:woost.admin.ui.StackNode>
+

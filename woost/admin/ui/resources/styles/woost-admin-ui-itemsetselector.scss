@@ -1,0 +1,47 @@
+
+@import "cocktail.ui://styles/common";
+
+:host {
+    user-select: none;
+    display: inline-block;
+    position: relative;
+}
+
+#toolbar {
+    margin-bottom: 0.2em;
+
+    :host([error]) & {
+        @include input-with-error;
+    }
+}
+
+#list {
+    border: 1px solid #ddd;
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 100%;
+
+    :host([empty='true']) & {
+        display: none;
+    }
+}
+
+.Entry {
+    padding: 0.3em;
+    margin: 0 !important;
+    @include alternate-background-color;
+
+    &[selected] {
+        background: $selection-background;
+        color: $selection-foreground;
+    }
+}
+
+#dropMarker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 1px dashed $focus-color;
+}
+

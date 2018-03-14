@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.Autocomplete
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    searchParameter="search"
+    tabindex="0">
+
+    <ui:using mixin="woost.admin.ui.ObjectDropArea"/>
+
+    <?tail
+    cls.delegatesFocus = false;
+    ?>
+
+    <?class
+    getDataSourceParameters(searchText) {
+        let parameters = super.getDataSourceParameters(searchText);
+        let relation;
+        let owner = this.dataBinding.object;
+        if (owner && owner.id) {
+            relation = `${owner.id}-${this.dataBinding.member.originalMember.name}`;
+        }
+        else {
+            relation = this.dataBinding.member.originalMember.fullName;
+        }
+        parameters.parameters.relation = relation;
+        return parameters;
+    }
+    ?>
+
+    <ui:woost.admin.ui.ItemCard
+        id="itemCard"
+        ui:placement="before panelWrapper"
+        interactive="false"
+        autohide="false">
+        <?js
+        element.info.insertBefore(this.input, element.label);
+        ?>
+    </ui:woost.admin.ui.ItemCard>
+
+    <?on dataBinding:changed
+    this.itemCard.dataBinding = newValue;
+    ?>
+
+    <?on value:changed
+    if (this.itemCard.dataBinding) {
+        this.itemCard.value = newValue;
+    }
+    ?>
+
+    <?on errors:changed
+    if (this.itemCard.dataBinding) {
+        this.itemCard.errors = newValue;
+    }
+    ?>
+
+    <?on click
+    cocktail.ui.focus(this.input);
+    ?>
+
+</ui:cocktail.ui.Autocomplete>
+

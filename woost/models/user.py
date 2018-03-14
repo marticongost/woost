@@ -49,6 +49,7 @@ class User(Item):
         by the L{hashlib} module.
     """
     type_group = "users"
+    admin_show_descriptions = False
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
@@ -86,7 +87,6 @@ class User(Item):
         listed_by_default = False,
         searchable = False,
         text_search = False,
-        synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = display_factory(

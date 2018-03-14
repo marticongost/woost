@@ -17,6 +17,7 @@ from .item import Item
 class CachingPolicy(Item):
 
     visible_from_root = False
+    admin_show_descriptions = False
     edit_form = "woost.views.CachingPolicyForm"
 
     groups_order = ["cache"]

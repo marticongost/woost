@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:property
+        name="navigationNode"
+        reflected="false">
+        <?on changed
+        if (!oldValue) {
+            cocktail.ui.empty(this.headingElement);
+            this.headingElement.appendChild(newValue.createHeading());
+        }
+        if (!this.section) {
+            this.section = newValue.section;
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="section"
+        reflected="false"
+        final="true"/>
+
+    <ui:with ui:element="heading">
+        <h1 id="headingElement"/>
+    </ui:with>
+
+    <div ui:component="Heading">
+
+        <ui:property name="iconURL">
+            <?on changed
+            this.icon.src = newValue;
+            ?>
+        </ui:property>
+
+        <ui:property name="labelText">
+            <?on changed
+            this.label.innerHTML = newValue;
+            ?>
+        </ui:property>
+
+        <ui:cocktail.ui.SVG id="icon"/>
+        <span id="label"/>
+
+    </div>
+
+</ui:cocktail.ui.StackNode>
+

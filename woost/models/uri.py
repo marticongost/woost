@@ -18,6 +18,7 @@ class URI(Publishable):
 
     instantiable = True
     type_group = "resource"
+    admin_show_descriptions = False
 
     members_order = [
         "title",

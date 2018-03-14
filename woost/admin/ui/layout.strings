@@ -1,0 +1,8 @@
+
+[woost.admin.ui.Layout]
+
+    [heading]
+    ca: Gestor de continguts
+    es: Gestor de contenidos
+    en: Content Manager
+

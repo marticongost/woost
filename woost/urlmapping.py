@@ -323,6 +323,41 @@ class Optional(URLComponent):
             return result
 
 
+class Conditional(URLComponent):
+
+    def __init__(self, condition, component):
+        URLComponent.__init__(self)
+        self.condition = condition
+        self.component = component
+
+    def build_url(
+        self,
+        url_builder,
+        **kwargs
+    ):
+        result = self.component.build_url(
+            url_builder,
+            **kwargs
+        )
+
+        if result == NO_MATCH:
+            if self.condition(**kwargs):
+                return NO_MATCH
+            else:
+                return IGNORED
+        else:
+            return result
+
+    def resolve(self, url, resolution):
+
+        result = self.component.resolve(url, resolution)
+
+        if result == NO_MATCH:
+            return IGNORED
+        else:
+            return result
+
+
 class FixedHostname(URLComponent):
 
     hostname = None
@@ -485,7 +520,7 @@ class IdInPath(URLComponent):
         publishable = None,
         **kwargs
     ):
-        if publishable:
+        if publishable and publishable.id:
             string = str(publishable.id)
 
             if self.include_file_extensions:

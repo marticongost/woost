@@ -65,7 +65,6 @@ from woost.models import (
     Extension,
     Trigger,
     TriggerResponse,
-    SiteInstallation,
     VideoPlayerSettings,
     rendering,
     load_extensions
@@ -105,7 +104,6 @@ class SiteInitializer(object):
         Controller,
         Permission,
         CachingPolicy,
-        SiteInstallation,
         Theme,
         Grid,
         GridSize,
@@ -133,7 +131,6 @@ class SiteInitializer(object):
     restricted_members = [
         "woost.models.item.Item.qname",
         "woost.models.item.Item.global_id",
-        "woost.models.item.Item.synchronizable",
         "woost.models.publishable.Publishable.encoding",
         "woost.models.publishable.Publishable.login_page",
         "woost.models.publishable.Publishable.requires_https",
@@ -303,10 +300,6 @@ class SiteInitializer(object):
         self.editor_role = self.create_editor_role()
 
         self.editor_access_level = self.create_editor_access_level()
-
-        # File deletion trigger
-        self.file_deletion_trigger = self.create_file_deletion_trigger()
-        self.configuration.triggers.append(self.file_deletion_trigger)
 
         # Standard theme
         self.configuration.theme = self.create_default_theme()
@@ -591,24 +584,6 @@ class SiteInitializer(object):
             AccessLevel,
             qname = "woost.editor_access_level",
             roles_with_access = [self.editor_role]
-        )
-
-    def create_file_deletion_trigger(self):
-        return self._create(
-            DeleteTrigger,
-            qname = "woost.file_deletion_trigger",
-            title = TranslatedValues(),
-            execution_point = "after",
-            batch_execution = True,
-            content_type = File,
-            responses = [
-                self._create(
-                    CustomTriggerResponse,
-                    code = u"from os import remove\n"
-                           u"for item in items:\n"
-                           u"    remove(item.file_path)"
-                )
-            ]
         )
 
     def create_default_theme(self):

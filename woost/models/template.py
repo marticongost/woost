@@ -14,6 +14,7 @@ from .theme import Theme
 class Template(Item):
 
     type_group = "customization"
+    admin_show_descriptions = False
 
     members_order = [
         "title",
@@ -48,7 +49,6 @@ class Template(Item):
         items = "woost.models.Document",
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
-        visible_in_reference_list = False
+        visible = False
     )
 

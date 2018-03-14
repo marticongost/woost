@@ -28,7 +28,9 @@ class File(Publishable):
     instantiable = True
     cacheable_server_side = False
     type_group = "resource"
-    backoffice_listing_includes_thumbnail_column = True
+    admin_show_descriptions = False
+    admin_show_thumbnails = True
+    ui_display = "woost.admin.ui.ItemCard"
 
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
@@ -258,6 +260,29 @@ class File(Publishable):
 
         return clone
 
+    @event_handler
+    def handle_deleted(cls, e):
+        TRANSACTION_KEY = "woost.models.File.deleted_instances"
+        deleted_files = datastore.get_transaction_value(TRANSACTION_KEY)
+        if deleted_files is None:
+            deleted_files = {e.source}
+            datastore.set_transaction_value(TRANSACTION_KEY, deleted_files)
+            datastore.unique_after_commit_hook(
+                "woost.models.File.delete_files",
+                _delete_files_after_commit,
+                deleted_files
+            )
+        else:
+            deleted_files.add(e.source)
+
+
+def _delete_files_after_commit(success, deleted_instances):
+    if success:
+        for file in deleted_instances:
+            try:
+                os.remove(file.file_path)
+            except OSError:
+                warn("Couldn't delete file %s" % file.file_path)
 
 def _duplicate_files_after_commit(success, dup_files):
     if success:

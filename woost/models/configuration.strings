@@ -1,8 +1,8 @@
 
 [woost.models.configuration.Configuration]
-ca: Configuració
-es: Configuración
-en: Configuration
+ca: Configuració global
+es: Configuración global
+en: Global configuration
 
     [instance(config, **kwargs)]
     *: t{"woost.models.configuration.Configuration"}

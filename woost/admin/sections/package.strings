@@ -1,0 +1,77 @@
+
+[woost.admin.sections]
+
+    [crud.CRUD.instance(instance)]
+    *: t{instance.model, suffix = ".plural"}
+
+    [sitetreesection.SiteTreeSection.instance]
+    ca: Arbre de pàgines
+    es: Árbol de páginas
+    en: Site tree
+
+    [settingsrootsection.SettingsRootSection.instance]
+    ca: Configuració
+    es: Configuración
+    en: Settings
+
+    [contentsection.ContentSection.instance]
+    ca: Contingut
+    es: Contenido
+    en: Content
+
+    [publicationsection.PublicationSection.instance]
+    ca: Publicació
+    es: Publicación
+    en: Publication
+
+    [lookandfeelsection.LookAndFeelSection.instance]
+    ca: Aparença
+    es: Apariencia
+    en: Look and feel
+
+    [accesscontrolsection.AccessControlSection.instance]
+    ca: Control d'accés
+    es: Control de acceso
+    en: Access control
+
+    [adminsection.AdminSection.instance]
+    ca: Administració
+    es: Administración
+    en: Administration
+
+    [contactsection.ContactSection.instance]
+    ca: Contacte
+    es: Contacto
+    en: Contact
+
+    [metasection.MetaSection.instance]
+    ca: Indexat i metadades
+    es: Indexado y metadatos
+    en: Indexing and metadata
+
+    [languagessection.LanguagesSection.instance]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+    [specialpagessection.SpecialPagesSection.instance]
+    ca: Pàgines especials
+    es: Páginas especiales
+    en: Special pages
+
+    [cachesection.CacheSection.instance]
+    *: Cache
+
+    [httpssection.HTTPSSection.instance]
+    *: HTTPS
+
+    [maintenancesection.MaintenanceSection.instance]
+    ca: Manteniment
+    es: Mantenimiento
+    en: Maintenance
+
+    [systemsection.SystemSection.instance]
+    ca: Sistema
+    es: Sistema
+    en: System
+

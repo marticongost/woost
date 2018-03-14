@@ -18,6 +18,7 @@ from .slot import Slot
 class Website(Item):
 
     instantiable = True
+    admin_show_descriptions = False
     visible_from_root = False
 
     groups_order = [
@@ -95,10 +96,17 @@ class Website(Item):
         member_group = "website"
     )
 
+    identifier = schema.String(
+        required = True,
+        indexed = True,
+        normalized_index = False,
+        unique = True,
+        member_group = "website"
+    )
+
     hosts = schema.Collection(
         items = schema.String(required = True),
         min = 1,
-        synchronizable = False,
         member_group = "website"
     )
 
@@ -139,7 +147,6 @@ class Website(Item):
         default_type = set,
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         related_key = "websites"
     )
 

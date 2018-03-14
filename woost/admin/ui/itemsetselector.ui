@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.List
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectionType="multiple"
+    selectableEntriesSelector="#list > .Entry">
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+    <ui:using mixin="woost.admin.ui.ObjectDropArea"/>
+
+    <ui:symbol name="DROP_PRECEDING_ELEMENT"/>
+    <ui:symbol name="DROP_MARKER"/>
+    <ui:symbol name="CLEAR_DROP"/>
+
+    <ui:property
+        name="defaultAction"
+        type="string"
+        reflected="true"
+        default="edit"/>
+
+    <?tail
+    cls.prototype.itemsDisplayFactory = woost.admin.ui.itemSetSelectorDisplays;
+    ?>
+
+    <?class
+    selectionActivated() {
+        this.toolbar.getAction(this.defaultAction).invoke({selection: this.selectedValues});
+    }
+
+    getDropPrecedingElement(e) {
+
+        for (let element of e.path) {
+            if (element.classList && element.classList.contains("cocktail-ui-List-Entry")) {
+                const rect = element.getBoundingClientRect();
+                const y = e.pageY - rect.top;
+                if (y >= rect.height * 0.5) {
+                    return element;
+                }
+                else {
+                    return element.previousSibling;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    objectDraggedOver(e) {
+
+        const precedingElement = this.getDropPrecedingElement(e);
+        this[DROP_PRECEDING_ELEMENT] = precedingElement;
+
+        let dropMarker = this[DROP_MARKER];
+        if (!dropMarker) {
+            dropMarker = this[DROP_MARKER] = document.createElement("div");
+            dropMarker.id = "dropMarker";
+            this.shadowRoot.appendChild(dropMarker);
+        }
+
+        if (precedingElement) {
+            dropMarker.style.top = `${precedingElement.offsetTop + precedingElement.offsetHeight}px`;
+        }
+        else {
+            dropMarker.style.top = `${this.list.offsetTop}px`;
+        }
+    }
+
+    objectDropped(data) {
+        const precedingElement = this[DROP_PRECEDING_ELEMENT];
+        if (precedingElement && precedingElement.value.id == data.item.id) {
+            return false;
+        }
+        const index = precedingElement ? precedingElement.dataBinding.index + 1 : 0;
+        this.insertEntry(data.item, index);
+        return true;
+    }
+
+    [CLEAR_DROP]() {
+        this[DROP_PRECEDING_ELEMENT] = null;
+        const marker = this[DROP_MARKER];
+        if (marker) {
+            marker.parentNode.removeChild(marker);
+            this[DROP_MARKER] = null;
+        }
+    }
+
+    get selectionContainer() {
+        return this.list;
+    }
+    ?>
+
+    <?on dragleave
+    this[CLEAR_DROP]();
+    ?>
+
+    <?on dataBinding:changed
+    this.toolbar.actions = Array.from(woost.admin.actions.forContext({
+        view: this,
+        slot: "collectionToolbar",
+        model: newValue.member.items.type,
+        collection: newValue.member
+    }));
+    ?>
+
+    <?on value:changed
+    this.toolbar.actionParameters.items = newValue;
+    this.toolbar.actionParameters.collectionIsEmpty = cocktail.isEmptyValue(newValue);
+    this.toolbar.updateEntries();
+    ?>
+
+    <?on drop
+    this[CLEAR_DROP]();
+    ?>
+
+    <ui:cocktail.ui.ActionList
+        id="toolbar"
+        ui:placement="before list">
+        <?js
+        element.classList.add("without-frame");
+        element.classList.add("compact");
+        ?>
+    </ui:cocktail.ui.ActionList>
+
+    <?js
+    this.toolbar.selectable = this;
+    ?>
+
+</ui:cocktail.ui.List>
+
