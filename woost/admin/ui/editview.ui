@@ -145,6 +145,10 @@
     }
     ?>
 
+    <?on isStackRoot:changed
+    this.navigationActionList.updateEntries();
+    ?>
+
     <?js
     this[LOCALE_STATES] = new Map();
     ?>
