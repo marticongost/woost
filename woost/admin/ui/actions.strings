@@ -51,6 +51,11 @@
     es: Filtros
     en: Filters
 
+    [settings-scope]
+    ca: Àmbit
+    es: Ámbito
+    en: Scope
+
     [translations]
     ca: Traduccions
     es: Traducciones

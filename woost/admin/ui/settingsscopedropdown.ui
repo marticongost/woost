@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    buttonStyle="textOnly">
+
+    <?on action:changed
+    cocktail.ui.request({
+        url: woost.admin.url + "/data/settings_scopes",
+        responseType: "json"
+    }).then((xhr) => {
+
+        const values = [];
+        const labels = {};
+
+        for (let [scopeId, scopeLabel] of xhr.response) {
+            values.push(scopeId);
+            labels[scopeId] = scopeLabel;
+        }
+
+        this.scopeList.dataBinding = {
+            member: new cocktail.schema.Collection({
+                items: new class SettingsScope extends cocktail.schema.String {
+                    translateValue(value, params = null) {
+                        return labels[value];
+                    }
+                }
+            }),
+            value: values
+        };
+
+        // Show the current selection
+        const entry = this.scopeList.getEntry(newValue.view.navigationNode.itemKey);
+        if (entry) {
+            this.scopeList.setElementSelected(entry, true);
+        }
+    });
+    ?>
+
+    <ui:with ui:element="dropdownPanel">
+        <ui:ScopeList id="scopeList"/>
+    </ui:with>
+
+    <ui:cocktail.ui.List
+        ui:component="ScopeList"
+        selectableEntriesSelector=".Entry"
+        selectionType="single"
+        activationType="singleClick">
+
+        <ui:using mixin="cocktail.ui.Selectable"/>
+
+        <?class
+        selectionActivated() {
+            const scope = this.selectedElement.value;
+            woost.admin.ui.settingsScope = scope;
+            cocktail.navigation.replace(URI(location.href).segment(-1, scope));
+        }
+        ?>
+
+    </ui:cocktail.ui.List>
+
+</ui:cocktail.ui.ActionListDropdown>
+
