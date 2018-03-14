@@ -10,6 +10,7 @@ from .listingcontroller import ListingController
 from .editcontroller import EditController
 from .deletecontroller import DeleteController
 from .defaultscontroller import DefaultsController
+from .settingsscopescontroller import SettingsScopesController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
 
@@ -22,4 +23,5 @@ class DataController(HTTPMethodController):
     DELETE = DeleteController
 
     defaults = DefaultsController
+    settings_scopes = SettingsScopesController
 
