@@ -251,7 +251,12 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
         }
 
         get title() {
-            return this.adaptedModel.translate(".plural");
+            if (this.section) {
+                return super.title;
+            }
+            else {
+                return this.adaptedModel.translate(".plural");
+            }
         }
 
         get exporter() {
