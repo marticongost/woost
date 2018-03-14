@@ -191,7 +191,7 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
-        opacity: 0;
+        display: none;
     }
 
     :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {

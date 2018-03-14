@@ -3,73 +3,17 @@
 
 $covered-heading-padding-top: 0.6em;
 
-@keyframes displaceHeading {
-    from {
-        padding-top: 1em;
-    }
-    to {
-        padding-top: $covered-heading-padding-top;
-    }
-}
-
-#header {
-    flex-basis: 7em;
-}
-
-:host([isStackRoot='true']) {
-    overflow: hidden;
-    box-shadow: none;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-
-    #stackNodeContent {
-        border: none;
-    }
-
-    #header {
-        margin-right: 3em;
-        border: 1px solid $panel-border-color;
-    }
-
-    #main {
-        margin-right: 3em;
-        margin-bottom: 2em;
-        padding: 0;
-        padding-top: 1em;
-    }
-
-    #stackDescendants {
-        left: 0;
-        top: 0;
-    }
-}
-
 #stackDescendants {
     top: 4em;
 }
 
 #header {
     font-size: 1em;
-    min-height: 6.7em;
 }
 
 #headingWrapper {
     display: flex;
     align-items: center;
-
-    :host([stackNodeVisibility='covered'][animationState='none']) & {
-        padding-top: $covered-heading-padding-top;
-    }
-
-    :host([animationState='childOpening'][isStackRoot='false']) & {
-        animation: $stacknode-animation-duration displaceHeading;
-    }
-
-    :host([animationState='childClosing'][isStackRoot='false']) & {
-        animation: $stacknode-animation-duration reverse displaceHeading;
-    }
 }
 
 #headingElement {
