@@ -1497,3 +1497,31 @@ def remove_file_deletion_trigger(e):
     if trigger:
         trigger.delete()
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.add_site_identifiers")
+
+@when(step.executing)
+def add_site_identifiers(e):
+
+    from woost.models import Website
+
+    for n, website in enumerate(Website.select()):
+
+        if website.hosts:
+            parts = website.hosts[0].split(".")
+            if parts[0] == "www":
+                parts.pop(0)
+
+            # Pop TLDs; very rough, but including the full list of TLDs would
+            # be overkill
+            if len(parts) >= 2:
+                parts.pop(-1)
+
+            identifier = "-".join(parts)
+        else:
+            identifier = "website%d" % n
+
+        website.identifier = identifier
+        print identifier
+
