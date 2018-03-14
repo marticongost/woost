@@ -207,7 +207,10 @@ $submenu-width: 40em;
             }
 
             .MenuEntry[hasSubsections='true'] {
-                margin-top: 2.4em;
+
+                & + .MenuEntry {
+                    margin-top: 2.4em;
+                }
 
                 & > .entryDescription {
 
