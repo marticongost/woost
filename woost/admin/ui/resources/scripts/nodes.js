@@ -66,10 +66,11 @@ woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackN
     createStackNode() {
         let display = null;
         let component = this.component;
-        if (component) {
-            display = component.create()
-            this.initializeStackNode(display);
+        if (!component) {
+            throw `${this} defines no UI component`;
         }
+        display = component.create()
+        this.initializeStackNode(display);
         return display;
     }
 
