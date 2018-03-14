@@ -132,6 +132,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                         if (itemNodeClass) {
                             let itemNode = this.createChild(itemNodeClass);
                             itemNode.item = item;
+                            itemNode.itemKey = key;
                             itemNode.model = model;
                             itemNode.consumePathSegment(path);
                             return itemNode.resolvePath(path);
