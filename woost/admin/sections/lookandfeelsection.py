@@ -10,6 +10,7 @@ from .stylessection import StylesSection
 from .themessection import ThemesSection
 from .rendererssection import RenderersSection
 from .imagefactoriessection import ImageFactoriesSection
+from .videoplayersettingssection import VideoPlayerSettingsSection
 
 
 class LookAndFeelSection(Folder):
@@ -23,4 +24,5 @@ class LookAndFeelSection(Folder):
         self.append(StylesSection("style"))
         self.append(RenderersSection("renderers"))
         self.append(ImageFactoriesSection("image-factories"))
+        self.append(VideoPlayerSettingsSection("video-player-settings"))
 
