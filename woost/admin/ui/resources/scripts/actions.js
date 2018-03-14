@@ -345,6 +345,10 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
 
     getState(context) {
 
+        if (this.editingSettings) {
+            return "hidden";
+        }
+
         const model = cocktail.schema.getSchemaByName(context.selection[0]._class);
         let hasSlots = false;
 
@@ -405,6 +409,10 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
 
     getState(context) {
 
+        if (this.editingSettings) {
+            return "hidden";
+        }
+
         if (this.slot == "editToolbar" && context.selection[0]._new) {
             return "hidden";
         }
@@ -445,6 +453,28 @@ woost.admin.actions.FiltersAction = class FiltersAction extends woost.admin.acti
 
     createEntry() {
         return woost.admin.ui.FiltersDropdown.create();
+    }
+}
+
+woost.admin.actions.SettingsScopeAction = class SettingsScopeAction extends woost.admin.actions.Action {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/settings-scope.svg`)
+    }
+
+    translate() {
+        return this.model.translateValue(this.item);
+    }
+
+    getState(context) {
+        if (!this.editingSettings) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
+    createEntry() {
+        return woost.admin.ui.SettingsScopeDropdown.create();
     }
 }
 
@@ -822,6 +852,11 @@ woost.admin.actions.LocalesAction.register({
 woost.admin.actions.FiltersAction.register({
     id: "filters",
     slots: ["listingControls", "relationSelectorControls"]
+});
+
+woost.admin.actions.SettingsScopeAction.register({
+    id: "settings-scope",
+    slots: ["editToolbar"]
 });
 
 woost.admin.actions.TranslationsAction.register({

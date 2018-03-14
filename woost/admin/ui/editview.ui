@@ -5,6 +5,7 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:requires component="woost.admin.ui.TranslationsDropdown"/>
+    <ui:requires component="woost.admin.ui.SettingsScopeDropdown"/>
 
     <ui:symbol name="LOCALE_STATES"/>
 
@@ -39,12 +40,15 @@
             }
         }
 
+        const editingSettings = newValue instanceof woost.admin.nodes.EditSettingsNode;
+
         const actionListContext = {
             view: this,
             model: newValue.model,
             item: newValue.item,
             objectPath: newValue.objectPath,
-            editingTranslatedContent: Array.from(newValue.editSchema.members()).some((member) => member.translated)
+            editingTranslatedContent: Array.from(newValue.editSchema.members()).some((member) => member.translated),
+            editingSettings: editingSettings
         };
 
         this.actionList.actionParameters.selection = selection;
@@ -56,6 +60,11 @@
         this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
             Object.assign({slot: "editNavigationToolbar"}, actionListContext)
         ));
+
+        if (editingSettings) {
+            this.editForm.tabbed = false;
+            this.editForm.grouped = false;
+        }
 
         this.editForm.locales = this.visibleLocales;
         this.editForm.dataBinding = {

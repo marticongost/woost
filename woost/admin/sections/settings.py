@@ -8,10 +8,10 @@ from .section import Section
 
 class Settings(Section):
     node = "woost.admin.nodes.Settings"
-    subset = None
+    members = None
 
     def export_data(self):
         data = Section.export_data(self)
-        data["subset"] = self.subset
+        data["members"] = self.members
         return data
 

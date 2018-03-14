@@ -148,8 +148,18 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
     }
 
     getExistingObject(key) {
-        const id = Number(key);
-        return isNaN(id) ? null : woost.models.Item.getInstance(id);
+
+        if (!key) {
+            return null;
+        }
+
+        if (key == "config" || key.startsWith("website-")) {
+            return woost.models.Item.getInstance(key)
+        }
+        else {
+            const id = Number(key);
+            return isNaN(id) ? null : woost.models.Item.getInstance(id);
+        }
     }
 
     getItemNodeClass(model, item) {
@@ -618,7 +628,64 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     }
 }
 
-woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.Section {
+woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(cocktail.navigation.StackTransparentNode)) {
+
+    get canEditNewObjects() {
+        return false;
+    }
+
+    get members() {
+        return this.section.members;
+    }
+
+    activate() {
+        if (!woost.admin.ui.settingsScope) {
+            woost.admin.ui.settingsScope = "config";
+        }
+        cocktail.navigation.extendPath(woost.admin.ui.settingsScope);
+    }
+
+    getItemNodeClass(model, item) {
+        return woost.admin.nodes.EditSettingsNode;
+    }
+}
+
+woost.admin.nodes.EditSettingsNode = class EditSettingsNode extends woost.admin.nodes.EditNode {
+
+    get section() {
+        return this.parent.section;
+    }
+
+    get title() {
+        return this.parent.title;
+    }
+
+    get iconURL() {
+        return this.parent.iconURL;
+    }
+
+    createHeading() {
+        let heading = woost.admin.ui.StackNode.Heading.create();
+        heading.labelText = this.title;
+        return heading;
+    }
+
+    get members() {
+        return this.parent.members;
+    }
+
+    get editSchemaOptions() {
+        const options = super.editSchemaOptions;
+        options[cocktail.schema.MEMBERS] = this.members.filter(
+            (key) => this.model.getMember(key)
+        );
+        return options;
+    }
+
+    initializeStackNode(display) {
+        super.initializeStackNode();
+        display.animationType = "fade";
+    }
 }
 
 // Set the document title
