@@ -289,6 +289,7 @@ class Website(Item):
 
     robots_should_index = schema.Boolean(
         edit_control = "cocktail.html.DropdownSelector",
+        listed_by_default = False,
         member_group = "meta"
     )
 
