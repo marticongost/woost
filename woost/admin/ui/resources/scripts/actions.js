@@ -637,6 +637,13 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
 
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
+    getState(context) {
+        if (this.view.isStackRoot) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     invoke() {
         let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
         cocktail.navigation.push(parentURL);
