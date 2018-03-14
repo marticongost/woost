@@ -547,10 +547,6 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
             return this.model[woost.admin.ui.editView] || woost.admin.ui.EditView;
         }
 
-        createStackNode() {
-            return this.component.create();
-        }
-
         get editSchema() {
             let schema = this[EDIT_SCHEMA];
             if (!schema) {
