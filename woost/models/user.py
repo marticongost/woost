@@ -77,6 +77,9 @@ class User(Item):
         member_group = "user_data"
     )
 
+    def _apply_imported_password(obj, value, language = None):
+        obj._password = value
+
     password = schema.String(
         required = True,
         listable = False,
@@ -90,8 +93,11 @@ class User(Item):
             "cocktail.html.PasswordBox",
             autocomplete = "off"
         ),
+        apply_imported_value = _apply_imported_password,
         member_group = "user_data"
     )
+
+    del _apply_imported_password
 
     enabled = schema.Boolean(
         required = True,

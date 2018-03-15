@@ -10,6 +10,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema.io import export_msexcel
 from cocktail.controllers import request_property, get_parameter
+from woost.models.msexcelexporter import woost_msexcel_exporter
 from woost.controllers.backoffice.basebackofficecontroller \
     import BaseBackOfficeController
 from .formblock import FormBlock
@@ -40,7 +41,8 @@ class ExportFormDataController(BaseBackOfficeController):
             form.submitted_data,
             buffer,
             form_model,
-            form_model.ordered_members()
+            form_model.ordered_members(),
+            msexcel_exporter = woost_msexcel_exporter
         )
         return buffer.getvalue()
 

@@ -7,8 +7,11 @@ from cocktail.events import event_handler
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.schema.exceptions import ValidationError
 from cocktail.html import templates
-from woost.models import Item
+from cocktail.html.uigeneration import display_factory
+from woost.models import Item, File, AccessLevel
+from woost.models.publishableobject import get_category_from_mime_type
 
 translations.load_bundle("woost.extensions.forms.fields")
 
@@ -553,4 +556,104 @@ class TimeField(Field):
 class DateTimeField(Field):
     visible_from_root = False
     member_type = schema.DateTime
+
+
+class UploadField(Field):
+
+    visible_from_root = False
+    member_type = schema.Reference
+
+    members_order = [
+        "max_file_size",
+        "accepted_file_types",
+        "file_access_level"
+    ]
+
+    max_file_size = schema.Integer(
+        member_group = "field_properties",
+        min = 1
+    )
+
+    accepted_file_types = schema.Collection(
+        items = schema.String(
+            enumeration = [
+                "document",
+                "image",
+                "audio",
+                "video",
+                "package"
+            ],
+            translate_value = (
+                lambda value, language = None, **kwargs:
+                    translations(
+                        UploadField.accepted_file_types,
+                        suffix = ".items.values." + value,
+                        language = language,
+                        **kwargs
+                    )
+                    if value else ""
+            )
+        ),
+        min = 1,
+        edit_control = "cocktail.html.CheckList",
+        member_group = "field_properties"
+    )
+
+    file_access_level = schema.Reference(
+        type = AccessLevel,
+        related_end = schema.Collection(),
+        default = schema.DynamicDefault(lambda:
+            AccessLevel.get_instance(qname = "woost.editor_access_level")
+        ),
+        member_group = "field_properties"
+    )
+
+    def _init_member(self, member):
+
+        Field._init_member(self, member)
+
+        member.type = File
+        member.display = display_factory(
+            "woost.views.PublishableLink",
+            host = "!",
+            content_check = 0
+        )
+        member.upload_options = {
+            "max_size": "%dMB" % self.max_file_size,
+            "accepted_file_types": self.accepted_file_types,
+            "validations": [_validate_accepted_file_types]
+        }
+
+        def _init_uploaded_file(file):
+            file.access_level = self.file_access_level
+            file.insert()
+
+        member.init_uploaded_file = _init_uploaded_file
+
+    @classmethod
+    def create_field_default_member(cls):
+        return None
+
+    @classmethod
+    def create_field_enumeration_member(cls):
+        return None
+
+
+def _validate_accepted_file_types(context):
+
+    if context.value:
+        mime_type = context.get_value("mime_type")
+        category = mime_type and get_category_from_mime_type(mime_type)
+
+        if (
+            not category
+            or category not in context.member.accepted_file_types
+        ):
+            yield FileTypeNotAcceptedError(context)
+
+
+class FileTypeNotAcceptedError(ValidationError):
+
+    def __str__(self):
+        return "%s (not an accepted file type)" % ValidationError.__str__(self)
 

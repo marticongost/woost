@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.Link
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    def get_label(self):
+        value = self.value
+        if value:
+            member = self.member
+            if member:
+                return member.translate_value(value, self.language)
+            else:
+                return translations(value, self.language)
+    ?>
+
+    <py:ready>
+        <?py
+        label = self.get_label()
+        if label:
+            element.append(label)
+        ?>
+    </py:ready>
+
+</py:woost.views.Link>
+

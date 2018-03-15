@@ -632,62 +632,85 @@ class ObjectImporter(object):
             print
 
     def import_object_data(self, obj, data):
-
         for key, value in data.iteritems():
-
-            if isinstance(key, unicode):
-                key = str(key)
-
-            if key.startswith("@"):
-
-                # Store file contents once the current transaction is comitted
-                # successfully
-                if key == "@file_data":
-
-                    datastore.unique_after_commit_hook(
-                        "woost.models.objectio.store_file_contents",
-                        _store_file_contents_after_commit
-                    )
-
-                    file_contents = datastore.get_transaction_value(
-                        "woost.models.objectio.file_contents"
-                    )
-
-                    if file_contents is None:
-                        file_contents = {}
-                        datastore.set_transaction_value(
-                            "woost.models.objectio.file_contents",
-                            file_contents
+            try:
+                self.import_object_key(obj, key, value)
+            except Exception, e:
+                if self.verbose:
+                    sys.stderr.write(
+                        styled(
+                            "Error while parsing %s.%s = %r\n"
+                            % (
+                                obj.__class__.__name__,
+                                key,
+                                value
+                            ),
+                            "magenta"
                         )
+                    )
+                raise
 
-                    bdata = base64.decodestring(value)
-                    file_contents[obj.id] = bdata
+    def import_object_key(self, obj, key, value):
+        if isinstance(key, unicode):
+            key = str(key)
 
-                continue
+        if key.startswith("@"):
 
-            member = obj.__class__.get_member(key)
-            if member is None:
-                self._handle_unknown_member(obj, key)
-                continue
+            # Store file contents once the current transaction is comitted
+            # successfully
+            if key == "@file_data":
 
-            if member.translated:
-                for lang, lang_value in value.iteritems():
-                    if (
-                        self.language_subset is None
-                        or lang in self.language_subset
-                    ):
-                        imported_value = self.import_object_value(
+                datastore.unique_after_commit_hook(
+                    "woost.models.objectio.store_file_contents",
+                    _store_file_contents_after_commit
+                )
+
+                file_contents = datastore.get_transaction_value(
+                    "woost.models.objectio.file_contents"
+                )
+
+                if file_contents is None:
+                    file_contents = {}
+                    datastore.set_transaction_value(
+                        "woost.models.objectio.file_contents",
+                        file_contents
+                    )
+
+                bdata = base64.decodestring(value)
+                file_contents[obj.id] = bdata
+
+            return
+
+        member = obj.__class__.get_member(key)
+        if member is None:
+            self._handle_unknown_member(obj, key)
+            return
+
+        if member.translated:
+            for lang, lang_value in value.iteritems():
+                if (
+                    self.language_subset is None
+                    or lang in self.language_subset
+                ):
+                    imported_value = self.import_object_value(
+                        obj,
+                        member,
+                        lang_value,
+                        lang
+                    )
+                    if imported_value is not ExportMode.ignore:
+                        member.apply_imported_value(
                             obj,
-                            member,
-                            lang_value,
+                            imported_value,
                             lang
                         )
-                        if imported_value is not ExportMode.ignore:
-                            obj.set(key, imported_value, lang)
-            else:
-                imported_value = self.import_object_value(obj, member, value)
-                if imported_value is not ExportMode.ignore:
-                    obj.set(key, imported_value)
+        else:
+            imported_value = self.import_object_value(obj, member, value)
+            if imported_value is not ExportMode.ignore:
+                member.apply_imported_value(
+                    obj,
+                    imported_value
+                )
 
     def _handle_unknown_member(self, obj, key):
         if self.unknown_member_policy == UnknownMemberPolicy.fail:
@@ -914,4 +937,10 @@ def _store_file_contents_after_commit(successful):
 
             with open(file.file_path, "wb") as f:
                 f.write(data)
+
+
+def _apply_imported_value(member, obj, value, language = None):
+    obj.set(member, value, language = language)
+
+schema.Member.apply_imported_value = _apply_imported_value
 

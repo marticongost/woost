@@ -20,6 +20,9 @@ class StylesController(PublishableController):
         config = Configuration.instance
         website = app.website
 
+        if config.global_styles:
+            yield SASSCompilation().compile(string = config.global_styles)
+
         for style in Style.select():
 
             declarations = (backoffice and style.admin_declarations) or style.declarations

@@ -101,6 +101,11 @@ en: Configuration
         es: Tema visual
         en: Visual theme
 
+        [global_styles]
+        ca: Estils globals
+        es: Estilos globales
+        en: Global styles
+
         [login_page]
         ca: Pàgina d'autenticació
         es: Página de autenticación
@@ -116,6 +121,11 @@ en: Configuration
         es: Página no encontrada
         en: Not found error page
         pt: Página não encontrada
+
+        [gone_error_page]
+        ca: Pàgina per continguts retirats
+        es: Página para contenidos retirados
+        en: Page for gone content
 
         [forbidden_error_page]
         ca: Pàgina d'error per accés restringit
