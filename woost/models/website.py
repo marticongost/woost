@@ -27,22 +27,19 @@ class Website(Item):
     #--------------------------------------------------------------------------
     site_name = schema.String(
         translated = True,
-        descriptive = True,
-        member_group = "website"
+        descriptive = True
     )
 
     identifier = schema.String(
         required = True,
         indexed = True,
         normalized_index = False,
-        unique = True,
-        member_group = "website"
+        unique = True
     )
 
     hosts = schema.Collection(
         items = schema.String(required = True),
-        min = 1,
-        member_group = "website"
+        min = 1
     )
 
     specific_content = schema.Collection(
