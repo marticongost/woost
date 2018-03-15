@@ -6,6 +6,7 @@ u"""
 from .folder import Folder
 from .contactsection import ContactSection
 from .metasection import MetaSection
+from .emailtemplatessection import EmailTemplatesSection
 
 
 class ContentSection(Folder):
@@ -15,4 +16,5 @@ class ContentSection(Folder):
     def _fill(self):
         self.append(ContactSection("contact"))
         self.append(MetaSection("meta"))
+        self.append(EmailTemplatesSection("email-templates"))
 

@@ -5,7 +5,6 @@ u"""
 """
 from .folder import Folder
 from .systemsection import SystemSection
-from .emailtemplatessection import EmailTemplatesSection
 from .extensionssection import ExtensionsSection
 
 
@@ -15,6 +14,5 @@ class AdminSection(Folder):
 
     def _fill(self):
         self.append(SystemSection("system"))
-        self.append(EmailTemplatesSection("email-templates"))
         self.append(ExtensionsSection("extensions"))
 
