@@ -583,6 +583,21 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
     }
 }
 
+woost.admin.nodes.WebsiteEditNode = class WebsiteEditNode extends woost.admin.nodes.EditNode {
+
+    get editSchemaOptions() {
+        return Object.assign(
+            super.editSchemaOptions,
+            {
+                [cocktail.schema.MEMBERS]:
+                    Array
+                        .from(this.model.members())
+                        .filter((member) => !member[woost.models.isSetting])
+            }
+        );
+    }
+}
+
 woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woost.admin.nodes.Listing(woost.admin.nodes.StackNode) {
 
     constructor(parent = null) {

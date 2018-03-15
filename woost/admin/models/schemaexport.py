@@ -247,6 +247,9 @@ class MemberExport(object):
                 )
             )
 
+        if getattr(member, "is_setting", False):
+            yield (u"[woost.models.isSetting]", "true")
+
     def export_display(self, display):
         if isinstance(display, tuple):
             return "() => %s.withProperties(%s)" % (
