@@ -70,12 +70,13 @@
     <?class
     static main(container) {
 
-        function processSectionTree(parent, section) {
+        function processSectionTree(parent, section, depth = 0) {
             section.url = (parent ? parent.url : woost.admin.url) + (section.id ? "/" + section.id : "");
             section.parent = parent;
             section.root = parent ? parent.root : section;
+            section.depth = depth;
             for (let child of section.children) {
-                processSectionTree(section, child);
+                processSectionTree(section, child, depth + 1);
             }
         }
 
