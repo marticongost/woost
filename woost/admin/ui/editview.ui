@@ -47,7 +47,10 @@
             model: newValue.model,
             item: newValue.item,
             objectPath: newValue.objectPath,
-            editingTranslatedContent: Array.from(newValue.editSchema.members()).some((member) => member.translated),
+            editingTranslatedContent:
+                Array
+                    .from(newValue.editSchema.members())
+                    .some((member) => member.translated && member.name != "last_translation_update_time"),
             editingSettings: editingSettings
         };
 
