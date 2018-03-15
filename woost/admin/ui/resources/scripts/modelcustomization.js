@@ -22,3 +22,5 @@ woost.models.File[woost.admin.ui.describeType] = function (obj) {
     return `${this.getMember("resource_type").translateValue(obj.resource_type)} ${extension} ${obj._size_label}`;
 }
 
+woost.models.Website[woost.admin.nodes.itemNodeClass] = woost.admin.nodes.WebsiteEditNode;
+

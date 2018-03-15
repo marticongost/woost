@@ -14,6 +14,7 @@ cocktail.declare("woost.admin.ui");
     const DATA_SOURCE = Symbol.for("woost.models.Model.DATA_SOURCE");
 
     woost.models.permissions = Symbol.for("woost.models.permissions");
+    woost.models.isSetting = Symbol.for("woost.models.isSetting");
     woost.admin.ui.modelIconURL = Symbol.for("woost.admin.ui.modelIconURL");
     woost.admin.ui.showDescriptions = Symbol.for("woost.admin.ui.showDescriptions");
     woost.admin.ui.showThumbnails = Symbol.for("woost.admin.ui.showThumbnails");
