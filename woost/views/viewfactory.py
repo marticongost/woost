@@ -6,7 +6,7 @@ u"""
 from cocktail.html import templates
 from cocktail.translations import translations
 from cocktail.typemapping import TypeMapping
-from woost.models import Configuration, Publishable, File
+from woost.models import Configuration, Publishable, File, VideoPlayerSettings
 
 
 class ViewFactory(object):
@@ -204,9 +204,8 @@ def video_player(item, parameters):
         player_settings = parameters.get("player_settings")
 
         if player_settings is None:
-            player_settings_list = Configuration.instance.video_player_settings
-            if player_settings_list:
-                player_settings = player_settings_list[0]
+            for player_settings in VideoPlayerSettings.select():
+                break
 
         if player_settings:
             return player_settings.create_player(item)

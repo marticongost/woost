@@ -44,14 +44,10 @@ class VimeoExtension(Extension):
         from woost.extensions.vimeo.vimeovideorenderer \
             import VimeoVideoRenderer
 
-        # Look for the first chain renderer
-        for renderer in Configuration.instance.renderers:
-            if isinstance(renderer, ChainRenderer):
-
-                # Add the renderer for Vimeo videos
-                vimeo_renderer = VimeoVideoRenderer()
-                vimeo_renderer.insert()
-                renderer.renderers.append(vimeo_renderer)
-
-                break
+        # Add the renderer for Vimeo videos
+        content_renderer = ChainRenderer.get_instance(
+            qname = "woost.content_renderer"
+        )
+        if content_renderer:
+            content_renderer.renderers.append(VimeoVideoRenderer.new())
 

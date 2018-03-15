@@ -1525,3 +1525,81 @@ def add_site_identifiers(e):
         website.identifier = identifier
         print identifier
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_image_factories")
+
+@when(step.executing)
+def remove_configuration_image_factories(e):
+
+    from woost.models import Configuration, MemberPermission
+    from woost.models.rendering import ImageFactory
+
+    key = "woost.models.configuration.Configuration.image_factories"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._image_factories
+
+    for img_factory in ImageFactory.select():
+        del img_factory._Configuration_image_factories
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_renderers")
+
+@when(step.executing)
+def remove_configuration_renderers(e):
+
+    from woost.models import Configuration, MemberPermission
+    from woost.models.rendering import Renderer
+
+    key = "woost.models.configuration.Configuration.renderers"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._renderers
+
+    for renderer in Renderer.select():
+        del renderer._Configuration_renderers
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_video_player_settings")
+
+@when(step.executing)
+def remove_configuration_video_player_settings(e):
+
+    from woost.models import Configuration, VideoPlayerSettings, MemberPermission
+
+    key = "woost.models.configuration.Configuration.video_player_settings"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._video_player_settings
+
+    for vid_player_settings in VideoPlayerSettings.select():
+        del vid_player_settings._Configuration_video_player_settings
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_websites")
+
+@when(step.executing)
+def remove_configuration_websites(e):
+
+    from woost.models import Configuration, Website, MemberPermission
+
+    key = "woost.models.configuration.Configuration.websites"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._websites
+
+    for website in Website.select():
+        del website._Configuration_websites
+

@@ -411,7 +411,7 @@ def resolve_websites(website, publishable = None):
     website = website or app.website or PublishableObject.any_website
 
     if website is PublishableObject.any_website:
-        websites = set(Configuration.instance.websites)
+        websites = set(Website.select())
     elif isinstance(website, Website):
         websites = {website,}
     else:

@@ -19,6 +19,7 @@ from cocktail import schema
 from cocktail.persistence import datastore
 from woost.models import (
     Configuration,
+    Website,
     Extension,
     Publishable,
     Page,
@@ -214,7 +215,7 @@ class ECommerceExtension(Extension):
 
         translations.load_bundle("woost.extensions.ecommerce.installation")
 
-        website = Configuration.instance.websites[0]
+        website = Website.select()[0]
 
         catalog = self._create_document("catalog")
         catalog.blocks.append(ECommerceProductListing())

@@ -1,0 +1,282 @@
+
+[woost.models.settings]
+
+    [icon]
+    ca: Icona
+    es: Icono
+    en: Icon
+
+    [logo]
+    ca: Logotip
+    es: Logotipo
+    en: Logo
+
+    [keywords]
+    ca: Paraules clau
+    es: Palabras clave
+    en: Keywords
+
+    [description]
+    ca: Descripció
+    es: Descripción
+    en: Description
+
+    [meta_tags]
+    ca: Meta tags
+    es: Meta tags
+    en: Meta tags
+
+    [robots_should_index]
+    ca: Contingut indexable
+    es: Contenido indexable
+    en: Indexable content
+
+    [organization_name]
+    ca: Nom de l'entitat
+    es: Nombre de la entidad
+    en: Entity name
+
+    [organization_url]
+    ca: URL de l'entitat
+    es: URL de la entidad
+    en: Entity URL
+
+    [address]
+    ca: Adreça
+    es: Dirección
+    en: Address
+
+    [town]
+    ca: Localitat
+    es: Localidad
+    en: Town
+
+    [region]
+    ca: Regió
+    es: Región
+    en: Region
+
+    [postal_code]
+    ca: Codi postal
+    es: Código postal
+    en: Postal code
+
+    [country]
+    ca: País
+    es: País
+    en: Country
+
+    [phone_number]
+    ca: Telèfon
+    es: Teléfono
+    en: Phone number
+
+    [fax_number]
+    ca: Fax
+    es: Fax
+    en: Fax
+
+    [email]
+    ca: Correu electrònic
+    es: Correo electrónico
+    en: Email
+
+    [technical_contact_email]
+    ca: Correu electrònic per notificar errors
+    es: Correo electrónico para notificar errores
+    en: E-mail address for reporting errors
+
+    [caching_policies]
+    ca: Polítiques de cache
+    es: Políticas de cache
+    en: Caching policies
+
+    [home]
+    ca: Pàgina d'inici
+    es: Página de inicio
+    en: Home page
+
+    [login_page]
+    ca: Pàgina d'autenticació
+    es: Página de autenticación
+    en: Authentication page
+
+    [generic_error_page]
+    ca: Pàgina d'error genèric
+    es: Página de error genérico
+    en: Generic error page
+
+    [not_found_error_page]
+    ca: Pàgina no trobada
+    es: Página no encontrada
+    en: Not found error page
+
+    [gone_error_page]
+    ca: Pàgina per continguts retirats
+    es: Página para contenidos retirados
+    en: Page for gone content
+
+    [forbidden_error_page]
+    ca: Pàgina d'error per accés restringit
+    es: Página de error por acceso restringido
+    en: Access forbidden page
+
+    [down_for_maintenance]
+    ca: Lloc aturat per manteniment
+    es: Sitio parado por mantenimiento
+    en: Site down for maintenance
+
+    [maintenance_page]
+    ca: Pàgina a mostrar durant el manteniment
+    es: Página a mostrar durante el mantenimiento
+    en: Service unavailable page
+
+    [maintenance_addresses]
+    ca: Adreces IP que ignoren el mode de manteniment
+    es: Direcciones IP que ignoran el modo de mantenimiento
+    en: IP addresses that ignore maintenance mode
+
+    [languages]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+        [explanation]
+        ca:
+            Llistat d'idiomes als que es pot traduïr el contingut. Cada
+            idioma s'indica mitjançant el seu codi ISO de dues lletres.
+        es:
+            Listado de idiomas a los que se puede traducir el contenido.
+            Cada idioma se indica mediante su código ISO de dos letras.
+        en:
+            Languages that content can be translated to. Each language is
+            specified using its two letter ISO code.
+
+    [published_languages]
+    ca: Idiomes publicats
+    es: Idiomas publicados
+    en: Published languages
+
+        [explanation]
+        ca:
+            Limita els idiomes publicats al subconjunt indicat. Deixar en
+            blanc per permetre la publicació en qualsevol dels idiomes
+            disponibles.
+        es:
+            Limita los idiomas publicados al subconjunto indicado. Dejar en
+            blanco para permitir la publicación en cualquiera de los idiomas
+            disponibles.
+        en:
+            Limits publication to the indicated subset of languages. Leave
+            blank to allow publishing in any of the available languages.
+
+    [virtual_languages]
+    ca: Idiomes virtuals
+    es: Idiomas virtuales
+    en: Virtual languages
+
+        [explanation]
+        ca:
+            Indica els idiomes que no es publiquen mai directament, si no que
+            només actuen com a base per a altres idiomes.
+        es:
+            Indica los idiomas que no se publican nunca directamente, si no
+            que solo actuan como base para otros idiomas.
+        en:
+            Establishes a set of languages that will never be directly
+            published, and will be used instead as a base for other languages.
+
+    [default_language]
+    ca: Idioma per defecte
+    es: Idioma por defecto
+    en: Default language
+
+    [heed_client_language]
+    ca: Respectar les preferències d'idioma del navegador
+    es: Respetar las preferencias de idioma del navegador
+    en: Heed the language preferences from the browser
+
+    [fallback_languages]
+    ca: Idiomes substitutius
+    es: Idiomas sustitutivos
+    en: Fallback languages
+
+    [backoffice_language]
+    ca: Idioma per defecte de la interfície d'edició
+    es: Idioma por defecto de la interfaz de edición
+    en: Default language for the backoffice
+
+    [backoffice_language_chain]
+    ca: Idiomes a utilitzar en descriure el contingut
+    es: Idiomas a utilizar al describir el contenido
+    en: Languages to use when describing content
+
+    [theme]
+    ca: Tema visual
+    es: Tema visual
+    en: Visual theme
+
+    [global_styles]
+    ca: Estils globals
+    es: Estilos globales
+    en: Global styles
+
+    [https_policy]
+    ca: Política de HTTPS
+    es: Política de HTTPS
+    en: HTTPS policy
+
+        [values]
+
+            [always]
+            ca: Habilitar a totes les pàgines
+            es: Habilitar en todas las páginas
+            en: Enable for all pages
+
+            [never]
+            ca: Deshabilitar a totes les pàgines
+            es: Deshabilitar en todas las páginas
+            en: Disable for all pages
+
+            [per_page]
+            ca: Decidir-ho a cada pàgina
+            es: Decidirlo en cada página
+            en: Decide on a per-page basis
+
+    [https_persistence]
+    ca: Preservar HTTPS entre peticions
+    es: Preservar HTTPS entre peticiones
+    en: Persist HTTPS navigation across requests
+
+        [explanation]
+        ca:
+            Aquesta opció només tindrà efecte si la <em>Política
+            d'HTTPS</em> s'estableix a <em>Decidir a cada pàgina</em>.
+        es:
+            Esta opción solo tendrá efecto si la <em>Política de
+            HTTPS</em> se establece a <em>Decidir en cada página</em>.
+        en:
+            This option will only be taken into account if
+            <em>HTTPS policy</em> is set to <em>Decide on a per-page
+             u"basis</em>.
+
+    [timezone]
+    ca: Zona horària
+    es: Zona horaria
+    en: Timezone
+
+    [smtp_host]
+    ca: Adreça del servidor SMTP
+    es: Dirección del servidor SMTP
+    en: SMTP host
+
+    [smtp_user]
+    ca: Compte d'usuari del servidor SMTP
+    es: Cuenta de usuario del servidor SMTP
+    en: SMTP server user account
+
+    [smtp_password]
+    ca: Contrasenya del servidor SMTP
+    es: Contraseña de usuario del servidor SMTP
+    en: SMTP server password
+

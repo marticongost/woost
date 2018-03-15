@@ -5,7 +5,6 @@ u"""
 """
 from cocktail.translations import translations
 from woost.models import (
-    Configuration,
     Controller,
     Template,
     Extension,
@@ -94,4 +93,4 @@ class NewslettersExtension(Extension):
                 applicable_to_newsletters = True,
                 effects = effects
             )
-            Configuration.instance.image_factories.append(image_factory)
+

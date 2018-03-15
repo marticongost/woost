@@ -7,7 +7,7 @@ u"""
 @since:			November 2008
 """
 from cocktail.html import templates
-from woost.models import Configuration, Document
+from woost.models import Website, Document
 
 TreeContentView = templates.get_class("woost.views.TreeContentView")
 
@@ -19,6 +19,6 @@ class DocumentTreeContentView(TreeContentView):
         TreeContentView.__init__(self, *args, **kwargs)
         self.root = [
             website.home
-            for website in Configuration.instance.websites
+            for website in Website.select()
         ]
 

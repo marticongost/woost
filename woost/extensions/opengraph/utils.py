@@ -5,7 +5,7 @@ u"""
 """
 import re
 from woost import app
-from woost.models import Configuration
+from woost.models import Website
 
 html_expr = re.compile(r"</?[a-z][^>]*>")
 li_expr = re.compile(r"<li(\s+[^>]*)?>")
@@ -33,7 +33,7 @@ def get_publishable_website(publishable):
         if not acceptable_websites or current_website in acceptable_websites:
             return current_website
 
-    for website in Configuration.instance.websites:
+    for website in Website.select():
         if not acceptable_websites or website in acceptable_websites:
             return website
 

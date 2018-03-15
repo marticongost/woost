@@ -10,7 +10,7 @@ from cocktail.styled import styled
 from cocktail import schema
 from cocktail.controllers import get_request_url
 from woost import app
-from woost.models import Configuration
+from woost.models import Website
 from woost.extensions.identity.identityprovider import IdentityProvider
 
 
@@ -67,7 +67,7 @@ class GoogleIdentityProvider(IdentityProvider):
         OAUTH_URL = "https://accounts.google.com/o/oauth2/auth"
 
         if not redirect_uri:
-            website = (app.website or Configuration.instance.websites[0])
+            website = (app.website or Website.select()[0])
             redirect_uri = "http://%s/google_oauth/%d/refresh_token" % (
                 website.hosts[0],
                 self.id
@@ -106,7 +106,7 @@ class GoogleIdentityProvider(IdentityProvider):
         TOKEN_URL = "https://accounts.google.com/o/oauth2/token"
 
         if not redirect_uri:
-            website = (app.website or Configuration.instance.websites[0])
+            website = (app.website or Website.select()[0])
             redirect_uri = "http://%s/google_oauth/%d/refresh_token" % (
                 website.hosts[0],
                 self.id

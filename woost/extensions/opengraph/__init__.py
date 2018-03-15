@@ -235,23 +235,21 @@ class OpenGraphExtension(Extension):
 
     def create_facebook_image_factory(self):
         translations.load_bundle("woost.extensions.opengraph.installation")
-        Configuration.instance.image_factories.append(
-            self._create_asset(
-                rendering.ImageFactory,
-                "image_factory",
-                title = extension_translations,
-                identifier = "facebook",
-                effects = [
-                    rendering.Fill(
-                        width = "200",
-                        height = "200"
-                    ),
-                    rendering.Align(
-                        width = "200",
-                        height = "200",
-                        background = "fff"
-                    )
-                ]
-            )
+        self._create_asset(
+            rendering.ImageFactory,
+            "image_factory",
+            title = extension_translations,
+            identifier = "facebook",
+            effects = [
+                rendering.Fill(
+                    width = "200",
+                    height = "200"
+                ),
+                rendering.Align(
+                    width = "200",
+                    height = "200",
+                    background = "fff"
+                )
+            ]
         )
 

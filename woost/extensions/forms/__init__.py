@@ -51,11 +51,11 @@ class FormsExtension(Extension):
 
     def create_default_email_notification(self):
 
-        from woost.models import EmailTemplate, Configuration
+        from woost.models import EmailTemplate, Website
         translations.load_bundle("woost.extensions.forms.installation")
 
         try:
-            default_host = Configuration.instance.websites[0].hosts[0]
+            default_host = Website.select()[0].hosts[0].replace("*.", "")
         except:
             sender = None
         else:

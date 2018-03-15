@@ -29,7 +29,7 @@ def setup_shell(env):
     env["tr"] = translations
     config.setup_languages()
     app.user = User.require_instance(qname = "woost.anonymous_user")
-    app.website = config.websites[0]
+    app.website = Website.select()[0]
 
     # Load extensions and import their models
     load_extensions()

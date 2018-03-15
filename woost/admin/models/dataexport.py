@@ -15,6 +15,7 @@ from cocktail.persistence import PersistentClass, PersistentObject
 from woost import app
 from woost.models import (
     Configuration,
+    Website,
     Item,
     User,
     Publishable,
@@ -418,7 +419,7 @@ class PageTreeExport(TreeExport):
     def get_tree_roots(self):
         return [
             website.home
-            for website in Configuration.instance.websites
+            for website in Website.select()
             if website.home
         ]
 
