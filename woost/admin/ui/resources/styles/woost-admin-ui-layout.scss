@@ -148,26 +148,23 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
             transition: all ease 0.5s;
 
             .MenuEntry {
+                flex-direction: row;
+                align-items: center;
                 width: $submenu-width;
                 opacity: 1;
                 transition: opacity ease 0.3s;
 
                 .entryDescription {
                     padding: 0.4em $hpadding;
-                }
-            }
-
-            .MenuEntry[hasSubsections='false'] {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-
-                .entryDescription {
                     cursor: pointer;
                     display: flex;
                     width: 100%;
                     flex-direction: row;
                     align-items: center;
+
+                    &:hover {
+                        background-color: $submenu-hover-background-color;
+                    }
 
                     .icon {
                         display: flex;
@@ -179,6 +176,10 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
                         align-items: center;
                         justify-content: center;
 
+                        &:empty {
+                            display: none;
+                        }
+
                         svg {
                             fill: $submenu-icon-color;
                             width: auto;
@@ -189,10 +190,6 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
                     .heading {
                         font-size: 1.5em;
                         color: #333;
-                    }
-
-                    &:hover {
-                        background-color: $submenu-hover-background-color;
                     }
                 }
 
@@ -214,7 +211,7 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
                 }
             }
 
-            .MenuEntry[hasSubsections='true'] {
+            & > .MenuEntry[hasSubsections='true'] {
 
                 & + .MenuEntry {
                     margin-top: 2.4em;
@@ -222,15 +219,48 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
 
                 & > .entryDescription {
                     margin-bottom: 0.2em;
+                    cursor: default;
 
-                    .icon {
-                        display: none;
+                    &:hover {
+                        background-color: transparent;
                     }
 
                     .heading {
                         font-weight: bold;
                         font-size: $submenu-heading-font-size;
                         color: $submenu-heading-color;
+                    }
+                }
+
+            }
+
+            .MenuEntry .MenuEntry[inSelectionPath='false'] > .subsectionsList {
+                display: none;
+            }
+
+            .MenuEntry .MenuEntry .MenuEntry {
+
+                & > .entryDescription {
+
+                    .icon {
+                        display: none;
+                    }
+
+                    .heading {
+                        font-size: 1.3em;
+                        padding-left: 2.5em;
+                        color: #555;
+
+                        &:before {
+                            content: '-';
+                            margin-right: 0.2em;
+                        }
+                    }
+                }
+
+                &[selected='true'] > .entryDescription {
+                    .heading {
+                        color: white;
                     }
                 }
             }
