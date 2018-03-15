@@ -202,14 +202,12 @@
 
         <?class
         [ACTIVATE]() {
-            if (this.hasSubsections) {
-                if (!this.section.parent.parent) {
-                    if (this.parentInstance.closeMenu() !== this) {
-                        this.menuExpanded = !this.menuExpanded;
-                    }
+            if (this.hasSubsections && this.section.depth == 1) {
+                if (this.parentInstance.closeMenu() !== this) {
+                    this.menuExpanded = !this.menuExpanded;
                 }
             }
-            else {
+            else if (!this.hasSubsections || this.section.depth != 2) {
                 this.parentInstance.closeMenu();
                 cocktail.navigation.push(this.section.url);
             }
