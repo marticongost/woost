@@ -450,6 +450,9 @@ class CMSController(BaseCMSController):
         if is_http_error and error.status == 404:
             return config.get_setting("not_found_error_page"), 404
 
+        elif is_http_error and error.status == 410:
+            return config.get_setting("gone_error_page"), 410
+
         # Service unavailable
         elif is_http_error and error.status == 503:
             return config.get_setting("maintenance_page"), 503

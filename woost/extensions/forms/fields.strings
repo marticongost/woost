@@ -481,3 +481,86 @@ def field_property(member, *properties):
         es: Campos de fecha / hora
         en: Date / time fields
 
+    [UploadField]
+    ca: Camp de pujada de fitxer
+    es: Campo de subida de fichero
+    en: File upload field
+
+        [plural]
+        ca: Camps de pujada de fitxer
+        es: Campos de subida de fichero
+        en: File upload fields
+
+        [members]
+
+            [max_file_size]
+            ca: Mida màxima del fitxer
+            es: Tamaño máximo del fichero
+            en: Maximum file size
+
+                [explanation]
+                ca: En megabytes
+                en: En megabytes
+                en: In megabytes
+
+            [accepted_file_types]
+            ca: Tipus de fitxer acceptats
+            es: Tipos de fichero aceptados
+            en: Accepted file types
+
+                [items.values]
+
+                    [document]
+                    ca: Document
+                    es: Document
+                    en: Document
+
+                    [image]
+                    ca: Imatge
+                    es: Imagen
+                    en: Image
+
+                    [audio]
+                    ca: Àudio
+                    es: Audio
+                    en: Audio
+
+                    [video]
+                    ca: Vídeo
+                    es: Video
+                    en: Video
+
+                    [package]
+                    ca: Fitxers comprimits
+                    es: Ficheros comprimidos
+                    en: Compressed files
+
+            [file_access_level]
+            ca: Nivell d'accés
+            es: Nivel de acceso
+            en: Access level
+
+                [explanation]
+                ca:
+                    Indica el nivell d'accés que s'aplicarà als fitxers
+                    pujats amb el formulari. A menys que els fitxers
+                    hagin de ser accessibles per qualsevol usuari,
+                    <strong>cal</strong> especificar un nivell d'accés.
+                es:
+                    Indica el nivel de acceso que se aplicará a los
+                    ficheros subidos con el formulario. A menos que los
+                    ficheros deban ser accesibles por cualquier usuario,
+                    <strong>es necesario</strong> especificar un nivel
+                    de acceso.
+                en:
+                    Sets the access level that will be applied to the files
+                    uploaded through the form. Unless the resulting files
+                    have to be accessible to all users of the website,
+                    <strong>it is strongly suggested</strong> to require an
+                    access level.
+
+    [FileTypeNotAcceptedError.instance(error)]
+    ca: El fitxer ${error.member_desc()} no pertany a cap dels tipus admesos
+    es: El fichero ${error.member_desc()} no pertenece a ninguno de los tipos admitidos
+    en: ${error.member_desc()} doesn't match any accepted file type
+
