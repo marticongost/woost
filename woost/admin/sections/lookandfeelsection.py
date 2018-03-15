@@ -8,8 +8,7 @@ from .templatessection import TemplatesSection
 from .gridssection import GridsSection
 from .stylessection import StylesSection
 from .themessection import ThemesSection
-from .rendererssection import RenderersSection
-from .imagefactoriessection import ImageFactoriesSection
+from .imagessection import ImagesSection
 from .videoplayersettingssection import VideoPlayerSettingsSection
 
 
@@ -22,7 +21,6 @@ class LookAndFeelSection(Folder):
         self.append(ThemesSection("themes"))
         self.append(GridsSection("grids"))
         self.append(StylesSection("style"))
-        self.append(RenderersSection("renderers"))
-        self.append(ImageFactoriesSection("image-factories"))
+        self.append(ImagesSection("images"))
         self.append(VideoPlayerSettingsSection("video-player-settings"))
 

@@ -3,10 +3,14 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from woost.models import Template
-from .crud import CRUD
+from .folder import Folder
+from .templateslistingsection import TemplatesListingSection
+from .defaulttemplatessection import DefaultTemplatesSection
 
 
-class TemplatesSection(CRUD):
-    model = Template
+class TemplatesSection(Folder):
+
+    def _fill(self):
+        self.append(TemplatesListingSection("listing"))
+        self.append(DefaultTemplatesSection("defaults"))
 

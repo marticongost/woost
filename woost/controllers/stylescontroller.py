@@ -18,10 +18,10 @@ class StylesController(PublishableController):
     def _produce_content(self, backoffice = False):
 
         config = Configuration.instance
-        website = app.website
 
-        if config.global_styles:
-            yield SASSCompilation().compile(string = config.global_styles)
+        global_styles = config.get_setting("global_styles"):
+        if global_styles:
+            yield SASSCompilation().compile(string = global_styles)
 
         for style in Style.select():
 

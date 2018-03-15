@@ -3,10 +3,14 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from .crud import CRUD
-from woost.models import Style
+from .folder import Folder
+from .styleslistingsection import StylesListingSection
+from .globalstylessection import GlobalStylesSection
 
 
-class StylesSection(CRUD):
-    model = Style
+class StylesSection(Folder):
+
+    def _fill(self):
+        self.append(StylesListingSection("listing"))
+        self.append(GlobalStylesSection("global"))
 
