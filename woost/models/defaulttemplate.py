@@ -11,6 +11,16 @@ from .template import Template
 
 translations.load_bundle("woost.models.defaulttemplate")
 
+def get_default_templates():
+    return [
+        member
+        for member in Configuration.iter_members()
+        if isinstance(member, schema.Reference)
+        and member.related_type
+        and issubclass(member.related_type, Template)
+        and getattr(member, "template_owner", None)
+    ]
+
 def with_default_template(template_name, **field_kwargs):
 
     field_name = "default_%s_template" % template_name
