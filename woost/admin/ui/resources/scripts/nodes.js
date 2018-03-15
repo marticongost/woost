@@ -219,6 +219,13 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
 }
 
 woost.admin.nodes.Folder = class Folder extends woost.admin.nodes.BaseSectionNode(cocktail.navigation.StackTransparentNode) {
+
+    activate() {
+        for (let k in this.children) {
+            cocktail.navigation.extendPath(k);
+            break;
+        }
+    }
 }
 
 woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode)) {
