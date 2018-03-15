@@ -52,7 +52,15 @@ woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackN
 
     activate() {
         super.activate();
-        cocktail.setShortcutIcon(this.iconURL, "image/svg+xml");
+        let node = this;
+        while (node) {
+            const icon = node.iconURL;
+            if (icon) {
+                cocktail.setShortcutIcon(icon, "image/svg+xml");
+                break;
+            }
+            node = node.parent;
+        }
     }
 
     get component() {
