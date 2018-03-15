@@ -70,6 +70,61 @@
     es: Mantenimiento
     en: Maintenance
 
+    [templatessection.TemplatesSection.instance]
+    ca: Plantilles
+    es: Plantillas
+    en: Templates
+
+    [templateslistingsection.TemplatesListingSection.instance]
+    ca: Plantilles disponibles
+    es: Plantillas disponibles
+    en: Available templates
+
+    [defaulttemplatessection.DefaultTemplatesSection.instance]
+    ca: Plantilles per defecte
+    es: Plantillas por defecto
+    en: Default templates
+
+    [themessection.ThemesSection.instance]
+    ca: Temes
+    es: Temas
+    en: Themes
+
+    [themeslistingsection.ThemesListingSection.instance]
+    ca: Temes disponibles
+    es: Temas disponibles
+    en: Available themes
+
+    [defaultthemessection.DefaultThemesSection.instance]
+    ca: Temes per defecte
+    es: Temas por defecto
+    en: Default themes
+
+    [stylessection.StylesSection.instance]
+    ca: Estils
+    es: Estilos
+    en: Styles
+
+    [styleslistingsection.StylesListingSection.instance]
+    ca: Estils disponibles
+    es: Estilos disponibles
+    en: Available styles
+
+    [globalstylessection.GlobalStylesSection.instance]
+    ca: Estils globals
+    es: Estilos globales
+    en: Global styles
+
+    [imagessection.ImagesSection.instance]
+    ca: Imatges
+    es: Imágenes
+    en: Images
+
+    [videoplayersettingssection.VideoPlayerSettingsSection.instance]
+    ca: Vídeo
+    es: Video
+    en: Video
+
     [systemsection.SystemSection.instance]
     ca: Sistema
     es: Sistema

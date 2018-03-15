@@ -3,10 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from .crud import CRUD
-from woost.models import Theme
+from .folder import Folder
+from .themeslistingsection import ThemesListingSection
+from .defaultthemessection import DefaultThemesSection
 
+class ThemesSection(Folder):
 
-class ThemesSection(CRUD):
-    model = Theme
+    def _fill(self):
+        self.append(ThemesListingSection("listing"))
+        self.append(DefaultThemesSection("defaults"))
 
