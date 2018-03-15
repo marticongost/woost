@@ -23,7 +23,8 @@ def add_setting(
     related_end = "auto"
 ):
     member.is_setting = True
-    member.custom_translation_key = "woost.models.settings." + member.name
+    if not member.custom_translation_key:
+        member.custom_translation_key = "woost.models.settings." + member.name
     member.listed_by_default = False
 
     for scope in scopes:
