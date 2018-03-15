@@ -44,14 +44,9 @@ class YouTubeExtension(Extension):
         from woost.extensions.youtube.youtubevideorenderer \
             import YouTubeVideoRenderer
 
-        # Look for the first chain renderer
-        for renderer in Configuration.instance.renderers:
-            if isinstance(renderer, ChainRenderer):
-
-                # Add the renderer for YouTube videos
-                youtube_renderer = YouTubeVideoRenderer()
-                youtube_renderer.insert()
-                renderer.renderers.append(youtube_renderer)
-
-                break
+        content_renderer = ChainRenderer.get_instance(
+            qname = "woost.content_renderer"
+        )
+        if content_renderer:
+            content_renderer.renderers.append(YouTubeVideoRenderer.new())
 

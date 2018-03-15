@@ -143,9 +143,6 @@ class SiteInitializer(object):
         "woost.models.configuration.Configuration.smtp_host",
         "woost.models.configuration.Configuration.smtp_user",
         "woost.models.configuration.Configuration.smtp_password",
-        "woost.models.configuration.Configuration.renderers",
-        "woost.models.configuration.Configuration.image_factories",
-        "woost.models.configuration.Configuration.video_player_settings",
         "woost.models.configuration.Configuration.theme",
         "woost.models.website.Website.hosts",
         "woost.models.website.Website.https_policy",
@@ -286,7 +283,6 @@ class SiteInitializer(object):
 
         # Default website
         self.website = self.create_website()
-        self.configuration.websites.append(self.website)
 
         # Roles
         self.anonymous_role = self.create_anonymous_role()
@@ -355,12 +351,6 @@ class SiteInitializer(object):
         self.icon16_renderer = self.create_icon16_renderer()
         self.icon32_renderer = self.create_icon32_renderer()
 
-        self.configuration.renderers = [
-            self.content_renderer,
-            self.icon16_renderer,
-            self.icon32_renderer
-        ]
-
         # Image factories
         for image_factory_id in self.image_factories:
             key = image_factory_id + "_image_factory"
@@ -368,7 +358,6 @@ class SiteInitializer(object):
             method = getattr(self, method_name)
             image_factory = method()
             setattr(self, key, image_factory)
-            self.configuration.image_factories.append(image_factory)
 
         # Extensions
         self.enable_extensions()

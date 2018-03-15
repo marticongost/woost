@@ -27,13 +27,12 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
     def test_enabled(self):
 
         from woost.models import (
-            Configuration,
             Website,
             Publishable,
             ReadPermission
         )
 
-        self.config.websites.append(Website.new())
+        Website.new()
 
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
@@ -67,7 +66,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
             ReadTranslationPermission
         )
 
-        self.config.websites.append(Website.new())
+        Website.new()
 
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
@@ -75,7 +74,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         self.everybody_role.permissions.append(ReadTranslationPermission())
 
-        self.config.websites.append(Website.new())
+        Website.new()
         self.config.languages = ["en", "de"]
         self.config.published_languages = []
 
@@ -122,7 +121,6 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         from cocktail.translations import language_context
         from woost import app
         from woost.models import (
-            Configuration,
             Website,
             Publishable,
             ReadPermission,
@@ -150,7 +148,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         self.config.languages = ["ca", "es", "en"]
         self.config.published_languages = []
-        self.config.websites.append(Website.new())
+        Website.new()
 
         a = Publishable()
         a.per_language_publication = True
@@ -177,7 +175,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
         from woost.models import Website, Publishable, ReadPermission
         from datetime import datetime, timedelta
 
-        self.config.websites.append(Website.new())
+        Website.new()
 
         self.everybody_role.permissions.append(
             ReadPermission(content_type = Publishable)
@@ -211,7 +209,7 @@ class IsAccessibleExpressionTestCase(BaseTestCase):
 
         from woost.models import Website, Publishable, ReadPermission
 
-        self.config.websites.append(Website.new())
+        Website.new()
 
         a = Publishable()
         a.enabled = True

@@ -12,15 +12,13 @@ class WebsiteHostMatchingTestCase(BaseTestCase):
 
         from woost.models import Website
 
-        w1 = Website()
+        w1 = Website.new()
         w1.hosts.append("foo.com")
         w1.hosts.append("foo.net")
-        self.config.websites.append(w1)
 
-        w2 = Website()
+        w2 = Website.new()
         w2.hosts.append("bar.com")
         w2.hosts.append("spam.bar.com")
-        self.config.websites.append(w2)
 
         assert self.config.get_website_by_host("foo.com") is w1
         assert self.config.get_website_by_host("foo.net") is w1
@@ -31,14 +29,12 @@ class WebsiteHostMatchingTestCase(BaseTestCase):
 
         from woost.models import Website
 
-        w1 = Website()
+        w1 = Website.new()
         w1.hosts.append("bar.com")
         w1.hosts.append("foo.com")
-        self.config.websites.append(w1)
 
-        w2 = Website()
+        w2 = Website.new()
         w2.hosts.append("foo.com")
-        self.config.websites.append(w2)
 
         assert self.config.get_website_by_host("foo.com") is w1
 
@@ -48,7 +44,7 @@ class WebsiteLanguageTestCase(BaseTestCase):
     def test_websites_can_override_language_visibility(self):
 
         from woost import app
-        from woost.models import Configuration, Website
+        from woost.models import Website
 
         w1 = Website()
         w2 = Website()

@@ -447,9 +447,15 @@ class SchemaExport(MemberExport):
     def iter_member_translation_keys(self, member):
 
         prefix = ".members." + member.name
-        yield prefix
-        yield prefix + ".none"
-        yield prefix + ".explanation"
+        yield (prefix, lambda: translations(member))
+        yield (
+            prefix + ".none",
+            lambda: translations(member, suffix = ".none")
+        )
+        yield (
+            prefix + ".explanation",
+            lambda: translations(member, suffix = ".explanation")
+        )
 
         if isinstance(member, schema.Collection):
             yield (

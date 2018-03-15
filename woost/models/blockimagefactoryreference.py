@@ -6,16 +6,14 @@ u"""
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from cocktail.iteration import first
-from .configuration import Configuration
 from .rendering import ImageFactory
 
-def _iter_block_image_factories():
-    for factory in Configuration.instance.image_factories:
-        if factory.applicable_to_blocks:
-            yield factory
-
 def _block_image_factories_enumeration(ctx):
-    return list(_iter_block_image_factories())
+    return list(
+        ImageFactory.select(
+            ImageFactory.applicable_to_blocks.equal(True)
+        )
+    )
 
 
 class BlockImageFactoryReference(schema.Reference):

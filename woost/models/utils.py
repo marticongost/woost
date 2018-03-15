@@ -31,6 +31,7 @@ from cocktail.persistence.utils import (
 from woost import app
 from .item import Item
 from .configuration import Configuration
+from .website import Website
 from .permission import ContentPermission
 from .changesets import Change
 from .role import Role
@@ -551,8 +552,7 @@ def get_matching_website(item):
     ):
         return current_website
 
-    config_websites = Configuration.instance.websites
-    for possible_website in config_websites:
+    for possible_website in Website.select():
         if (
             not acceptable_websites
             or possible_website in acceptable_websites

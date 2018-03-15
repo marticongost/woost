@@ -62,16 +62,11 @@ class IssuuExtension(Extension):
         from woost.extensions.issuu.issuudocumentrenderer \
             import IssuuDocumentRenderer
 
-        # Look for the first chain renderer
-        for renderer in Configuration.instance.renderers:
-            if isinstance(renderer, ChainRenderer):
-
-                # Add the renderer for Issuu documents
-                issuu_renderer = IssuuDocumentRenderer()
-                issuu_renderer.insert()
-                renderer.renderers.append(issuu_renderer)
-
-                break
+        content_renderer = ChainRenderer.get_instance(
+            qname = "woost.content_renderer"
+        )
+        if content_renderer:
+            content_renderer.renderers.append(IssuuDocumentRenderer.new())
 
     def register_view_factory(self):
 

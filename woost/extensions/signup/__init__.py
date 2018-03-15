@@ -73,7 +73,7 @@ class SignUpExtension(Extension):
 
         from woost.models import (
             extension_translations,
-            Configuration,
+            Website,
             User,
             Controller,
             Document,
@@ -136,7 +136,7 @@ class SignUpExtension(Extension):
             Page,
             "signup_page",
             title = extension_translations,
-            parent = Configuration.instance.websites[0].home,
+            parent = Website.select()[0].home,
             hidden = True,
             blocks = [
                 self._create_asset(
