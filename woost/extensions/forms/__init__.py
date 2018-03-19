@@ -38,13 +38,12 @@ class FormsExtension(Extension):
             exportformdataaction
         )
 
-        from woost.controllers.backoffice.backofficecontroller \
-            import BackOfficeController
+        from woost.admin.controllers.admincontroller import AdminController
 
         from woost.extensions.forms.exportformdatacontroller \
             import ExportFormDataController
 
-        BackOfficeController.export_form_data = ExportFormDataController
+        AdminController.export_form_data = ExportFormDataController
 
     def _install(self):
         self.create_default_email_notification()
