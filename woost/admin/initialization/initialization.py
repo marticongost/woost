@@ -4,7 +4,8 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.schema import TranslatedValues as T
-from woost.models import Controller, AccessLevel
+from woost.models import Item, Controller, AccessLevel
+from woost.models.rendering import ImageFactory, Thumbnail
 from woost.admin.models import Admin
 
 def create_admin():
@@ -25,6 +26,17 @@ def create_admin():
     admin_controller.python_name = \
         "woost.admin.controllers.admincontroller.AdminController"
 
+    ImageFactory.new(
+        identifier = "admin_thumbnail",
+        qname = "woost.admin.thumbnail",
+        title = T(
+            ca = u"Miniatura pel panell d'administració",
+            es = u"Miniatura para el panel de administración",
+            en = u"Admin thumbnail"
+        ),
+        effects = [Thumbnail.new(width = 200, height = 200)]
+    )
+
     return Admin.new(
         path = "admin",
         access_level = AccessLevel.get_instance(
@@ -42,4 +54,7 @@ def create_admin():
 
 def drop_admin():
     Admin.select().delete_items()
+    expr = Item.qname.startswith("woost.admin.")
+    ImageFactory.select(expr).delete_items()
+    Controller.select(expr).delete_items()
 
