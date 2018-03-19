@@ -145,14 +145,17 @@ class Section(object):
 
         child.release()
         self.__children.append(child)
+        child.__parent = self
 
     def prepend(self, item):
         if isinstance(item, Section):
             self.insert(0, item)
+            item.__parent = self
         elif isinstance(item, Sequence):
             children = list(item)
             for child in children:
                 child.release()
+                child.__parent = self
             self.__children = children + self.__children
         else:
             raise ValueError(
@@ -164,9 +167,11 @@ class Section(object):
         if isinstance(item, Section):
             item.release()
             self.__children.insert(index, item)
+            item.__parent = item
         elif isinstance(item, Sequence):
             for child in item:
                 child.release()
+                child.__parent = self
             self.__children = (
                 self.__children[:index]
                 + list(item)
@@ -194,11 +199,11 @@ class Section(object):
         return index
 
     def insert_before(self, anchor, item):
-        index = self._locate_anchor()
+        index = self._locate_anchor(anchor)
         self.insert(index, item)
 
     def insert_after(self, anchor, item):
-        index = self._locate_anchor()
+        index = self._locate_anchor(anchor)
         self.insert(index + 1, item)
 
     def release(self):
