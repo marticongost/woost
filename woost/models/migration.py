@@ -1543,7 +1543,10 @@ def remove_configuration_image_factories(e):
     del Configuration.instance._image_factories
 
     for img_factory in ImageFactory.select():
-        del img_factory._Configuration_image_factories
+        try:
+            del img_factory._Configuration_image_factories
+        except AttributeError:
+            pass
 
 #------------------------------------------------------------------------------
 
@@ -1563,7 +1566,10 @@ def remove_configuration_renderers(e):
     del Configuration.instance._renderers
 
     for renderer in Renderer.select():
-        del renderer._Configuration_renderers
+        try:
+            del renderer._Configuration_renderers
+        except AttributeError:
+            pass
 
 #------------------------------------------------------------------------------
 
@@ -1601,5 +1607,8 @@ def remove_configuration_websites(e):
     del Configuration.instance._websites
 
     for website in Website.select():
-        del website._Configuration_websites
+        try:
+            del website._Configuration_websites
+        except AttributeError:
+            pass
 
