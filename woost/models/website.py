@@ -46,7 +46,7 @@ class Website(Item):
         items = schema.Reference(type = Publishable),
         default_type = set,
         bidirectional = True,
-        editable = schema.NOT_EDITABLE,
+        visible = False,
         related_key = "websites"
     )
 
