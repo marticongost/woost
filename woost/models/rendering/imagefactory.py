@@ -10,10 +10,6 @@ from cocktail import schema
 from woost.models.item import Item
 from woost.models.rendering.renderer import Renderer
 
-def _get_site_renderers():
-    from woost.models import Configuration
-    return Configuration.instance.renderers
-
 
 class ImageFactory(Item):
 
@@ -46,9 +42,8 @@ class ImageFactory(Item):
         type = Renderer,
         related_end = schema.Collection(),
         default = schema.DynamicDefault(
-            lambda: first(_get_site_renderers())
+            lambda: Item.get_instance(qname = "woost.content_renderer")
         ),
-        enumeration = lambda ctx: _get_site_renderers(),
         edit_control = "cocktail.html.DropdownSelector"
     )
 
