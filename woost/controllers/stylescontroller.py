@@ -19,7 +19,7 @@ class StylesController(PublishableController):
 
         config = Configuration.instance
 
-        global_styles = config.get_setting("global_styles"):
+        global_styles = config.get_setting("global_styles")
         if global_styles:
             yield SASSCompilation().compile(string = global_styles)
 
