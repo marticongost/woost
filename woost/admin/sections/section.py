@@ -188,6 +188,14 @@ class Section(object):
         if anchor is None:
             raise ValueError("No anchor given")
 
+        if isinstance(anchor, basestring):
+            child = self.find(anchor)
+            if child is None:
+                raise ValueError(
+                    "Invalid anchor, can't find a sibling named %r" % anchor
+                )
+            anchor = child
+
         if anchor.__parent is not self:
             raise ValueError(
                 "Invalid anchor: %r is not a child of %r"
