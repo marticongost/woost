@@ -248,7 +248,8 @@ class Export(object):
 
     def should_include_member(self, member):
         return (
-            member not in self.excluded_members
+            member.visible
+            and member not in self.excluded_members
             and not (
                 isinstance(member, schema.RelationMember)
                 and member.anonymous
