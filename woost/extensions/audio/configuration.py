@@ -5,31 +5,29 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models import Configuration
+from woost.models import add_setting, Configuration
 from woost.extensions.audio.audiodecoder import AudioDecoder
 from woost.extensions.audio.audioencoder import AudioEncoder
 
 translations.load_bundle("woost.extensions.audio.configuration")
 
-pos = Configuration.groups_order.index("presentation.images")
-Configuration.groups_order.insert(pos + 1, "audio")
-Configuration.members_order += ["audio_decoders", "audio_encoders"]
-
-Configuration.add_member(
-    schema.Collection("audio_decoders",
+add_setting(
+    schema.Collection(
+        "audio_decoders",
         items = schema.Reference(type = AudioDecoder),
-        related_end = schema.Reference(),
-        integral = True,
-        member_group = "presentation.audio"
-    )
+        bidirectional = True,
+        integral = True
+    ),
+    scopes = [Configuration]
 )
 
-Configuration.add_member(
-    schema.Collection("audio_encoders",
+add_setting(
+    schema.Collection(
+        "audio_encoders",
         items = schema.Reference(type = AudioEncoder),
-        related_end = schema.Reference(),
-        integral = True,
-        member_group = "presentation.audio"
-    )
+        bidirectional = True,
+        integral = True
+    ),
+    scopes = [Configuration]
 )
 
