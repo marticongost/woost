@@ -674,6 +674,12 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     get model() {
         return this.parent.model;
     }
+
+    static get children() {
+        return {
+            rel: woost.admin.nodes.RelationNode
+        };
+    }
 }
 
 woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode)) {
