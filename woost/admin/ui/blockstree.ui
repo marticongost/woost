@@ -126,6 +126,15 @@
         </ui:property>
 
         <?class
+        get blockDisplay() {
+            return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.BlockDisplay);
+        }
+
+        get objectPath() {
+            const blockDisplay = this.blockDisplay;
+            return blockDisplay ? blockDisplay.objectPath + "-" + this.slot.name : this.slot.name;
+        }
+
         clear() {
             cocktail.ui.empty(this);
         }
@@ -160,6 +169,28 @@
             reflected="true"
             default="false"/>
 
+        <?class
+        get slotDisplay() {
+            return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.SlotDisplay);
+        }
+
+        get blockIndex() {
+            if (!this.parentNode) {
+                return -1;
+            }
+            return Array.from(this.parentNode.children).indexOf(this);
+        }
+
+        get objectPath() {
+            const slotDisplay = this.slotDisplay;
+            const blockIndex = this.blockIndex;
+            if (slotDisplay && blockIndex != -1) {
+                return slotDisplay.objectPath + "-" + blockIndex;
+            }
+            return "";
+        }
+        ?>
+
         <ui:BlockRow id="blockRow" ui:placement="before slotsList"/>
 
         <?on item:changed
@@ -172,6 +203,26 @@
         ?>
 
         <div ui:component="BlockRow">
+
+            <?class
+            get blockDisplay() {
+                return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.BlockDisplay);
+            }
+
+            get slotDisplay() {
+                return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.SlotDisplay);
+            }
+
+            get blockIndex() {
+                const blockDisplay = this.blockDisplay;
+                return blockDisplay && blockDisplay.blockIndex;
+            }
+
+            get objectPath() {
+                const blockDisplay = this.blockDisplay;
+                return blockDisplay && blockDisplay.objectPath;
+            }
+            ?>
 
             <ui:using mixin="cocktail.ui.DataDisplay"/>
 

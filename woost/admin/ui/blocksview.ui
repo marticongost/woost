@@ -204,7 +204,10 @@
         <?class
         selectionActivated() {
             if (this.selectedElements.size == 1) {
-                this.parentInstance.actionList.getAction("edit").invoke({selection: this.selectedValues});
+                this.parentInstance.actionList.getAction("edit").invoke({
+                    selection: this.selectedValues,
+                    objectPath: this.selectedElement.objectPath
+                });
             }
         }
         ?>
