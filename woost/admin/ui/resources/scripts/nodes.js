@@ -226,7 +226,11 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
     }
 }
 
-woost.admin.nodes.Folder = class Folder extends woost.admin.nodes.BaseSectionNode(cocktail.navigation.StackTransparentNode) {
+woost.admin.nodes.Folder = class Folder extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.StackNode) {
+
+    get createsStackUI() {
+        return false;
+    }
 
     activate() {
         for (let k in this.children) {
@@ -489,7 +493,7 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
     }
 }
 
-woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.ItemContainer(cocktail.navigation.StackTransparentNode) {
+woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
 
     constructor(parent = null) {
         super(parent);
@@ -497,6 +501,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
             this.model = parent.model;
             this.item = parent.item;
         }
+    }
+
+    get createsStackUI() {
+        return false;
     }
 
     createChild(nodeClass) {
@@ -668,7 +676,11 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     }
 }
 
-woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(cocktail.navigation.StackTransparentNode)) {
+woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode)) {
+
+    get createsStackUI() {
+        return false;
+    }
 
     get canEditNewObjects() {
         return false;
