@@ -3,6 +3,7 @@
 
 $card-height: 3.5em;
 $image-separation: 1em;
+$image-compact-separation: 0.6em;
 $image-width: 5.2em;
 $icon-padding: 0.5em;
 $icon-height: $card-height - $icon-padding * 2;
@@ -64,15 +65,23 @@ $icon-height: $card-height - $icon-padding * 2;
 
 #imageFrame {
     flex: 0 0;
-    margin-right: $image-separation;
-    text-align: center;
+
+    :host([showThumbnails='true']) & {
+        margin-right: $image-separation;
+        text-align: center;
+    }
+
+    :host([showThumbnails='false']) & {
+        margin-right: $image-compact-separation;
+        text-align: right;
+    }
 
     :host([imageType='none']) & {
         display: none;
     }
 
-    :host([imageType='icon']) &,
-    :host([imageType='thumbnail']) & {
+    :host([showThumbnails='true'][imageType='icon']) &,
+    :host([showThumbnails='true'][imageType='thumbnail']) & {
         flex-basis: $image-width;
     }
 
@@ -115,8 +124,11 @@ $icon-height: $card-height - $icon-padding * 2;
 #icon {
     flex: 0 0;
     --height: $icon-height;
-    padding: $icon-padding;
     color: #999;
+
+    :host([showThumbnails='true']) & {
+        padding: $icon-padding;
+    }
 
     :host(:not([imageType='icon'])) & {
         display: none;
