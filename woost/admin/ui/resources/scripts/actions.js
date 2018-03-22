@@ -496,32 +496,18 @@ woost.admin.actions.TranslationsAction = class TranslationsAction extends woost.
     }
 }
 
-woost.admin.actions.AddBlockBeforeAction = class AddBlockBeforeAction extends woost.admin.actions.Action {
+woost.admin.actions.AddBlockAction = class AddBlockAction extends woost.admin.actions.Action {
 
     get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add-before.svg`)
-    }
-}
-
-woost.admin.actions.AddBlockAfterAction = class AddBlockAfterAction extends woost.admin.actions.Action {
-
-    get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add-after.svg`)
-    }
-}
-
-woost.admin.actions.EditBlockAction = class EditBlockAction extends woost.admin.actions.Action {
-
-    get translationKey() {
-        return `${this.translationPrefix}.edit`;
-    }
-
-    get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/edit.svg`)
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add.svg`)
     }
 }
 
 woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.admin.actions.Action {
+
+    get min() {
+        return 1;
+    }
 
     get translationKey() {
         return `${this.translationPrefix}.remove`;
@@ -819,11 +805,17 @@ woost.admin.actions.ClearAction.register({
     slots: ["referenceToolbar"]
 });
 
+woost.admin.actions.AddBlockAction.register({
+    id: "add-block",
+    slots: ["blocksToolbar"]
+});
+
 woost.admin.actions.EditAction.register({
     id: "edit",
     slots: [
         "contextMenu",
         "listingToolbar",
+        "blocksToolbar",
         "referenceToolbar",
         "collectionToolbar"
     ]
@@ -890,21 +882,6 @@ woost.admin.actions.SettingsScopeAction.register({
 woost.admin.actions.TranslationsAction.register({
     id: "translations",
     slots: ["editNavigationToolbar"]
-});
-
-woost.admin.actions.AddBlockBeforeAction.register({
-    id: "add-block-before",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.AddBlockAfterAction.register({
-    id: "add-block-after",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.EditBlockAction.register({
-    id: "edit-block",
-    slots: ["blocksToolbar"]
 });
 
 woost.admin.actions.RemoveBlockAction.register({
