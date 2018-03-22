@@ -50,6 +50,7 @@ cocktail.declare("woost.admin.ui");
                 parameters = {};
             }
             parameters[cocktail.ui.editable] = cocktail.ui.NOT_EDITABLE;
+            parameters.integral = true;
             parameters.items = new cocktail.schema.Reference({
                 type: "woost.models.Block"
             });
