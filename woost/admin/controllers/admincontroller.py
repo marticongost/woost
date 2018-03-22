@@ -10,12 +10,14 @@ from cocktail.translations import (
 )
 from cocktail.events import event_handler
 from cocktail.ui import components
+from cocktail.controllers import get_request_root_url
 from woost import app
 from woost.models import Configuration
 from woost.controllers.publishablecontroller import PublishableController
 import woost.admin.ui
 from .schemascontroller import SchemasController
 from .datacontroller import DataController
+from .previewcontroller import PreviewController
 
 
 class AdminController(PublishableController):
@@ -51,6 +53,8 @@ class AdminController(PublishableController):
             locales = sorted(config.languages, key = translate_locale),
             extra_dependencies = dependencies,
             variables = {
+                "woost.admin.origin":
+                    unicode(get_request_root_url()).rstrip("/"),
                 "woost.admin.url": url,
                 "woost.admin.id": app.publishable.id
             }
