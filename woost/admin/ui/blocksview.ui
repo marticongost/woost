@@ -101,31 +101,32 @@
     ?>
 
     <?on navigationNode:changed
-    let selection = [newValue.item];
+    if (!oldValue) {
+        let selection = [newValue.item];
 
-    this.actionList.actionParameters.selection = selection;
-    this.actionList.actions = Array.from(woost.admin.actions.forContext({
-        view: this,
-        slot: "blocksToolbar",
-        model: newValue.model,
-        item: newValue.item
-    }));
+        this.actionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: "blocksToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
 
-    this.navigationActionList.actionParameters.selection = selection;
-    this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
-        view: this,
-        slot: "blocksNavigationToolbar",
-        model: newValue.model,
-        item: newValue.item
-    }));
+        this.navigationActionList.actionParameters.selection = selection;
+        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            slot: "blocksNavigationToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
 
-    let url = this.getPreviewURL();
-    if (url) {
-        this.previewState = "loading";
-        this.previewFrame.src = url;
+        let url = this.getPreviewURL();
+        if (url) {
+            this.previewState = "loading";
+            this.previewFrame.src = url;
+        }
+
+        this.blocksTree.item = newValue.item;
     }
-
-    this.blocksTree.item = newValue.item;
     ?>
 
     <?on-window message
@@ -166,7 +167,7 @@
 
     <ui:with ui:element="main">
         <div id="sidePanel">
-            <ui:woost.admin.ui.BlocksTree id="blocksTree">
+            <ui:BlocksTree id="blocksTree">
 
                 <?on selectionChanged
                 const getId = (block) => block.value.id;
@@ -186,7 +187,7 @@
                 }
                 ?>
 
-            </ui:woost.admin.ui.BlocksTree>
+            </ui:BlocksTree>
         </div>
         <div id="previewPanel">
             <div id="previewContainer">
@@ -198,6 +199,20 @@
             </div>
         </div>
     </ui:with>
+
+    <ui:woost.admin.ui.BlocksTree ui:component="BlocksTree">
+        <?class
+        selectionActivated() {
+            if (this.selectedElements.size == 1) {
+                this.parentInstance.actionList.getAction("edit").invoke({selection: this.selectedValues});
+            }
+        }
+        ?>
+    </ui:woost.admin.ui.BlocksTree>
+
+    <?js
+    this.actionList.selectable = this.blocksTree;
+    ?>
 
 </ui:woost.admin.ui.StackNode>
 

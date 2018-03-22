@@ -61,15 +61,10 @@
     es: Traducciones
     en: Translations
 
-    [add-block-before]
-    ca: Afegir davant
-    es: Añadir delante
-    en: Add before
-
-    [add-block-after]
-    ca: Afegir darrere
-    es: Añadir detrás
-    en: Add after
+    [add-block]
+    ca: Nou bloc
+    es: Nuevo bloque
+    en: New block
 
     [toggle-rulers]
     ca: Guies
