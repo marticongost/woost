@@ -2,6 +2,7 @@
 $hl-foreground: #db8417;
 $hl-background: #dba55f;
 $hl-shadow: #bb6200;
+$hl-light-background: desaturate(lighten($hl-background, 30), 15);
 $selection-hl-foreground: lighten($hl-foreground, 40);
 $focus-color: #d2a265;
 
