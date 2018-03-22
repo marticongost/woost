@@ -14,6 +14,12 @@
         default="none"/>
 
     <ui:property
+        name="showThumbnails"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
         name="empty"
         type="boolean"
         reflected="true"
@@ -84,7 +90,7 @@
     else {
         this.empty = false;
 
-        let thumbnailURL = this.getThumbnailURL();
+        let thumbnailURL = this.showThumbnails && this.getThumbnailURL();
 
         if (thumbnailURL) {
             this.thumbnail.src = thumbnailURL;
