@@ -292,6 +292,7 @@ class Block(Item):
 
         block_proxy = self.get_block_proxy(view)
         block_proxy["data-woost-block"] = self.id
+        block_proxy.add_class("block")
 
         if self.element_type:
             block_proxy.tag = self.element_type
