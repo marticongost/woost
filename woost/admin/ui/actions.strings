@@ -71,6 +71,11 @@
     es: Añadir detrás
     en: Add after
 
+    [toggle-rulers]
+    ca: Guies
+    es: Guías
+    en: Rulers
+
     [save]
     ca: Desar
     es: Guardar

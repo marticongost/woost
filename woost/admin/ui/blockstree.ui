@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectableEntriesSelector=".BlockRow"
+    selectionType="multiple"
+    appliesAlternateCSSClasses="true"
+    tabindex="0">
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+
+    <ui:symbol name="BLOCK_MAP"/>
+
+    <ui:property
+        name="item"
+        reflected="false">
+        <?on changed
+        this.blocksTreeRoot.item = newValue;
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="hoverRow"
+        reflected="false">
+        <?on changed
+        if (oldValue) {
+            oldValue.hover = false;
+        }
+        if (newValue) {
+            newValue.hover = true;
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    createSlotDisplay(item, slot, depth = 0) {
+        const slotDisplay = this.constructor.SlotDisplay.create();
+        slotDisplay.blocksTree = this;
+        slotDisplay.depth = depth;
+        slotDisplay.item = item;
+        slotDisplay.slot = slot;
+        slotDisplay.update();
+        return slotDisplay;
+    }
+
+    createBlockDisplay(block, depth = 0) {
+        const display = this.constructor.BlockDisplay.create();
+        display.blocksTree = this;
+        display.depth = depth;
+        display.item = block;
+        return display;
+    }
+
+    get selectionContainer() {
+        return this.blocksTreeRoot;
+    }
+
+    getBlockRow(blockId) {
+        const display = this[BLOCK_MAP][blockId];
+        return display && display.blockRow;
+    }
+    ?>
+
+    <?js
+    this[BLOCK_MAP] = {};
+    ?>
+
+    <ui:BlocksContainer id="blocksTreeRoot">
+        <?js
+        element.blocksTree = this;
+        element.isBlocksTreeRoot = true;
+        ?>
+    </ui:BlocksContainer>
+
+    <div ui:component="BlocksContainer">
+
+        <ui:property
+            name="item"
+            reflected="false">
+            <?on changed
+            const model = cocktail.schema.getSchemaByName(newValue._class);
+            for (let member of model.members()) {
+                if (member instanceof woost.models.Slot) {
+                    const slotDisplay = this.blocksTree.createSlotDisplay(newValue, member, this.isBlocksTreeRoot ? 0 : this.depth + 1);
+                    this.slotsList.appendChild(slotDisplay);
+                }
+            }
+            ?>
+        </ui:property>
+
+        <ui:property
+            name="depth"
+            type="number"
+            reflected="true"
+            default="0">
+            <?on changed
+            this.style.setProperty("--depth", newValue);
+            ?>
+        </ui:property>
+
+        <div id="slotsList"/>
+
+    </div>
+
+    <div ui:component="SlotDisplay">
+
+        <ui:symbol name="..BLOCK_MAP"/>
+
+        <ui:property
+            name="item"
+            reflected="false"/>
+
+        <ui:property
+            name="slot"
+            reflected="false"/>
+
+        <ui:property
+            name="depth"
+            type="number"
+            reflected="true"
+            default="0">
+            <?on changed
+            this.style.setProperty("--depth", newValue);
+            ?>
+        </ui:property>
+
+        <?class
+        clear() {
+            cocktail.ui.empty(this);
+        }
+
+        update() {
+            this.slotHeading.innerHTML = this.slot.translate();
+            cocktail.ui.empty(this.slotBlocks);
+            const blocks = this.item[this.slot.name];
+            for (let block of blocks) {
+                this.addBlock(block);
+            }
+        }
+
+        addBlock(block) {
+            const display = this.blocksTree.createBlockDisplay(block, this.depth);
+            this.slotBlocks.appendChild(display);
+            this.blocksTree[BLOCK_MAP][block.id] = display;
+            return display;
+        }
+        ?>
+
+        <div id="slotHeading"/>
+        <div id="slotBlocks"/>
+
+    </div>
+
+    <ui:BlocksContainer ui:component="BlockDisplay">
+
+        <ui:property
+            name="disabledBlock"
+            type="boolean"
+            reflected="true"
+            default="false"/>
+
+        <ui:BlockRow id="blockRow" ui:placement="before slotsList"/>
+
+        <?on item:changed
+        const blockType = cocktail.schema.getSchemaByName(newValue._class);
+        this.disabledBlock = !newValue.enabled;
+        this.blockRow.dataBinding = {
+            member: new cocktail.schema.Reference({type: blockType}),
+            value: newValue
+        };
+        ?>
+
+        <div ui:component="BlockRow">
+
+            <ui:using mixin="cocktail.ui.DataDisplay"/>
+
+            <ui:property
+                name="hover"
+                type="boolean"
+                reflected="true"
+                default="false"/>
+
+            <?on value:changed
+            const blockType = cocktail.schema.getSchemaByName(newValue._class);
+            this.icon.src = blockType[woost.admin.ui.modelIconURL];
+            this.descriptionLabel.innerHTML = blockType.translateValue(newValue);
+            this.typeLabel.innerHTML = blockType.translate();
+            ?>
+
+            <?on mouseenter
+            this.parentInstance.hoverRow = this;
+            ?>
+
+            <?on mouseleave
+            this.parentInstance.hoverRow = null;
+            ?>
+
+            <ui:cocktail.ui.SVG id="icon"/>
+
+            <div id="blockInfo">
+                <div id="descriptionLabel"/>
+                <div id="typeLabel"/>
+            </div>
+
+        </div>
+
+    </ui:BlocksContainer>
+
+</div>
+

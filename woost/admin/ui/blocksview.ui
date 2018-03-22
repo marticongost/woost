@@ -5,6 +5,10 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:requires component="cocktail.ui.Lock"/>
+    <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
+
+    <ui:symbol name="POST_MESSAGE"/>
+    <ui:symbol name="APPLYING_HOVER_FROM_PREVIEW"/>
 
     <ui:property
         name="previewState"
@@ -23,6 +27,78 @@
         }
         ?>
     </ui:property>
+
+    <ui:property
+        name="gridRulers"
+        type="boolean"
+        reflected="true"
+        default="false">
+        <?on changed
+        this[POST_MESSAGE]({
+            type: "rulers",
+            visible: newValue
+        });
+        this.actionList.updateEntries();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="availableGridSizes"
+        reflected="false"/>
+
+    <ui:property
+        name="gridSize"
+        type="string"
+        reflected="true">
+        <?on changed
+        let viewportWidth;
+        if (newValue == "auto") {
+            viewportWidth = "100%";
+        }
+        else {
+            let prevSize;
+            const GRID_MARGIN = 50;
+            for (let size of this.availableGridSizes) {
+                if (size.identifier == newValue) {
+                    if (size.minWidth) {
+                        viewportWidth = (size.minWidth + GRID_MARGIN) + "px";
+                    }
+                    else if (prevSize && prevSize.minWidth) {
+                        viewportWidth = (prevSize.minWidth + GRID_MARGIN - 1) + "px";
+                    }
+                    break;
+                }
+                prevSize = size;
+            }
+        }
+        this.previewFrame.style.width = viewportWidth;
+        ?>
+    </ui:property>
+
+    <?class
+    get editedItem() {
+        return this.navigationNode.item;
+    }
+
+    get editedModel() {
+        return this.navigationNode.model;
+    }
+
+    getPreviewURL() {
+        return `${woost.admin.url}/preview/${this.editedItem.id}`;
+    }
+
+    [POST_MESSAGE](data) {
+        if (!this.previewFrame || !this.previewFrame.contentWindow) {
+            return false;
+        }
+        this.previewFrame.contentWindow.postMessage(
+            data,
+            URI().path("").query("").toString()
+        );
+        return true;
+    }
+    ?>
 
     <?on navigationNode:changed
     let selection = [newValue.item];
@@ -48,20 +124,37 @@
         this.previewState = "loading";
         this.previewFrame.src = url;
     }
+
+    this.blocksTree.item = newValue.item;
     ?>
 
-    <?class
-    get editedItem() {
-        return this.navigationNode.item;
-    }
-
-    get editedModel() {
-        return this.navigationNode.model;
-    }
-
-    getPreviewURL() {
-        if (this.editedModel.isSchema(woost.models.Publishable)) {
-            return URI(this.editedItem._url).addQuery({"woost.admin.edit": 1});
+    <?on-window message
+    if (e.origin == woost.admin.origin) {
+        if (e.data.type == "hover") {
+            this[APPLYING_HOVER_FROM_PREVIEW] = true;
+            try {
+                this.blocksTree.hoverRow = this.blocksTree.getBlockRow(e.data.target);
+            }
+            finally {
+                this[APPLYING_HOVER_FROM_PREVIEW] = false;
+            }
+        }
+        else if (e.data.type == "click") {
+            const blockRow = this.blocksTree.getBlockRow(e.data.target);
+            if (blockRow) {
+                this.blocksTree.clickSelection(e.data.eventData, blockRow);
+                this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+            }
+        }
+        else if (e.data.type == "keydown") {
+            this.blocksTree.keyboardSelection(e.data.eventData);
+            this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+        }
+        else if (e.data.type == "setDocumentHeight") {
+            this.previewFrame.style.height = `${e.data.height}px`;
+        }
+        else if (e.data.type == "setAvailableGridSizes") {
+            this.availableGridSizes = e.data.sizes;
         }
     }
     ?>
@@ -72,13 +165,37 @@
     </ui:with>
 
     <ui:with ui:element="main">
-        <div id="sidePanel"/>
-        <div id="previewPanel">
-            <iframe id="previewFrame">
-                <?on load
-                instance.previewState = "loaded";
+        <div id="sidePanel">
+            <ui:woost.admin.ui.BlocksTree id="blocksTree">
+
+                <?on selectionChanged
+                const getId = (block) => block.value.id;
+                instance[POST_MESSAGE]({
+                    type: "selectionChanged",
+                    added: Array.from(e.detail.added, getId),
+                    removed: Array.from(e.detail.removed, getId)
+                });
                 ?>
-            </iframe>
+
+                <?on hoverRow:changed
+                if (!instance[APPLYING_HOVER_FROM_PREVIEW]) {
+                    instance[POST_MESSAGE]({
+                        type: "hover",
+                        target: newValue ? newValue.value.id : null
+                    });
+                }
+                ?>
+
+            </ui:woost.admin.ui.BlocksTree>
+        </div>
+        <div id="previewPanel">
+            <div id="previewContainer">
+                <iframe id="previewFrame">
+                    <?on load
+                    instance.previewState = "loaded";
+                    ?>
+                </iframe>
+            </div>
         </div>
     </ui:with>
 

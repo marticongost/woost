@@ -524,11 +524,39 @@ woost.admin.actions.EditBlockAction = class EditBlockAction extends woost.admin.
 woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.admin.actions.Action {
 
     get translationKey() {
-        return `${this.translationPrefix}.delete`;
+        return `${this.translationPrefix}.remove`;
     }
 
     get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`)
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/remove.svg`)
+    }
+}
+
+woost.admin.actions.ToggleRulersAction = class ToggleRulersAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        const state = super.getState(context);
+        if (state == "visible" && this.view.gridRulers) {
+            return "emphasized";
+        }
+        else {
+            return state;
+        }
+    }
+
+    invoke(context) {
+        this.view.gridRulers = !this.view.gridRulers;
+    }
+}
+
+woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.admin.actions.Action {
+
+    translate() {
+        return "";
+    }
+
+    createEntry() {
+        return woost.admin.ui.GridSizeDropdown.create();
     }
 }
 
@@ -881,6 +909,16 @@ woost.admin.actions.EditBlockAction.register({
 
 woost.admin.actions.RemoveBlockAction.register({
     id: "remove-block",
+    slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.ToggleRulersAction.register({
+    id: "toggle-rulers",
+    slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.SetGridSizeAction.register({
+    id: "grid-size",
     slots: ["blocksToolbar"]
 });
 
