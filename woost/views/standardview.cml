@@ -41,13 +41,6 @@ from woost.models import Configuration
 
     <header py:id="site_header">
 
-        <py:binding>
-            <?py
-            if app.editing:
-                element.visible = False
-            ?>
-        </py:binding>
-
         <h1 py:id="site_title">
             <py:ready>
                 <?py
@@ -96,13 +89,6 @@ from woost.models import Configuration
 
     <nav py:id="site_navigation">
 
-        <py:binding>
-            <?py
-            if app.editing:
-                element.visible = False
-            ?>
-        </py:binding>
-
         <h1 py:id="site_navigation_heading" style="display:none">
             ${translations("woost.views.StandardView.site_navigation_title")}
         </h1>
@@ -142,14 +128,6 @@ from woost.models import Configuration
     </main>
 
     <footer py:id="site_footer">
-
-        <py:binding>
-            <?py
-            if app.editing:
-                element.visible = False
-            ?>
-        </py:binding>
-
         <py:woost.views.BlockList
             py:id="site_footer_blocks"
             py:slot="footer_blocks">

@@ -541,7 +541,8 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
 
         static get children() {
             return {
-                rel: woost.admin.nodes.RelationNode
+                rel: woost.admin.nodes.RelationNode,
+                blocks: woost.admin.nodes.BlocksNode
             };
         }
 
@@ -654,12 +655,16 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
         return cocktail.ui.translations["woost.admin.ui.actions.blocks"];
     }
 
-    get component() {
+    get defaultComponent() {
         return woost.admin.ui.BlocksView;
     }
 
-    createStackNode() {
-        return this.component.create();
+    get item() {
+        return this.parent.item;
+    }
+
+    get model() {
+        return this.parent.model;
     }
 }
 

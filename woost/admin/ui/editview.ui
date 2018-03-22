@@ -172,19 +172,24 @@
     </ui:with>
 
     <ui:with ui:element="main">
-        <ui:cocktail.ui.Form
-            id="editForm"
-            tabbed="true"
-            defaultGroup="item">
-            <?on value:changed
-            woost.admin.editState.set(newValue);
-            ?>
-            <?js
-            element.displayFactory = woost.admin.ui.formControls;
-            element.tabs.queryParameter = "tab";
-            ?>
-        </ui:cocktail.ui.Form>
+        <ui:EditForm id="editForm"/>
     </ui:with>
+
+    <ui:cocktail.ui.Form
+        ui:component="EditForm"
+        tabbed="true"
+        defaultGroup="item">
+
+        <?on value:changed
+        woost.admin.editState.set(newValue);
+        ?>
+
+        <?js
+        element.displayFactory = woost.admin.ui.formControls;
+        element.tabs.queryParameter = "tab";
+        ?>
+
+    </ui:cocktail.ui.Form>
 
 </ui:woost.admin.ui.StackNode>
 

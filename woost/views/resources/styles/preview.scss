@@ -1,0 +1,22 @@
+
+$outline-color: #f1b67f;
+
+body {
+    overflow: hidden;
+    user-select: none;
+}
+
+.woost-preview-overlay {
+    position: absolute;
+    cursor: pointer;
+    outline: 1px dotted $outline-color;
+
+    &.woost-preview-hover {
+        background-color: rgba($outline-color, 0.3);
+    }
+
+    &.woost-preview-selected {
+        outline: 3px solid darken($outline-color, 20);
+    }
+}
+

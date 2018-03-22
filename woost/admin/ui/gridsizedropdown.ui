@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdownSelector
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?on action:changed
+    const view = newValue.view;
+    view.addEventListener("availableGridSizesChanged", (e) => {
+        const gridSizes = e.detail.newValue;
+        this.dataBinding = {
+            member: new cocktail.schema.String({
+                enumeration: ["auto", ...Array.from(gridSizes, (size) => size.identifier)],
+                translatableEnumeration: false
+            }),
+            value: "auto"
+        };
+    });
+    cocktail.ui.link(
+        this,
+        view,
+        ["value", "gridSize"]
+    );
+    ?>
+
+</ui:cocktail.ui.ActionListDropdownSelector>
+

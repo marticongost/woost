@@ -62,4 +62,5 @@ class AdminController(PublishableController):
 
     schemas = SchemasController()
     data = DataController()
+    preview = PreviewController()
 

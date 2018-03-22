@@ -31,6 +31,11 @@ en: Generic element
         es: Administración
         en: Administration
 
+        [blocks]
+        ca: Blocs
+        es: Bloques
+        en: Blocks
+
     [members]
 
         [id]

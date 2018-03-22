@@ -169,27 +169,6 @@ http://woost.info
         for prop in self._contextual_properties:
             setattr(self, prop.attr, None)
 
-    # Edit mode
-    def _get_editing(self):
-        return getattr(self._thread_data, "editing", False)
-
-    def _set_editing(self, value):
-        self._thread_data.editing = value
-
-    editing = property(_get_editing, _set_editing, doc =
-        """Determines if the current context is editing a publishable.
-
-        This can be used by controllers and templates to temporarily change the
-        state for the publishable to reflect the current edit session, or to
-        toggle the visibility of inline editing aids.
-
-        "Context" is typically an HTTP request, but the property can also be
-        used outside a web request/response cycle.
-
-        .. type:: bool
-        """
-    )
-
     def add_resources_repository(self, repository_name, repository_path):
         from woost.controllers.cmsresourcescontroller import CMSResourcesController
         resource_repositories.define(
@@ -224,6 +203,8 @@ class ContextualProperty(object):
                     setattr(Application, cls.attr, prop)
                     Application._contextual_properties.append(prop)
 
+    default = None
+
     def __get__(self, instance, cls = None):
         if instance is None:
             return self
@@ -234,7 +215,7 @@ class ContextualProperty(object):
         self.set(instance, value)
 
     def get(self, app):
-        return getattr(app._thread_data, self.attr, None)
+        return getattr(app._thread_data, self.attr, self.default)
 
     def set(self, app, value):
         setattr(app._thread_data, self.attr, value)
@@ -353,6 +334,22 @@ class ThemeProperty(ContextualProperty):
     def set(self, app, value):
         ContextualProperty.set(self, app, value)
         set_theme(value and value.identifier or None)
+
+
+class EditingProperty(ContextualProperty):
+    """Indicates wether the active publishable is being served in the context
+    of an edit session.
+
+    This can be used by controllers and templates to temporarily change the
+    state for the publishable to reflect the current edit session, or to
+    toggle the visibility of inline editing aids.
+
+    "Context" is typically an HTTP request, but the property can also be
+    used outside a web request/response cycle.
+
+    .. type:: bool
+    """
+    default = False
 
 
 @GenericMethod
