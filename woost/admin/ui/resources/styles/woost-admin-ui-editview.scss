@@ -5,6 +5,15 @@
 
 #actionList {
     flex: 1 1 auto;
+    :host([hasActionList='false']) & {
+        display: none;
+    }
+}
+
+#navigationActionList {
+    :host([hasNavigationActionList='false']) & {
+        display: none;
+    }
 }
 
 #main {
