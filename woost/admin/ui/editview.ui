@@ -10,6 +10,18 @@
     <ui:symbol name="LOCALE_STATES"/>
 
     <ui:property
+        name="hasActionList"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
+        name="hasNavigationActionList"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <ui:property
         name="locales"
         reflected="false">
         <?on changed
@@ -58,15 +70,19 @@
 
         const actionListContext = this.getActionListContext();
 
-        this.actionList.actionParameters.selection = selection;
-        this.actionList.actions = Array.from(woost.admin.actions.forContext(
-            Object.assign({slot: "editToolbar"}, actionListContext)
-        ));
+        if (this.hasActionList) {
+            this.actionList.actionParameters.selection = selection;
+            this.actionList.actions = Array.from(woost.admin.actions.forContext(
+                Object.assign({slot: "editToolbar"}, actionListContext)
+            ));
+        }
 
-        this.navigationActionList.actionParameters.selection = selection;
-        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
-            Object.assign({slot: "editNavigationToolbar"}, actionListContext)
-        ));
+        if (this.hasNavigationActionList) {
+            this.navigationActionList.actionParameters.selection = selection;
+            this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
+                Object.assign({slot: "editNavigationToolbar"}, actionListContext)
+            ));
+        }
 
         if (newValue instanceof woost.admin.nodes.EditSettingsNode) {
             this.editForm.tabbed = false;
