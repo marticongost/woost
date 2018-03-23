@@ -306,6 +306,9 @@ def file_fields(exporter, model, ref = False):
     yield (lambda obj, path:
         ("_size_label", model.file_size.translate_value(obj.file_size))
     )
+    if ref:
+        yield _object_field(exporter, File.file_name)
+        yield _object_field(exporter, Publishable.resource_type)
 
 
 class TreeExport(Export):
