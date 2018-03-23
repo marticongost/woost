@@ -17,6 +17,22 @@
         ?>
     </ui:property>
 
+    <?class
+    getActionListContext() {
+        return {
+            view: this,
+            model: this.navigationNode.model,
+            item: this.navigationNode.item,
+            objectPath: this.navigationNode.objectPath,
+            editingTranslatedContent:
+                Array
+                    .from(this.navigationNode.editSchema.members())
+                    .some((member) => member.translated && member.name != "last_translation_update_time"),
+            editingSettings: this.navigationNode instanceof woost.admin.nodes.EditSettingsNode
+        };
+    }
+    ?>
+
     <?on navigationNode:changed
     if (!oldValue) {
         let selection = [newValue.item];
@@ -40,19 +56,7 @@
             }
         }
 
-        const editingSettings = newValue instanceof woost.admin.nodes.EditSettingsNode;
-
-        const actionListContext = {
-            view: this,
-            model: newValue.model,
-            item: newValue.item,
-            objectPath: newValue.objectPath,
-            editingTranslatedContent:
-                Array
-                    .from(newValue.editSchema.members())
-                    .some((member) => member.translated && member.name != "last_translation_update_time"),
-            editingSettings: editingSettings
-        };
+        const actionListContext = this.getActionListContext();
 
         this.actionList.actionParameters.selection = selection;
         this.actionList.actions = Array.from(woost.admin.actions.forContext(
@@ -64,7 +68,7 @@
             Object.assign({slot: "editNavigationToolbar"}, actionListContext)
         ));
 
-        if (editingSettings) {
+        if (newValue instanceof woost.admin.nodes.EditSettingsNode) {
             this.editForm.tabbed = false;
             this.editForm.grouped = false;
         }
