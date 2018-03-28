@@ -109,6 +109,18 @@
     }
     ?>
 
+    <?on nodeExposed
+    if (this.editForm.tabbed) {
+        this.editForm.tabs.updatesQuery = true;
+    }
+    ?>
+
+    <?on nodeCovered
+    if (this.editForm.tabbed) {
+        this.editForm.tabs.updatesQuery = false;
+    }
+    ?>
+
     <?class
     disconnectedCallback() {
         super.disconnectedCallback();
@@ -206,6 +218,7 @@
 
         <?js
         element.displayFactory = woost.admin.ui.formControls;
+        element.tabs.updatesQuery = false;
         element.tabs.queryParameter = "tab";
         ?>
 
