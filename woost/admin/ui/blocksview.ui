@@ -41,9 +41,18 @@
 
                 this.blockEditor.animationState = "opening";
 
-                // Update blocks on the preview view when the edit form changes
+                // Each time the block edit form changes
                 const form = this.blockEditor.editForm;
                 form.addEventListener("valueChanged", (e) => {
+
+                    // Update the state of the block on the blocks view
+                    woost.models.setValueAtPath(
+                        this.navigationNode.item,
+                        this.blockEditorNavigationNode.objectPath,
+                        e.detail.newValue
+                    );
+
+                    // Update blocks on the preview view
                     const changedMembers = Array.from(
                         form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
                         (change) => change.member.originalMember.fullName
