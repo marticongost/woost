@@ -130,5 +130,23 @@ cocktail.declare("woost.admin.ui");
             this.errors = errors;
         }
     }
+
+    woost.models.setValueAtPath = function setValueAtPath(root, path, newPathValue) {
+        let value = root;
+        for (let i = 0; i + 1 < path.length; i++) {
+            const step = path[i];
+            value = value[step.member.name];
+            if (step.index !== undefined) {
+                value = value[step.index];
+            }
+        }
+        const lastStep = path[path.length - 1];
+        if (lastStep.index === undefined) {
+            value[lastStep.member.name] = newPathValue;
+        }
+        else {
+            value[lastStep.member.name][lastStep.index] = newPathValue;
+        }
+    }
 }
 
