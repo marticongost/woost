@@ -718,11 +718,7 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
     }
 
     invoke() {
-        let node = this.node.parent;
-        while (node && !node.isCloseDestination) {
-            node = node.parent;
-        }
-        cocktail.navigation.push(node);
+        woost.admin.actions.up(this.node);
     }
 }
 
@@ -736,9 +732,15 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
     }
 }
 
-woost.admin.actions.addToParent = function (selection) {
+woost.admin.actions.addToParent = function (selection, sourceNode = null) {
 
-    const parentForm = cocktail.ui.root.stack.stackTop.stackParent.editForm;
+    sourceNode = sourceNode || cocktail.navigation.node;
+    let node = sourceNode.parent;
+    while (!node.editForm) {
+        node = node.parent;
+    }
+
+    const parentForm = node.editForm;
     const path = Array.from(cocktail.navigation.node.objectPath);
 
     parentForm.awaitFields().then((fields) => {
@@ -779,8 +781,15 @@ woost.admin.actions.addToParent = function (selection) {
         field.value = root[rootKey];
     });
 
-    let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
-    cocktail.navigation.push(parentURL);
+    woost.admin.actions.up(sourceNode);
+}
+
+woost.admin.actions.up = function (sourceNode) {
+    let node = (sourceNode || cocktail.navigation.node).parent;
+    while (node && !node.isCloseDestination) {
+        node = node.parent;
+    }
+    cocktail.navigation.push(node);
 }
 
 woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends woost.admin.actions.Action {
@@ -794,7 +803,7 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
     }
 
     invoke(context) {
-        woost.admin.actions.addToParent(context.selection);
+        woost.admin.actions.addToParent(context.selection, this.node);
     }
 }
 
