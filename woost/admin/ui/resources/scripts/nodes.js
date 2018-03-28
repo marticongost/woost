@@ -721,7 +721,7 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
 
     traverse() {
         super.traverse();
-        const blocksView = this.parent.parent.stackNode;
+        const blocksView = this.blocksView;
         blocksView.blockEditorNavigationNode = this;
         this.blockEditor = blocksView.blockEditor;
     }
@@ -732,6 +732,10 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
 
     get isCloseDestination() {
         return true;
+    }
+
+    get blocksView() {
+        return this.parent.parent.stackNode;
     }
 
     get editForm() {
