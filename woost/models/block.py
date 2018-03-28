@@ -312,22 +312,11 @@ class Block(Item):
                     block_proxy[key.strip()] = value.strip()
 
         if self.embedded_styles:
-            element_id = block_proxy.require_id()
 
             @view.when_document_ready
             def add_embedded_styles(document):
-
-                sass_init = "@import 'theme://';\n"
-                sass_init += self.embedded_styles_initialization or ""
-
-                sass_code = "%s#%s {%s}" % (
-                    sass_init,
-                    element_id,
-                    self.embedded_styles
-                )
-
                 try:
-                    css = SASSCompilation().compile(string = sass_code)
+                    css = self.get_embedded_css()
                 except sass.CompileError, error:
                     sys.stderr.write(
                         (
@@ -343,6 +332,7 @@ class Block(Item):
                 else:
                     styles = Element("style")
                     styles["type"] = "text/css"
+                    styles["data-woost-block-styles"] = self.id
                     styles.append(css)
                     document.head.append(styles)
 
@@ -356,6 +346,22 @@ class Block(Item):
             self.add_heading(view)
 
         view.depends_on(self)
+
+    def get_embedded_css(self):
+
+        sass_code = self.embedded_styles
+
+        if sass_code:
+            sass_init = "@import 'theme://';\n"
+            sass_init += self.embedded_styles_initialization or ""
+            sass_code = "%s.block[data-woost-block='%s'] {%s}" % (
+                sass_init,
+                self.id,
+                sass_code
+            )
+            return SASSCompilation().compile(string = sass_code)
+
+        return None
 
     def get_block_proxy(self, view):
         return view
