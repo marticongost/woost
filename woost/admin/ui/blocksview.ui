@@ -8,6 +8,8 @@
     <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
     <ui:requires component="woost.admin.ui.BlockEditView"/>
 
+    <ui:symbol name="PREVIEW_READY_PROMISE"/>
+    <ui:symbol name="PREVIEW_READY_RESOLVE_PROMISE"/>
     <ui:symbol name="POST_MESSAGE"/>
     <ui:symbol name="APPLYING_HOVER_FROM_PREVIEW"/>
 
@@ -79,6 +81,7 @@
         }
         else if (oldValue == "loading") {
             cocktail.ui.Lock.clear();
+            this[PREVIEW_READY_RESOLVE_PROMISE]();
         }
         ?>
     </ui:property>
@@ -158,14 +161,12 @@
     }
 
     [POST_MESSAGE](data) {
-        if (!this.previewFrame || !this.previewFrame.contentWindow) {
-            return false;
-        }
-        this.previewFrame.contentWindow.postMessage(
-            data,
-            URI().path("").query("").toString()
-        );
-        return true;
+        this[PREVIEW_READY_PROMISE].then(() => {
+            this.previewFrame.contentWindow.postMessage(
+                data,
+                URI().path("").query("").toString()
+            );
+        });
     }
     ?>
 
@@ -229,6 +230,12 @@
             this.availableGridSizes = e.data.sizes;
         }
     }
+    ?>
+
+    <?js
+    this[PREVIEW_READY_PROMISE] = new Promise((resolve, reject) => {
+        this[PREVIEW_READY_RESOLVE_PROMISE] = resolve;
+    });
     ?>
 
     <ui:with ui:element="headerContent">
