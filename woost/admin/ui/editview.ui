@@ -33,6 +33,7 @@
     getActionListContext() {
         return {
             view: this,
+            node: this.navigationNode,
             model: this.navigationNode.model,
             item: this.navigationNode.item,
             objectPath: this.navigationNode.objectPath,
@@ -40,7 +41,8 @@
                 Array
                     .from(this.navigationNode.editSchema.members())
                     .some((member) => member.translated && member.name != "last_translation_update_time"),
-            editingSettings: this.navigationNode instanceof woost.admin.nodes.EditSettingsNode
+            editingSettings: this.navigationNode instanceof woost.admin.nodes.EditSettingsNode,
+            editingBlocks: this.navigationNode instanceof woost.admin.nodes.BlocksNode
         };
     }
     ?>

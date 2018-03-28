@@ -71,6 +71,11 @@
     es: Guías
     en: Rulers
 
+    [toggle-selectors]
+    ca: Selectors
+    es: Selectores
+    en: Selectors
+
     [save]
     ca: Desar
     es: Guardar

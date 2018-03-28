@@ -14,6 +14,10 @@ woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackN
         return null;
     }
 
+    get isCloseDestination() {
+        return this.createsStackUI;
+    }
+
     createHeading() {
         let heading = woost.admin.ui.StackNode.Heading.create();
         heading.labelText = this.title;
@@ -105,6 +109,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                 if (!model) {
                     throw `Can't find model ${path[1]}`;
                 }
+                cocktail.navigation.log(`${this.constructor.name} creating new object`);
                 return model.loadDefaults([cocktail.getLanguage()])
                     .then((item) => {
                         item._new = true;
@@ -114,8 +119,8 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
-                            itemNode.consumePathSegment(path);
-                            itemNode.consumePathSegment(path);
+                            itemNode.consumePathSegment(path, "new object trigger");
+                            itemNode.consumePathSegment(path, "new object model");
                             return itemNode.resolvePath(path);
                         }
                         else {
@@ -130,6 +135,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
             const key = path[0];
             let objectResolution = this.getExistingObject(key);
             if (objectResolution) {
+                cocktail.navigation.log(`${this.constructor.name} resolving existing object "${key || ""}"`, objectResolution);
                 return Promise.resolve(objectResolution)
                     .then((item) => {
                         if (!item._deleted_translations) {
@@ -142,7 +148,9 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                             itemNode.item = item;
                             itemNode.itemKey = key;
                             itemNode.model = model;
-                            itemNode.consumePathSegment(path);
+                            if (this.consumesKeySegment) {
+                                itemNode.consumePathSegment(path, "existing object identifier");
+                            }
                             return itemNode.resolvePath(path);
                         }
                         else {
@@ -168,6 +176,10 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
             const id = Number(key);
             return isNaN(id) ? null : woost.models.Item.getInstance(id);
         }
+    }
+
+    get consumesKeySegment() {
+        return true;
     }
 
     getItemNodeClass(model, item) {
@@ -540,6 +552,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
 
         return null;
     }
+
+    get consumesKeySegment() {
+        return !this.objectPath || !this.objectPath[0].member.integral;
+    }
 }
 
 {
@@ -677,8 +693,62 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
 
     static get children() {
         return {
-            rel: woost.admin.nodes.RelationNode
+            rel: woost.admin.nodes.BlocksRelationNode
         };
+    }
+
+    activate() {
+        super.activate();
+        this.stackNode.blockEditorNavigationNode = null;
+    }
+}
+
+woost.admin.nodes.BlocksRelationNode = class BlocksRelationNode extends woost.admin.nodes.RelationNode {
+
+    getItemNodeClass(model, item) {
+        if (model.isSchema(woost.models.Block)) {
+            return woost.admin.nodes.EditBlockNode;
+        }
+        return super.getItemNodeClass(model, item);
+    }
+}
+
+woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.EditNode {
+
+    traverse() {
+        super.traverse();
+        this.parent.parent.stackNode.blockEditorNavigationNode = this;
+    }
+
+    get createsStackUI() {
+        return false;
+    }
+
+    get isCloseDestination() {
+        return true;
+    }
+
+    createHeading() {
+        let heading = woost.admin.ui.BlockEditViewHeading.create();
+        heading.dataBinding = {
+            member: new cocktail.schema.Reference({type: this.model}),
+            value: this.item
+        };
+        return heading;
+    }
+
+    get editSchemaOptions() {
+        return Object.assign(
+            super.editSchemaOptions,
+            {
+                [cocktail.schema.MEMBER_PARAMETERS]: {
+                    view_class: {
+                        enumeration: this.model.views,
+                        [cocktail.ui.formControl]: () => cocktail.ui.DropdownSelector
+                    }
+                }
+            }
+        );
     }
 }
 
