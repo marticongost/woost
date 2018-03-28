@@ -147,7 +147,10 @@ class Import(object):
             try:
                 value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
             except ValueError:
-                pass
+                try:
+                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+                except ValueError:
+                    pass
         elif isinstance(member, schema.Date):
             try:
                 value = datetime.strptime(value, "%Y-%m-%d").date()
