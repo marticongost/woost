@@ -318,8 +318,8 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     invoke(context) {
         // Edit an integral item, with a explicitly defined object path
         // (ie. an object in a deep tree, such as a block in the blocks view)
-        if (context.objectPath) {
-            cocktail.navigation.extendPath("rel", context.objectPath);
+        if (context.selectionObjectPath) {
+            cocktail.navigation.extendPath("rel", context.selectionObjectPath);
         }
         // Edit an item in an integral collection
         else if (this.collection && this.collection.integral) {
@@ -540,6 +540,23 @@ woost.admin.actions.ToggleRulersAction = class ToggleRulersAction extends woost.
     }
 }
 
+woost.admin.actions.ToggleSelectorsAction = class ToggleSelectorsAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        const state = super.getState(context);
+        if (state == "visible" && this.view.selectorsVisible) {
+            return "emphasized";
+        }
+        else {
+            return state;
+        }
+    }
+
+    invoke(context) {
+        this.view.selectorsVisible = !this.view.selectorsVisible;
+    }
+}
+
 woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.admin.actions.Action {
 
     translate() {
@@ -684,7 +701,7 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
     }
 
     getState(context) {
-        if (!this.objectPath) {
+        if (!this.objectPath || this.insideBlockEditPanel) {
             return "hidden";
         }
         return super.getState(context);
@@ -694,15 +711,28 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
     getState(context) {
-        if (this.view.isStackRoot) {
+        if (this.view.isStackRoot || this.editingBlocks) {
             return "hidden";
         }
         return super.getState(context);
     }
 
     invoke() {
-        let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
-        cocktail.navigation.push(parentURL);
+        let node = this.node.parent;
+        while (node && !node.isCloseDestination) {
+            node = node.parent;
+        }
+        cocktail.navigation.push(node);
+    }
+}
+
+woost.admin.actions.CancelAction = class CancelAction extends woost.admin.actions.CloseAction {
+
+    getState(context) {
+        if (!this.editingBlocks) {
+            return "hidden";
+        }
+        return super.getState(context);
     }
 }
 
@@ -896,6 +926,11 @@ woost.admin.actions.RemoveBlockAction.register({
 
 woost.admin.actions.ToggleRulersAction.register({
     id: "toggle-rulers",
+    slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.ToggleSelectorsAction.register({
+    id: "toggle-selectors",
     slots: ["blocksToolbar"]
 });
 

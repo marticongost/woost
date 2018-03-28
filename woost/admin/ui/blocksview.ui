@@ -6,9 +6,64 @@
 
     <ui:requires component="cocktail.ui.Lock"/>
     <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
+    <ui:requires component="woost.admin.ui.BlockEditView"/>
 
     <ui:symbol name="POST_MESSAGE"/>
     <ui:symbol name="APPLYING_HOVER_FROM_PREVIEW"/>
+
+    <ui:property
+        name="blockEditorNavigationNode"
+        reflected="false">
+        <?on changed
+        if (!oldValue || !newValue || !oldValue.matchesStackNode(newValue)) {
+            const prevEditor = this.blockEditor;
+            if (newValue) {
+                this.blockEditor = woost.admin.ui.BlockEditView.create();
+
+                // Set the position without waiting for the edit view stylesheets
+                // to kick in; otherwise, the recalculation of the flex heights
+                // for sidePanel causes a visible resizing effect
+                this.blockEditor.style.position = "absolute";
+
+                this.sidePanel.appendChild(this.blockEditor);
+                this.blockEditor.navigationNode = newValue;
+
+                if (prevEditor) {
+                    this.blockEditor.addEventListener(
+                        "animationend",
+                        (e) => this.sidePanel.removeChild(prevEditor),
+                        {once: true}
+                    );
+                }
+
+                this.blockEditor.animationState = "opening";
+
+                // Update blocks on the preview view when the edit form changes
+                const form = this.blockEditor.editForm;
+                form.addEventListener("valueChanged", (e) => {
+                    const changedMembers = Array.from(
+                        form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
+                        (change) => change.member.originalMember.fullName
+                    );
+                    instance[POST_MESSAGE]({
+                        type: "updateBlock",
+                        blockData: e.detail.newValue,
+                        changedMembers
+                    });
+                });
+            }
+            else if (prevEditor) {
+                this.blockEditor = null;
+                prevEditor.addEventListener(
+                    "animationend",
+                    (e) => this.sidePanel.removeChild(prevEditor),
+                    {once: true}
+                );
+                prevEditor.animationState = "closing";
+            }
+        }
+        ?>
+    </ui:property>
 
     <ui:property
         name="previewState"
@@ -36,6 +91,20 @@
         <?on changed
         this[POST_MESSAGE]({
             type: "rulers",
+            visible: newValue
+        });
+        this.actionList.updateEntries();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="selectorsVisible"
+        type="boolean"
+        reflected="true"
+        default="true">
+        <?on changed
+        this[POST_MESSAGE]({
+            type: "selectors",
             visible: newValue
         });
         this.actionList.updateEntries();
@@ -85,7 +154,7 @@
     }
 
     getPreviewURL() {
-        return `${woost.admin.url}/preview/${this.editedItem.id}`;
+        return `${woost.admin.url}/preview/page/${this.editedItem.id}`;
     }
 
     [POST_MESSAGE](data) {
@@ -106,6 +175,7 @@
 
         this.actionList.actions = Array.from(woost.admin.actions.forContext({
             view: this,
+            node: this.navigationNode,
             slot: "blocksToolbar",
             model: newValue.model,
             item: newValue.item
@@ -114,6 +184,7 @@
         this.navigationActionList.actionParameters.selection = selection;
         this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
             view: this,
+            node: this.navigationNode,
             slot: "blocksNavigationToolbar",
             model: newValue.model,
             item: newValue.item
@@ -176,6 +247,21 @@
                     added: Array.from(e.detail.added, getId),
                     removed: Array.from(e.detail.removed, getId)
                 });
+
+                // Change the edited block by selecting blocks from the preview
+                // TODO: should probably disable multiple selection or hide the
+                // edit view if a multiple selection is made
+                if (instance.blockEditorNavigationNode) {
+                    const selectedElement = this.selectedElement;
+                    if (selectedElement) {
+                        const uri = URI(instance.navigationNode.url);
+                        const newObjectURI = uri.segment([...uri.segment(), "rel", selectedElement.objectPath]);
+                        cocktail.navigation.push(newObjectURI.toString());
+                    }
+                    else {
+                        cocktail.navigation.push(instance.navigationNode);
+                    }
+                }
                 ?>
 
                 <?on hoverRow:changed
@@ -193,6 +279,10 @@
             <div id="previewContainer">
                 <iframe id="previewFrame">
                     <?on load
+                    instance[POST_MESSAGE]({
+                        type: "initialize",
+                        baseURL: woost.admin.url + "/preview/"
+                    });
                     instance.previewState = "loaded";
                     ?>
                 </iframe>
@@ -206,7 +296,7 @@
             if (this.selectedElements.size == 1) {
                 this.parentInstance.actionList.getAction("edit").invoke({
                     selection: this.selectedValues,
-                    objectPath: this.selectedElement.objectPath
+                    selectionObjectPath: this.selectedElement.objectPath
                 });
             }
         }

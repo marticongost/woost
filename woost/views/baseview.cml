@@ -123,6 +123,7 @@ from woost.models import Configuration, Publishable, Document
         <?py
         if app.editing:
             element.add_resource("woost://styles/preview.scss.css")
+            element.add_resource("cocktail://scripts/uri.js")
             element.add_resource("woost://scripts/preview.js")
             element.set_client_variable("woost.preview.origin", unicode(get_request_root_url()).rstrip("/"))
 

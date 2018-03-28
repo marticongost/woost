@@ -15,9 +15,13 @@
 }
 
 #sidePanel {
-    flex: 0 0 auto;
-    width: 45em;
-    overflow: hidden;
+    display: flex;
+    flex: 0 0 45em;
+    position: relative;
+}
+
+#blocksTree {
+    flex: 1 1 auto;
     overflow-y: auto;
 }
 

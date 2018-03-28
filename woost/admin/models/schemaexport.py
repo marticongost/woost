@@ -21,7 +21,8 @@ from woost.models import (
     DeletePermission,
     ReadMemberPermission,
     ModifyMemberPermission,
-    Slot
+    Slot,
+    Block
 )
 from woost.models.utils import get_model_dotted_name
 from .dataexport import Export
@@ -385,6 +386,9 @@ class SchemaExport(MemberExport):
         if member.admin_show_thumbnails:
             yield (u"[woost.admin.ui.showThumbnails]", "true")
 
+        if issubclass(member, Block):
+            yield (u"views", dumps(member.views))
+
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):
             for member in members:
@@ -471,7 +475,14 @@ class SchemaExport(MemberExport):
                 lambda: translations(member, suffix = ".select")
             )
 
-        if (
+        if member is Block.view_class:
+            exported_views = set()
+            for cls in Block.schema_tree():
+                for view in cls.views:
+                    if view not in exported_views:
+                        yield prefix + ".values." + view
+                        exported_views.add(view)
+        elif (
             member.translatable_enumeration
             and member.enumeration
             and isinstance(member.enumeration, Iterable)

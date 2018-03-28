@@ -13,6 +13,7 @@
     getNavigationActions() {
         return Array.from(woost.admin.actions.forContext({
             view: this,
+            node: this.navigationNode,
             slot: this.actionSlotPrefix + "Navigation",
             model: this.model
         }));
