@@ -602,6 +602,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
             return this.model[woost.admin.ui.editView] || woost.admin.ui.EditView;
         }
 
+        get editForm() {
+            return this.stackNode.editForm;
+        }
+
         get editSchema() {
             let schema = this[EDIT_SCHEMA];
             if (!schema) {
@@ -717,7 +721,9 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
 
     traverse() {
         super.traverse();
-        this.parent.parent.stackNode.blockEditorNavigationNode = this;
+        const blocksView = this.parent.parent.stackNode;
+        blocksView.blockEditorNavigationNode = this;
+        this.blockEditor = blocksView.blockEditor;
     }
 
     get createsStackUI() {
@@ -726,6 +732,10 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
 
     get isCloseDestination() {
         return true;
+    }
+
+    get editForm() {
+        return this.blockEditor && this.blockEditor.editForm;
     }
 
     createHeading() {
