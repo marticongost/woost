@@ -537,3 +537,14 @@ class SlotExport(MemberExport):
             if not (key == "required" and value):
                 yield key, value
 
+
+@exports_member(schema.CodeBlock)
+class CodeBlockExport(MemberExport):
+
+    def get_properties(self, member, nested):
+        for prop in MemberExport.get_properties(self, member, nested):
+            yield prop
+
+        if member.language:
+            yield u"language", dumps(member.language)
+
