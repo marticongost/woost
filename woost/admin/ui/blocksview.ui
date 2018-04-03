@@ -158,6 +158,28 @@
     </ui:property>
 
     <?class
+    connectedCallback() {
+        super.connectedCallback();
+
+        // Load the current edit state into the preview iframe
+        let url = this.getPreviewURL();
+        if (url) {
+            this.previewState = "loading";
+
+            cocktail.ui.request({
+                url,
+                method: "POST",
+                data: this.navigationNode.model.toJSONValue(this.navigationNode.item)
+            })
+                .then((xhr) => {
+                    const previewDoc = this.previewFrame.contentDocument;
+                    previewDoc.open();
+                    previewDoc.write(xhr.responseText);
+                    previewDoc.close();
+                });
+        }
+    }
+
     get editedItem() {
         return this.navigationNode.item;
     }
@@ -200,13 +222,6 @@
             model: newValue.model,
             item: newValue.item
         }));
-
-        let url = this.getPreviewURL();
-        if (url) {
-            this.previewState = "loading";
-            this.previewFrame.src = url;
-        }
-
         this.blocksTree.item = newValue.item;
     }
     ?>
