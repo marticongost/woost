@@ -59,6 +59,8 @@ def setup_preview_request(publishable, kwargs):
 
 class PagePreviewController(HTTPMethodController):
 
+    data_import = Import
+
     @cherrypy.expose
     def GET(self, publishable, **kwargs):
         return self._preview(publishable = publishable, **kwargs)
@@ -73,13 +75,31 @@ class PagePreviewController(HTTPMethodController):
         **kwargs
     ):
         setup_preview_request(publishable, kwargs)
-
+        self._load_page_data(app.publishable)
         controller_class = app.publishable.resolve_controller()
 
         if not controller_class:
             raise cherrypy.NotFound()
 
         return controller_class()(**kwargs)
+
+    def _load_page_data(self, publishable):
+        if (
+            cherrypy.request.method == "POST"
+            and int(cherrypy.request.headers["Content-Length"])
+        ):
+            # Validate the content type
+            content_type = cherrypy.request.headers["Content-Type"]
+            JSON_MIME = "application/json"
+            if content_type != JSON_MIME:
+                raise cherrypy.HTTPError(
+                    400,
+                    "POST data should be in %s format, received %s instead"
+                    % (JSON_MIME, content_type)
+                )
+
+            data = json.load(cherrypy.request.body)
+            self.data_import(publishable, data)
 
 
 class BaseBlockPreviewController(HTTPMethodController):

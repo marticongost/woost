@@ -688,7 +688,7 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     }
 
     get item() {
-        return this.parent.item;
+        return woost.admin.editState.get(this.parent.item);
     }
 
     get model() {
