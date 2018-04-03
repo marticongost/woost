@@ -17,7 +17,6 @@ from cocktail.persistence import datastore
 from cocktail import schema
 from woost import app
 from .item import Item
-from .slot import Slot
 from .website import Website
 from .trigger import Trigger
 
@@ -35,8 +34,6 @@ class Configuration(Item):
 
     members_order = [
         "triggers",
-        "common_blocks",
-        "footer_blocks"
     ]
 
     @classgetter
@@ -60,12 +57,6 @@ class Configuration(Item):
         integral = True,
         member_group = "administration"
     )
-
-    # Blocks
-    #------------------------------------------------------------------------------
-    common_blocks = Slot()
-
-    footer_blocks = Slot()
 
     def get_setting(self, key):
         """Obtains the value for the indicated configuration option.

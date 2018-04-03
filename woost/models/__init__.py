@@ -136,6 +136,8 @@ from . import staticpublication
 # Blocks
 from .slot import Slot
 from .block import Block
+from .blockscatalog import BlocksCatalog
+from .blockclone import BlockClone
 from .containerblock import ContainerBlock
 from .blockimagefactoryreference import BlockImageFactoryReference
 from .customblock import CustomBlock

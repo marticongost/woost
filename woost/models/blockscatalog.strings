@@ -1,0 +1,23 @@
+
+[woost.models.blockscatalog.BlocksCatalog]
+ca: Catàleg de blocs
+es: Catálogo de bloques
+en: Blocks catalog
+
+    [plural]
+    ca: Catàlegs de blocs
+    es: Catálogos de bloques
+    en: Blocks catalogs
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [blocks]
+        ca: Blocs
+        es: Bloques
+        en: Blocks
+

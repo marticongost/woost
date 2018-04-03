@@ -7,7 +7,6 @@ from cocktail.events import event_handler
 from cocktail import schema
 from woost.models.item import Item
 from woost.models.publishable import Publishable
-from .slot import Slot
 
 
 class Website(Item):
@@ -19,8 +18,7 @@ class Website(Item):
         "site_name",
         "identifier",
         "hosts",
-        "specific_content",
-        "footer_blocks"
+        "specific_content"
     ]
 
     # website
@@ -49,8 +47,6 @@ class Website(Item):
         visible = False,
         related_key = "websites"
     )
-
-    footer_blocks = Slot()
 
     def get_published_languages(self, languages = None):
 

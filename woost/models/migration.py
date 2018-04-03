@@ -1612,3 +1612,162 @@ def remove_configuration_websites(e):
         except AttributeError:
             pass
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.create_block_catalogs")
+
+@when(step.executing)
+def create_block_catalogs(e):
+
+    from cocktail import schema
+    from cocktail.translations import translations
+    from woost.models import (
+        Item,
+        Slot,
+        Configuration,
+        Website,
+        Block,
+        BlocksCatalog,
+        BlockClone
+    )
+
+    config = Configuration.instance
+
+    def T(**values):
+        return schema.TranslatedValues(
+            **dict(
+                (lang, v)
+                for lang, v in values.iteritems()
+                if lang in config.languages
+            )
+        )
+
+    catalog_blocks = set()
+    catalog_slot_keys = set()
+
+    def create_catalogs(
+        source,
+        qname_prefix,
+        old_slots = (),
+        title_suffix = ""
+    ):
+        catalog_defs = list(old_slots)
+
+        for member in source.__class__.iter_members():
+
+            if isinstance(member, Slot):
+                catalog_defs.append((
+                    member.name,
+                    {
+                        "title": schema.TranslatedValues(
+                            **dict(
+                                (
+                                    language,
+                                    translations(member, language = language)
+                                    + title_suffix
+                                )
+                                for language in config.languages
+                            )
+                        )
+                    }
+                ))
+
+        for slot_name, catalog_kwargs in catalog_defs:
+
+            catalog = BlocksCatalog.new(**catalog_kwargs)
+
+            if not catalog.qname:
+                qname = qname_prefix + "." + slot_name
+                if qname.endswith("_blocks"):
+                    qname = qname[:-len("_blocks")]
+                catalog.qname = qname
+
+            blocks = getattr(source, "_" + slot_name, None)
+            if blocks:
+                catalog.blocks = list(blocks)
+
+            catalog_slot_keys.add("_%s_%s" % (source.__class__.__name__, slot_name))
+
+            for block in blocks:
+                catalog_blocks.add(block)
+
+    footer_def = (
+        "footer_blocks", {
+            "title": T(
+                ca = u"Peu de pàgina",
+                es = u"Pie de página",
+                en = u"Footer"
+            )
+        }
+    )
+
+    create_catalogs(config, "woost.block_catalogs", [
+        ("common_blocks", {
+            "title": T(
+                ca = u"Blocs comuns",
+                es = u"Bloques comunes",
+                en = u"Common blocks"
+            )
+        }),
+        footer_def
+    ])
+
+    for website in Website.select():
+        create_catalogs(
+            website,
+            website.identifier + ".block_catalogs",
+            (footer_def,) if getattr(website, "_footer_blocks", None) else (),
+            title_suffix = u" - " + translations(website)
+        )
+
+    for block in catalog_blocks:
+        for member in block.__class__.iter_members():
+            related_end = getattr(member, "related_end", None)
+            if (
+                related_end
+                and isinstance(related_end, Slot)
+                and related_end.schema not in (
+                    Configuration,
+                    Website,
+                    BlocksCatalog
+                )
+            ):
+                referrals = getattr(block, "_" + member.name, None)
+                if referrals is not None:
+                    delattr(block, "_" + member.name)
+                    for referrer in referrals:
+                        clone = BlockClone.new()
+                        clone.source_block = block
+                        blocks = referrer.get(related_end)
+                        index = blocks.index(block)
+                        blocks._items[index] = clone
+
+    # Slot related ends are now a single reference
+    slot_keys = []
+
+    for model in Item.schema_tree():
+        if issubclass(model, (Configuration, Website, BlocksCatalog)):
+            continue
+        for member in model.iter_members(recursive = False):
+            if isinstance(member, Slot):
+                slot_keys.append("_" + member.related_end.name)
+
+    for block in Block.select():
+        for slot_key in slot_keys:
+            value = getattr(block, slot_key, None)
+            if value is not None and not isinstance(value, Block):
+                if len(value) == 1:
+                    setattr(block, slot_key, value[0])
+                elif len(value) == 0:
+                    setattr(block, slot_key, None)
+                else:
+                    raise ValueError("%s.%s contains too many blocks" % (
+                        block,
+                        slot_key
+                    ))
+        for slot_key in catalog_slot_keys:
+            try:
+                delattr(block, slot_key)
+            except AttributeError:
+                pass
+

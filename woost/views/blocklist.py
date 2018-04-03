@@ -53,7 +53,7 @@ class BlockList(Element):
 
         if self.blocks:
             for block in self.blocks:
-                self.depends_on(block)
+                block.add_view_dependencies(self)
                 if block.is_published():
                     has_visible_blocks = True
                     block_view = self.create_block_view(block)

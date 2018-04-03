@@ -15,15 +15,24 @@ class Slot(schema.Collection):
             from woost.models.block import Block
             kwargs["items"] = schema.Reference(type = Block)
 
+        related_end = kwargs.get("related_end")
+
+        if not related_end:
+            related_end = schema.Reference()
+        elif isinstance(related_end, basestring):
+            related_end = schema.Reference(related_end)
+        elif isinstance(related_end, dict):
+            related_end = schema.Reference(**related_end)
+
         kwargs["integral"] = True
         kwargs["bidirectional"] = True
-        kwargs["related_end"] = schema.Reference()
+        kwargs["related_end"] = related_end
         kwargs["cascade_delete"] = True
         kwargs.setdefault("text_search", True)
         kwargs.setdefault("cascade_cache_invalidation", "always")
         kwargs.setdefault("listable", False)
         kwargs.setdefault("searchable", False)
-        kwargs.setdefault("member_group", "blocks")
+        kwargs.setdefault("editable", schema.NOT_EDITABLE)
         schema.Collection.__init__(self, *args, **kwargs)
 
     @event_handler

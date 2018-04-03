@@ -1,0 +1,21 @@
+
+[woost.models.blockclone.BlockClone]
+ca: Bloc clonat
+es: Bloque clonado
+en: Cloned block
+
+    [plural]
+    ca: Blocs clonats
+    es: Bloques clonados
+    en: Cloned blocks
+
+    [instance(instance, **kwargs)]
+    *: t{instance.source_block}
+
+    [members]
+
+        [source_block]
+        ca: Bloc original
+        es: Bloque original
+        en: Original block
+
