@@ -14,16 +14,6 @@ en: Global configuration
 
     [members]
 
-        [common_blocks]
-        ca: Blocs comuns
-        es: Bloques comunes
-        en: Common blocks
-
-        [footer_blocks]
-        ca: Peu de pàgina
-        es: Pie de página
-        en: Footer
-
         [websites]
         ca: Pàgines web
         es: Páginas web

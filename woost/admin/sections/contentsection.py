@@ -7,6 +7,7 @@ from .folder import Folder
 from .contactsection import ContactSection
 from .metasection import MetaSection
 from .emailtemplatessection import EmailTemplatesSection
+from .blockcatalogssection import BlockCatalogsSection
 
 
 class ContentSection(Folder):
@@ -17,4 +18,5 @@ class ContentSection(Folder):
         self.append(ContactSection("contact"))
         self.append(MetaSection("meta"))
         self.append(EmailTemplatesSection("email-templates"))
+        self.append(BlockCatalogsSection("block-catalogs"))
 

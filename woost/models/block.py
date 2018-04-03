@@ -68,6 +68,8 @@ class Block(Item):
         "view_class",
         "heading",
         "heading_display",
+        "catalog", # added by BlocksCatalog
+        "clones",
         "per_language_publication",
         "enabled",
         "enabled_translations",
@@ -142,6 +144,14 @@ class Block(Item):
     )
 
     # publication
+    clones = schema.Collection(
+        items = "woost.models.BlockClone",
+        bidirectional = True,
+        related_key = "source_block",
+        integral = True,
+        editable = schema.READ_ONLY,
+        member_group = "publication"
+    )
 
     per_language_publication = schema.Boolean(
         required = True,
@@ -261,37 +271,21 @@ class Block(Item):
             raise ValueError("No view specified for block %s" % self)
 
         view = templates.new(view_class)
+
         self.init_view(view)
-        self.initializing_view(view = view)
-
-        if self.controller:
-            controller_class = import_object(self.controller)
-            controller = controller_class()
-            controller.block = self
-            controller.view = view
-            controller()
-            for key, value in controller.output.iteritems():
-                setattr(view, key, value)
-
-        initialization = self.initialization
-        if initialization:
-            code = compile(
-                initialization,
-                "%s #%d.initialization" % (self.__class__.__name__, self.id),
-                "exec"
-            )
-            context = {"block": self, "view": view}
-            exec code in context
-            del context["block"]
-            del context["view"]
-
+        self.customize_view(view)
         return view
 
     def init_view(self, view):
         view.block = self
 
         block_proxy = self.get_block_proxy(view)
-        block_proxy["data-woost-block"] = self.id
+
+        if self.catalog:
+            block_proxy["data-woost-source-block"] = self.id
+        else:
+            block_proxy["data-woost-block"] = self.id
+
         block_proxy.add_class("block")
 
         if self.element_type:
@@ -345,7 +339,35 @@ class Block(Item):
         if self.has_heading():
             self.add_heading(view)
 
+        self.add_view_dependencies(view)
+
+    def add_view_dependencies(self, view):
         view.depends_on(self)
+
+    def customize_view(self, view):
+
+        self.initializing_view(view = view)
+
+        if self.controller:
+            controller_class = import_object(self.controller)
+            controller = controller_class()
+            controller.block = self
+            controller.view = view
+            controller()
+            for key, value in controller.output.iteritems():
+                setattr(view, key, value)
+
+        initialization = self.initialization
+        if initialization:
+            code = compile(
+                initialization,
+                "%s #%d.initialization" % (self.__class__.__name__, self.id),
+                "exec"
+            )
+            context = {"block": self, "view": view}
+            exec code in context
+            del context["block"]
+            del context["view"]
 
     def get_embedded_css(self):
 
@@ -354,8 +376,15 @@ class Block(Item):
         if sass_code:
             sass_init = "@import 'theme://';\n"
             sass_init += self.embedded_styles_initialization or ""
-            sass_code = "%s.block[data-woost-block='%s'] {%s}" % (
+
+            if self.catalog:
+                attrib = "data-woost-source-block"
+            else:
+                attrib = "data-woost-block"
+
+            sass_code = "%s.block[%s='%s'] {%s}" % (
                 sass_init,
+                attrib,
                 self.id,
                 sass_code
             )
@@ -426,10 +455,6 @@ class Block(Item):
 
         return heading
 
-    def is_common_block(self):
-        from .configuration import Configuration
-        return bool(self.get(Configuration.common_blocks.related_end))
-
     def is_published(self):
 
         # Time based publication window
@@ -448,96 +473,6 @@ class Block(Item):
             return require_language() in self.enabled_translations
         else:
             return self.enabled
-
-    def _included_in_cascade_delete(self, parent, member):
-
-        if isinstance(parent, Block) and self.is_common_block():
-            return False
-
-        return Item._included_in_cascade_delete(self, parent, member)
-
-    def find_publication_slots(self):
-        """Iterates over the different slots of publishable elements that
-        contain the block.
-
-        @return: An iterable sequence of the slots that contain the block. Each
-            slot is represented by a tuple consisting of a L{Publishable} and a
-            L{Member<cocktail.schema.member>}.
-        """
-        visited = set()
-
-        def iter_slots(block):
-
-            for member in block.__class__.iter_members():
-                if (
-                    (block, member) not in visited
-                    and isinstance(member, schema.RelationMember)
-                    and member.related_type
-                ):
-                    value = block.get(member)
-                    if value is not None:
-
-                        # Yield relations to publishable elements
-                        if issubclass(member.related_type, Publishable):
-                            if isinstance(member, schema.Collection):
-                                for publishable in value:
-                                    yield (publishable, member)
-                            else:
-                                yield (value, member)
-
-                        # Recurse into relations to other blocks
-                        elif issubclass(member.related_type, Block):
-
-                            visited.add((block, member))
-
-                            if member.related_end:
-                                visited.add((block, member.related_end))
-
-                            if isinstance(member, schema.Collection):
-                                for child in value:
-                                    for slot in iter_slots(child):
-                                        yield slot
-                            else:
-                                for slot in iter_slots(value):
-                                    yield slot
-
-        return iter_slots(self)
-
-    def find_paths(self):
-        """Iterates over the different sequences of slots that contain the block.
-
-        @return: A list of lists, where each list represents one of the paths
-            that the block descends from. Each entry in a path consists of
-            container, slot pair.
-        @rtype: list of
-            (L{Item<woost.models.item.Item>},
-            L{Slot<woost.models.slot.Slot>}) lists
-        """
-        def visit(block, followed_path):
-
-            paths = []
-
-            for member in block.__class__.iter_members():
-                related_end = getattr(member, "related_end", None)
-                if isinstance(related_end, Slot):
-                    parents = block.get(member)
-                    if parents:
-                        if isinstance(parents, Item):
-                            parents = (parents,)
-                        for parent in parents:
-                            location = (parent, related_end)
-                            if location not in followed_path:
-                                paths.extend(
-                                    visit(parent, [location] + followed_path)
-                                )
-
-            # End of the line
-            if not paths and followed_path:
-                paths.append(followed_path)
-
-            return paths
-
-        return visit(self, [])
 
     @property
     def name_prefix(self):

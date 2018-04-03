@@ -2,7 +2,7 @@
 <?py
 from cocktail.controllers import context
 from woost import app
-from woost.models import Configuration
+from woost.models import BlocksCatalog
 ?>
 
 <py:woost.views.BaseView
@@ -128,16 +128,17 @@ from woost.models import Configuration
     </main>
 
     <footer py:id="site_footer">
-        <py:woost.views.BlockList
-            py:id="site_footer_blocks"
-            py:slot="footer_blocks">
+        <py:woost.views.BlockList py:id="site_footer_blocks" py:slot="blocks">
             <py:binding>
                 <?py
-                website = app.website
-                if website.footer_blocks:
-                    element.container = website
-                else:
-                    element.container = Configuration.instance
+                element.container = (
+                    BlocksCatalog.get_instance(
+                        qname = app.website.identifier + ".block_catalogs.footer"
+                    )
+                    or BlocksCatalog.get_instance(
+                        qname = "woost.block_catalogs.footer"
+                    )
+                )
                 ?>
             </py:binding>
         </py:woost.views.BlockList>

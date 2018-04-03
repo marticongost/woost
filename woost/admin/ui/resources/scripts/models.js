@@ -49,9 +49,8 @@ cocktail.declare("woost.admin.ui");
             if (!parameters) {
                 parameters = {};
             }
-            parameters[cocktail.ui.editable] = cocktail.ui.NOT_EDITABLE;
             parameters.integral = true;
-            parameters.items = new cocktail.schema.Reference({
+            parameters.items = new woost.models.Reference({
                 type: "woost.models.Block"
             });
             super(parameters);
