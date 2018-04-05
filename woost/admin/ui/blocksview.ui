@@ -26,7 +26,7 @@
         if (!oldValue || !newValue || !oldValue.matchesStackNode(newValue)) {
             const prevEditor = this.blockEditor;
             if (newValue) {
-                this.blocksTree.selectedElements = [this.blocksTree.getBlockRow(newValue.item.id)];
+                this.blocksTree.selectedElements = [this.blocksTree.resolveSelectableId(`block-${newValue.item.id}`)];
                 this.blockEditor = woost.admin.ui.BlockEditView.create();
                 this.heading.replaceWith(this.blockEditor.heading);
                 this.navigationActionList.replaceWith(this.blockEditor.navigationActionList);
@@ -265,14 +265,14 @@
         if (e.data.type == "hover") {
             this[APPLYING_HOVER_FROM_PREVIEW] = true;
             try {
-                this.blocksTree.hoverRow = this.blocksTree.getBlockRow(e.data.target);
+                this.blocksTree.hoverRow = this.blocksTree.resolveSelectableId(e.data.target);
             }
             finally {
                 this[APPLYING_HOVER_FROM_PREVIEW] = false;
             }
         }
         else if (e.data.type == "click") {
-            const blockRow = this.blocksTree.getBlockRow(e.data.target);
+            const blockRow = this.blocksTree.resolveSelectableId(e.data.target);
             if (blockRow) {
                 this.blocksTree.clickSelection(e.data.eventData, blockRow);
                 this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
@@ -312,7 +312,7 @@
             <ui:BlocksTree id="blocksTree">
 
                 <?on selectionChanged
-                const getId = (block) => block.value.id;
+                const getId = (element) => element.selectableId;
                 instance[POST_MESSAGE]({
                     type: "selectionChanged",
                     added: Array.from(e.detail.added, getId),
@@ -339,7 +339,7 @@
                 if (!instance[APPLYING_HOVER_FROM_PREVIEW]) {
                     instance[POST_MESSAGE]({
                         type: "hover",
-                        target: newValue ? newValue.value.id : null
+                        target: newValue ? newValue.selectableId : null
                     });
                 }
                 ?>

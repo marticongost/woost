@@ -76,6 +76,7 @@ class ContainerBlock(Block):
         Block.init_view(self, view)
         view.blocks_list.tag = self.list_type
         view.blocks = self.blocks
+        view.slot = self.__class__.blocks
 
         if self.background_image:
             view.background_image = self.background_image
