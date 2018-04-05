@@ -6,6 +6,7 @@
 
     <?py-class
     list_type = "div"
+    slot = None
     blocks = None
     background_image = None
     background_image_factory = None
@@ -43,7 +44,9 @@
 
         <py:woost.views.BlockList
             py:id="blocks_list"
-            py:blocks="@{self.blocks}"/>
+            py:blocks="@{self.blocks}"
+            py:slot="@{self.slot}"
+            py:container="@{self.block}"/>
 
     </py:woost.views.Link>
 

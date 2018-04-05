@@ -13,8 +13,8 @@ woost.preview.update = function () {
     if (cocktail.rootElement) {
         cocktail.rootElement.classList.add("woost-preview-root");
     }
-    for (let block of document.body.querySelectorAll("[data-woost-block]")) {
-        woost.preview.updateBlockOverlay(block);
+    for (let element of document.body.querySelectorAll("[data-woost-slot], [data-woost-block]")) {
+        woost.preview.updateOverlay(element);
     }
     woost.preview.postMessage({
         type: "setDocumentHeight",
@@ -22,21 +22,27 @@ woost.preview.update = function () {
     });
 }
 
-woost.preview.updateBlockOverlay = function (block) {
-    if (!block.previewOverlay) {
-        const blockId = block.getAttribute("data-woost-block");
-        block.previewOverlay = document.createElement("div");
-        block.previewOverlay.className = "woost-preview-overlay";
-        block.previewOverlay.addEventListener("mouseenter", () => {
-            woost.preview.hover(blockId);
+woost.preview.updateOverlay = function (element) {
+    if (!element.previewOverlay) {
+        const blockId = element.getAttribute("data-woost-block");
+        const selectableId = element.selectableId = (
+            blockId ?
+              `block-${blockId}`
+            : `slot-${element.getAttribute("data-woost-container")}-${element.getAttribute("data-woost-slot")}`
+        );
+        element.previewOverlay = document.createElement("div");
+        element.previewOverlay.className = "woost-preview-overlay";
+        element.previewOverlay.setAttribute("data-overlay-type", blockId ? "block" : "slot");
+        element.previewOverlay.addEventListener("mouseenter", () => {
+            woost.preview.hover(selectableId);
         });
-        block.previewOverlay.addEventListener("mouseleave", () => {
+        element.previewOverlay.addEventListener("mouseleave", () => {
             woost.preview.hover(null);
         });
-        block.previewOverlay.addEventListener("click", (e) => {
+        element.previewOverlay.addEventListener("click", (e) => {
             woost.preview.postMessage({
                 type: "click",
-                target: blockId,
+                target: selectableId,
                 eventData: {
                     ctrlKey: e.ctrlKey,
                     shiftKey: e.shiftKey,
@@ -44,21 +50,21 @@ woost.preview.updateBlockOverlay = function (block) {
                 }
             });
         });
-        document.body.appendChild(block.previewOverlay);
+        document.body.appendChild(element.previewOverlay);
     }
-    const rect = block.getBoundingClientRect();
-    block.previewOverlay.block = block;
-    block.previewOverlay.style.left = (rect.left + window.scrollX) + "px";
-    block.previewOverlay.style.top = (rect.top + window.scrollY) + "px";
-    block.previewOverlay.style.width = rect.width + "px";
-    block.previewOverlay.style.height = rect.height + "px";
+    const rect = element.getBoundingClientRect();
+    element.previewOverlay.overlayOwner = element;
+    element.previewOverlay.style.left = (rect.left + window.scrollX) + "px";
+    element.previewOverlay.style.top = (rect.top + window.scrollY) + "px";
+    element.previewOverlay.style.width = rect.width + "px";
+    element.previewOverlay.style.height = rect.height + "px";
 }
 
-woost.preview.setSelected = function (blockIds, selected, scrollIntoView = false) {
+woost.preview.setSelected = function (selectableIds, selected, scrollIntoView = false) {
     const className = "woost-preview-selected";
     let first = true;
-    for (let blockId of blockIds) {
-        const overlay = woost.preview.getOverlay(blockId);
+    for (let selectableId of selectableIds) {
+        const overlay = woost.preview.getOverlay(selectableId);
         if (overlay) {
             if (selected) {
                 overlay.classList.add(className);
@@ -74,13 +80,13 @@ woost.preview.setSelected = function (blockIds, selected, scrollIntoView = false
     }
 }
 
-woost.preview.hover = function (blockId, notifyAdmin = true, scrollIntoView = false) {
+woost.preview.hover = function (selectableId, notifyAdmin = true, scrollIntoView = false) {
     const className = "woost-preview-hover";
     for (let element of document.getElementsByClassName(className)) {
         element.classList.remove(className);
     }
-    if (blockId) {
-        const overlay = woost.preview.getOverlay(blockId);
+    if (selectableId) {
+        const overlay = woost.preview.getOverlay(selectableId);
         if (overlay) {
             overlay.classList.add(className);
             if (scrollIntoView) {
@@ -91,7 +97,7 @@ woost.preview.hover = function (blockId, notifyAdmin = true, scrollIntoView = fa
     if (notifyAdmin) {
         woost.preview.postMessage({
             type: "hover",
-            target: blockId
+            target: selectableId
         });
     }
 }
@@ -198,7 +204,7 @@ woost.preview.updateBlock = function (blockData, changedMembers = null) {
                     updateProcesses.push(Promise.resolve(updateProcess));
                 }
                 Promise.all(updateProcesses)
-                    .then(() => woost.preview.updateBlockOverlay(element))
+                    .then(() => woost.preview.updateOverlay(element))
                     .finally(() => element.previewOverlay.setAttribute("data-woost-preview-state", "idle"));
             }
         }
@@ -311,13 +317,30 @@ woost.preview.request = function (req) {
     });
 }
 
+woost.preview.getSelectable = function (selectableId) {
+    const parts = selectableId.split("-");
+    if (parts[0] == "block" && parts.length == 2 && parts[1].length) {
+        return this.getBlock(parts[1]);
+    }
+    else if (parts[0] == "slot" && parts.length == 3 && parts[1].length && parts[2].length) {
+        return this.getSlot(parts[1], parts[2]);
+    }
+    else {
+        throw `Invalid selectable ID: ${selectableId}`;
+    }
+}
+
 woost.preview.getBlock = function (blockId) {
     return document.querySelector(`[data-woost-block='${blockId}']`);
 }
 
-woost.preview.getOverlay = function (blockId) {
-    const block = document.querySelector(`[data-woost-block='${blockId}']`);
-    return block && block.previewOverlay;
+woost.preview.getSlot = function (containerId, slotName) {
+    return document.querySelector(`[data-woost-container='${containerId}'][data-woost-slot='${slotName}']`);
+}
+
+woost.preview.getOverlay = function (selectableId) {
+    const owner = this.getSelectable(selectableId);
+    return owner && owner.previewOverlay;
 }
 
 woost.preview.getBlockStylesElement = function (blockId) {

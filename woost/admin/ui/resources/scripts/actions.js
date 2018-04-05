@@ -312,6 +312,12 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
         ) {
             return "hidden";
         }
+
+        // Selectable element without a value (slots in the blocks editor)
+        if (!context.selection[0]) {
+            return "disabled";
+        }
+
         return super.getState(context);
     }
 
@@ -502,6 +508,14 @@ woost.admin.actions.TranslationsAction = class TranslationsAction extends woost.
 }
 
 woost.admin.actions.AddBlockAction = class AddBlockAction extends woost.admin.actions.Action {
+
+    get min() {
+        return 1;
+    }
+
+    get max() {
+        return 1;
+    }
 
     get iconURL() {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add.svg`)

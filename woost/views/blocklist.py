@@ -25,15 +25,17 @@ class BlockList(Element):
     def _ready(self):
         Element._ready(self)
 
-        if self.blocks is None:
-            if self.container is not None and self.slot is not None:
-                if isinstance(self.slot, basestring):
-                    slot = self.container.__class__.get_member(self.slot)
-                else:
-                    slot = self.slot
+        if self.container is not None and self.slot is not None:
+            if isinstance(self.slot, basestring):
+                slot = self.container.__class__.get_member(self.slot)
+            else:
+                slot = self.slot
 
-                if slot:
-                    self.depends_on(self.container, slot.cache_part)
+            if slot:
+                self.depends_on(self.container, slot.cache_part)
+                self["data-woost-container"] = self.container.id
+                self["data-woost-slot"] = slot.name
+                if self.blocks is None:
                     self.blocks = self.get_blocks(self.container, slot)
 
         if self.tag in ("ul", "ol"):

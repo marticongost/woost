@@ -12,15 +12,35 @@ $row-vpadding: 0.8em;
 
 .SlotDisplay {
 
-    &:first-child:last-child > .slotHeading {
-        display: none;
-    }
+    .SlotRow {
+        padding: 0.2em;
 
-    .slotHeading {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: $heading-color;
-        padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
+        .slotHeading {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: $heading-color;
+            padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
+        }
+
+        &[selected] {
+            background: $selection-background;
+
+            .slotHeading {
+                color: $selection-foreground;
+            }
+        }
+
+        &[hover='true'] {
+            background-color: $hl-light-background;;
+        }
+
+        &[hover='true'][selected] {
+            background-color: $hl-background;
+
+            .slotHeading {
+                color: $selection-foreground;
+            }
+        }
     }
 
     &[depth='0'] {

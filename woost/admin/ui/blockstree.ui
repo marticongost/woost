@@ -3,14 +3,14 @@
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    selectableEntriesSelector=".BlockRow"
+    selectableEntriesSelector=".Entry"
     selectionType="multiple"
     appliesAlternateCSSClasses="true"
     tabindex="0">
 
     <ui:using mixin="cocktail.ui.Selectable"/>
 
-    <ui:symbol name="BLOCK_MAP"/>
+    <ui:symbol name="SELECTABLE_ID_MAP"/>
 
     <ui:property
         name="item"
@@ -34,12 +34,13 @@
     </ui:property>
 
     <?class
-    createSlotDisplay(item, slot, depth = 0) {
+    createSlotDisplay(item, slot, depth = 0, isSingleSlot = false) {
         const slotDisplay = this.constructor.SlotDisplay.create();
         slotDisplay.blocksTree = this;
         slotDisplay.depth = depth;
         slotDisplay.item = item;
         slotDisplay.slot = slot;
+        slotDisplay.isSingleSlot = isSingleSlot;
         slotDisplay.update();
         return slotDisplay;
     }
@@ -56,14 +57,17 @@
         return this.blocksTreeRoot;
     }
 
-    getBlockRow(blockId) {
-        const display = this[BLOCK_MAP][blockId];
-        return display && display.blockRow;
+    resolveSelectableId(selectableId) {
+        return this[SELECTABLE_ID_MAP][selectableId];
+    }
+
+    includeInEvenOddSequence(element) {
+        return !element.slotInfo;
     }
     ?>
 
     <?js
-    this[BLOCK_MAP] = {};
+    this[SELECTABLE_ID_MAP] = {};
     ?>
 
     <ui:BlocksContainer id="blocksTreeRoot">
@@ -73,17 +77,54 @@
         ?>
     </ui:BlocksContainer>
 
+    <div ui:component="Entry">
+
+        <ui:property
+            name="selectableId"
+            type="string"
+            reflected="true"/>
+
+        <ui:property
+            name="hover"
+            type="boolean"
+            reflected="true"
+            default="false"/>
+
+        <?on mouseenter
+        this.parentInstance.hoverRow = this;
+        ?>
+
+        <?on mouseleave
+        this.parentInstance.hoverRow = null;
+        ?>
+
+    </div>
+
     <div ui:component="BlocksContainer">
+
+        <ui:symbol name="..SELECTABLE_ID_MAP"/>
 
         <ui:property
             name="item"
             reflected="false">
             <?on changed
             const model = cocktail.schema.getSchemaByName(newValue._class);
+            const slots = [];
             for (let member of model.members()) {
                 if (member instanceof woost.models.Slot) {
-                    const slotDisplay = this.blocksTree.createSlotDisplay(newValue, member, this.isBlocksTreeRoot ? 0 : this.depth + 1);
-                    this.slotsList.appendChild(slotDisplay);
+                    slots.push(member);
+                }
+            }
+            for (let slot of slots) {
+                const slotDisplay = this.blocksTree.createSlotDisplay(
+                    newValue,
+                    slot,
+                    this.isBlocksTreeRoot ? 0 : this.depth + 1,
+                    slots.length == 1
+                );
+                this.slotsList.appendChild(slotDisplay);
+                if (slotDisplay.slotRow) {
+                    this.blocksTree[SELECTABLE_ID_MAP][slotDisplay.slotRow.selectableId] = slotDisplay.slotRow;
                 }
             }
             ?>
@@ -105,7 +146,7 @@
 
     <div ui:component="SlotDisplay">
 
-        <ui:symbol name="..BLOCK_MAP"/>
+        <ui:symbol name="..SELECTABLE_ID_MAP"/>
 
         <ui:property
             name="item"
@@ -125,6 +166,12 @@
             ?>
         </ui:property>
 
+        <ui:property
+            name="isSingleSlot"
+            type="boolean"
+            reflected="true"
+            default="false"/>
+
         <?class
         get blockDisplay() {
             return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.BlockDisplay);
@@ -140,7 +187,11 @@
         }
 
         update() {
-            this.slotHeading.innerHTML = this.slot.translate();
+            if (!this.isSingleSlot) {
+                this.slotRow = cls.SlotRow.create();
+                this.slotRow.slotInfo = {member: this.slot, container: this.item};
+                this.slotBlocks.parentNode.insertBefore(this.slotRow, this.slotBlocks);
+            }
             cocktail.ui.empty(this.slotBlocks);
             const blocks = this.item[this.slot.name];
             for (let block of blocks) {
@@ -151,13 +202,27 @@
         addBlock(block) {
             const display = this.blocksTree.createBlockDisplay(block, this.depth);
             this.slotBlocks.appendChild(display);
-            this.blocksTree[BLOCK_MAP][block.id] = display;
+            this.blocksTree[SELECTABLE_ID_MAP][display.blockRow.selectableId] = display.blockRow;
             return display;
         }
         ?>
 
-        <div id="slotHeading"/>
         <div id="slotBlocks"/>
+
+        <ui:woost.admin.ui.BlocksTree.Entry ui:component="SlotRow">
+
+            <ui:property
+                name="slotInfo"
+                reflected="false">
+                <?on changed
+                this.slotHeading.innerHTML = newValue.member.translate();
+                this.selectableId = `slot-${newValue.container.id}-${newValue.member.name}`;
+                ?>
+            </ui:property>
+
+            <div id="slotHeading"/>
+
+        </ui:woost.admin.ui.BlocksTree.Entry>
 
     </div>
 
@@ -202,7 +267,7 @@
         };
         ?>
 
-        <div ui:component="BlockRow">
+        <ui:woost.admin.ui.BlocksTree.Entry ui:component="BlockRow">
 
             <?class
             get blockDisplay() {
@@ -226,25 +291,12 @@
 
             <ui:using mixin="cocktail.ui.DataDisplay"/>
 
-            <ui:property
-                name="hover"
-                type="boolean"
-                reflected="true"
-                default="false"/>
-
             <?on value:changed
             const blockType = cocktail.schema.getSchemaByName(newValue._class);
+            this.selectableId = `block-${newValue.id}`;
             this.icon.src = blockType[woost.admin.ui.modelIconURL];
             this.descriptionLabel.innerHTML = blockType.translateValue(newValue);
             this.typeLabel.innerHTML = blockType.translate();
-            ?>
-
-            <?on mouseenter
-            this.parentInstance.hoverRow = this;
-            ?>
-
-            <?on mouseleave
-            this.parentInstance.hoverRow = null;
             ?>
 
             <ui:cocktail.ui.SVG id="icon"/>
@@ -254,7 +306,7 @@
                 <div id="typeLabel"/>
             </div>
 
-        </div>
+        </ui:woost.admin.ui.BlocksTree.Entry>
 
     </ui:BlocksContainer>
 
