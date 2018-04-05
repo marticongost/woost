@@ -1,4 +1,6 @@
 
+@import "woost.admin.ui://styles/common";
+
 #headerContent {
     justify-content: flex-end;
 }
@@ -27,17 +29,19 @@
 
 #previewPanel {
     position: relative;
-}
-
-#previewPanel {
     display: flex;
     justify-content: stretch;
-    align-items: center;
-    padding: 1.5em;
+    align-items: stretch;
     flex: 1 1 auto;
-    border-left: 1px solid #ddd;
+    flex-direction: column;
+    border-left: $secondary-panel-border;
     background-color: #eee;
     overflow: hidden;
+}
+
+#previewActionList {
+    border-top: none;
+    border-left: none;
 }
 
 #previewContainer {
@@ -46,8 +50,6 @@
     flex: 1 1 auto;
     height: 100%;
     overflow: auto;
-    border: 1px solid #ddd;
-    box-shadow: 4px 4px 8px rgba(black, 0.3);
     background-color: #888;
 }
 
@@ -56,5 +58,6 @@
     min-height: 100%;
     width: 100%;
     background-color: white;
+    box-shadow: 0 0 16px rgba(black, 0.3);
 }
 
