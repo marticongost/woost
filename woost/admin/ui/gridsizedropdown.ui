@@ -4,6 +4,8 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:with ui:element="dropdownPanel" panelPosition="above"/>
+
     <?on action:changed
     const view = newValue.view;
     view.addEventListener("availableGridSizesChanged", (e) => {
