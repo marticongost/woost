@@ -318,14 +318,6 @@
         </div>
         <div id="previewPanel">
 
-            <ui:cocktail.ui.ActionList
-                id="previewActionList"
-                buttonStyle="iconBesideText">
-                <?js
-                element.classList.add("secondary");
-                ?>
-            </ui:cocktail.ui.ActionList>
-
             <div id="previewContainer">
                 <iframe id="previewFrame">
                     <?on load
@@ -337,6 +329,14 @@
                     ?>
                 </iframe>
             </div>
+
+            <ui:cocktail.ui.ActionList
+                id="previewActionList"
+                buttonStyle="iconBesideText">
+                <?js
+                element.classList.add("secondary");
+                ?>
+            </ui:cocktail.ui.ActionList>
 
         </div>
     </ui:with>
