@@ -14,6 +14,12 @@
     <ui:symbol name="APPLYING_HOVER_FROM_PREVIEW"/>
 
     <ui:property
+        name="editingBlock"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <ui:property
         name="blockEditorNavigationNode"
         reflected="false">
         <?on changed
@@ -22,6 +28,8 @@
             if (newValue) {
                 this.blocksTree.selectedElements = [this.blocksTree.getBlockRow(newValue.item.id)];
                 this.blockEditor = woost.admin.ui.BlockEditView.create();
+                this.heading.replaceWith(this.blockEditor.heading);
+                this.navigationActionList.replaceWith(this.blockEditor.navigationActionList);
 
                 // Set the position without waiting for the edit view stylesheets
                 // to kick in; otherwise, the recalculation of the flex heights
@@ -63,12 +71,20 @@
                         changedMembers
                     });
                 });
+
+                this.editingBlock = true;
             }
             else if (prevEditor) {
                 this.blockEditor = null;
+
                 prevEditor.addEventListener(
                     "animationend",
-                    (e) => this.sidePanel.removeChild(prevEditor),
+                    (e) => {
+                        this.sidePanel.removeChild(prevEditor);
+                        prevEditor.heading.replaceWith(this.heading);
+                        prevEditor.navigationActionList.replaceWith(this.navigationActionList);
+                        this.editingBlock = false;
+                    },
                     {once: true}
                 );
                 prevEditor.animationState = "closing";

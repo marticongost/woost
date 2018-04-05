@@ -7,6 +7,10 @@
 
 #actionList {
     flex: 1 1 auto;
+
+    :host([editingBlock='true']) & {
+        display: none;
+    }
 }
 
 #main {
