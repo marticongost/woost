@@ -332,11 +332,7 @@
 
             <ui:cocktail.ui.ActionList
                 id="previewActionList"
-                buttonStyle="iconBesideText">
-                <?js
-                element.classList.add("secondary");
-                ?>
-            </ui:cocktail.ui.ActionList>
+                buttonStyle="iconBesideText"/>
 
         </div>
     </ui:with>
