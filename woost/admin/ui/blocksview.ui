@@ -106,7 +106,7 @@
             type: "rulers",
             visible: newValue
         });
-        this.actionList.updateEntries();
+        this.previewActionList.updateEntries();
         ?>
     </ui:property>
 
@@ -120,7 +120,7 @@
             type: "selectors",
             visible: newValue
         });
-        this.actionList.updateEntries();
+        this.previewActionList.updateEntries();
         ?>
     </ui:property>
 
@@ -210,6 +210,15 @@
             view: this,
             node: this.navigationNode,
             slot: "blocksToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
+
+        this.previewActionList.actionParameters.selection = selection;
+        this.previewActionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            node: this.previewNode,
+            slot: "blocksPreviewToolbar",
             model: newValue.model,
             item: newValue.item
         }));
@@ -308,6 +317,15 @@
             </ui:BlocksTree>
         </div>
         <div id="previewPanel">
+
+            <ui:cocktail.ui.ActionList
+                id="previewActionList"
+                buttonStyle="iconBesideText">
+                <?js
+                element.classList.add("secondary");
+                ?>
+            </ui:cocktail.ui.ActionList>
+
             <div id="previewContainer">
                 <iframe id="previewFrame">
                     <?on load
@@ -319,6 +337,7 @@
                     ?>
                 </iframe>
             </div>
+
         </div>
     </ui:with>
 

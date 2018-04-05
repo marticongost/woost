@@ -935,17 +935,17 @@ woost.admin.actions.RemoveBlockAction.register({
 
 woost.admin.actions.ToggleRulersAction.register({
     id: "toggle-rulers",
-    slots: ["blocksToolbar"]
+    slots: ["blocksPreviewToolbar"]
 });
 
 woost.admin.actions.ToggleSelectorsAction.register({
     id: "toggle-selectors",
-    slots: ["blocksToolbar"]
+    slots: ["blocksPreviewToolbar"]
 });
 
 woost.admin.actions.SetGridSizeAction.register({
     id: "grid-size",
-    slots: ["blocksToolbar"]
+    slots: ["blocksPreviewToolbar"]
 });
 
 woost.admin.actions.SaveAction.register({
