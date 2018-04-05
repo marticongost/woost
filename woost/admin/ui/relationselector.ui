@@ -3,7 +3,8 @@
 <ui:woost.admin.ui.Listing
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    defaultAction="accept-selection">
+    defaultAction="accept-selection"
+    closeAction="cancel-selection">
 
     <?class
     get actionSlotPrefix() {
