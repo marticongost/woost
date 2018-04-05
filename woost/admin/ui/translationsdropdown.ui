@@ -8,10 +8,6 @@
     <ui:symbol name="SYNCHRONIZING_LOCALES"/>
 
     <?on action:changed
-    if (!newValue.insideBlockEditPanel) {
-        this.dropdownPanel.panelAlignment = "end";
-    }
-
     this.translationsSelector.awaitEntries().then(() => {
         instance[SYNCHRONIZE_LOCALES](() => {
             for (let [locale, state] of newValue.view.localeStates) {
@@ -40,7 +36,7 @@
     }
     ?>
 
-    <ui:with ui:element="dropdownPanel">
+    <ui:with ui:element="dropdownPanel" panelAlignment="end">
 
         <ui:cocktail.ui.TranslationsSelector id="translationsSelector">
 
