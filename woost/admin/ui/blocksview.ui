@@ -204,6 +204,15 @@
         return this.navigationNode.model;
     }
 
+    closeNode() {
+        if (this.blockEditor) {
+            this.blockEditor.closeNode();
+        }
+        else {
+            super.closeNode();
+        }
+    }
+
     getPreviewURL() {
         return `${woost.admin.url}/preview/page/${this.editedItem.id}`;
     }
@@ -270,8 +279,13 @@
             }
         }
         else if (e.data.type == "keydown") {
-            this.blocksTree.keyboardSelection(e.data.eventData);
-            this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+            if (e.data.eventData.which == cocktail.ui.keys.ESC) {
+                this.closeNode();
+            }
+            else {
+                this.blocksTree.keyboardSelection(e.data.eventData);
+                this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+            }
         }
         else if (e.data.type == "setDocumentHeight") {
             this.previewFrame.style.height = `${e.data.height}px`;

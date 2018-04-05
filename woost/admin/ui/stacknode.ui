@@ -23,6 +23,12 @@
         reflected="false"
         final="true"/>
 
+    <ui:property
+        name="closeAction"
+        type="string"
+        reflected="true"
+        default="close"/>
+
     <ui:with ui:element="heading">
         <h1 id="headingElement"/>
     </ui:with>
@@ -45,6 +51,22 @@
         <span id="label"/>
 
     </div>
+
+    <?class
+    closeNode() {
+        if (this.navigationActionList && this.closeAction) {
+            this.navigationActionList.getAction(this.closeAction).invoke({});
+        }
+    }
+    ?>
+
+    <?on keydown
+    if (e.which == cocktail.ui.keys.ESC) {
+        this.closeNode();
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    ?>
 
 </ui:cocktail.ui.StackNode>
 
