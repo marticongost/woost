@@ -76,13 +76,13 @@
             }
             else if (prevEditor) {
                 this.blockEditor = null;
+                prevEditor.heading.replaceWith(this.heading);
+                prevEditor.navigationActionList.replaceWith(this.navigationActionList);
 
                 prevEditor.addEventListener(
                     "animationend",
                     (e) => {
                         this.sidePanel.removeChild(prevEditor);
-                        prevEditor.heading.replaceWith(this.heading);
-                        prevEditor.navigationActionList.replaceWith(this.navigationActionList);
                         this.editingBlock = false;
                     },
                     {once: true}
