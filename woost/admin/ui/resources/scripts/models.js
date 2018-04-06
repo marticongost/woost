@@ -12,6 +12,7 @@ cocktail.declare("woost.admin.ui");
 
 {
     const DATA_SOURCE = Symbol.for("woost.models.Model.DATA_SOURCE");
+    let temporaryId = 0;
 
     woost.models.permissions = Symbol.for("woost.models.permissions");
     woost.models.isSetting = Symbol.for("woost.models.isSetting");
@@ -84,6 +85,16 @@ cocktail.declare("woost.admin.ui");
 
         set dataSource(value) {
             this[DATA_SOURCE] = value;
+        }
+
+        newInstance(locales = null) {
+            return this.loadDefaults(locales)
+                .then((obj) => {
+                    obj._new = true;
+                    obj._deleted_translations = [];
+                    obj.id = "_" + (++temporaryId);
+                    return obj;
+                });
         }
 
         loadDefaults(locales = null) {

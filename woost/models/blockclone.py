@@ -10,6 +10,8 @@ from .block import Block
 
 class BlockClone(Block):
 
+    instantiable = False
+
     members_order = [
         "source_block"
     ]
@@ -20,6 +22,7 @@ class BlockClone(Block):
         related_key = "clones",
         required = True,
         text_search = True,
+        editable = schema.READ_ONLY,
         member_group = "content"
     )
 

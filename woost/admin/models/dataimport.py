@@ -249,7 +249,10 @@ class Import(object):
 
     def should_import_member(self, obj, member):
         return (
-            member.editable == schema.EDITABLE
+            (
+                member.editable == schema.EDITABLE
+                or (member.primary and not obj.is_inserted)
+            )
             and (
                 self.user is None
                 or self.user.has_permission(

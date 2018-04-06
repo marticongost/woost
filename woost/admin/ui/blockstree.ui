@@ -3,7 +3,7 @@
 <div
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    selectableEntriesSelector=".Entry"
+    selectableEntriesSelector=".Row"
     selectionType="multiple"
     appliesAlternateCSSClasses="true"
     tabindex="0">
@@ -50,6 +50,7 @@
         display.blocksTree = this;
         display.depth = depth;
         display.item = block;
+        this[SELECTABLE_ID_MAP][display.selectableId] = display;
         return display;
     }
 
@@ -61,8 +62,76 @@
         return this[SELECTABLE_ID_MAP][selectableId];
     }
 
+    getSlotDisplay(container, slot) {
+        const containerId = typeof(container) == "object" ? container.id : block;
+        const slotName = typeof(slot) == "string" ? slot : slot.name;
+        return this.resolveSelectableId(`slot-${containerId}-${slotName}`);
+    }
+
+    getSlotRow(container, slot) {
+        const slotDisplay = this.getSlotDisplay(container, slot);
+        return slotDisplay && slotDisplay.row;
+    }
+
+    getBlockDisplay(block) {
+        const blockId = typeof(block) == "object" ? block.id : block;
+        return this.resolveSelectableId(`block-${blockId}`);
+    }
+
+    getBlockRow(block) {
+        const blockDisplay = this.getBlockDisplay(block);
+        return blockDisplay && blockDisplay.row;
+    }
+
     includeInEvenOddSequence(element) {
         return !element.slotInfo;
+    }
+
+    newBlock(blockType, placement, target, locales = null) {
+        return blockType.newInstance(locales).then((block) => {
+            return this.placeBlock(block, placement, target);
+        });
+    }
+
+    placeBlock(block, placement, target) {
+
+        let blockDisplay = this.getBlockDisplay(block.id);
+        let slotDisplay;
+
+        if (placement == "inside") {
+            // Appending to a slot
+            if (target.slotInfo) {
+                slotDisplay = target.slotDisplay;
+            }
+            // Appending to a block with a single slot
+            else {
+                slotDisplay = this.getSlotDisplay(target.value, target.implicitSlot);
+            }
+        }
+        else {
+            slotDisplay = target.slotDisplay;
+        }
+
+        if (blockDisplay) {
+            blockDisplay.parentNode.removeChild(blockDisplay);
+        }
+        else {
+            blockDisplay = this.createBlockDisplay(block, slotDisplay.depth);
+        }
+
+        if (placement == "inside") {
+            slotDisplay.slotBlocks.appendChild(blockDisplay);
+        }
+        else {
+            const targetDisplay = target.blockDisplay;
+            slotDisplay.slotBlocks.insertBefore(
+                blockDisplay,
+                placement == "after" ? targetDisplay.nextSibling : targetDisplay
+            );
+        }
+
+        // TODO: modify root slot value (rebuild tree recursively)
+        return blockDisplay;
     }
     ?>
 
@@ -77,12 +146,7 @@
         ?>
     </ui:BlocksContainer>
 
-    <div ui:component="Entry">
-
-        <ui:property
-            name="selectableId"
-            type="string"
-            reflected="true"/>
+    <div ui:component="Row">
 
         <ui:property
             name="hover"
@@ -123,9 +187,7 @@
                     slots.length == 1
                 );
                 this.slotsList.appendChild(slotDisplay);
-                if (slotDisplay.slotRow) {
-                    this.blocksTree[SELECTABLE_ID_MAP][slotDisplay.slotRow.selectableId] = slotDisplay.slotRow;
-                }
+                this.blocksTree[SELECTABLE_ID_MAP][slotDisplay.selectableId] = slotDisplay;
             }
             ?>
         </ui:property>
@@ -147,6 +209,11 @@
     <div ui:component="SlotDisplay">
 
         <ui:symbol name="..SELECTABLE_ID_MAP"/>
+
+        <ui:property
+            name="selectableId"
+            type="string"
+            reflected="true"/>
 
         <ui:property
             name="item"
@@ -187,10 +254,11 @@
         }
 
         update() {
+            this.selectableId = `slot-${this.item.id}-${this.slot.name}`;
             if (!this.isSingleSlot) {
-                this.slotRow = cls.SlotRow.create();
-                this.slotRow.slotInfo = {member: this.slot, container: this.item};
-                this.slotBlocks.parentNode.insertBefore(this.slotRow, this.slotBlocks);
+                this.row = cls.SlotRow.create();
+                this.row.slotInfo = {member: this.slot, container: this.item};
+                this.slotBlocks.parentNode.insertBefore(this.row, this.slotBlocks);
             }
             cocktail.ui.empty(this.slotBlocks);
             const blocks = this.item[this.slot.name];
@@ -202,31 +270,45 @@
         addBlock(block) {
             const display = this.blocksTree.createBlockDisplay(block, this.depth);
             this.slotBlocks.appendChild(display);
-            this.blocksTree[SELECTABLE_ID_MAP][display.blockRow.selectableId] = display.blockRow;
             return display;
         }
         ?>
 
         <div id="slotBlocks"/>
 
-        <ui:woost.admin.ui.BlocksTree.Entry ui:component="SlotRow">
+        <ui:woost.admin.ui.BlocksTree.Row ui:component="SlotRow">
 
             <ui:property
                 name="slotInfo"
                 reflected="false">
                 <?on changed
                 this.slotHeading.innerHTML = newValue.member.translate();
-                this.selectableId = `slot-${newValue.container.id}-${newValue.member.name}`;
                 ?>
             </ui:property>
 
+            <?class
+            get slotDisplay() {
+                return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.SlotDisplay);
+            }
+
+            get selectableId() {
+                const slotDisplay = this.slotDisplay;
+                return slotDisplay && slotDisplay.selectableId;
+            }
+            ?>
+
             <div id="slotHeading"/>
 
-        </ui:woost.admin.ui.BlocksTree.Entry>
+        </ui:woost.admin.ui.BlocksTree.Row>
 
     </div>
 
     <ui:BlocksContainer ui:component="BlockDisplay">
+
+        <ui:property
+            name="selectableId"
+            type="string"
+            reflected="true"/>
 
         <ui:property
             name="disabledBlock"
@@ -256,18 +338,19 @@
         }
         ?>
 
-        <ui:BlockRow id="blockRow" ui:placement="before slotsList"/>
+        <ui:BlockRow id="row" ui:placement="before slotsList"/>
 
         <?on item:changed
         const blockType = cocktail.schema.getSchemaByName(newValue._class);
+        this.selectableId = `block-${newValue.id}`;
         this.disabledBlock = !newValue.enabled;
-        this.blockRow.dataBinding = {
+        this.row.dataBinding = {
             member: new cocktail.schema.Reference({type: blockType}),
             value: newValue
         };
         ?>
 
-        <ui:woost.admin.ui.BlocksTree.Entry ui:component="BlockRow">
+        <ui:woost.admin.ui.BlocksTree.Row ui:component="BlockRow">
 
             <?class
             get blockDisplay() {
@@ -283,9 +366,28 @@
                 return blockDisplay && blockDisplay.blockIndex;
             }
 
+            get selectableId() {
+                const blockDisplay = this.blockDisplay;
+                return blockDisplay && blockDisplay.selectableId;
+            }
+
             get objectPath() {
                 const blockDisplay = this.blockDisplay;
                 return blockDisplay && blockDisplay.objectPath;
+            }
+
+            get implicitSlot() {
+                const blockType = cocktail.schema.getSchemaByName(this.value._class);
+                const slots = [];
+                for (let member of blockType.members()) {
+                    if (member instanceof woost.models.Slot) {
+                        slots.push(member);
+                    }
+                    if (slots.length > 1) {
+                        break;
+                    }
+                }
+                return slots.length == 1 ? slots[0] : null;
             }
             ?>
 
@@ -293,7 +395,6 @@
 
             <?on value:changed
             const blockType = cocktail.schema.getSchemaByName(newValue._class);
-            this.selectableId = `block-${newValue.id}`;
             this.icon.src = blockType[woost.admin.ui.modelIconURL];
             this.descriptionLabel.innerHTML = blockType.translateValue(newValue);
             this.typeLabel.innerHTML = blockType.translate();
@@ -306,7 +407,7 @@
                 <div id="typeLabel"/>
             </div>
 
-        </ui:woost.admin.ui.BlocksTree.Entry>
+        </ui:woost.admin.ui.BlocksTree.Row>
 
     </ui:BlocksContainer>
 

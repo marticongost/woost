@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?class
+    update(context) {
+        super.update(context);
+
+        // Update placement options
+        const selectedElement = context.selectable.selectedElement;
+        if (selectedElement) {
+            // Slots only allow "inside" placement
+            if (selectedElement.slotInfo) {
+                this.placementSelector.getOption("before").enabled = false;
+                this.placementSelector.getOption("after").enabled = false;
+                this.placementSelector.getOption("inside").enabled = true;
+                this.placementSelector.value = "inside";
+            }
+            // Blocks with a single slot allow all options, and default to "inside"
+            if (selectedElement.slotInfo || selectedElement.implicitSlot) {
+                this.placementSelector.getOption("before").enabled = true;
+                this.placementSelector.getOption("after").enabled = true;
+                this.placementSelector.getOption("inside").enabled = true;
+                this.placementSelector.value = "inside";
+            }
+            // Blocks without slots, or with more than one, default to "after" and hide the "inside" option
+            else {
+                this.placementSelector.getOption("before").enabled = true;
+                this.placementSelector.getOption("after").enabled = true;
+                this.placementSelector.getOption("inside").enabled = false;
+                this.placementSelector.value = "after";
+            }
+        }
+    }
+    ?>
+
+    <ui:with ui:element="dropdownPanel">
+        <?on expanded:changed
+        if (newValue) {
+            instance.blockTypeSelector.selectedElements = [];
+        }
+        ?>
+        <ui:woost.admin.ui.PlacementSelector id="placementSelector"/>
+        <ui:BlockTypeSelector id="blockTypeSelector"/>
+    </ui:with>
+
+    <ui:woost.admin.ui.ModelSelector ui:component="BlockTypeSelector">
+
+        <?class
+        selectionActivated() {
+            const addBlockDropdown = this.parentInstance;
+            addBlockDropdown.dropdownPanel.expanded = false;
+            const blocksTree = addBlockDropdown.action.view.blocksTree;
+            blocksTree.newBlock(
+                this.selectedElement.model,
+                addBlockDropdown.placementSelector.value,
+                blocksTree.selectedElement
+            );
+        }
+        ?>
+
+        <?js
+        this.instantiableModelsOnly = true;
+        this.rootModel = woost.models.Block;
+        ?>
+
+    </ui:woost.admin.ui.ModelSelector>
+
+</ui:cocktail.ui.ActionListDropdown>
+

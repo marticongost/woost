@@ -1,0 +1,58 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host {
+    display: inline-block;
+    flex-direction: row;
+    border: 1px solid #ddd;
+}
+
+:host(:focus) {
+    outline-width: 1px;
+    outline-style: dotted;
+}
+
+.PlacementOption {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 5em;
+    padding: 0.5em;
+    color: #666;
+    cursor: pointer;
+
+    &[enabled='false'] {
+        display: none;
+    }
+
+    &:hover {
+        background-color: $hl-light-background;
+    }
+
+    .icon {
+        --height: 2em;
+    }
+
+    .label {
+        font-size: 0.8em;
+        margin-top: 0.2em;
+    }
+
+    &:hover {
+        background-color: $hl-light-background;
+    }
+
+    &[selected] {
+        color: $selection-foreground;
+        background-color: $selection-background;
+
+        .label {
+            font-weight: bold;
+        }
+    }
+
+    &:hover[selected] {
+        background-color: $hl-background;
+    }
+}
+

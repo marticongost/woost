@@ -375,6 +375,8 @@ class SchemaExport(MemberExport):
 
             yield members_prop
 
+        yield (u"instantiable", dumps(member.instantiable))
+
         yield (
             u"[woost.admin.ui.modelIconURL]",
             dumps(app.icon_resolver.find_icon_url(member, "scalable"))

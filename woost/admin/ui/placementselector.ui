@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectableEntriesSelector=".PlacementOption"
+    selectionType="single"
+    selectionAxis="horizontal"
+    tabindex="0">
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+
+    <ui:symbol name="OPTIONS_MAP"/>
+    <ui:symbol name="SYNCHRONIZING"/>
+
+    <ui:property
+        name="value"
+        type="string"
+        reflected="true">
+        <?on changed
+        if (!this[SYNCHRONIZING]) {
+            this[SYNCHRONIZING] = true;
+            try {
+                if (newValue) {
+                    this.selectedElements = [this.getOption(newValue)];
+                }
+                else {
+                    this.selectedElements = [];
+                }
+            }
+            finally {
+                this[SYNCHRONIZING] = false;
+            }
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    addOption(value) {
+        const option = cls.PlacementOption.create();
+        option.value = value;
+        this.shadowRoot.appendChild(option);
+        this[OPTIONS_MAP][value] = option;
+        return option;
+    }
+
+    getOption(value) {
+        return this[OPTIONS_MAP][value];
+    }
+    ?>
+
+    <?on selectionChanged
+    if (!this[SYNCHRONIZING]) {
+        this[SYNCHRONIZING] = true;
+        try {
+            this.value = this.selectedElement ? this.selectedElement.value : null;
+        }
+        finally {
+            this[SYNCHRONIZING] = false;
+        }
+    }
+    ?>
+
+    <?js
+    this[OPTIONS_MAP] = {};
+    this.addOption("before");
+    this.addOption("after");
+    this.addOption("inside");
+    ?>
+
+    <div ui:component="PlacementOption">
+
+        <ui:property
+            name="value"
+            type="string"
+            reflected="true"
+            final="true">
+            <?on changed
+            this.icon.src = `woost.admin.ui://images/block-placement-${newValue}.svg`;
+            this.label.innerHTML = cocktail.ui.translations[`woost.admin.ui.AddBlockDropdown.placements.${newValue}`];
+            ?>
+        </ui:property>
+
+        <ui:property
+            name="enabled"
+            type="boolean"
+            reflected="true"
+            default="true"/>
+
+        <ui:cocktail.ui.SVG id="icon"/>
+        <div id="label"/>
+
+    </div>
+
+</div>
