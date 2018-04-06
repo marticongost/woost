@@ -7,6 +7,7 @@
     <ui:requires component="cocktail.ui.Lock"/>
     <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
     <ui:requires component="woost.admin.ui.BlockEditView"/>
+    <ui:requires component="woost.admin.ui.AddBlockDropdown"/>
 
     <ui:symbol name="PREVIEW_READY_PROMISE"/>
     <ui:symbol name="PREVIEW_READY_RESOLVE_PROMISE"/>
@@ -26,7 +27,7 @@
         if (!oldValue || !newValue || !oldValue.matchesStackNode(newValue)) {
             const prevEditor = this.blockEditor;
             if (newValue) {
-                this.blocksTree.selectedElements = [this.blocksTree.resolveSelectableId(`block-${newValue.item.id}`)];
+                this.blocksTree.selectedElements = [this.blocksTree.getBlockRow(newValue.item.id)];
                 this.blockEditor = woost.admin.ui.BlockEditView.create();
                 this.heading.replaceWith(this.blockEditor.heading);
                 this.navigationActionList.replaceWith(this.blockEditor.navigationActionList);
@@ -264,17 +265,18 @@
     if (e.origin == woost.admin.origin) {
         if (e.data.type == "hover") {
             this[APPLYING_HOVER_FROM_PREVIEW] = true;
+            const target = this.blocksTree.resolveSelectableId(e.data.target);
             try {
-                this.blocksTree.hoverRow = this.blocksTree.resolveSelectableId(e.data.target);
+                this.blocksTree.hoverRow = target && target.row;
             }
             finally {
                 this[APPLYING_HOVER_FROM_PREVIEW] = false;
             }
         }
         else if (e.data.type == "click") {
-            const blockRow = this.blocksTree.resolveSelectableId(e.data.target);
-            if (blockRow) {
-                this.blocksTree.clickSelection(e.data.eventData, blockRow);
+            const target = this.blocksTree.resolveSelectableId(e.data.target);
+            if (target && target.row) {
+                this.blocksTree.clickSelection(e.data.eventData, target.row);
                 this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
             }
         }

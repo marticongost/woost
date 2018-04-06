@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    tabindex="0"
+    selectableEntriesSelector=".Entry"
+    selectionType="single"
+    activationType="singleClick">
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+    <ui:requires component="cocktail.ui.sorting"/>
+
+    <ui:property
+        name="rootModel"
+        reflected="false">
+        <?on changed
+        this.clear();
+
+        if (newValue) {
+            const models = Array
+                .from(newValue.schemaTree())
+                .filter((model) => this.shouldIncludeModel(model));
+
+            const sortedModels = cocktail.ui.sorting.localeSort(
+                models,
+                (model) => model.translate()
+            );
+
+            for (let model of sortedModels) {
+                this.addModel(model);
+            }
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="instantiableModelsOnly"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <?class
+    clear() {
+        cocktail.ui.empty(this.modelsList);
+    }
+
+    shouldIncludeModel(model) {
+        return !this.instantiableModelsOnly || (model.instantiable && model[woost.models.permissions].create);
+    }
+
+    addModel(model) {
+        this.modelsList.appendChild(this.createModel(model));
+    }
+
+    createModel(model) {
+        const entry = this.constructor.Entry.create();
+        entry.model = model;
+        return entry;
+    }
+    ?>
+
+    <div id="modelsList"/>
+
+    <div ui:component="Entry">
+
+        <ui:property
+            name="model"
+            reflected="false">
+            <?on changed
+            this.icon.src = newValue[woost.admin.ui.modelIconURL];
+            this.label.innerHTML = newValue.translate();
+            ?>
+        </ui:property>
+
+        <ui:cocktail.ui.SVG id="icon"/>
+        <div id="label"/>
+
+    </div>
+
+</div>
+

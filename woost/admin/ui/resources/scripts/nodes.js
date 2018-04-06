@@ -110,10 +110,8 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                     throw `Can't find model ${path[1]}`;
                 }
                 cocktail.navigation.log(`${this.constructor.name} creating new object`);
-                return model.loadDefaults([cocktail.getLanguage()])
+                return model.newInstance([cocktail.getLanguage()])
                     .then((item) => {
-                        item._new = true;
-                        item._deleted_translations = [];
                         const itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
                             const itemNode = this.createChild(itemNodeClass);

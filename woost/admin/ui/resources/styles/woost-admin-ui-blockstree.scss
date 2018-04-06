@@ -31,7 +31,7 @@ $row-vpadding: 0.8em;
         }
 
         &[hover='true'] {
-            background-color: $hl-light-background;;
+            background-color: $hl-light-background;
         }
 
         &[hover='true'][selected] {
@@ -59,7 +59,7 @@ $row-vpadding: 0.8em;
 
 .BlockDisplay {
 
-    & > .blockRow {
+    .BlockRow {
         font-size: 1.3em;
         padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
         padding-right: $row-hpadding;

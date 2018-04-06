@@ -520,6 +520,10 @@ woost.admin.actions.AddBlockAction = class AddBlockAction extends woost.admin.ac
     get iconURL() {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add.svg`)
     }
+
+    createEntry() {
+        return woost.admin.ui.AddBlockDropdown.create();
+    }
 }
 
 woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.admin.actions.Action {
