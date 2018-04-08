@@ -507,6 +507,20 @@ class DateTimeExport(MemberExport):
     pass
 
 
+@exports_member(schema.Number)
+class NumberExport(MemberExport):
+
+    def get_properties(self, member, nested):
+        for prop in MemberExport.get_properties(self, member, nested):
+            yield prop
+
+        if member.min is not None:
+            yield ("min", dumps(member.min))
+
+        if member.max is not None:
+            yield ("max", dumps(member.max))
+
+
 @exports_member(schema.Collection)
 class CollectionExport(MemberExport):
 
