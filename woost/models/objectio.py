@@ -37,6 +37,7 @@ from woost.models import (
     File,
     User,
     Slot,
+    Template,
     Controller,
     Document,
     changeset_context
