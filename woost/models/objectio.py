@@ -94,7 +94,11 @@ def resolve_object_ref(cls, ref):
     for key, value in ref.iteritems():
         if value is not None and value != "" and not key.startswith("@"):
             member = cls.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj = cls.get_instance(**{key: value})
                 if obj is not None:
                     return obj
@@ -108,7 +112,11 @@ def create_object_from_ref(cls, ref):
     for key, value in ref.iteritems():
         if not key.startswith("@"):
             member = obj.__class__.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj.set(key, value)
 
     obj.insert()
