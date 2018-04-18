@@ -8,11 +8,11 @@ from woost.extensions.attributes.utils import init_element
     xmlns:py="http://www.whads.com/ns/cocktail/templates"
     py:class="woost.views.Link">
 
-    <py:ready>
-        <?py
-        self.custom_attributes_source = self.value
-        ?>
-    </py:ready>
+    <?py-class
+    @property
+    def custom_attributes_source(self):
+        return self.value
+    ?>
 
 </py:overlay>
 
