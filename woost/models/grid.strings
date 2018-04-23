@@ -21,6 +21,11 @@ en: Grid
         es: Número de columnas
         en: Column size
 
+        [side_margin]
+        ca: Marge lateral
+        es: Margen lateral
+        en: Lateral margin
+
         [sizes]
         ca: Mides
         es: Tamaños
