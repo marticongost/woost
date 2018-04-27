@@ -12,7 +12,7 @@ import hashlib
 from weakref import WeakKeyDictionary
 from mimetypes import guess_type
 from shutil import copy, copyfileobj
-from urllib import urlopen
+import urllib2
 from tempfile import mkdtemp
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
@@ -115,6 +115,7 @@ class File(Publishable):
         assign_file_name = True,
         encoding = "utf-8",
         download_temp_folder = None,
+        user_agent = None,
         redownload = False
     ):
         is_path = isinstance(source, basestring)
@@ -131,7 +132,11 @@ class File(Publishable):
                 temp_path = os.path.join(download_temp_folder, file_name)
 
                 if redownload or not os.path.exists(temp_path):
-                    response = urlopen(source)
+                    opener = urllib2.build_opener()
+                    if user_agent:
+                        opener.addheaders = [("User-Agent", user_agent)]
+                    response = opener.open(source)
+
                     with open(temp_path, "w") as temp_file:
                         copyfileobj(response, temp_file)
 
