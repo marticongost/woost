@@ -35,7 +35,8 @@ class FormController(FormProcessor, Controller):
                     document = agreement.document
                 )
                 if agreement.text:
-                    agreement.custom_translation_key = \
+                    agreement_member.text = agreement.text
+                    agreement_member.custom_translation_key = \
                         "woost.extensions.forms.formcontroller.form_agreement"
 
         @property
