@@ -36,7 +36,8 @@ class TextFileExtension(Extension):
         from woost.models import Controller, extension_translations
         translations.load_bundle("woost.extensions.textfile.installation")
 
-        controller = self._create_asset(
+        config = Configuration.instance
+        config.default_text_file_controller = self._create_asset(
             Controller,
             "controller",
             title = extension_translations,

@@ -3,15 +3,13 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from __future__ import with_statement
 from types import GeneratorType
-from threading import Lock
-from time import time, mktime
-from datetime import datetime
-from hashlib import md5
+from time import time
 import cherrypy
 from cherrypy.lib import cptools, http
 from cocktail.caching import CacheKeyError
+from cocktail.translations import get_language, translations
+from cocktail.controllers import request_property, get_state, redirect
 from woost import app
 from woost.controllers import BaseCMSController
 
@@ -32,6 +30,8 @@ class PublishableController(BaseCMSController):
 
     def __call__(self, **kwargs):
 
+        self._apply_publishable_redirection()
+
         cherrypy.response.headers["Cache-Control"] = "no-cache"
         content = self._apply_cache(**kwargs)
 
@@ -39,6 +39,55 @@ class PublishableController(BaseCMSController):
             content = self._produce_content(**kwargs)
 
         return content
+
+    def _apply_publishable_redirection(self):
+
+        publishable = app.publishable
+
+        if publishable.redirection_mode:
+
+            redirection_target = publishable.find_redirection_target()
+
+            if redirection_target is None:
+                raise cherrypy.NotFound()
+
+            if redirection_target.is_internal_content():
+                parameters = get_state()
+            else:
+                parameters = None
+
+            uri = redirection_target.get_uri(parameters = parameters)
+            method = publishable.redirection_method
+
+            if method == "perm":
+                redirect(uri, status = 301)
+            elif method == "client":
+                return """
+                    <!DOCTYPE html>
+                    <html lang="%s">
+                        <head>
+                            <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+                            <meta http-equiv="refresh" content="1; url=%s"/>
+                            <title>%s</title>
+                        </head>
+                        <body>
+                            %s
+                            <script type="text/javascript">
+                                location.href = publishable.getElementById("woost-client-redirection").href;
+                            </script>
+                        </body>
+                    </html>
+                """ % (
+                    get_language(),
+                    uri,
+                    translations("woost.controllers.publishablecontroller.redirection_title"),
+                    translations(
+                        "woost.controllers.publishablecontroller.redirection_explanation",
+                        uri = uri
+                    )
+                )
+            else:
+                redirect(uri)
 
     def _apply_cache(self, **kwargs):
 
@@ -164,5 +213,33 @@ class PublishableController(BaseCMSController):
         return content_bytes
 
     def _produce_content(self, **kwargs):
+
+        # Override the active theme
+        theme = self.get_theme()
+        if theme:
+            app.theme = theme
+
         return BaseCMSController.__call__(self, **kwargs)
+
+    def get_theme(self):
+
+        theme = app.publishable.theme
+        if theme:
+            return theme
+
+        template = self.get_template()
+        return template and template.theme
+
+    def get_template(self):
+        return app.publishable.get_template()
+
+    @request_property
+    def view_class(self):
+        template = self.get_template()
+        return template and template.identifier
+
+    def _render_template(self):
+        if not self.view_class:
+            raise cherrypy.NotFound()
+        return BaseCMSController._render_template(self)
 

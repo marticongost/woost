@@ -36,12 +36,7 @@ class File(Publishable):
     video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
-
     default_encoding = None
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.file_controller")
-    )
 
     members_order = [
         "title",
