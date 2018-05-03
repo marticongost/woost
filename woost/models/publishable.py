@@ -476,7 +476,7 @@ class Publishable(Item, PublishableObject):
             return ((-1, 1), impl)
 
 Publishable.login_page.type = Publishable
-Publishable.related_end = schema.Collection()
+Publishable.login_page.related_end = schema.Collection()
 
 # Exposed at the module's root for backwards compatibility
 IsPublishedExpression = Publishable.IsPublishedExpression
