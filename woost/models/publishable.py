@@ -80,6 +80,9 @@ class Publishable(Item, PublishableObject):
         "path",
         "full_path",
         "hidden",
+        "redirection_mode",
+        "redirection_target",
+        "redirection_method",
         "login_page",
         "per_language_publication",
         "enabled",
@@ -178,6 +181,31 @@ class Publishable(Item, PublishableObject):
         required = True,
         default = False,
         listed_by_default = False,
+        member_group = "navigation",
+        shadows_attribute = True
+    )
+
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
+        listed_by_default = False,
+        text_search = False,
+        member_group = "navigation",
+        shadows_attribute = True
+    )
+
+    redirection_target = schema.Reference(
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation",
+        shadows_attribute = True
+    )
+
+    redirection_method = schema.String(
+        required = True,
+        default = "temp",
+        enumeration = ["temp", "perm", "client"],
+        listed_by_default = False,
+        text_search = False,
         member_group = "navigation",
         shadows_attribute = True
     )
@@ -477,6 +505,9 @@ class Publishable(Item, PublishableObject):
 
 Publishable.login_page.type = Publishable
 Publishable.login_page.related_end = schema.Collection()
+
+Publishable.redirection_target.type = Publishable
+Publishable.redirection_target.related_end = schema.Collection()
 
 # Exposed at the module's root for backwards compatibility
 IsPublishedExpression = Publishable.IsPublishedExpression

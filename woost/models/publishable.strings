@@ -162,6 +162,50 @@
             es: Oculto
             en: Hidden
 
+            [redirection_mode]
+            ca: Modalitat de redirecció
+            es: Modalidad de redirección
+            en: Redirection mode
+
+                [values]
+
+                    [first_child]
+                    ca: Redirigir al primer fill accessible
+                    es: Redirigir al primer hijo accesible
+                    en: Redirect to the first accessible child
+
+                    [custom_target]
+                    ca: Redirigir a un element concret
+                    es: Redirigir a un elemento concreto
+                    en: Redirect to a custom target
+
+            [redirection_target]
+            ca: Destí de la redirecció
+            es: Destino de la redirección
+            en: Redirection target
+
+            [redirection_method]
+            ca: Mètode de redirecció
+            es: Método de redirección
+            en: Redirection method
+
+                [values]
+
+                    [temp]
+                    ca: Temporal
+                    es: Temporal
+                    en: Temporary
+
+                    [perm]
+                    ca: Permanent
+                    es: Permanente
+                    en: Permanent
+
+                    [client]
+                    ca: Client
+                    es: Cliente
+                    en: Client
+
             [start_date]
             ca: Data de publicació
             es: Fecha de publicación
@@ -195,6 +239,11 @@
             ca: Controlador
             es: Controlador
             en: Controller
+
+                [explanation]
+                ca: Deixar en blanc per utilitzar el controlador per defecte
+                es: Dejar en blanco para utilizar el controlador por defecto
+                en: Leave blank to use the default controller
 
             [parent]
             ca: Pare

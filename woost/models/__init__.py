@@ -58,8 +58,9 @@ from .publishable import (
     UserHasAccessLevelExpression,
     user_has_access_level
 )
-from .document import Document
+from .defaultcontroller import with_default_controller
 from .defaulttemplate import with_default_template
+from .document import Document
 from .theme import Theme
 from .template import Template
 from .controller import Controller
@@ -102,7 +103,6 @@ from .file import File
 from .news import News
 from .event import Event
 from .uri import URI
-from .file import File
 from .extension import (
     Extension,
     extension_translations,
@@ -139,6 +139,13 @@ from .synchronization import (
     rebuild_manifest
 )
 from . import staticpublication
+
+# Delayed declaration to avoid a reference cycle; Website and File depend on
+# each other
+with_default_controller("publishable")(Publishable)
+with_default_controller("file")(File)
+with_default_controller("uri")(URI)
+with_default_controller("feed")(Feed)
 
 # Blocks
 from .slot import Slot

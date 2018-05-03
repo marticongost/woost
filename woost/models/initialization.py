@@ -663,7 +663,7 @@ class SiteInitializer(object):
 
     def create_controllers(self):
         for controller_name in (
-            "Document",
+            "Publishable",
             "File",
             "URI",
             "Styles",
@@ -684,6 +684,32 @@ class SiteInitializer(object):
                 )
             )
             setattr(self, controller_name.lower() + "_controller", controller)
+
+        # Setup default controllers
+        self.configuration.default_publishable_controller = (
+            Controller.require_instance(
+                python_name =
+                "woost.controllers.publishablecontroller.PublishableController"
+            )
+        )
+        self.configuration.default_file_controller = (
+            Controller.require_instance(
+                python_name =
+                "woost.controllers.filecontroller.FileController"
+            )
+        )
+        self.configuration.default_uri_controller = (
+            Controller.require_instance(
+                python_name =
+                "woost.controllers.uricontroller.URIController"
+            )
+        )
+        self.configuration.default_uri_controller = (
+            Controller.require_instance(
+                python_name =
+                "woost.controllers.feedcontroller.FeedController"
+            )
+        )
 
         # The backoffice controller is placed at an irregular location
         self.backoffice_controller.python_name = (

@@ -25,6 +25,7 @@ class Website(Item):
         "contact",
         "publication",
         "publication.pages",
+        "publication.controllers",
         "publication.maintenance",
         "publication.https",
         "presentation",

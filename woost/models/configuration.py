@@ -50,6 +50,7 @@ class Configuration(Item):
     groups_order = [
         "publication",
         "publication.pages",
+        "publication.controllers",
         "publication.maintenance",
         "meta",
         "language",

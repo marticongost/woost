@@ -1406,3 +1406,89 @@ def set_robots_should_index_setting(e):
     from woost.models import Configuration, Website
     Configuration.instance.robots_should_index = True
 
+#------------------------------------------------------------------------------
+
+step = MigrationStep("Assign default controllers")
+
+@when(step.executing)
+def assign_default_controllers(e):
+
+    from woost.models import (
+        Configuration,
+        Controller,
+        Publishable,
+        File,
+        URI,
+        Feed
+    )
+
+    config = Configuration.instance
+
+    # PublishableController now does everything that DocumentController did
+    doc_controller = Controller.require_instance(
+        qname = "woost.document_controller"
+    )
+    doc_controller.qname = "woost.publishable_controller"
+    doc_controller.python_name = \
+        "woost.controllers.publishablecontroller.PublishableController"
+
+    # Setup default controllers, remove redundant explicit controller
+    # declarations
+    model_controllers = {
+        Publishable:
+            "woost.controllers.publishablecontroller.PublishableController",
+        File:
+            "woost.controllers.filecontroller.FileController",
+        URI:
+            "woost.controllers.uricontroller.URIController",
+        Feed:
+            "woost.controllers.feedcontroller.FeedController"
+    }
+
+    from woost.extensions.sitemap import SitemapExtension
+    if SitemapExtension.instance.enabled:
+        from woost.extensions.sitemap.sitemap import SiteMap
+        model_controllers[SiteMap] = \
+            "woost.extensions.sitemap.sitemapcontroller.SitemapController"
+
+    from woost.extensions.issuu import IssuuExtension
+    if IssuuExtension.instance.enabled:
+        from woost.extensions.issuu.issuudocument import IssuuDocument
+        model_controllers[IssuuDocument] = (
+            "woost.extensions.issuu.issuudocumentcontroller."
+            "IssuuDocumentController"
+        )
+
+    from woost.extensions.newsletters import NewslettersExtension
+    if NewslettersExtension.instance.enabled:
+        from woost.extensions.newsletters.newsletter import Newsletter
+        model_controllers[Newsletter] = (
+            "woost.extensions.newsletters.newslettercontroller."
+            "NewsletterController"
+        )
+
+    from woost.extensions.textfile import TextFileExtension
+    if TextFileExtension.instance.enabled:
+        from woost.extensions.textfile.textfile import TextFile
+        model_controllers[TextFile] = (
+            "woost.extensions.textfile.textfilecontroller."
+            "TextFileController"
+        )
+
+    from woost.extensions.ecommerce import ECommerceExtension
+    if ECommerceExtension.instance.enabled:
+        from woost.extensions.ecommerce.ecommerceproduct \
+            import ECommerceProduct
+        model_controllers[ECommerceProduct] = (
+            "woost.extensions.ecommerce.productcontroller."
+            "ProductController"
+        )
+
+    for model, controller_fullname in model_controllers.iteritems():
+        controller = Controller.select({"python_name": controller_fullname})[0]
+        if controller:
+            key = "default_%s_controller" % model.__name__.lower()
+            config.set(key, controller)
+            for item in list(controller.published_items):
+                item.controller = None
+

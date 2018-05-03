@@ -30,6 +30,11 @@ en: Website
             es: Páginas especiales
             en: Special pages
 
+            [controllers]
+            ca: Controladors
+            es: Controladores
+            en: Controllers
+
             [maintenance]
             ca: Manteniment
             es: Mantenimiento
