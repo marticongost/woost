@@ -15,7 +15,7 @@ from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail.urls import URL
 from cocktail import schema
 from cocktail.translations import translations
-from cocktail.caching import whole_cache
+from cocktail.caching import whole_cache, get_cache_tags, get_cache_expiration
 from cocktail.caching.utils import nearest_expiration
 from cocktail.persistence import (
     datastore,
@@ -804,4 +804,27 @@ def _clear_cache_after_change(e):
 def _clear_cache_after_change(e):
     if app.cache.enabled and e.source.is_inserted:
         e.source.clear_cache_after_commit()
+
+# cocktail.caching.Invalidable implementation for Item
+from cocktail.persistence import PersistentClass
+
+@get_cache_tags.implementation_for(PersistentClass)
+def get_cache_tags_for_persistent_class(obj, cache_part = None):
+    tag = obj.full_name
+    if cache_part:
+        tag += "-" + cache_part
+    yield tag
+
+@get_cache_expiration.implementation_for(PersistentClass)
+def get_cache_expiration_for_persistent_class(obj, cache_part = None):
+    return obj.get_cache_expiration_for_type()
+
+@get_cache_tags.implementation_for(Item)
+def get_cache_tags_for_item(obj, cache_part = None):
+    for tag in obj.get_cache_tags(cache_part = cache_part):
+        yield tag
+
+@get_cache_expiration.implementation_for(Item)
+def get_cache_expiration_for_item(obj, cache_part = None):
+    return obj.get_cache_expiration()
 
