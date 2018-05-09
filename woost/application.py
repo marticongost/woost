@@ -8,7 +8,7 @@ from threading import local
 from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod, camel_to_underscore
 from cocktail.caching import Cache
-from cocktail.controllers import context, folder_publisher
+from cocktail.controllers import context, folder_publisher, Cached
 from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
 
@@ -333,4 +333,7 @@ class ThemeProperty(ContextualProperty):
 @GenericMethod
 def get_navigation_point(self):
     return self
+
+
+Cached.cache = Application.cache
 
