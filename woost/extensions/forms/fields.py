@@ -273,10 +273,13 @@ class FieldSet(Field):
             try:
                 field_set_id = int(group.split(".")[-1])
             except:
-                return call_base(group)
+                return call_base(group, suffix = suffix)
             else:
                 fieldset = FieldSet.require_instance(field_set_id)
-                return fieldset.visible_title or translations(fieldset)
+                if suffix == ".explanation":
+                    return fieldset.explanation
+                else:
+                    return fieldset.visible_title or translations(fieldset)
 
     def create_form_model(self):
 
