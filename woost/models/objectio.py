@@ -132,6 +132,10 @@ class ObjectExporter(object):
     datetime_format = date_format + " " + time_format
     json_encoder_defaults = {"check_circular": False}
 
+    default_model_export_modes = {
+        File: ExportMode.expand
+    }
+
     default_member_export_modes = {
         Item.id: ExportMode.ignore,
         Item.translations: ExportMode.ignore,
@@ -144,7 +148,7 @@ class ObjectExporter(object):
 
     def __init__(self):
         self.__member_export_modes = self.default_member_export_modes.copy()
-        self.__model_export_modes = TypeMapping()
+        self.__model_export_modes = TypeMapping(self.default_model_export_modes)
         self.__exported_data = {}
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
 
