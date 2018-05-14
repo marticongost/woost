@@ -269,7 +269,7 @@ class FieldSet(Field):
             member.add_member(child_member, append = True)
 
         @extend(member)
-        def translate_group(member, group):
+        def translate_group(member, group, suffix = None):
             try:
                 field_set_id = int(group.split(".")[-1])
             except:
