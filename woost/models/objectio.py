@@ -143,7 +143,8 @@ class ObjectExporter(object):
         Item.last_translation_update_time: ExportMode.ignore,
         Item.changes: ExportMode.ignore,
         Controller.published_items: ExportMode.ignore,
-        Template.documents: ExportMode.ignore
+        Template.documents: ExportMode.ignore,
+        Document.children: ExportMode.expand
     }
 
     def __init__(self):
