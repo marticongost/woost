@@ -326,6 +326,8 @@ class ObjectExporter(object):
                     )
                 )
             ):
+                items = None
+
                 if node.member and node.member.items:
                     item_nodes = []
                     has_expansion = False
@@ -361,8 +363,9 @@ class ObjectExporter(object):
                                 for item_node in item_nodes
                             ]
                         value = items
-                else:
-                    value = list(value)
+
+                value = list(value) if items is None else items
+
             elif isinstance(value, DictWrapper):
                 items = {}
                 for k, v in value.iteritems():
