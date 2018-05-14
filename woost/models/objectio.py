@@ -132,6 +132,10 @@ class ObjectExporter(object):
     datetime_format = date_format + " " + time_format
     json_encoder_defaults = {"check_circular": False}
 
+    default_model_export_modes = {
+        File: ExportMode.expand
+    }
+
     default_member_export_modes = {
         Item.id: ExportMode.ignore,
         Item.translations: ExportMode.ignore,
@@ -139,12 +143,13 @@ class ObjectExporter(object):
         Item.last_translation_update_time: ExportMode.ignore,
         Item.changes: ExportMode.ignore,
         Controller.published_items: ExportMode.ignore,
-        Template.documents: ExportMode.ignore
+        Template.documents: ExportMode.ignore,
+        Document.children: ExportMode.expand
     }
 
     def __init__(self):
         self.__member_export_modes = self.default_member_export_modes.copy()
-        self.__model_export_modes = TypeMapping()
+        self.__model_export_modes = TypeMapping(self.default_model_export_modes)
         self.__exported_data = {}
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
 
@@ -416,6 +421,70 @@ class ObjectExporter(object):
 
     def get_model_export_mode(self, model):
         return self.__model_export_modes.get(model)
+
+    def expand(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.expand`.
+        """
+        self._set_mode(args, ExportMode.expand)
+
+    def export(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.export`.
+        """
+        self._set_mode(args, ExportMode.export)
+
+    def ignore(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.ignore`.
+        """
+        self._set_mode(args, ExportMode.ignore)
+
+    def _set_mode(self, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                self.set_model_export_mode(obj, mode)
+            elif isinstance(obj, schema.Member):
+                self.set_member_export_mode(obj, mode)
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
+
+    @classmethod
+    def expand_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.expand`.
+        """
+        cls._set_default_mode(args, ExportMode.expand)
+
+    @classmethod
+    def export_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.export`.
+        """
+        cls._set_default_mode(args, ExportMode.export)
+
+    @classmethod
+    def ignore_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.ignore`.
+        """
+        cls._set_default_mode(args, ExportMode.ignore)
+
+    @classmethod
+    def _set_default_mode(cls, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                cls.default_model_export_modes[obj] = mode
+            elif isinstance(obj, schema.Member):
+                cls.default_member_export_modes[obj] = mode
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
 
     def run_cli(self, func):
         parser = self._cli_create_parser()
