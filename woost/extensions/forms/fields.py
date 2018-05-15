@@ -117,6 +117,13 @@ class Field(Item):
         listed_by_default = False
     )
 
+    field_validations = schema.Collection(
+        items = "woost.extensions.forms.formvalidation.FormValidation",
+        bidirectional = True,
+        integral = True,
+        member_group = "field_properties"
+    )
+
     field_initialization = schema.CodeBlock(
         language = "python",
         listed_by_default = False,
@@ -178,6 +185,9 @@ class Field(Item):
             self.field_name or "field%d" % self.id
         )
         self._init_member(member)
+
+        for validation in self.field_validations:
+            validation.add_to_member(member)
 
         if self.field_initialization:
             label = "%s #%s.field_initialization" % (
