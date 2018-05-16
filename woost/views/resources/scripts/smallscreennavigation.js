@@ -25,16 +25,19 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
     this.setMenuExpanded = function (expanded) {
         $nav.attr("data-menu-state", expanded ? "expanded" : "collapsed");
 
-        if (expanded) {
-            var method = "slideDown";
-        }
-        else {
-            var method = "slideUp";
-        }
+        if ($nav.data("popup-animation") == "slide_down") {
 
-        $popup[method]({
-            duration: initialized ? $nav[0].popupAnimationDuration : 0,
-        });
+            if (expanded) {
+                var method = "slideDown";
+            }
+            else {
+                var method = "slideUp";
+            }
+
+            $popup[method]({
+                duration: initialized ? $nav[0].popupAnimationDuration : 0,
+            });
+        }
     }
 
     this.toggleMenuEntryExpanded = function ($entry, options /* optional */) {
