@@ -180,6 +180,11 @@ def field_property(member, *properties):
                     es: Desplegables separados para día, mes y año
                     en: Separate dropdown selectors for day, month and year
 
+            [field_validations]
+            ca: Validacions
+            es: Validaciones
+            en: Validations
+
             [field_initialization]
             ca: Inicialització
             es: Inicialización
