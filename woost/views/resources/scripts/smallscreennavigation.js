@@ -23,7 +23,9 @@ cocktail.bind(".SmallScreenNavigation", function ($nav) {
     }
 
     this.setMenuExpanded = function (expanded) {
-        $nav.attr("data-menu-state", expanded ? "expanded" : "collapsed");
+        var attribValue = expanded ? "expanded" : "collapsed";
+        $nav.attr("data-menu-state", attribValue);
+        document.body.setAttribute("data-small-screen-menu-state", attribValue);
 
         if ($nav.data("popup-animation") == "slide_down") {
 
