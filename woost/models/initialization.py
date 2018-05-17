@@ -688,26 +688,22 @@ class SiteInitializer(object):
         # Setup default controllers
         self.configuration.default_publishable_controller = (
             Controller.require_instance(
-                python_name =
-                "woost.controllers.publishablecontroller.PublishableController"
+                qname = "woost.publishable_controller"
             )
         )
         self.configuration.default_file_controller = (
             Controller.require_instance(
-                python_name =
-                "woost.controllers.filecontroller.FileController"
+                qname = "woost.file_controller"
             )
         )
         self.configuration.default_uri_controller = (
             Controller.require_instance(
-                python_name =
-                "woost.controllers.uricontroller.URIController"
+                qname = "woost.uri_controller"
             )
         )
         self.configuration.default_uri_controller = (
             Controller.require_instance(
-                python_name =
-                "woost.controllers.feedcontroller.FeedController"
+                qname = "woost.feed_controller"
             )
         )
 
