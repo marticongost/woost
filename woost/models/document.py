@@ -8,7 +8,6 @@ u"""
 """
 from cocktail import schema
 from cocktail.events import event_handler
-from cocktail.html import templates
 from cocktail.controllers import redirect
 from .publishable import Publishable
 from .controller import Controller
@@ -161,7 +160,7 @@ class Document(Publishable):
 
         values["publishable"] = self
 
-        view = templates.new(template.identifier)
+        view = template.create_view()
         for key, value in values.iteritems():
             setattr(view, key, value)
 
