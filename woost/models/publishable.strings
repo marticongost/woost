@@ -37,6 +37,16 @@
             es: Navegación
             en: Navigation
 
+                [menu]
+                ca: Menú
+                es: Menú
+                en: Menu
+
+                [redirection]
+                ca: Redirecció
+                es: Redirección
+                en: Redirection
+
             [meta]
             ca: Metadades
             es: Metadatos
