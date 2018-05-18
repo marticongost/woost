@@ -98,13 +98,8 @@ class PublishableController(BaseCMSController, Cached):
     def get_template(self):
         return app.publishable.get_template()
 
-    @request_property
-    def view_class(self):
-        template = self.get_template()
-        return template and template.identifier
-
     def _render_template(self):
-        if not self.view_class:
+        if not self.view:
             raise cherrypy.NotFound()
         return BaseCMSController._render_template(self)
 
