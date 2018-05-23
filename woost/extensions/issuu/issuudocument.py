@@ -25,8 +25,7 @@ def extract_issuu_document_metadata(url):
     else:
         return {}
 
-
-@with_default_controller("issuu")
+@with_default_controller("issuu_document")
 class IssuuDocument(Publishable):
 
     instantiable = True
