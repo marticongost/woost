@@ -29,6 +29,8 @@ class BaseCMSController(Controller):
 
     @request_property
     def view(self):
+
+        view = None
         template = self.get_template()
 
         if template:
