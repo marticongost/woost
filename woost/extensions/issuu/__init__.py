@@ -54,6 +54,7 @@ class IssuuExtension(Extension):
         controller.python_name = \
             "woost.extensions.issuu.issuudocumentcontroller.IssuuDocumentController"
         controller.insert()
+        Configuration.instance.default_issuu_controller = controller
 
         self._create_renderers()
 

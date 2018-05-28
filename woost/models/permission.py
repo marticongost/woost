@@ -540,7 +540,7 @@ class PermissionExpression(Expression):
             dataset.intersection_update(authorized_subset)
             return dataset
 
-        return ((0, 0), impl)
+        return ((0, -1), impl)
 
 
 class ChangeSetPermissionExpression(Expression):

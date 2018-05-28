@@ -50,6 +50,7 @@ class Configuration(Item):
     groups_order = [
         "publication",
         "publication.pages",
+        "publication.controllers",
         "publication.maintenance",
         "meta",
         "language",
@@ -75,6 +76,7 @@ class Configuration(Item):
         "login_page",
         "generic_error_page",
         "not_found_error_page",
+        "gone_error_page",
         "forbidden_error_page",
         "languages",
         "published_languages",
@@ -85,9 +87,7 @@ class Configuration(Item):
         "backoffice_language",
         "backoffice_language_chain",
         "theme",
-        "default_page_template",
-        "default_news_template",
-        "default_event_template",
+        "global_styles",
         "renderers",
         "image_factories",
         "video_player_settings",
@@ -139,6 +139,13 @@ class Configuration(Item):
     )
 
     not_found_error_page = schema.Reference(
+        type = Publishable,
+        related_end = schema.Collection(),
+        listed_by_default = False,
+        member_group = "publication.pages"
+    )
+
+    gone_error_page = schema.Reference(
         type = Publishable,
         related_end = schema.Collection(),
         listed_by_default = False,
@@ -287,23 +294,12 @@ class Configuration(Item):
         member_group = "presentation.appearence"
     )
 
-    default_page_template = schema.Reference(
-        type = Template,
-        related_end = schema.Collection(),
+    global_styles = schema.CodeBlock(
+        language = "scss",
+        listed_by_default = False,
         member_group = "presentation.appearence"
     )
 
-    default_news_template = schema.Reference(
-        type = Template,
-        related_end = schema.Collection(),
-        member_group = "presentation.appearence"
-    )
-
-    default_event_template = schema.Reference(
-        type = Template,
-        related_end = schema.Collection(),
-        member_group = "presentation.appearence"
-    )
 
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),

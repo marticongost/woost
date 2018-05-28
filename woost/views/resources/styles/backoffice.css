@@ -134,7 +134,6 @@ body {
 
 .BackOfficeLayout a,
 .BackOfficeLayout .identity button,
-.BackOfficeLayout .user_views_bar .add_user_view_button,
 .BackOfficeLayout .advanced_search,
 .BackOfficeEditView .discard_button,
 .BackOfficeFieldsView .ItemSelector .action_button,
@@ -147,15 +146,6 @@ body {
     margin: 0;
     padding: 0;
     cursor: pointer;
-}
-
-.BackOfficeLayout .user_views_bar .add_user_view_button {
-    color: rgb(75,75,75);
-    text-decoration: none;
-}
-
-.BackOfficeLayout .user_views_bar .add_user_view_button img {
-    vertical-align: middle;
 }
 
 .BackOfficeLayout a img {
@@ -684,6 +674,10 @@ body.modal {
 .BackOfficeLayout .Form div.field.translated {
     clear: left;
     margin-bottom: 1em;
+}
+
+.BackOfficeLayout .Form div.field.translated .field_label {
+    padding: 0.2em;
 }
 
 .BackOfficeLayout .Form div.field:after {
@@ -1380,13 +1374,25 @@ body.scripted .BackOfficeLayout .Table .row_selection_control {
 }
 
 .BackOfficeLayout .MappingEditor .key_control {
-    margin-right: 2em;
+    margin-right: 1em;
 }
 
 .BackOfficeLayout .MappingEditor .key_control,
 .BackOfficeLayout .MappingEditor .value_control {
     display: inline-block;
     vertical-align: middle;
+}
+
+.BackOfficeLayout .MappingEditor .remove_button {
+    margin-left: 1em;
+}
+
+.BackOfficeLayout .MappingEditor > .entries > .entry + .entry {
+    margin-top: 0.5em;
+}
+
+.BackOfficeLayout .MappingEditor .entries:not(:empty) + .add_button {
+    margin-top: 0.5em;
 }
 
 .BackOfficeEditView .tab_strip {
@@ -4229,5 +4235,15 @@ div.success_label {
     top: -0.1em;
     left: -25.2em;
     right: -1.4em;
+}
+
+.BackOfficeLayout .SuggestionList .radio_entry {
+    margin-top: 0.4em;
+}
+
+.BackOfficeLayout .SuggestionList .custom_value_display {
+    position: relative;
+    top: 0.1em;
+    left: 0.6em;
 }
 

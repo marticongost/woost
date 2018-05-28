@@ -180,10 +180,74 @@ def field_property(member, *properties):
                     es: Desplegables separados para día, mes y año
                     en: Separate dropdown selectors for day, month and year
 
+            [field_validations]
+            ca: Validacions
+            es: Validaciones
+            en: Validations
+
             [field_initialization]
             ca: Inicialització
             es: Inicialización
             en: Initialization
+
+                [explanation]
+                ca:
+                    <p>Un bloc de codi Python que permet inicialitzar el membre de l'esquema generat per aquest camp.</p>
+                    <details>
+                        <summary>Detalls</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                Aquest objecte (instància de <code>woost.extensions.forms.fields.Field</code>).
+                                No s'hauria de modificar!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                El membre de l'esquema generat que es vol modificar
+                                (instància de <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
+                es:
+                    <p>
+                        Un bloque de código Python que permite inicializar el miembro del esquema generado
+                        por este campo.
+                    </p>
+                    <details>
+                        <summary>Detalles</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                Este objeto (instance de <code>woost.extensions.forms.fields.Field</code>).
+                                No debe modificarse!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                El miembro del esquema generado que se quiere modificar
+                                (instancia de <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
+                en:
+                    <p>
+                        A Python snippet that makes it possible to initialize the schema member generated
+                        by this field.
+                    </p>
+                    <details>
+                        <summary>Details</summary>
+                        <dl>
+                            <dt>field</dt>
+                            <dd>
+                                This object (an instance of <code>woost.extensions.forms.fields.Field</code>).
+                                Shouldn't be modified!
+                            </dd>
+                            <dt>member</dt>
+                            <dd>
+                                The generated schema member to be modified
+                                (an instance of <code>cocktail.schema.Member</code>).
+                            </dd>
+                        </dl>
+                    </details>
 
     [FieldSet]
     ca: Conjunt de camps
@@ -421,4 +485,87 @@ def field_property(member, *properties):
         ca: Camps de data / hora
         es: Campos de fecha / hora
         en: Date / time fields
+
+    [UploadField]
+    ca: Camp de pujada de fitxer
+    es: Campo de subida de fichero
+    en: File upload field
+
+        [plural]
+        ca: Camps de pujada de fitxer
+        es: Campos de subida de fichero
+        en: File upload fields
+
+        [members]
+
+            [max_file_size]
+            ca: Mida màxima del fitxer
+            es: Tamaño máximo del fichero
+            en: Maximum file size
+
+                [explanation]
+                ca: En megabytes
+                en: En megabytes
+                en: In megabytes
+
+            [accepted_file_types]
+            ca: Tipus de fitxer acceptats
+            es: Tipos de fichero aceptados
+            en: Accepted file types
+
+                [items.values]
+
+                    [document]
+                    ca: Document
+                    es: Document
+                    en: Document
+
+                    [image]
+                    ca: Imatge
+                    es: Imagen
+                    en: Image
+
+                    [audio]
+                    ca: Àudio
+                    es: Audio
+                    en: Audio
+
+                    [video]
+                    ca: Vídeo
+                    es: Video
+                    en: Video
+
+                    [package]
+                    ca: Fitxers comprimits
+                    es: Ficheros comprimidos
+                    en: Compressed files
+
+            [file_access_level]
+            ca: Nivell d'accés
+            es: Nivel de acceso
+            en: Access level
+
+                [explanation]
+                ca:
+                    Indica el nivell d'accés que s'aplicarà als fitxers
+                    pujats amb el formulari. A menys que els fitxers
+                    hagin de ser accessibles per qualsevol usuari,
+                    <strong>cal</strong> especificar un nivell d'accés.
+                es:
+                    Indica el nivel de acceso que se aplicará a los
+                    ficheros subidos con el formulario. A menos que los
+                    ficheros deban ser accesibles por cualquier usuario,
+                    <strong>es necesario</strong> especificar un nivel
+                    de acceso.
+                en:
+                    Sets the access level that will be applied to the files
+                    uploaded through the form. Unless the resulting files
+                    have to be accessible to all users of the website,
+                    <strong>it is strongly suggested</strong> to require an
+                    access level.
+
+    [FileTypeNotAcceptedError.instance(error)]
+    ca: El fitxer ${error.member_desc()} no pertany a cap dels tipus admesos
+    es: El fichero ${error.member_desc()} no pertenece a ninguno de los tipos admitidos
+    en: ${error.member_desc()} doesn't match any accepted file type
 

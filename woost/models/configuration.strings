@@ -24,6 +24,11 @@ en: Configuration
             es: Páginas especiales
             en: Special pages
 
+            [controllers]
+            ca: Controladors
+            es: Controladores
+            en: Controllers
+
             [maintenance]
             ca: Manteniment
             es: Mantenimiento
@@ -101,20 +106,10 @@ en: Configuration
         es: Tema visual
         en: Visual theme
 
-        [default_page_template]
-        ca: Plantilla de pàgina per defecte
-        es: Plantilla de página por defecto
-        en: Default page template
-
-        [default_news_template]
-        ca: Plantilla de notícia per defecte
-        es: Plantilla de noticia por defecto
-        en: Default news template
-
-        [default_event_template]
-        ca: Plantilla d'esdeveniment per defecte
-        es: Plantilla de evento por defecto
-        en: Default event template
+        [global_styles]
+        ca: Estils globals
+        es: Estilos globales
+        en: Global styles
 
         [login_page]
         ca: Pàgina d'autenticació
@@ -131,6 +126,11 @@ en: Configuration
         es: Página no encontrada
         en: Not found error page
         pt: Página não encontrada
+
+        [gone_error_page]
+        ca: Pàgina per continguts retirats
+        es: Página para contenidos retirados
+        en: Page for gone content
 
         [forbidden_error_page]
         ca: Pàgina d'error per accés restringit

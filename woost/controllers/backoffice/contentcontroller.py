@@ -27,7 +27,6 @@ from cocktail.schema.expressions import (
     InclusionExpression,
     Self
 )
-from cocktail.schema.io import default_msexcel_exporter
 from cocktail.html.datadisplay import (
     SINGLE_SELECTION,
     MULTIPLE_SELECTION

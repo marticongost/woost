@@ -29,7 +29,7 @@ from woost.models import (
     Configuration,
     Item,
     SiteInstallation,
-    Publishable,
+    PublishableObject,
     Document,
     URI,
     File,
@@ -792,8 +792,7 @@ class DuplicateAction(UserAction):
         "item_buttons"
     ])
     excluded = UserAction.excluded | frozenset([
-        "new_item",
-        "collection"
+        "new_item"
     ])
     min = 1
     max = 1
@@ -824,6 +823,32 @@ class DuplicateAction(UserAction):
             return copy
 
         copy = duplicate()
+
+        # Update the parent edit session to include the duplicate
+        stack = controller.edit_stack
+        if stack:
+            source_id = selection[0].id
+            relations = [
+                (
+                    member,
+                    (copy.get(member).id,)
+                    if isinstance(member, schema.Reference)
+                    else [item.id for item in copy.get(member)]
+                )
+                for member in copy.__class__.iter_members()
+                if isinstance(member, schema.RelationMember)
+                and member.related_end
+                and copy.get(member)
+            ]
+            for node in stack:
+                if isinstance(node, EditNode):
+                    for relation, rel_ids in relations:
+                        if (
+                            isinstance(node.item, relation.related_type)
+                            and node.item_id in rel_ids
+                        ):
+                            node.relate(relation.related_end, copy)
+
         Notification(
             translations(
                 "woost.duplicate_created_notice",
@@ -860,14 +885,14 @@ class PreviewAction(UserAction):
     included = frozenset([
         ("item_buttons", "edit")
     ])
-    content_type = (Publishable, Block)
+    content_type = (PublishableObject, Block)
     show_as_primary_action = "always"
 
 
 class OpenResourceAction(UserAction):
     min = 1
     max = 1
-    content_type = (Publishable, SiteInstallation, Block)
+    content_type = (PublishableObject, SiteInstallation, Block)
     included = frozenset([
         "toolbar",
         "item_buttons",
@@ -885,12 +910,12 @@ class OpenResourceAction(UserAction):
     def get_url(self, controller, selection):
         target = selection[0]
 
-        if isinstance(target, Publishable):
+        if isinstance(target, PublishableObject):
             return target.get_uri(host = "?")
         elif isinstance(target, Block):
             for path in target.find_paths():
                 container = path[0][0]
-                if isinstance(container, Publishable):
+                if isinstance(container, PublishableObject):
                     return container.get_uri(host = "?")
             else:
                 return "/"
@@ -1165,7 +1190,13 @@ class EditBlocksAction(UserAction):
 
     def is_primary(self, target, context):
         return (
-            target in (Publishable, Document)
+            (
+                target is Document
+                or (
+                    isinstance(target, type)
+                    and issubclass(target, PublishableObject)
+                )
+            )
             or UserAction.is_primary(self, target, context)
         )
 

@@ -49,7 +49,7 @@ req = Item.require_instance
 
 def show(target):
 
-    if isinstance(target, Publishable):
+    if isinstance(target, PublishableObject):
         webbrowser.open(target.get_uri(host = "!"))
     elif hasattr(target, "__iter__"):
         for item in target:

@@ -3,13 +3,9 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import re
 from cocktail.translations import translations
 from cocktail.html import Element
-
-xml_doctype_regex = re.compile(r"<!DOCTYPE .*?>")
-xml_pi_regex = re.compile(r"<\?.*?\?>")
-xml_comment_regex = re.compile(r"<!--.*?-->")
+from cocktail.html.inlinesvg import get_file_svg
 
 
 class Image(Element):
@@ -68,13 +64,5 @@ class Image(Element):
                 )
 
     def get_inline_svg(self):
-        svg_path = self.image.file_path
-        with open(svg_path) as file:
-            svg = file.read()
-            svg = svg.replace("\r\n", "\n")
-            svg = xml_pi_regex.sub("", svg)
-            svg = xml_doctype_regex.sub("", svg)
-            svg = xml_comment_regex.sub("", svg)
-            svg = svg.replace("\n\n", "\n").strip()
-            return svg
+        return get_file_svg(self.image.file_path)
 

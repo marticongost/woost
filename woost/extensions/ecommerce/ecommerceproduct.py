@@ -12,12 +12,13 @@ from cocktail.translations import translations
 from woost import app
 from woost.models import (
     Publishable,
-    Controller,
+    with_default_controller,
     File,
     Slot
 )
 
 
+@with_default_controller("ecommerce_product")
 class ECommerceProduct(Publishable):
 
     instantiable = False
@@ -32,12 +33,6 @@ class ECommerceProduct(Publishable):
         "purchase_model",
         "purchases"
     ]
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(
-            qname = "woost.extensions.ecommerce.product_controller"
-        )
-    )
 
     title = schema.String(
         indexed = True,

@@ -495,6 +495,7 @@ def import_json(json, importer = None, **kwargs):
         setattr(importer, key, value)
 
     importer.loads(json)
+    return importer
 
 def copy_to_clipboard(*args, **kwargs):
     import clipboard
@@ -505,6 +506,39 @@ def paste_from_clipboard(**kwargs):
     import clipboard
     json = clipboard.paste().decode("utf-8")
     import_json(json, **kwargs)
+
+def import_remote(
+    expr,
+    ssh_command = ("/usr/bin/ssh",),
+    host = None,
+    python_executable = None
+):
+    from subprocess import check_output
+
+    if not host:
+        host = app.default_remote_host
+        if not host:
+            raise ValueError(
+                "No host specified, and app.default_remote_host is not set"
+            )
+
+    if not python_executable:
+        python_executable = app.default_remote_python_executable
+        if not python_executable:
+            raise ValueError(
+                "No python executable specified, and "
+                "app.default_remote_python_executable is not set"
+            )
+
+    if isinstance(expr, int):
+        expr = "req(%d)" % expr
+
+    remote_command = (
+        "%s -c 'from %s.scripts.shell import *; print export_json(%s)'"
+        % (python_executable, app.package, expr)
+    )
+    json = check_output(list(ssh_command) + [host, remote_command])
+    return import_json(json)
 
 def get_matching_website(item):
 

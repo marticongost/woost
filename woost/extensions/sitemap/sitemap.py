@@ -6,21 +6,21 @@ u"""
 from xml.sax.saxutils import escape, quoteattr
 from cocktail import schema
 from woost import app
-from woost.models import Publishable, LocaleMember, Controller
+from woost.models import (
+    Publishable,
+    LocaleMember,
+    Controller,
+    with_default_controller
+)
 
 
+@with_default_controller("sitemap")
 class SiteMap(Publishable):
 
     type_group = "resource"
 
     default_hidden = True
     default_per_language_publication = False
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(
-            qname = "woost.extensions.sitemap.sitemap_controller"
-        )
-    )
 
     members_order = [
         "title",

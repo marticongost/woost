@@ -325,7 +325,7 @@ class CMSController(BaseCMSController):
 
     def validate_publishable(self, publishable):
 
-        if not publishable.is_published():
+        if not self.check_publication_state(publishable):
             raise cherrypy.NotFound()
 
         user = app.user
@@ -336,6 +336,9 @@ class CMSController(BaseCMSController):
             language = get_language()
         )
 
+    def check_publication_state(self, publishable):
+        return publishable.is_published()
+
     @event_handler
     def handle_traversed(cls, e):
 
@@ -345,13 +348,7 @@ class CMSController(BaseCMSController):
         cms.context.update(cms = cms)
 
         # Reset all contextual properties
-        app.error = None
-        app.traceback = None
-        app.user = None
-        app.publishable = None
-        app.original_publishable = None
-        app.website = None
-        app.navigation_point = None
+        app.clear_context()
 
         # Set the default language
         language = app.language.infer_language()
@@ -455,6 +452,9 @@ class CMSController(BaseCMSController):
         # Page not found
         if is_http_error and error.status == 404:
             return config.get_setting("not_found_error_page"), 404
+
+        elif is_http_error and error.status == 410:
+            return config.get_setting("gone_error_page"), 410
 
         # Service unavailable
         elif is_http_error and error.status == 503:

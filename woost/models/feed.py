@@ -10,7 +10,6 @@ from cocktail import schema
 from cocktail.controllers.usercollection import UserCollection
 from .configuration import Configuration
 from .publishable import Publishable
-from .controller import Controller
 
 
 class Feed(Publishable):
@@ -34,10 +33,6 @@ class Feed(Publishable):
     ]
 
     default_mime_type = u"application/rss+xml"
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.feed_controller")
-    )
 
     edit_controller = \
         "woost.controllers.backoffice.feedfieldscontroller." \
