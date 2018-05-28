@@ -20,6 +20,7 @@ from woost import app
     single_branch_expansion = True
     folder_action = "expand"
     folder_animation_duration = 400
+    popup_animation = "slide_down"
     popup_animation_duration = 400
     cached = True
 
@@ -54,6 +55,7 @@ from woost import app
         self.set_client_param("folderAction", self.folder_action)
         self.set_client_param("folderAnimationDuration", self.folder_animation_duration)
         self.set_client_param("popupAnimationDuration", self.popup_animation_duration)
+        self["data-popup-animation"] = self.popup_animation
         ?>
     </py:ready>
 

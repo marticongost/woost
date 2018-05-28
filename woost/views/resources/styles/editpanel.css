@@ -17,6 +17,12 @@
     z-index: 10000;
 }
 
+@media print {
+    .EditPanel {
+        display: none;
+    }
+}
+
 .EditPanel.expanded {
     max-height: 100%;
     overflow: auto;

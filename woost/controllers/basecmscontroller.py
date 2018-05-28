@@ -18,10 +18,27 @@ from woost import app
 class BaseCMSController(Controller):
     """Base class for all CMS controllers."""
 
+    @event_handler
+    def handle_after_request(cls, e):
+        view = e.source.__class__.view.get_current_value(e.source)
+        if view:
+            view.dispose()
+
+    def get_template(self):
+        return None
+
     @request_property
     def view(self):
-        if self.view_class:
+
+        view = None
+        template = self.get_template()
+
+        if template:
+            view = template.create_view()
+        elif self.view_class:
             view = templates.new(self.view_class)
+
+        if view:
             cms = self.context["cms"]
             output = self.output
             cms.producing_output(controller = self, output = output)
@@ -31,7 +48,8 @@ class BaseCMSController(Controller):
 
             view.submitted = self.submitted
             view.successful = self.successful
-            return view
+
+        return view
 
     def _render_template(self):
 

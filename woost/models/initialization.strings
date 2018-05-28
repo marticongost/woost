@@ -45,10 +45,10 @@
     es: Matriz estándar
     en: Default grid
 
-    [document_controller.title]
-    ca: Controlador de document
-    es: Controlador de documento
-    en: Document controller
+    [publishable_controller.title]
+    ca: Controlador de publicable
+    es: Controlador de publicable
+    en: Publishable controller
 
     [file_controller.title]
     ca: Controlador de fitxer

@@ -43,5 +43,5 @@ def describe_agreement_subject(member, link = True):
     en:
         You must accept ${describe_agreement_subject(error.member)} of the form
     pt:
-        Deve aceitar
+        Deve aceitar ${describe_agreement_subject(error.member)} deste formulário
 

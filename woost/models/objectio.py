@@ -9,20 +9,23 @@ except ImportError:
     from StringIO import StringIO
 
 from warnings import warn
-from collections import Sequence, Set, defaultdict, Counter
+from collections import Sequence, Mapping, Set, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
+from itertools import izip_longest
 import sys
 import base64
 import json
 import argparse
 import enum
+from decimal import Decimal
 from cocktail.typemapping import TypeMapping
 from cocktail.styled import styled, ProgressBar
 from cocktail.pkgutils import get_full_name, resolve
 from cocktail.modeling import (
     ListWrapper,
     SetWrapper,
+    DictWrapper,
     GenericMethod,
     GenericClassMethod,
     frozen
@@ -34,6 +37,11 @@ from woost.models import (
     File,
     User,
     Slot,
+    Template,
+    Controller,
+    Publishable,
+    Document,
+    Block,
     changeset_context
 )
 
@@ -88,7 +96,11 @@ def resolve_object_ref(cls, ref):
     for key, value in ref.iteritems():
         if value is not None and value != "" and not key.startswith("@"):
             member = cls.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj = cls.get_instance(**{key: value})
                 if obj is not None:
                     return obj
@@ -102,7 +114,11 @@ def create_object_from_ref(cls, ref):
     for key, value in ref.iteritems():
         if not key.startswith("@"):
             member = obj.__class__.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj.set(key, value)
 
     obj.insert()
@@ -112,23 +128,63 @@ def create_object_from_ref(cls, ref):
 class ObjectExporter(object):
 
     verbose = False
+    _depth = 0
     language_subset = None
     date_format = "%Y-%m-%d"
     time_format = "%H:%M:%S"
     datetime_format = date_format + " " + time_format
     json_encoder_defaults = {"check_circular": False}
 
-    def __init__(self):
-        self.__member_export_modes = {
-            Item.id: ExportMode.ignore,
-            Item.translations: ExportMode.ignore,
-            Item.last_update_time: ExportMode.ignore,
-            Item.last_translation_update_time: ExportMode.ignore,
-            Item.changes: ExportMode.ignore
-        }
-        self.__model_export_modes = TypeMapping()
+    default_model_export_modes = {
+        File: ExportMode.expand
+    }
+
+    default_model_colors = {
+        Publishable: "slate_blue",
+        File: "pink",
+        Item: "brown",
+        Block: "cyan"
+    }
+
+    default_model_styles = {
+        Item: "normal",
+        Document: "bold"
+    }
+
+    default_member_export_modes = {
+        Item.id: ExportMode.ignore,
+        Item.translations: ExportMode.ignore,
+        Item.last_update_time: ExportMode.ignore,
+        Item.last_translation_update_time: ExportMode.ignore,
+        Item.changes: ExportMode.ignore,
+        Controller.published_items: ExportMode.ignore,
+        Template.documents: ExportMode.ignore,
+        Document.children: ExportMode.expand
+    }
+
+    def __init__(self, verbose = False):
+        self.__member_export_modes = self.default_member_export_modes.copy()
+        self.__model_export_modes = TypeMapping(self.default_model_export_modes)
+        self.__model_colors = TypeMapping(self.default_model_colors)
+        self.__model_styles = TypeMapping(self.default_model_styles)
         self.__exported_data = {}
+        self.verbose = verbose
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
+
+    @contextmanager
+    def _description(self, message, visible = True):
+
+        if self.verbose and message and visible:
+            if self.verbose:
+                print " " * self._depth * 2 + message
+
+            self._depth += 1
+            try:
+                yield None
+            finally:
+                self._depth -= 1
+        else:
+            yield None
 
     def dump(self, dest, **kwargs):
 
@@ -147,20 +203,8 @@ class ObjectExporter(object):
         return json.dumps(self.__exported_data.values(), **options)
 
     def add_all(self, objects):
-
-        if self.verbose:
-            if not isinstance(objects, Sequence):
-                objects = list(objects)
-            bar = ProgressBar(len(objects))
-            bar.update()
-
         for obj in objects:
             self.add(obj)
-            if self.verbose:
-                bar.update(1)
-
-        if self.verbose:
-            bar.finish()
 
     def add(self, obj):
 
@@ -174,11 +218,22 @@ class ObjectExporter(object):
         if obj in self.__exported_data:
             return False
 
-        self.__exported_data[obj] = data = {
-            "@class": get_full_name(node.value.__class__)
-        }
+        if self.verbose:
+            color = self.__model_colors[obj.__class__]
+            style = self.__model_styles[obj.__class__]
 
-        self._export_object_data(node, data)
+        with self._description(
+            styled(
+                repr(obj),
+                color,
+                style = style
+            )
+        ):
+            self.__exported_data[obj] = data = {
+                "@class": get_full_name(node.value.__class__)
+            }
+            self._export_object_data(node, data)
+
         return True
 
     def _export_object_data(self, node, data):
@@ -238,34 +293,108 @@ class ObjectExporter(object):
             elif isinstance(value, schema.SchemaObject):
                 value = self._get_object_ref(node)
                 if expand_object:
-                    self.add(node)
-            elif not isinstance(value, basestring) and isinstance(
-                value,
-                (
-                    Sequence,
-                    Set,
-                    ListWrapper,
-                    SetWrapper
+                    with self._description(
+                        node.member and node.member.name,
+                        visible = node.member
+                    ):
+                        self.add(node)
+            elif isinstance(node.member, schema.Tuple):
+                value = [
+                    self._export_value(
+                        ExportNode(
+                            self,
+                            item,
+                            parent = node,
+                            member = item_member,
+                            index = index
+                        )
+                    )
+                    for index, (item, item_member) in enumerate(
+                        izip_longest(value, node.member.items)
+                    )
+                ]
+            elif (
+                not isinstance(value, basestring)
+                and not isinstance(value, (Mapping, DictWrapper))
+                and isinstance(
+                    value,
+                    (
+                        Sequence,
+                        Set,
+                        ListWrapper,
+                        SetWrapper
+                    )
                 )
             ):
-                items = []
-                for index, item in enumerate(value):
-                    item_node = ExportNode(
-                        self,
-                        item,
-                        parent = node,
-                        member = node.member.items,
-                        language = node.language,
-                        index = index
-                    )
-                    if item_node.export_mode != ExportMode.ignore:
-                        item_copy = self._export_value(
-                            item_node,
-                            expand_object =
-                                (item_node.export_mode == ExportMode.expand)
+                items = None
+
+                if node.member and node.member.items:
+                    item_nodes = []
+                    has_expansion = False
+
+                    for index, item in enumerate(value):
+                        item_node = ExportNode(
+                            self,
+                            item,
+                            parent = node,
+                            member = node.member.items,
+                            language = node.language,
+                            index = index
                         )
-                        items.append(item_copy)
+                        if item_node.export_mode != ExportMode.ignore:
+                            item_nodes.append(item_node)
+                            if item_node.export_mode == ExportMode.expand:
+                                has_expansion = True
+
+                    if item_nodes:
+                        with self._description(
+                            (
+                                node.member.name
+                                + styled(" (%s)" % len(item_nodes), "dark_gray")
+                            ),
+                            visible = has_expansion
+                        ):
+                            items = [
+                                self._export_value(
+                                    item_node,
+                                    expand_object =
+                                        (item_node.export_mode == ExportMode.expand)
+                                )
+                                for item_node in item_nodes
+                            ]
+                        value = items
+
+                value = list(value) if items is None else items
+
+            elif isinstance(value, DictWrapper):
+                items = {}
+                for k, v in value.iteritems():
+                    v_node = ExportNode(
+                        self,
+                        v,
+                        parent = node,
+                        member = node.member.values,
+                        language = node.language,
+                        index = k
+                    )
+                    if v_node.export_mode != ExportMode.ignore:
+                        k_node = ExportNode(
+                            self,
+                            k,
+                            parent = node,
+                            member = node.member.keys,
+                            language = node.language
+                        )
+                        k = self._export_value(k_node)
+                        v = self._export_value(
+                            v_node,
+                            expand_object =
+                                (v_node.export_mode == ExportMode.expand)
+                        )
+                        items[k] = v
                 value = items
+            elif isinstance(value, Decimal):
+                return str(value)
             elif isinstance(value, datetime):
                 return value.strftime(self.datetime_format)
             elif isinstance(value, date):
@@ -347,6 +476,70 @@ class ObjectExporter(object):
 
     def get_model_export_mode(self, model):
         return self.__model_export_modes.get(model)
+
+    def expand(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.expand`.
+        """
+        self._set_mode(args, ExportMode.expand)
+
+    def export(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.export`.
+        """
+        self._set_mode(args, ExportMode.export)
+
+    def ignore(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.ignore`.
+        """
+        self._set_mode(args, ExportMode.ignore)
+
+    def _set_mode(self, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                self.set_model_export_mode(obj, mode)
+            elif isinstance(obj, schema.Member):
+                self.set_member_export_mode(obj, mode)
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
+
+    @classmethod
+    def expand_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.expand`.
+        """
+        cls._set_default_mode(args, ExportMode.expand)
+
+    @classmethod
+    def export_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.export`.
+        """
+        cls._set_default_mode(args, ExportMode.export)
+
+    @classmethod
+    def ignore_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.ignore`.
+        """
+        cls._set_default_mode(args, ExportMode.ignore)
+
+    @classmethod
+    def _set_default_mode(cls, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                cls.default_model_export_modes[obj] = mode
+            elif isinstance(obj, schema.Member):
+                cls.default_member_export_modes[obj] = mode
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
 
     def run_cli(self, func):
         parser = self._cli_create_parser()
@@ -581,62 +774,85 @@ class ObjectImporter(object):
             print
 
     def import_object_data(self, obj, data):
-
         for key, value in data.iteritems():
-
-            if isinstance(key, unicode):
-                key = str(key)
-
-            if key.startswith("@"):
-
-                # Store file contents once the current transaction is comitted
-                # successfully
-                if key == "@file_data":
-
-                    datastore.unique_after_commit_hook(
-                        "woost.models.objectio.store_file_contents",
-                        _store_file_contents_after_commit
-                    )
-
-                    file_contents = datastore.get_transaction_value(
-                        "woost.models.objectio.file_contents"
-                    )
-
-                    if file_contents is None:
-                        file_contents = {}
-                        datastore.set_transaction_value(
-                            "woost.models.objectio.file_contents",
-                            file_contents
+            try:
+                self.import_object_key(obj, key, value)
+            except Exception, e:
+                if self.verbose:
+                    sys.stderr.write(
+                        styled(
+                            "Error while parsing %s.%s = %r\n"
+                            % (
+                                obj.__class__.__name__,
+                                key,
+                                value
+                            ),
+                            "magenta"
                         )
+                    )
+                raise
 
-                    bdata = base64.decodestring(value)
-                    file_contents[obj.id] = bdata
+    def import_object_key(self, obj, key, value):
+        if isinstance(key, unicode):
+            key = str(key)
 
-                continue
+        if key.startswith("@"):
 
-            member = obj.__class__.get_member(key)
-            if member is None:
-                self._handle_unknown_member(obj, key)
-                continue
+            # Store file contents once the current transaction is comitted
+            # successfully
+            if key == "@file_data":
 
-            if member.translated:
-                for lang, lang_value in value.iteritems():
-                    if (
-                        self.language_subset is None
-                        or lang in self.language_subset
-                    ):
-                        imported_value = self.import_object_value(
+                datastore.unique_after_commit_hook(
+                    "woost.models.objectio.store_file_contents",
+                    _store_file_contents_after_commit
+                )
+
+                file_contents = datastore.get_transaction_value(
+                    "woost.models.objectio.file_contents"
+                )
+
+                if file_contents is None:
+                    file_contents = {}
+                    datastore.set_transaction_value(
+                        "woost.models.objectio.file_contents",
+                        file_contents
+                    )
+
+                bdata = base64.decodestring(value)
+                file_contents[obj.id] = bdata
+
+            return
+
+        member = obj.__class__.get_member(key)
+        if member is None:
+            self._handle_unknown_member(obj, key)
+            return
+
+        if member.translated:
+            for lang, lang_value in value.iteritems():
+                if (
+                    self.language_subset is None
+                    or lang in self.language_subset
+                ):
+                    imported_value = self.import_object_value(
+                        obj,
+                        member,
+                        lang_value,
+                        lang
+                    )
+                    if imported_value is not ExportMode.ignore:
+                        member.apply_imported_value(
                             obj,
-                            member,
-                            lang_value,
+                            imported_value,
                             lang
                         )
-                        if imported_value is not ExportMode.ignore:
-                            obj.set(key, imported_value, lang)
-            else:
-                imported_value = self.import_object_value(obj, member, value)
-                if imported_value is not ExportMode.ignore:
-                    obj.set(key, imported_value)
+        else:
+            imported_value = self.import_object_value(obj, member, value)
+            if imported_value is not ExportMode.ignore:
+                member.apply_imported_value(
+                    obj,
+                    imported_value
+                )
 
     def _handle_unknown_member(self, obj, key):
         if self.unknown_member_policy == UnknownMemberPolicy.fail:
@@ -672,9 +888,19 @@ class ObjectImporter(object):
                 SetWrapper
             ))
         ):
-            return member.default_type(
-                imported_item
-                for imported_item in (
+            if isinstance(member, schema.Tuple):
+                sequence_type = tuple
+                imported_items = (
+                    self.import_object_value(
+                        obj,
+                        item_member,
+                        item
+                    )
+                    for item, item_member in izip_longest(value, member.items)
+                )
+            else:
+                sequence_type = member.default_type
+                imported_items = (
                     self.import_object_value(
                         obj,
                         member.items,
@@ -682,13 +908,27 @@ class ObjectImporter(object):
                     )
                     for item in value
                 )
+
+            return sequence_type(
+                imported_item
+                for imported_item in imported_items
                 if imported_item is not ExportMode.ignore
+            )
+        elif isinstance(member, schema.Mapping) and isinstance(value, dict):
+            return dict(
+                (
+                    self.import_object_value(obj, member.keys, k),
+                    self.import_object_value(obj, member.values, v)
+                )
+                for k, v in value.iteritems()
             )
         elif isinstance(member, schema.Reference):
             if member.class_family:
                 return resolve(value)
             else:
                 return self.resolve_object_ref(value)
+        elif isinstance(member, schema.Decimal):
+            return Decimal(value)
         elif isinstance(member, schema.DateTime):
             return datetime.strptime(value, self.datetime_format)
         elif isinstance(member, schema.Date):
@@ -839,4 +1079,10 @@ def _store_file_contents_after_commit(successful):
 
             with open(file.file_path, "wb") as f:
                 f.write(data)
+
+
+def _apply_imported_value(member, obj, value, language = None):
+    obj.set(member, value, language = language)
+
+schema.Member.apply_imported_value = _apply_imported_value
 

@@ -10,6 +10,11 @@
 
     [members]
 
+        [google_search_api_key]
+        ca: Clau de l'API del cercador
+        es: Clave del API del buscador
+        en: Search API key
+
         [google_search_engine_id]
         ca: Identificador del cercador
         es: Indentificador del buscador

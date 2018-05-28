@@ -9,9 +9,9 @@ u"""
 from cocktail import schema
 from cocktail.urls import URL
 from woost import app
-from woost.models.publishable import Publishable
-from woost.models.file import File
-from woost.models.controller import Controller
+from .publishable import Publishable
+from .file import File
+from .controller import Controller
 
 
 class URI(Publishable):
@@ -25,10 +25,6 @@ class URI(Publishable):
         "language_specific_uri",
         "image"
     ]
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.uri_controller")
-    )
 
     title = schema.String(
         indexed = True,
@@ -67,7 +63,7 @@ class URI(Publishable):
     ):
         url = URL(self.get("language_specific_uri", language) or self.uri)
 
-        if not url.hostname:
+        if not url.hostname and url.hierarchical:
             url = (
                 app.url_mapping.get_url(language = language, **kwargs)
                 .merge(url)

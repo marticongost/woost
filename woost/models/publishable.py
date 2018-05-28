@@ -20,6 +20,14 @@ from cocktail.schema.expressions import Expression
 from cocktail.persistence import datastore, MultipleValuesIndex
 from cocktail.html.datadisplay import display_factory
 from woost import app
+from .publishableobject import (
+    PublishableObject,
+    resolve_websites,
+    resolve_languages,
+    mime_type_categories,
+    get_category_from_mime_type,
+    publishable_full_path_resolvers
+)
 from .enabledtranslations import auto_enables_translations
 from .localemember import LocaleMember
 from .item import Item
@@ -33,15 +41,14 @@ from .caching import CachingPolicy
 
 WEBSITE_PUB_INDEX_KEY = "woost.models.Publishable.per_website_publication_index"
 
-# TODO: s/website = "any"/website = Publishable.any_website/
 
 @auto_enables_translations
-class Publishable(Item):
-    """Base class for all site elements suitable for publication."""
-
+class Publishable(Item, PublishableObject):
+    """Abstract base class for models were publication details are set on an
+    instance by instance basis.
+    """
     instantiable = False
-    cacheable = True
-    cacheable_server_side = True
+    type_group = "publishable"
     backoffice_listing_includes_element_column = True
     backoffice_listing_includes_thumbnail_column = True
     edit_view = "woost.views.PublishableFieldsView"
@@ -49,15 +56,14 @@ class Publishable(Item):
         "woost.controllers.backoffice.enabledtranslationseditnode."
         "EnabledTranslationsEditNode"
     )
-    backoffice_card_view = "woost.views.PublishableCard"
-    type_group = "publishable"
-
-    any_language = object()
-    any_website = object()
+    cacheable = True
+    cacheable_server_side = True
 
     groups_order = [
         "content",
         "navigation",
+        "navigation.menu",
+        "navigation.redirection",
         "presentation",
         "presentation.behavior",
         "presentation.format",
@@ -72,11 +78,14 @@ class Publishable(Item):
         "resource_type",
         "encoding",
         "parent",
-        "menu_title",
+        "login_page",
         "path",
         "full_path",
+        "menu_title",
         "hidden",
-        "login_page",
+        "redirection_mode",
+        "redirection_target",
+        "redirection_method",
         "per_language_publication",
         "enabled",
         "enabled_translations",
@@ -94,7 +103,8 @@ class Publishable(Item):
         text_search = False,
         format = r"^[^/]+/[^/]+$",
         listed_by_default = False,
-        member_group = "presentation.format"
+        member_group = "presentation.format",
+        shadows_attribute = True
     )
 
     resource_type = schema.String(
@@ -110,21 +120,17 @@ class Publishable(Item):
             "html_resource",
             "other"
         ),
-        translate_value = lambda value, language = None, **kwargs:
-            u"" if not value else translations(
-                "woost.models.Publishable.resource_type " + value,
-                 language,
-                **kwargs
-            ),
         listed_by_default = False,
-        member_group = "presentation.format"
+        member_group = "presentation.format",
+        shadows_attribute = True
     )
 
     encoding = schema.String(
         listed_by_default = False,
         text_search = False,
         default = "utf-8",
-        member_group = "presentation.format"
+        member_group = "presentation.format",
+        shadows_attribute = True
     )
 
     controller = schema.Reference(
@@ -132,12 +138,9 @@ class Publishable(Item):
         indexed = True,
         bidirectional = True,
         listed_by_default = False,
-        member_group = "presentation.behavior"
+        member_group = "presentation.behavior",
+        shadows_attribute = True
     )
-
-    def resolve_controller(self):
-        if self.controller and self.controller.python_name:
-            return import_object(self.controller.python_name)
 
     parent = schema.Reference(
         type = "woost.models.Document",
@@ -145,14 +148,14 @@ class Publishable(Item):
         related_key = "children",
         indexed = True,
         listed_by_default = False,
-        member_group = "navigation"
+        member_group = "navigation",
+        shadows_attribute = True
     )
 
-    menu_title = schema.String(
-        translated = True,
+    login_page = schema.Reference(
         listed_by_default = False,
-        spellcheck = True,
-        member_group = "navigation"
+        member_group = "navigation",
+        shadows_attribute = True
     )
 
     path = schema.String(
@@ -160,7 +163,8 @@ class Publishable(Item):
         indexed = True,
         listed_by_default = False,
         text_search = False,
-        member_group = "navigation"
+        member_group = "navigation",
+        shadows_attribute = True
     )
 
     full_path = schema.String(
@@ -169,19 +173,49 @@ class Publishable(Item):
         editable = schema.READ_ONLY,
         text_search = False,
         listed_by_default = False,
-        member_group = "navigation"
+        member_group = "navigation",
+        shadows_attribute = True
+    )
+
+    menu_title = schema.String(
+        translated = True,
+        listed_by_default = False,
+        spellcheck = True,
+        member_group = "navigation.menu",
+        shadows_attribute = True
     )
 
     hidden = schema.Boolean(
         required = True,
         default = False,
         listed_by_default = False,
-        member_group = "navigation"
+        member_group = "navigation.menu",
+        shadows_attribute = True
     )
 
-    login_page = schema.Reference(
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
         listed_by_default = False,
-        member_group = "navigation"
+        text_search = False,
+        member_group = "navigation.redirection",
+        shadows_attribute = True
+    )
+
+    redirection_target = schema.Reference(
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation.redirection",
+        shadows_attribute = True
+    )
+
+    redirection_method = schema.String(
+        required = True,
+        default = "temp",
+        enumeration = ["temp", "perm", "client"],
+        listed_by_default = False,
+        text_search = False,
+        member_group = "navigation.redirection",
+        shadows_attribute = True
     )
 
     robots_should_index = schema.Boolean(
@@ -189,7 +223,8 @@ class Publishable(Item):
         default = True,
         listed_by_default = False,
         indexed = True,
-        member_group = "meta.robots"
+        member_group = "meta.robots",
+        shadows_attribute = True
     )
 
     per_language_publication = schema.Boolean(
@@ -197,7 +232,8 @@ class Publishable(Item):
         default = False,
         indexed = True,
         listed_by_default = False,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     enabled = schema.Boolean(
@@ -205,7 +241,8 @@ class Publishable(Item):
         default = True,
         indexed = True,
         listed_by_default = False,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     enabled_translations = schema.Collection(
@@ -214,7 +251,8 @@ class Publishable(Item):
         indexed = True,
         edit_control = "woost.views.EnabledTranslationsSelector",
         listed_by_default = False,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     websites = schema.Collection(
@@ -223,7 +261,8 @@ class Publishable(Item):
         bidirectional = True,
         related_key = "specific_content",
         edit_control = "cocktail.html.CheckList",
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     access_level = schema.Reference(
@@ -235,14 +274,16 @@ class Publishable(Item):
             empty_option_displayed = True
         ),
         listed_by_default = False,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     start_date = schema.DateTime(
         indexed = True,
         listed_by_default = False,
         affects_cache_expiration = True,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     end_date = schema.DateTime(
@@ -250,14 +291,16 @@ class Publishable(Item):
         min = start_date,
         listed_by_default = False,
         affects_cache_expiration = True,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     requires_https = schema.Boolean(
         required = True,
         default = False,
         listed_by_default = False,
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
 
     caching_policies = schema.Collection(
@@ -265,26 +308,9 @@ class Publishable(Item):
         bidirectional = True,
         integral = True,
         related_end = schema.Reference(),
-        member_group = "publication"
+        member_group = "publication",
+        shadows_attribute = True
     )
-
-    def get_effective_caching_policy(self, **context):
-
-        from woost.models import Configuration
-
-        policies = [
-            ((-policy.important, 1), policy)
-            for policy in self.caching_policies
-        ]
-        policies.extend(
-            ((-policy.important, 2), policy)
-            for policy in Configuration.instance.caching_policies
-        )
-        policies.sort()
-
-        for criteria, policy in policies:
-            if policy.applies_to(self, **context):
-                return policy
 
     @event_handler
     def handle_changed(cls, event):
@@ -399,76 +425,6 @@ class Publishable(Item):
         else:
             self.full_path = path
 
-    def get_ancestor(self, depth):
-        """Obtain one of the item's ancestors, given its depth in the document
-        tree.
-
-        @param depth: The depth level of the ancestor to obtain, with 0
-            indicating the root of the tree. Negative indices are accepted, and
-            they reverse the traversal order (-1 will point to the item itself,
-            -2 to its parent, and so on).
-        @type depth: int
-
-        @return: The requested ancestor, or None if there is no ancestor with
-            the indicated depth.
-        @rtype: L{Publishable}
-        """
-        tree_line = list(self.ascend_tree(include_self = True))
-        tree_line.reverse()
-        try:
-            return tree_line[depth]
-        except IndexError:
-            return None
-
-    def ascend_tree(self, include_self = False):
-        """Iterate over the item's ancestors, moving towards the root of the
-        document tree.
-
-        @param include_self: Indicates if the object itself should be included
-            in the iteration.
-        @type include_self: bool
-
-        @return: An iterable sequence of pages.
-        @rtype: L{Document} iterable sequence
-        """
-        publishable = self if include_self else self.parent
-        while publishable is not None:
-            yield publishable
-            publishable = publishable.parent
-
-    def descend_tree(self, include_self = False):
-        """Iterate over the item's descendants.
-
-        @param include_self: Indicates if the object itself should be included
-            in the iteration.
-        @type include_self: bool
-
-        @return: An iterable sequence of publishable elements.
-        @rtype: L{Publishable} iterable sequence
-        """
-        if include_self:
-            yield self
-
-    def descends_from(self, page):
-        """Indicates if the object descends from the given document.
-
-        @param page: The hypothetical ancestor of the page.
-        @type page: L{Document<woost.models.document.Document>}
-
-        @return: True if the object is contained inside the given document or
-            one of its descendants, or if it *is* the given document. False in
-            any other case.
-        @rtype: bool
-        """
-        ancestor = self
-
-        while ancestor is not None:
-            if ancestor is page:
-                return True
-            ancestor = ancestor.parent
-
-        return False
-
     def is_home_page(self):
         """Indicates if the object is the home page for any website.
         @rtype: bool
@@ -476,267 +432,88 @@ class Publishable(Item):
         from woost.models import Website
         return bool(self.get(Website.home.related_end))
 
-    def is_internal_content(self, language = None):
-        """Indicates if the object represents content from this site.
-        @rtype: bool
-        """
-        return True
+    class IsPublishedExpression(PublishableObject.IsPublishedExpression):
+        """An expression that tests if items are published."""
 
-    def is_current(self):
-        now = datetime.now()
-        return (self.start_date is None or self.start_date <= now) \
-            and (self.end_date is None or self.end_date > now)
+        def resolve_filter(self, query):
 
-    def is_published(
-        self,
-        language = None,
-        website = None,
-        _user = None
-    ):
-        from woost.models import Configuration, Website
+            def impl(dataset):
 
-        if self.per_language_publication:
+                per_lang_pub_index = Publishable.per_language_publication.index
+                per_website_index = Publishable.per_website_publication_index
 
-            target_websites = _resolve_websites(website, self)
-            if not target_websites:
-                return False
+                matching_subset = set()
 
-            target_languages = _resolve_languages(
-                language,
-                target_websites,
-                self,
-                _user
-            )
-            if not target_languages:
-                return False
-        else:
-            if not self.enabled:
-                return False
+                website_neutral = set(per_website_index.values(key = None))
+                language_dependant = set(per_lang_pub_index.values(key = True))
 
-            if website is not Publishable.any_website:
-                target_websites = _resolve_websites(website, self)
-                if not target_websites:
-                    return False
-
-        if not self.is_current():
-            return False
-
-        return True
-
-    def is_accessible(self, user = None, language = None, website = None):
-
-        if user is None:
-            user = app.user
-
-        return (
-            self.is_published(
-                language = language,
-                website = website,
-                _user = user
-            )
-            and user.has_permission(
-                ReadPermission,
-                target = self
-            )
-        )
-
-    @classmethod
-    def select_published(cls, *args, **kwargs):
-
-        language = kwargs.pop("language", None)
-        website = kwargs.pop("website", None)
-
-        query = cls.select(*args, **kwargs)
-        query.add_filter(
-            IsPublishedExpression(
-                language = language,
-                website = website
-            )
-        )
-        return query
-
-    @classmethod
-    def select_accessible(cls, *args, **kwargs):
-
-        user = kwargs.pop("user", None)
-        language = kwargs.pop("language", None)
-        website = kwargs.pop("website", None)
-
-        query = cls.select(*args, **kwargs)
-        query.add_filter(
-            IsAccessibleExpression(
-                user = user,
-                language = language,
-                website = website
-            )
-        )
-        return query
-
-    def get_uri(self, **kwargs):
-        return app.url_mapping.get_url(self, **kwargs)
-
-    def translate_file_type(self, language = None):
-
-        trans = ""
-
-        mime_type = self.mime_type
-        if mime_type:
-            trans = translations("mime " + mime_type, language = language)
-
-        if not trans:
-
-            res_type = self.resource_type
-            if res_type:
-                trans = self.__class__.resource_type.translate_value(
-                    res_type,
-                    language = language
+                language_neutral_enabled = set(
+                    per_lang_pub_index.values(key = False)
+                )
+                language_neutral_enabled.intersection_update(
+                    Publishable.enabled.index.values(key = True)
                 )
 
-                if trans and res_type != "other":
-                    ext = self.file_extension
-                    if ext:
-                        trans += " " + ext.upper().lstrip(".")
+                # Per website publication
+                for website in resolve_websites(self.website):
 
-        return trans
-
-    def get_cache_expiration(self):
-        now = datetime.now()
-
-        start = self.start_date
-        if start is not None and start > now:
-            return start
-
-        end = self.end_date
-        if end is not None and end > now:
-            return end
-
-
-Publishable.login_page.type = Publishable
-Publishable.related_end = schema.Collection()
-
-
-class IsPublishedExpression(Expression):
-    """An expression that tests if items are published."""
-
-    def __init__(
-        self,
-        language = None,
-        website = None,
-        _user = None
-    ):
-        Expression.__init__(self, language, website)
-        self.language = language
-        self.website = website
-        self._user = None
-
-    def eval(self, context, accessor = None):
-        return context.is_published()
-
-    def resolve_filter(self, query):
-
-        def impl(dataset):
-
-            per_lang_pub_index = Publishable.per_language_publication.index
-            per_website_index = Publishable.per_website_publication_index
-
-            matching_subset = set()
-
-            website_neutral = set(per_website_index.values(key = None))
-            language_dependant = set(per_lang_pub_index.values(key = True))
-
-            language_neutral_enabled = set(
-                per_lang_pub_index.values(key = False)
-            )
-            language_neutral_enabled.intersection_update(
-                Publishable.enabled.index.values(key = True)
-            )
-
-            # Per website publication
-            for website in _resolve_websites(self.website):
-
-                # Content that can be published in languages that are enabled
-                # on the active website
-                website_subset = set()
-                for language in _resolve_languages(
-                    self.language,
-                    {website,},
-                    user = self._user
-                ):
-                    website_subset.update(
-                        Publishable.enabled_translations.index.values(
-                            key = language
+                    # Content that can be published in languages that are enabled
+                    # on the active website
+                    website_subset = set()
+                    for language in resolve_languages(
+                        self.language,
+                        {website,},
+                        user = self._user
+                    ):
+                        website_subset.update(
+                            Publishable.enabled_translations.index.values(
+                                key = language
+                            )
                         )
+
+                    website_subset.intersection_update(language_dependant)
+                    website_subset.update(language_neutral_enabled)
+
+                    # Content that can be published on the active website
+                    website_subset.intersection_update(
+                        website_neutral
+                        | set(per_website_index.values(key = website.id))
                     )
 
-                website_subset.intersection_update(language_dependant)
-                website_subset.update(language_neutral_enabled)
+                    matching_subset.update(website_subset)
 
-                # Content that can be published on the active website
-                website_subset.intersection_update(
-                    website_neutral
-                    | set(per_website_index.values(key = website.id))
+                dataset.intersection_update(matching_subset)
+
+                # Remove items outside their publication window
+                now = datetime.now()
+                dataset.difference_update(
+                    Publishable.start_date.index.values(
+                        min = Publishable.start_date.get_index_value(now),
+                        exclude_min = True
+                    )
+                )
+                dataset.difference_update(
+                    Publishable.end_date.index.values(
+                        min = None,
+                        exclude_min = True,
+                        max = Publishable.end_date.get_index_value(now),
+                        exclude_max = True
+                    )
                 )
 
-                matching_subset.update(website_subset)
+                return dataset
 
-            dataset.intersection_update(matching_subset)
+            return ((-1, 1), impl)
 
-            # Remove items outside their publication window
-            now = datetime.now()
-            dataset.difference_update(
-                Publishable.start_date.index.values(
-                    min = Publishable.start_date.get_index_value(now),
-                    exclude_min = True
-                )
-            )
-            dataset.difference_update(
-                Publishable.end_date.index.values(
-                    min = None,
-                    exclude_min = True,
-                    max = Publishable.end_date.get_index_value(now),
-                    exclude_max = True
-                )
-            )
+Publishable.login_page.type = Publishable
+Publishable.login_page.related_end = schema.Collection()
 
-            return dataset
+Publishable.redirection_target.type = Publishable
+Publishable.redirection_target.related_end = schema.Collection()
 
-        return ((-1, 1), impl)
-
-
-class IsAccessibleExpression(Expression):
-    """An expression that tests that items can be accessed by a user.
-
-    The expression checks both the publication state of the item and the
-    read permissions for the specified user.
-
-    @ivar user: The user that accesses the items.
-    @type user: L{User<woost.models.user.User>}
-    """
-
-    def __init__(self, user = None, language = None, website = None):
-        Expression.__init__(self)
-        self.user = user
-        self.language = language
-        self.website = website
-
-    def eval(self, context, accessor = None):
-        return context.is_accessible(user = self.user)
-
-    def resolve_filter(self, query):
-
-        def impl(dataset):
-            user = self.user or app.user
-            access_expr = PermissionExpression(user, ReadPermission)
-            published_expr = IsPublishedExpression(
-                language = self.language,
-                website = self.website,
-                _user = user
-            )
-            dataset = access_expr.resolve_filter(query)[1](dataset)
-            dataset = published_expr.resolve_filter(query)[1](dataset)
-            return dataset
-
-        return ((-1, 1), impl)
+# Exposed at the module's root for backwards compatibility
+IsPublishedExpression = Publishable.IsPublishedExpression
+IsAccessibleExpression = Publishable.IsAccessibleExpression
 
 
 class UserHasAccessLevelExpression(Expression):
@@ -791,131 +568,10 @@ class UserHasAccessLevelExpression(Expression):
 # every single permission check
 user_has_access_level = UserHasAccessLevelExpression()
 
+def _resolve_publishable_by_full_path(full_path):
+    return Publishable.get_instance(full_path = full_path)
 
-mime_type_categories = {}
-
-for category, mime_types in (
-    ("text/plain", ("text",)),
-    ("html_resource", (
-        "text/css",
-        "text/javascript",
-        "text/ecmascript",
-        "application/javascript",
-        "application/ecmascript"
-    )),
-    ("document", (
-        "application/vnd.oasis.opendocument.text",
-        "application/vnd.oasis.opendocument.spreadsheet",
-        "application/vnd.oasis.opendocument.presentation",
-        "application/msword",
-        "application/msexcel",
-        "application/msaccess",
-        "application/mspowerpoint",
-        "application/mswrite",
-        "application/vnd.ms-excel",
-        "application/vnd.ms-access",
-        "application/vnd.ms-powerpoint",
-        "application/vnd.ms-project",
-        "application/vnd.ms-works",
-        "application/vnd.ms-xpsdocument",
-        "application/rtf",
-        "application/pdf",
-        "application/x-pdf",
-        "application/postscript",
-        "application/x-latex",
-        "application/vnd.oasis.opendocument.database"
-    )),
-    ("package", (
-        "application/zip",
-        "application/x-rar-compressed",
-        "application/x-tar",
-        "application/x-gtar",
-        "application/x-gzip",
-        "application/x-bzip",
-        "application/x-stuffit",
-        "vnd.ms-cab-compressed"
-    ))
-):
-    for mime_type in mime_types:
-        mime_type_categories[mime_type] = category
-
-def get_category_from_mime_type(mime_type):
-    """Obtains the file category that best matches the indicated MIME type.
-
-    @param mime_type: The MIME type to get the category for.
-    @type mime_type: str
-
-    @return: A string identifier with the category matching the indicated
-        MIME type (one of 'document', 'image', 'audio', 'video', 'package',
-        'html_resource' or 'other').
-    @rtype: str
-    """
-    pos = mime_type.find("/")
-
-    if pos != -1:
-        prefix = mime_type[:pos]
-
-        if prefix in ("image", "audio", "video"):
-            return prefix
-
-    return mime_type_categories.get(mime_type, "other")
-
-
-def _resolve_websites(website, publishable = None):
-
-    from woost.models import Configuration, Website
-
-    website = website or app.website or Publishable.any_website
-
-    if website is Publishable.any_website:
-        websites = set(Configuration.instance.websites)
-    elif isinstance(website, Website):
-        websites = {website,}
-    else:
-        websites = website
-
-    if publishable is not None:
-        publishable_websites = publishable.websites
-        if publishable_websites:
-            websites.intersection_update(publishable_websites)
-
-    return websites
-
-
-def _resolve_languages(
-    language,
-    websites,
-    publishable = None,
-    user = None
-):
-    language = language or get_language() or Publishable.any_language
-
-    website_languages = set()
-    for website in websites:
-        website_languages.update(website.get_published_languages())
-
-    if language is Publishable.any_language:
-        languages = website_languages
-    elif isinstance(language, basestring):
-        if language in website_languages:
-            languages = {language}
-        else:
-            return set()
-    else:
-        languages = website_languages.intersection(language)
-
-    if publishable is not None and publishable.per_language_publication:
-        languages.intersection_update(publishable.enabled_translations)
-
-    if user is not None:
-        languages = {
-            language
-            for language in languages
-            if user.has_permission(
-                ReadTranslationPermission,
-                language = language
-            )
-        }
-
-    return languages
+publishable_full_path_resolvers.append(
+    _resolve_publishable_by_full_path
+)
 

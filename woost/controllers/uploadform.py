@@ -45,8 +45,7 @@ class UploadForm(Form):
 
         for member in self.upload_members:
             key = member.name
-            export_rule = self.ExportUploadInfo(self, key)
-            adapter.export_rules.add_rule(export_rule)
+            adapter.export_rules.add_rule(self.ExportUploadInfo(self, key))
             adapter.import_rules.add_rule(self.ImportUploadInfo(self, key))
 
         return adapter
@@ -54,6 +53,14 @@ class UploadForm(Form):
     def get_upload_options(self):
         options = self.default_upload_options.copy()
         options.update(self.upload_options)
+        return options
+
+    def get_upload_member_options(self, source_member):
+        options = self.get_upload_options()
+        member_options = getattr(source_member, "upload_options", None)
+        if member_options is not None:
+            options.update(member_options)
+        options.setdefault("required", source_member.required)
         return options
 
     class ExportUploadInfo(schema.Rule):
@@ -67,8 +74,8 @@ class UploadForm(Form):
             if context.consume(self.key):
                 source_member = context.source_schema[self.key]
 
-                upload_options = self.form.get_upload_options()
-                upload_options["required"] = source_member.required
+                upload_options = \
+                    self.form.get_upload_member_options(source_member)
                 upload_options["get_file_destination"] = \
                     self.form.get_temp_path
 
@@ -88,7 +95,7 @@ class UploadForm(Form):
 
         def adapt_object(self, context):
             if context.consume(self.key):
-                value = context.get(self.key)
+                value = context.get(self.key, default = None)
                 if value:
                     source_member = context.source_schema[self.key]
                     if isinstance(source_member, schema.Collection):
@@ -157,7 +164,11 @@ class UploadForm(Form):
             file_type = member.related_type
             if not issubclass(file_type, File):
                 file_type = File
-            return file_type()
+            file = file_type()
+            init_file = getattr(member, "init_uploaded_file", None)
+            if init_file:
+                init_file(file)
+            return file
 
     def submit(self):
         Form.submit(self)

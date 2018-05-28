@@ -7,8 +7,11 @@ from cocktail.events import event_handler
 from cocktail.modeling import extend, call_base
 from cocktail.translations import translations
 from cocktail import schema
-from cocktail.html.datadisplay import display_factory
-from woost.models import Item
+from cocktail.schema.exceptions import ValidationError
+from cocktail.html import templates
+from cocktail.html.uigeneration import display_factory
+from woost.models import Item, File, AccessLevel
+from woost.models.publishableobject import get_category_from_mime_type
 
 translations.load_bundle("woost.extensions.forms.fields")
 
@@ -96,16 +99,29 @@ class Field(Item):
 
     field_edit_controls = None
 
+    def _edit_control_suggestion_list(ui_generation, obj, member, value, **context):
+        field = context.get("persistent_object")
+        controls = field and field.field_edit_controls
+        if controls:
+            control = templates.new("cocktail.html.SuggestionList")
+            control.suggestions_selector.empty_option_displayed = True
+            control.suggestions = controls
+        else:
+            control = templates.new("cocktail.html.TextBox")
+        return control
+
     field_edit_control = schema.String(
-        enumeration = lambda ctx:
-            ctx.get("persistent_object")
-            and ctx.get("persistent_object").field_edit_controls,
-        edit_control = display_factory(
-            "cocktail.html.RadioSelector",
-            empty_option_displayed = True
-        ),
+        translatable_values = True,
+        edit_control = _edit_control_suggestion_list,
         member_group = "field_properties",
         listed_by_default = False
+    )
+
+    field_validations = schema.Collection(
+        items = "woost.extensions.forms.formvalidation.FormValidation",
+        bidirectional = True,
+        integral = True,
+        member_group = "field_properties"
     )
 
     field_initialization = schema.CodeBlock(
@@ -170,6 +186,9 @@ class Field(Item):
         )
         self._init_member(member)
 
+        for validation in self.field_validations:
+            validation.add_to_member(member)
+
         if self.field_initialization:
             label = "%s #%s.field_initialization" % (
                 self.__class__.__name__,
@@ -210,6 +229,7 @@ class FieldSet(Field):
     base_field_set = schema.Reference(
         type = "woost.extensions.forms.fields.FieldSet",
         bidirectional = True,
+        related_key = "derived_field_sets",
         member_group = "field_structure",
         listed_by_default = False
     )
@@ -217,6 +237,7 @@ class FieldSet(Field):
     derived_field_sets = schema.Collection(
         items = "woost.extensions.forms.fields.FieldSet",
         bidirectional = True,
+        related_key = "base_field_set",
         editable = schema.NOT_EDITABLE,
         member_group = "field_structure",
         listed_by_default = False
@@ -225,6 +246,7 @@ class FieldSet(Field):
     fields = schema.Collection(
         items = "woost.extensions.forms.fields.Field",
         bidirectional = True,
+        integral = True,
         member_group = "field_structure",
         listed_by_default = False
     )
@@ -257,13 +279,17 @@ class FieldSet(Field):
             member.add_member(child_member, append = True)
 
         @extend(member)
-        def translate_group(member, group):
+        def translate_group(member, group, suffix = None):
             try:
                 field_set_id = int(group.split(".")[-1])
             except:
-                return call_base(group)
+                return call_base(group, suffix = suffix)
             else:
-                return translations(FieldSet.require_instance(field_set_id))
+                fieldset = FieldSet.require_instance(field_set_id)
+                if suffix == ".explanation":
+                    return fieldset.explanation
+                else:
+                    return fieldset.visible_title or translations(fieldset)
 
     def create_form_model(self):
 
@@ -543,4 +569,104 @@ class TimeField(Field):
 class DateTimeField(Field):
     visible_from_root = False
     member_type = schema.DateTime
+
+
+class UploadField(Field):
+
+    visible_from_root = False
+    member_type = schema.Reference
+
+    members_order = [
+        "max_file_size",
+        "accepted_file_types",
+        "file_access_level"
+    ]
+
+    max_file_size = schema.Integer(
+        member_group = "field_properties",
+        min = 1
+    )
+
+    accepted_file_types = schema.Collection(
+        items = schema.String(
+            enumeration = [
+                "document",
+                "image",
+                "audio",
+                "video",
+                "package"
+            ],
+            translate_value = (
+                lambda value, language = None, **kwargs:
+                    translations(
+                        UploadField.accepted_file_types,
+                        suffix = ".items.values." + value,
+                        language = language,
+                        **kwargs
+                    )
+                    if value else ""
+            )
+        ),
+        min = 1,
+        edit_control = "cocktail.html.CheckList",
+        member_group = "field_properties"
+    )
+
+    file_access_level = schema.Reference(
+        type = AccessLevel,
+        related_end = schema.Collection(),
+        default = schema.DynamicDefault(lambda:
+            AccessLevel.get_instance(qname = "woost.editor_access_level")
+        ),
+        member_group = "field_properties"
+    )
+
+    def _init_member(self, member):
+
+        Field._init_member(self, member)
+
+        member.type = File
+        member.display = display_factory(
+            "woost.views.PublishableLink",
+            host = "!",
+            content_check = 0
+        )
+        member.upload_options = {
+            "max_size": "%dMB" % self.max_file_size,
+            "accepted_file_types": self.accepted_file_types,
+            "validations": [_validate_accepted_file_types]
+        }
+
+        def _init_uploaded_file(file):
+            file.access_level = self.file_access_level
+            file.insert()
+
+        member.init_uploaded_file = _init_uploaded_file
+
+    @classmethod
+    def create_field_default_member(cls):
+        return None
+
+    @classmethod
+    def create_field_enumeration_member(cls):
+        return None
+
+
+def _validate_accepted_file_types(context):
+
+    if context.value:
+        mime_type = context.get_value("mime_type")
+        category = mime_type and get_category_from_mime_type(mime_type)
+
+        if (
+            not category
+            or category not in context.member.accepted_file_types
+        ):
+            yield FileTypeNotAcceptedError(context)
+
+
+class FileTypeNotAcceptedError(ValidationError):
+
+    def __str__(self):
+        return "%s (not an accepted file type)" % ValidationError.__str__(self)
 

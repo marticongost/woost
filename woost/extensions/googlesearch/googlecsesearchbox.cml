@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
 import cherrypy
+from cocktail.translations import get_language
 from woost.models import Configuration
 ?>
 
@@ -13,6 +14,7 @@ from woost.models import Configuration
     query = None
     query_parameter = "q"
     results_uri = None
+    limit_results_to_active_language = False
     ?>
 
     <py:ready>
@@ -37,5 +39,12 @@ from woost.models import Configuration
         type="search"
         name="@{self.query_parameter}"
         value="@{self.query}" />
+
+    <input
+        py:id="active_language_input"
+        py:visible="@{self.limit_results_to_active_language}"
+        type="hidden"
+        name="lr"
+        value="lang_@{get_language()}"/>
 </form>
 

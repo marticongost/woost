@@ -279,7 +279,10 @@ class Block(Item):
                 "%s #%d.initialization" % (self.__class__.__name__, self.id),
                 "exec"
             )
-            exec code in {"block": self, "view": view}
+            context = {"block": self, "view": view}
+            exec code in context
+            del context["block"]
+            del context["view"]
 
         return view
 

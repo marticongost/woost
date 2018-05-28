@@ -9,9 +9,10 @@ u"""
 from warnings import warn
 import os
 import hashlib
+from weakref import WeakKeyDictionary
 from mimetypes import guess_type
 from shutil import copy, copyfileobj
-from urllib import urlopen
+import urllib2
 from tempfile import mkdtemp
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
@@ -35,12 +36,7 @@ class File(Publishable):
     video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
-
     default_encoding = None
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.file_controller")
-    )
 
     members_order = [
         "title",
@@ -114,6 +110,7 @@ class File(Publishable):
         assign_file_name = True,
         encoding = "utf-8",
         download_temp_folder = None,
+        user_agent = None,
         redownload = False
     ):
         is_path = isinstance(source, basestring)
@@ -130,7 +127,11 @@ class File(Publishable):
                 temp_path = os.path.join(download_temp_folder, file_name)
 
                 if redownload or not os.path.exists(temp_path):
-                    response = urlopen(source)
+                    opener = urllib2.build_opener()
+                    if user_agent:
+                        opener.addheaders = [("User-Agent", user_agent)]
+                    response = opener.open(source)
+
                     with open(temp_path, "w") as temp_file:
                         copyfileobj(response, temp_file)
 
@@ -235,6 +236,34 @@ class File(Publishable):
 
         return file
 
+    def create_copy(self, *args, **kwargs):
+
+        clone = Publishable.create_copy(self, *args, **kwargs)
+
+        # Copy the phisical file once the transaction is complete
+        if self.id:
+            key = "woost.models.File.duplicates"
+            dup_files = datastore.get_transaction_value(key)
+
+            if dup_files is None:
+                dup_files = WeakKeyDictionary()
+                datastore.set_transaction_value(key, dup_files)
+                datastore.unique_after_commit_hook(
+                    "woost.models.File.duplicate",
+                    _duplicate_files_after_commit,
+                    dup_files
+                )
+
+            dup_files[clone] = self
+
+        return clone
+
+
+def _duplicate_files_after_commit(success, dup_files):
+    if success:
+        for clone, source in dup_files.iteritems():
+            if clone.is_inserted:
+                copy(source.file_path, clone.file_path)
 
 def file_hash(source, algorithm = "md5", chunk_size = 1024):
     """Obtains a hash for the contents of the given file.

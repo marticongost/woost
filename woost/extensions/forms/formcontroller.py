@@ -34,8 +34,10 @@ class FormController(FormProcessor, Controller):
                     name = "agreement%d" % agreement.id,
                     document = agreement.document
                 )
-                if agreement.text:
-                    agreement.custom_translation_key = \
+                if agreement.text or agreement.document_title:
+                    agreement_member.text = agreement.text
+                    agreement_member.document_title = agreement.document_title
+                    agreement_member.custom_translation_key = \
                         "woost.extensions.forms.formcontroller.form_agreement"
 
         @property

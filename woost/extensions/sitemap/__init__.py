@@ -54,7 +54,7 @@ class SitemapExtension(Extension):
         translations.load_bundle("woost.extensions.sitemap.installation")
 
         # Sitemap controller
-        sitemap_controller = self._create_asset(
+        Configuration.instance.default_sitemap_controller = self._create_asset(
             Controller,
             "sitemap_controller",
             title = extension_translations,

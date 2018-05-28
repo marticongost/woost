@@ -8,7 +8,7 @@ from woost.models import (
     Document,
     Slot,
     Template,
-    Controller,
+    with_default_controller,
     CustomBlock,
     HTMLBlock,
     block_type_groups
@@ -18,17 +18,12 @@ from .newsletterbox import NewsletterBox
 from .newsletterlisting import NewsletterListing
 
 
+@with_default_controller("newsletter")
 class Newsletter(Document):
 
     default_template = schema.DynamicDefault(
         lambda: Template.get_instance(
             qname = "woost.extensions.newsletters.newsletter_template"
-        )
-    )
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(
-            qname = "woost.extensions.newsletters.newsletter_controller"
         )
     )
 
