@@ -1435,26 +1435,37 @@ def assign_default_controllers(e):
     # Setup default controllers, remove redundant explicit controller
     # declarations
     model_controllers = {
-        Publishable:
-            "woost.controllers.publishablecontroller.PublishableController",
-        File:
-            "woost.controllers.filecontroller.FileController",
-        URI:
-            "woost.controllers.uricontroller.URIController",
-        Feed:
+        Publishable: (
+            "publishable",
+            "woost.controllers.publishablecontroller.PublishableController"
+        ),
+        File: (
+            "file",
+            "woost.controllers.filecontroller.FileController"
+        ),
+        URI: (
+            "uri",
+            "woost.controllers.uricontroller.URIController"
+        ),
+        Feed: (
+            "feed",
             "woost.controllers.feedcontroller.FeedController"
+        )
     }
 
     from woost.extensions.sitemap import SitemapExtension
     if SitemapExtension.instance.enabled:
         from woost.extensions.sitemap.sitemap import SiteMap
-        model_controllers[SiteMap] = \
+        model_controllers[SiteMap] = (
+            "sitemap",
             "woost.extensions.sitemap.sitemapcontroller.SitemapController"
+        )
 
     from woost.extensions.issuu import IssuuExtension
     if IssuuExtension.instance.enabled:
         from woost.extensions.issuu.issuudocument import IssuuDocument
         model_controllers[IssuuDocument] = (
+            "issuu_document",
             "woost.extensions.issuu.issuudocumentcontroller."
             "IssuuDocumentController"
         )
@@ -1463,6 +1474,7 @@ def assign_default_controllers(e):
     if NewslettersExtension.instance.enabled:
         from woost.extensions.newsletters.newsletter import Newsletter
         model_controllers[Newsletter] = (
+            "newsletter",
             "woost.extensions.newsletters.newslettercontroller."
             "NewsletterController"
         )
@@ -1471,6 +1483,7 @@ def assign_default_controllers(e):
     if TextFileExtension.instance.enabled:
         from woost.extensions.textfile.textfile import TextFile
         model_controllers[TextFile] = (
+            "text_file",
             "woost.extensions.textfile.textfilecontroller."
             "TextFileController"
         )
@@ -1480,14 +1493,16 @@ def assign_default_controllers(e):
         from woost.extensions.ecommerce.ecommerceproduct \
             import ECommerceProduct
         model_controllers[ECommerceProduct] = (
+            "product",
             "woost.extensions.ecommerce.productcontroller."
             "ProductController"
         )
 
-    for model, controller_fullname in model_controllers.iteritems():
+    for model, (controller_name, controller_fullname) \
+    in model_controllers.iteritems():
         controller = Controller.select({"python_name": controller_fullname})[0]
         if controller:
-            key = "default_%s_controller" % model.__name__.lower()
+            key = "default_%s_controller" % controller_name
             config.set(key, controller)
             for item in list(controller.published_items):
                 item.controller = None
