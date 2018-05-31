@@ -14,10 +14,7 @@
             py:id="close_dialog_button"
             type="button"
             title="${translations('woost.views.Dialog.close_dialog_button')}">
-            <img
-                py:local_id="image"
-                src="${normalize_resource_uri('woost://images/Dialog-close.png')}"
-                alt=""/>
+            <?inline-svg woost://images/close-dialog.svg ?>
         </button>
 
     </header>
