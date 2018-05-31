@@ -46,6 +46,9 @@ from woost.models import Publishable
             if factory_name:
                 self.add_class("thumbnail_factory-" + factory_name)
 
+        if self.close_up_enabled:
+            self.add_class("with_close_up")
+
         self.set_client_param("closeUpPreload", self.close_up_preload)
         ?>
     </py:ready>
@@ -117,12 +120,12 @@ from woost.models import Publishable
             <button
                 py:local_id="previous_button"
                 title="${translations('woost.views.ImageGallery.previous_button')}">
-                <img py:local_id="image" src="${normalize_resource_uri('woost://images/ImageGallery-previous_button.png')}" alt=""/>
+                <?inline-svg woost://images/previous.svg ?>
             </button>
             <button
                 py:local_id="next_button"
                 title="${translations('woost.views.ImageGallery.next_button')}">
-                <img py:local_id="image" src="${normalize_resource_uri('woost://images/ImageGallery-next_button.png')}" alt=""/>
+                <?inline-svg woost://images/next.svg ?>
             </button>
             <div py:local_id="footnote"/>
             <div py:local_id="original_image_link">
