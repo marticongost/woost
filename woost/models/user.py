@@ -57,6 +57,11 @@ class User(Item):
 
     anonymous = False
 
+    groups_order = [
+        "user_data",
+        "language_preferences"
+    ] + list(Item.groups_order)
+
     members_order = [
         "email",
         "password",
