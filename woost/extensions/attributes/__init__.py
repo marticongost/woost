@@ -40,6 +40,7 @@ class AttributesExtension(Extension):
 
         templates.get_class("woost.extensions.attributes.BaseViewOverlay")
         templates.get_class("woost.extensions.attributes.LinkOverlay")
+        templates.get_class("woost.extensions.attributes.MenuOverlay")
 
         self.install()
 
