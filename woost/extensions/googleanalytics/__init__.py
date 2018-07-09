@@ -133,7 +133,15 @@ class GoogleAnalyticsExtension(Extension):
                     "   for cls in publishable.__class__.__mro__\n"
                     "   if cls is not Publishable and issubclass(cls, Publishable)\n"
                     "]"
-            )
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.target",
+                title = extension_translations,
+                identifier = "woost.target",
+                initialization =
+                    "value = publishable"
+            ),
         ])
 
     inclusion_code = {
