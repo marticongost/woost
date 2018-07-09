@@ -47,7 +47,9 @@ class GoogleAnalyticsExtension(Extension):
             block,
             element,
             eventredirection,
-            customdefinition
+            customdefinition,
+            view,
+            readreportspermission
         )
 
         # Install an overlay to generate events for links pointing to
@@ -75,6 +77,11 @@ class GoogleAnalyticsExtension(Extension):
                     html += " "
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
+
+        from woost.extensions.googleanalytics.reportcontroller \
+            import ReportController
+
+        CMSController.ga_report = ReportController
 
         self.install()
 

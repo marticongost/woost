@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.extensions.googleanalytics.reportschema import report_form_schema
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://styles/googleanalytics-pagereport.scss.css ?>
+    <?resource woost://scripts/googleanalytics-pagereport.js ?>
+
+    <button py:id="toggle_button" type="button">
+        ${view_translations("toggle_button")}
+    </button>
+
+    <py:cocktail.html.Form
+        py:id="report_form"
+        py:schema="${report_form_schema}"
+        py:value="${report_form_schema.produce_default()}"/>
+
+</div>
+

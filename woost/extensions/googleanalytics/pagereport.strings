@@ -1,0 +1,6 @@
+
+[woost.extensions.googleanalytics.PageReport]
+
+    [toggle_button]
+    *: GA
+
