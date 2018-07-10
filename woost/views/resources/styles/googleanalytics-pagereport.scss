@@ -98,6 +98,10 @@ $insert-opacity: 50%;
     font-family: monospace;
 }
 
+.SlideShow .slides .ga_page_report_insert:not(.ga_page_report_target_insert) {
+    top: 30px;
+}
+
 .ga_page_report_target_insert {
     top: auto;
     bottom: 0;
