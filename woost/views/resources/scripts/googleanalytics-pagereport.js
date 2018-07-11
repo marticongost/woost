@@ -11,18 +11,35 @@ cocktail.bind(".ga_page_report", function ($report) {
 
     var EVENT_ID_REGEXP = /--(\d+)--/;
     var EVENT_LABEL_VALID_IDENTIFIER_REGEXP = /^[a-zA-Z0-9_\-]+$/;
+    var STR_PREFIX = "woost.extensions.googleanalytics.PageReport.";
+    var FORM_STR_PREFIX = STR_PREFIX + "form.";
 
     var $toggleButton = $report.find(".toggle_button");
     var $form = $report.find(".report_form");
 
-    this.toggle = function () {
-        if ($report.attr("data-report-state") != "visible") {
-            $report.attr("data-report-state", "visible");
-        }
-        else {
-            $report.attr("data-report-state", "hidden");
-        }
+    $form.find(".close_button").on("click", function () {
+        $report[0].setPanelVisible(false);
+    });
+
+    this.panelIsVisible = function () {
+        return $report.attr("data-report-state") != "hidden";
     }
+
+    this.setPanelVisible = function (visible, store /* optional */) {
+        if (store || store === undefined) {
+            localStorage.setItem(STR_PREFIX + "panelVisible", visible);
+        }
+        $report.attr("data-report-state", visible ? "visible" : "hidden");
+    }
+
+    this.toggle = function () {
+        this.setPanelVisible(!this.panelIsVisible());
+    }
+
+    this.setPanelVisible(
+        localStorage.getItem(STR_PREFIX + "panelVisible") == "true",
+        false
+    );
 
     this.getElementFromEventLabel = function (eventLabel) {
         var match = EVENT_ID_REGEXP.exec(eventLabel);
@@ -120,14 +137,12 @@ cocktail.bind(".ga_page_report", function ($report) {
     });
 
     // Remember form values
-    var PREFIX = "woost.extensions.googleanalytics.PageReport.form.";
-
     $form.find("input, select").on("change", function () {
-        localStorage.setItem(PREFIX + this.name, jQuery(this).val());
+        localStorage.setItem(FORM_STR_PREFIX + this.name, jQuery(this).val());
     });
 
     $form.find("input, select").each(function () {
-        var prevValue = localStorage.getItem(PREFIX + this.name);
+        var prevValue = localStorage.getItem(FORM_STR_PREFIX + this.name);
         if (prevValue !== null) {
             if (this.type == "radio") {
                 this.checked = (prevValue == this.value);

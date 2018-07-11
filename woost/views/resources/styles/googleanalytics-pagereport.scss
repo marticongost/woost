@@ -36,6 +36,7 @@ $insert-opacity: 50%;
     }
 
     .report_form {
+        position: relative;
         display: none;
         margin: 0;
         padding: 15px;
@@ -43,6 +44,24 @@ $insert-opacity: 50%;
         border-bottom: 1px solid #bbb;
         border-right: 1px solid #bbb;
         box-shadow: 0 0 16px rgba(black, 0.6);
+
+        .close_button {
+            @include transparent-button;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+
+            svg {
+                height: 15px;
+                width: auto;
+                fill: #888;
+            }
+
+            &:hover svg {
+                fill: #333;
+            }
+        }
 
         .field {
             margin-bottom: 15px;
