@@ -25,14 +25,14 @@ class ReportController(Controller):
         config = Configuration.instance
         custom_defs = config.google_analytics_custom_definitions
 
+        reports = []
+
         base_report = {
             "viewId": form_data["view"].identifier,
             "dateRanges": [{
                 "startDate": form_data["start_date"].strftime("%Y-%m-%d"),
                 "endDate": form_data["end_date"].strftime("%Y-%m-%d")
             }],
-            "metrics": [{"expression": "ga:totalEvents"}],
-            "dimensions": [{"name": "ga:eventLabel"}],
             "samplingLevel": "LARGE",
             "pageSize": 10000
         }
@@ -44,22 +44,25 @@ class ReportController(Controller):
                 qname = "woost.extensions.googleanalytics."
                         "default_custom_definitions.publishable"
             )
+            publishable_dim = (
+                "ga:dimension%d"
+                    % (custom_defs.index(publishable_custom_def) + 1)
+            )
             base_report["dimensionFilterClauses"] = {
                 "operator": "AND",
                 "filters": [
                     {
-                        "dimensionName":
-                            "ga:dimension%d"
-                            % (custom_defs.index(publishable_custom_def) + 1),
+                        "dimensionName": publishable_dim,
                         "operator": "PARTIAL",
-                        "expressions": [
-                            "--%d--" % source_publishable.id
-                        ]
+                        "expressions": ["--%d--" % source_publishable.id]
                     }
                 ]
             }
 
-        reports = [base_report]
+        agg_report = deepcopy(base_report)
+        agg_report["dimensions"] = [{"name": "ga:eventLabel"}]
+        agg_report["metrics"] = [{"expression": "ga:totalEvents"}]
+        reports.append(agg_report)
 
         target_custom_def = GoogleAnalyticsCustomDefinition.get_instance(
             qname = "woost.extensions.googleanalytics."
@@ -67,12 +70,18 @@ class ReportController(Controller):
         )
 
         if target_custom_def:
-            target_report = deepcopy(base_report)
+            target_report = deepcopy(agg_report)
             target_report["dimensions"].append(
                 {"name": "ga:dimension%d"
                  % (custom_defs.index(target_custom_def) + 1)}
             )
             reports.append(target_report)
+
+        if source_publishable:
+            page_report = deepcopy(base_report)
+            page_report["dimensions"] = [{"name": publishable_dim}]
+            page_report["metrics"] = [{"expression": "ga:pageviews"}]
+            reports.append(page_report)
 
         request_data = {"reportRequests": reports}
         client = get_client()

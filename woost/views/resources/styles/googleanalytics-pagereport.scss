@@ -110,9 +110,23 @@ $insert-opacity: 50%;
                 fill: #555;
             }
         }
+
+        .results {
+            display: none;
+            margin-top: 10px;
+
+            .pageviews_label,
+            .pageviews_count {
+                font-size: 14px;
+            }
+
+            .pageviews_count {
+                margin-left: 4px;
+            }
+        }
     }
 
-    &.loading {
+    &[data-load-state='loading'] .report_form {
 
         .buttons {
             display: none;
@@ -121,6 +135,10 @@ $insert-opacity: 50%;
         .loading_sign {
             display: inline-block;
         }
+    }
+
+    &[data-load-state='loaded'][data-report-scope='page'] .report_form .results {
+        display: block;
     }
 
     &[data-report-state='visible'] {
@@ -143,10 +161,24 @@ $insert-opacity: 50%;
     padding: 2px;
     background-color: rgba($color, $insert-opacity);
     color: white;
-    font-weight: bold;
     font-style: italic;
-    font-size: 14px;
     font-family: monospace;
+    white-space: nowrap;
+
+    .abs {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .percent {
+        font-size: 12px;
+        margin-left: 4px;
+        opacity: 0.8;
+
+        &:empty {
+            display: none;
+        }
+    }
 }
 
 .SlideShow .slides .ga_page_report_insert:not(.ga_page_report_target_insert) {
