@@ -19,6 +19,12 @@ from woost.extensions.googleanalytics.reportschema import report_form_schema
         py:schema="${report_form_schema}"
         py:value="${report_form_schema.produce_default()}">
 
+        <button
+            py:local_id="close_button"
+            type="button">
+            <?inline-svg woost://images/close.svg ?>
+        </button>
+
         <div py:local_id="loading_sign" py:after="report_form.buttons">
             <?inline-svg woost://images/loading.svg ?>
         </div>
