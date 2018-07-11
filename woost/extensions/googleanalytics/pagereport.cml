@@ -29,6 +29,13 @@ from woost.extensions.googleanalytics.reportschema import report_form_schema
             <?inline-svg woost://images/loading.svg ?>
         </div>
 
+        <div py:local_id="results" py:after="report_form.buttons">
+            <span py:local_id="pageviews_label">
+                ${view_translations("pageviews_label")}
+            </span>
+            <span py:local_id="pageviews_count"/>
+        </div>
+
     </py:cocktail.html.Form>
 
 </div>

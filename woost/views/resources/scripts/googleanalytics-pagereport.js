@@ -13,9 +13,13 @@ cocktail.bind(".ga_page_report", function ($report) {
     var EVENT_LABEL_VALID_IDENTIFIER_REGEXP = /^[a-zA-Z0-9_\-]+$/;
     var STR_PREFIX = "woost.extensions.googleanalytics.PageReport.";
     var FORM_STR_PREFIX = STR_PREFIX + "form.";
+    var pageviews;
 
     var $toggleButton = $report.find(".toggle_button");
     var $form = $report.find(".report_form");
+    var $pageviewsCount = $form.find(".pageviews_count");
+
+    $report.attr("data-load-state", "idle");
 
     $form.find(".close_button").on("click", function () {
         $report[0].setPanelVisible(false);
@@ -78,10 +82,19 @@ cocktail.bind(".ga_page_report", function ($report) {
                     this.gaPageReportInsert.className += " ga_page_report_target_insert";
                 }
 
+                this.gaPageReportInsert.absLabel = document.createElement("span");
+                this.gaPageReportInsert.absLabel.className = "abs";
+                this.gaPageReportInsert.appendChild(this.gaPageReportInsert.absLabel);
+
+                this.gaPageReportInsert.percentLabel = document.createElement("span");
+                this.gaPageReportInsert.percentLabel.className = "percent";
+                this.gaPageReportInsert.appendChild(this.gaPageReportInsert.percentLabel);
+
                 this.appendChild(this.gaPageReportInsert);
             }
 
-            this.gaPageReportInsert.innerText = eventCount.toLocaleString();
+            this.gaPageReportInsert.absLabel.innerText = eventCount.toLocaleString();
+            this.gaPageReportInsert.percentLabel.innerText = pageviews ? Math.floor(eventCount / pageviews * 100) + "%" : "";
         });
     }
 
@@ -91,10 +104,22 @@ cocktail.bind(".ga_page_report", function ($report) {
 
     $form.on("submit", function (e) {
 
-        $report.addClass("loading");
+        $report.attr("data-load-state", "loading");
 
         jQuery.post("/ga_report", $form.serialize())
             .done(function (response) {
+
+                // Page views
+                if ($form.find("[name='source_publishable']:checked").val() != "") {
+                    pageviews = response.reports[2].data.totals[0].values[0];
+                    $pageviewsCount.text(pageviews);
+                    $report.attr("data-report-scope", "page");
+                }
+                else {
+                    pageviews = 0;
+                    $pageviewsCount.text("");
+                    $report.attr("data-report-scope", "global");
+                }
 
                 // Element clicks
                 var rows = response.reports[0].data.rows;
@@ -130,7 +155,7 @@ cocktail.bind(".ga_page_report", function ($report) {
                     }
                 }
 
-                $report.removeClass("loading");
+                $report.attr("data-load-state", "loaded");
             });
 
         e.preventDefault();
