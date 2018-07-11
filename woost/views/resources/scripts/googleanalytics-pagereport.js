@@ -73,6 +73,9 @@ cocktail.bind(".ga_page_report", function ($report) {
     });
 
     $form.on("submit", function (e) {
+
+        $report.addClass("loading");
+
         jQuery.post("/ga_report", $form.serialize())
             .done(function (response) {
 
@@ -109,7 +112,10 @@ cocktail.bind(".ga_page_report", function ($report) {
                         }
                     }
                 }
+
+                $report.removeClass("loading");
             });
+
         e.preventDefault();
     });
 
