@@ -17,7 +17,13 @@ from woost.extensions.googleanalytics.reportschema import report_form_schema
     <py:cocktail.html.Form
         py:id="report_form"
         py:schema="${report_form_schema}"
-        py:value="${report_form_schema.produce_default()}"/>
+        py:value="${report_form_schema.produce_default()}">
+
+        <div py:local_id="loading_sign" py:after="report_form.buttons">
+            <?inline-svg woost://images/loading.svg ?>
+        </div>
+
+    </py:cocktail.html.Form>
 
 </div>
 

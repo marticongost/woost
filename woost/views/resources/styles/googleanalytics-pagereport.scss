@@ -3,6 +3,15 @@ $color: #1a7000;
 $target-color: #613473;
 $insert-opacity: 50%;
 
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 @import "cocktail://styles/utils";
 
 .ga_page_report {
@@ -69,6 +78,29 @@ $insert-opacity: 50%;
 
         .source_publishable_field .field_label {
             display: none;
+        }
+
+        .loading_sign {
+            display: none;
+            animation: 2s linear spin infinite;
+            transform-origin: center center;
+
+            svg {
+                height: 30px;
+                width: auto;
+                fill: #555;
+            }
+        }
+    }
+
+    &.loading {
+
+        .buttons {
+            display: none;
+        }
+
+        .loading_sign {
+            display: inline-block;
         }
     }
 
