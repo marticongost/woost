@@ -170,7 +170,12 @@ cocktail.bind(".ga_page_report", function ($report) {
         var prevValue = localStorage.getItem(FORM_STR_PREFIX + this.name);
         if (prevValue !== null) {
             if (this.type == "radio") {
-                this.checked = (prevValue == this.value);
+                if (this.name == "source_publishable" && prevValue != "") {
+                    this.checked = this.value != "";
+                }
+                else {
+                    this.checked = (prevValue == this.value);
+                }
             }
             else {
                 jQuery(this).val(prevValue);
