@@ -11,12 +11,8 @@ from woost.models import Configuration
     <py:binding>
         <?py
         language = Configuration.instance.get_setting("google_analytics_language")
-        element.ga_event_category = translations(
-            "woost.extensions.googleanalytics.LanguageSelectorOverlay.ga_event_category"
-        )
-        element.ga_event_action = translations(
-            "woost.extensions.googleanalytics.LanguageSelectorOverlay.ga_event_action"
-        )
+        element.ga_event_category = view_translations("ga_event_category", language = language)
+        element.ga_event_action = view_translations("ga_event_action", language = language)
         ?>
     </py:binding>
 
