@@ -43,9 +43,12 @@ class ProductController(FormProcessor, PublishableController):
             adapter.implicit_copy = False
 
             for member in self.model.get_options():
-                adapter.copy(member.name)
+                self.adapt_option(adapter, member)
 
             return adapter
+
+        def adapt_option(self, adapter, member):
+            adapter.copy(member.name)
 
         def create_instance(self):
             instance = Form.create_instance(self)
