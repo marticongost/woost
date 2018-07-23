@@ -12,12 +12,14 @@ from cocktail.translations import translations
 from woost import app
 from woost.models import (
     Publishable,
+    with_default_template,
     with_default_controller,
     File,
     Slot
 )
 
 
+@with_default_template("ecommerce_product")
 @with_default_controller("ecommerce_product")
 class ECommerceProduct(Publishable):
 
