@@ -102,6 +102,17 @@ http://woost.info
             self.__icon_resolver = IconResolver()
         return self.__icon_resolver
 
+    def ascend_navigation(self):
+        pub = self.publishable
+        nav_point = self.navigation_point
+        if pub is nav_point:
+            for pub in pub.ascend_tree(include_self = True):
+                yield pub
+        else:
+            yield pub
+            for pub in nav_point.ascend_tree(include_self = True):
+                yield pub
+
     # Language scheme
     def _get_language(self):
         if self.__language is None:
