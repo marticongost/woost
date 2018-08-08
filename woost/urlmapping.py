@@ -205,6 +205,7 @@ class URLResolution(object):
     publishable = None
     website = None
     language = None
+    canonical_validation = True
 
     def __init__(self, path_segments):
         self.__consumed_segments = []

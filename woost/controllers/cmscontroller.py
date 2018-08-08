@@ -291,7 +291,10 @@ class CMSController(BaseCMSController):
         return None
 
     def should_enforce_canonical_url(self):
-        return app.publishable is not None
+        return (
+            app.publishable is not None
+            and app.url_resolution.canonical_validation
+        )
 
     def _enforce_canonical_url(self):
         """Redirect the current request to the canonical URL for the selected
