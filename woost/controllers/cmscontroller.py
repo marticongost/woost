@@ -8,6 +8,7 @@ u"""
 """
 import sys
 import os.path
+import traceback
 from string import ascii_letters
 from sha import sha
 from random import choice
@@ -419,6 +420,10 @@ class CMSController(BaseCMSController):
                 response.status = status
 
             if error_page:
+
+                if status == 500:
+                    traceback.print_exc()
+
                 event.handled = True
                 app.original_publishable = app.publishable
                 app.publishable = error_page
