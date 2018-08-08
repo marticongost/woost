@@ -312,6 +312,11 @@ class Publishable(Item, PublishableObject):
         shadows_attribute = True
     )
 
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("full_path", schema.undefined)
+        kwargs.setdefault("resource_type", schema.undefined)
+        Item.__init__(self, *args, **kwargs)
+
     @event_handler
     def handle_changed(cls, event):
 
