@@ -108,7 +108,7 @@ class ListingController(Controller):
                 for filter in filters:
                     expr = filter.filter_expression()
                     if expr is not None:
-                        filter_expression.append(expr)
+                        filter_expressions.append(expr)
 
             export.model = model
             export.relation = relation
