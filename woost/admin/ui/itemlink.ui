@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<a
+<span
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    href="javascript:">
+    role="link">
 
     <ui:using mixin="cocktail.ui.DataDisplay"/>
     <ui:using mixin="woost.admin.ui.ObjectSource"/>
@@ -44,5 +44,5 @@
 
     <span id="label"/>
 
-</a>
+</span>
 
