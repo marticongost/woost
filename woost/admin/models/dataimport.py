@@ -43,13 +43,15 @@ class Import(object):
     deleted_translations = None
     user = None
     permission_check = True
+    import_primary_keys = False
 
     def __init__(
         self,
         obj,
         data,
         deleted_translations = None,
-        user = None
+        user = None,
+        import_primary_keys = False
     ):
         self.__allowed_translations_cache = defaultdict(set)
         self.obj = obj
@@ -58,6 +60,7 @@ class Import(object):
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
         self.user = user
+        self.import_primary_keys = import_primary_keys
         self._import_object(obj, data)
 
     def _import_object(self, obj, data):
@@ -251,7 +254,11 @@ class Import(object):
         return (
             (
                 member.editable == schema.EDITABLE
-                or (member.primary and not obj.is_inserted)
+                or (
+                    self.import_primary_keys
+                    and member.primary
+                    and not obj.is_inserted
+                )
             )
             and (
                 self.user is None
