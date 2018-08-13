@@ -53,7 +53,7 @@ class SchemasController(Controller):
 
         models = [
             model
-            for model in PersistentObject.derived_schemas()
+            for model in PersistentObject.schema_tree()
             if model.translation_source is None
         ]
 

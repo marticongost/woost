@@ -234,7 +234,7 @@ class Export(object):
         elif isinstance(value, (Sequence, Set, ListWrapper, SetWrapper)):
             return [self.export_value(item) for item in value]
         elif isinstance(value, PersistentClass):
-            return value.get_qualified_name(include_ns = True)
+            return get_model_dotted_name(value)
         elif isinstance(value, (Mapping, DictWrapper)):
             return dict(
                 (self.export_value(k), self.export_value(v))
