@@ -99,7 +99,7 @@ class PagePreviewController(HTTPMethodController):
                 )
 
             data = json.load(cherrypy.request.body)
-            self.data_import(publishable, data)
+            self.data_import(publishable, data, import_primary_keys = True)
 
 
 class BaseBlockPreviewController(HTTPMethodController):
@@ -149,7 +149,7 @@ class BaseBlockPreviewController(HTTPMethodController):
                 )
 
             data = json.load(cherrypy.request.body)
-            self.data_import(block, data)
+            self.data_import(block, data, import_primary_keys = True)
 
     def _produce_block_content(self):
         raise ValueError(
