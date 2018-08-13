@@ -353,7 +353,7 @@ class SchemaExport(MemberExport):
             else:
                 yield key, value
 
-        if member.bases and member.bases != [PersistentObject]:
+        if member.bases:
             yield u"base", get_model_dotted_name(member.bases[0])
 
         yield (
@@ -540,7 +540,14 @@ class CollectionExport(MemberExport):
 @exports_member(schema.Reference)
 class ReferenceExport(MemberExport):
 
+    def get_class(self, member):
+        if member.class_family:
+            return "cocktail.schema.SchemaReference"
+        else:
+            return MemberExport.get_class(self, member)
+
     def get_properties(self, member, nested):
+
         for prop in MemberExport.get_properties(self, member, nested):
             yield prop
 
@@ -551,9 +558,12 @@ class ReferenceExport(MemberExport):
 
         elif member.class_family:
             yield (
-                u"class_family",
+                u"classFamily",
                 dumps(get_model_dotted_name(member.class_family))
             )
+
+            if not member.include_root_schema:
+                yield (u"includeRootSchema", dumps(False))
 
 
 @exports_member(Slot)
