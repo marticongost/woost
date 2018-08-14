@@ -219,18 +219,45 @@ woost.admin.actions.ActionRegistrationError = class ActionRegistrationError {
 
 // -- Action declaration --
 
-woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
+{
+    const ELIGIBLE_MODELS = Symbol();
 
-    invoke(context) {
-        const relation = this.reference || this.collection;
+    woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
 
-        // Create an object and add it to a relation
-        if (relation) {
-            cocktail.navigation.extendPath("rel", relation.name, "new", this.model.originalMember.name);
+        constructor(id, parameters = null, context = null) {
+            super(id, parameters, context);
+            this[ELIGIBLE_MODELS] = Array.from(this.model.schemaTree()).filter((model) => this.modelIsEligible(model));
         }
-        // Create an object outside a relation context
-        else {
-            cocktail.navigation.extendPath("new", this.model.originalMember.name);
+
+        get eligibleModels() {
+            return this[ELIGIBLE_MODELS];
+        }
+
+        modelIsEligible(model) {
+            return model.instantiable && model[woost.models.permissions].create;
+        }
+
+        createEntry() {
+            if (this[ELIGIBLE_MODELS].length > 1) {
+                return woost.admin.ui.NewObjectDropdown.create();
+            }
+            else {
+                return super.createEntry();
+            }
+        }
+
+        invoke(context) {
+            const relation = this.reference || this.collection;
+            const model = context.selectedModel || this.model.originalMember;
+
+            // Create an object and add it to a relation
+            if (relation) {
+                cocktail.navigation.extendPath("rel", relation.name, "new", model.name);
+            }
+            // Create an object outside a relation context
+            else {
+                cocktail.navigation.extendPath("new", model.name);
+            }
         }
     }
 }

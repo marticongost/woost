@@ -20,6 +20,7 @@
     <ui:requires component="woost.admin.ui.RelationSelector"/>
     <ui:requires component="woost.admin.ui.EditView"/>
     <ui:requires component="woost.admin.ui.BlocksView"/>
+    <ui:requires component="woost.admin.ui.NewObjectDropdown"/>
 
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
 
