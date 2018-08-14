@@ -139,7 +139,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                         if (!item._deleted_translations) {
                             item._deleted_translations = [];
                         }
-                        let model = cocktail.schema.getSchemaByName(item._class);
+                        let model = item._class;
                         let itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
                             let itemNode = this.createChild(itemNodeClass);
@@ -854,7 +854,7 @@ woost.admin.nodes.ObjectPath = class ObjectPath extends cocktail.schema.Member {
         const parts = value.split("-");
         const path = [];
         let obj = this.rootObject;
-        let model = cocktail.schema.getSchemaByName(obj._class);
+        let model = obj._class;
         let i = 0;
 
         while (i < parts.length) {
@@ -885,7 +885,7 @@ woost.admin.nodes.ObjectPath = class ObjectPath extends cocktail.schema.Member {
                 obj = value[index];
                 i++;
             }
-            model = obj && cocktail.schema.getSchemaByName(obj._class);
+            model = obj && obj._class;
             step.item = obj;
             step.model = model;
         }

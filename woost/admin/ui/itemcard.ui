@@ -52,18 +52,16 @@
     }
 
     getIconURL() {
-        let model = cocktail.schema.getSchemaByName(this.value._class);
+        let model = this.value._class;
         return model[woost.admin.ui.modelIconURL];
     }
 
     getLabelText() {
-        return this.dataBinding.member.translateValue(this.value, {
-            type: cocktail.schema.getSchemaByName(this.value._class)
-        });
+        return this.dataBinding.member.translateValue(this.value);
     }
 
     describeType() {
-        const model = cocktail.schema.getSchemaByName(this.value._class);
+        const model = this.value._class;
         return model[woost.admin.ui.describeType](this.value);
     }
 

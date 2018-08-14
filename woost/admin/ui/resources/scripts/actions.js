@@ -360,7 +360,7 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
             return "hidden";
         }
 
-        const model = cocktail.schema.getSchemaByName(context.selection[0]._class);
+        const model = context.selection[0]._class;
         let hasSlots = false;
 
         for (let member of model.members()) {

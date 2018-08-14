@@ -26,7 +26,7 @@
             this.imageType = "image";
         }
         else if (newValue._class) {
-            const model = cocktail.schema.getSchemaByName(newValue._class);
+            const model = newValue._class;
             const icon = model[woost.admin.ui.modelIconURL];
             if (icon) {
                 this.icon.src = icon;
