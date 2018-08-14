@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdownSelector
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectionDisplayed="false">
+
+    <?on action:changed
+    const models = cocktail.ui.sorting.localeSort(
+        newValue.eligibleModels,
+        (model) => model.translate()
+    );
+
+    this.dataBinding = {
+        member: new cocktail.schema.SchemaReference({
+            classFamily: newValue.model,
+            enumeration: models
+        })
+    };
+    ?>
+
+    <?on value:changed
+    if (newValue) {
+        this.action.invoke({
+            selectedModel: newValue
+        });
+    }
+    ?>
+
+    <ui:with ui:element="entries"/>
+
+</ui:cocktail.ui.ActionListDropdownSelector>
+
