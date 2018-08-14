@@ -29,8 +29,11 @@ cocktail.declare("woost.admin.actions");
 
     woost.admin.actions.Action = class Action extends cocktail.ui.Action {
 
-        constructor(id, parameters = null) {
+        constructor(id, parameters = null, context = null) {
             super(id, parameters && parameters.position);
+            for (let key in context) {
+                this[key] = context[key];
+            }
         }
 
         static register(parameters) {
@@ -138,11 +141,7 @@ cocktail.declare("woost.admin.actions");
         }
 
         createAction(context) {
-            let action = new this.actionClass(this[ID], this.actionParameters);
-            for (let key in context) {
-                action[key] = context[key];
-            }
-            return action;
+            return new this.actionClass(this[ID], this.actionParameters, context);
         }
 
         get actionClass() {
