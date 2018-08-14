@@ -38,10 +38,6 @@ cocktail.declare("woost.admin.ui");
         translateValue(value, params = null) {
             return value && value._label || super.translateValue(value, params);
         }
-
-        getTypeOfValue(value) {
-            return cocktail.schema.getSchemaByName(value._class);
-        }
     }
 
     woost.models.Slot = class Slot extends cocktail.schema.Collection {
@@ -103,7 +99,7 @@ cocktail.declare("woost.admin.ui");
                 responseType: "json",
                 parameters: locales ? {locales: locales.join(" ")} : null
             })
-                .then((xhr) => xhr.response);
+                .then((xhr) => cocktail.schema.objectFromJSONValue(xhr.response));
         }
 
         save(obj, validateOnly = false) {
@@ -128,7 +124,7 @@ cocktail.declare("woost.admin.ui");
                     if (xhr.response.errors.length) {
                         throw new woost.models.ValidationError(obj, xhr.response.errors);
                     }
-                    return xhr.response.state;
+                    return cocktail.schema.objectFromJSONValue(xhr.response.state);
                 });
         }
     }

@@ -172,7 +172,7 @@
             name="item"
             reflected="false">
             <?on changed
-            const model = cocktail.schema.getSchemaByName(newValue._class);
+            const model = newValue._class;
             const slots = [];
             for (let member of model.members()) {
                 if (member instanceof woost.models.Slot) {
@@ -341,7 +341,7 @@
         <ui:BlockRow id="row" ui:placement="before slotsList"/>
 
         <?on item:changed
-        const blockType = cocktail.schema.getSchemaByName(newValue._class);
+        const blockType = newValue._class;
         this.selectableId = `block-${newValue.id}`;
         this.disabledBlock = !newValue.enabled;
         this.row.dataBinding = {
@@ -377,7 +377,7 @@
             }
 
             get implicitSlot() {
-                const blockType = cocktail.schema.getSchemaByName(this.value._class);
+                const blockType = this.value._class;
                 const slots = [];
                 for (let member of blockType.members()) {
                     if (member instanceof woost.models.Slot) {
@@ -394,7 +394,7 @@
             <ui:using mixin="cocktail.ui.DataDisplay"/>
 
             <?on value:changed
-            const blockType = cocktail.schema.getSchemaByName(newValue._class);
+            const blockType = newValue._class;
             this.icon.src = blockType[woost.admin.ui.modelIconURL];
             this.descriptionLabel.innerHTML = blockType.translateValue(newValue);
             this.typeLabel.innerHTML = blockType.translate();

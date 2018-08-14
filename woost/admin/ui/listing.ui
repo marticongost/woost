@@ -305,9 +305,7 @@
 
             <?class
             getRowLabel() {
-                return this.translateValue({
-                    type: cocktail.schema.getSchemaByName(this.value._class)
-                });
+                return this.translateValue();
             }
             ?>
 
