@@ -244,6 +244,8 @@ class PublishableObject(object):
         return query
 
     def get_uri(self, **kwargs):
+        if not self.id:
+            return None
         return app.url_mapping.get_url(self, **kwargs)
 
     def translate_file_type(self, language = None):
