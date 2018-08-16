@@ -16,7 +16,7 @@ from woost import app
 from woost.models import Item, ReadPermission
 from woost.models.utils import get_model_dotted_name
 from woost.admin.models.dataexport import Export
-from woost.admin.models.dataimport import import_object_data
+from woost.admin.models.dataimport import Import
 from .utils import resolve_object_ref
 
 
@@ -50,7 +50,7 @@ class EditController(Controller):
 
         # Only report validation errors
         if action == "validate":
-            self._import_object(obj, data)
+            imp = self._import_object(obj, data, dry_run = True)
             response_data = {
                 "state": self._export_object(obj),
                 "errors": self._export_errors(obj, action)
@@ -62,7 +62,7 @@ class EditController(Controller):
             while True:
 
                 # Import data
-                self._import_object(obj, data)
+                imp = self._import_object(obj, data)
                 obj.insert()
 
                 # Validate errors
@@ -79,6 +79,7 @@ class EditController(Controller):
                     attempt += 1
                     datastore.sync()
                 else:
+                    imp.commit_successful()
                     response_data = {
                         "state": self._export_object(obj),
                         "errors": []
@@ -106,11 +107,12 @@ class EditController(Controller):
         # Update an existing object
         return resolve_object_ref(target)
 
-    def _import_object(self, obj, data):
-        import_object_data(
+    def _import_object(self, obj, data, **kwargs):
+        return Import(
             obj,
             data,
-            user = app.user
+            user = app.user,
+            **kwargs
         )
 
     def _export_object(self, obj):

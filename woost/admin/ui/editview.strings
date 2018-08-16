@@ -6,3 +6,12 @@
     es: Creando MODEL
     en: Creating MODEL
 
+[woost.models.File.woost.admin.editSchema]
+
+    [members]
+
+        [_upload]
+        ca: Fitxer
+        es: Fichero
+        en: File
+

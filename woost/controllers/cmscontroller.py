@@ -52,7 +52,6 @@ from woost.models import (
     AuthorizationError
 )
 from woost.models.utils import get_matching_website
-from woost.controllers.asyncupload import async_uploader
 from woost.controllers.basecmscontroller import BaseCMSController
 from woost.controllers.cmsresourcescontroller import CMSResourcesController
 from woost.controllers.imagescontroller import ImagesController
@@ -204,7 +203,7 @@ class CMSController(BaseCMSController):
             if not os.path.exists(temp_path):
                 os.mkdir(temp_path)
 
-            async_uploader.temp_folder = temp_path
+            app.async_uploader.temp_folder = temp_path
 
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -496,7 +495,7 @@ class CMSController(BaseCMSController):
     autocomplete = AutocompleteController
 
     async_upload = AsyncUploadController()
-    async_upload.uploader = async_uploader
+    async_upload.uploader = app.async_uploader
 
     @cherrypy.expose
     def current_user(self):

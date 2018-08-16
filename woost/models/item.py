@@ -511,16 +511,26 @@ class Item(PersistentObject):
             if not ext or ext not in formats_by_extension:
                 ext = extensions_by_format[default_format]
 
+        image_id = self.image_id
+        if not image_id:
+            raise ValueError(
+                "Can't generate an image URI for an object without an image ID"
+            )
+
         return app.url_mapping.get_url(
             host = host,
             path = [
                 "images",
-                str(self.id),
+                image_id,
                 (image_factory.identifier or "factory%d" % image_factory.id)
                 + (ext and "." + ext)
             ],
             query = parameters
         )
+
+    @property
+    def image_id(self):
+        return str(self.id) if self.id else None
 
     def resolve_representative_image(self, image_factory = None):
 
