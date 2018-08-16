@@ -1,0 +1,41 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host {
+    display: inline-flex;
+    flex-direction: row;
+}
+
+#fileInput {
+    display: none;
+}
+
+#uploadInfo {
+    margin-right: 1em;
+    border: 1px solid #ddd;
+    padding: 1em;
+
+    :host([uploadState='uploading']) &,
+    :host([empty='true']) & {
+        display: none;
+    }
+}
+
+#fileSizeLabel {
+    margin-top: 0.2em;
+    font-size: 0.9em;
+    color: #666;
+}
+
+#actionList {
+    :host([uploadState='uploading']) & {
+        display: none;
+    }
+}
+
+#progressBar {
+    :host(:not([uploadState='uploading'])) & {
+        display: none;
+    }
+}
+

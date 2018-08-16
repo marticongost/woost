@@ -151,3 +151,8 @@
     es: Cerrar
     en: Close
 
+    [upload]
+    ca: Pujar fitxer
+    es: Subir fichero
+    en: Upload file
+

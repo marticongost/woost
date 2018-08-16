@@ -306,6 +306,9 @@ def file_fields(exporter, model, ref = False):
     yield (lambda obj, path:
         ("_size_label", model.file_size.translate_value(obj.file_size))
     )
+    yield (lambda obj, path:
+        ("_upload", obj._v_upload_id) if obj._v_upload_id else None
+    )
     if ref:
         yield _object_field(exporter, File.file_name)
         yield _object_field(exporter, Publishable.resource_type)

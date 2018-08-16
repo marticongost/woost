@@ -31,6 +31,7 @@ class File(Publishable):
     admin_show_descriptions = False
     admin_show_thumbnails = True
     ui_display = "woost.admin.ui.ItemCard"
+    _v_upload_id = None
 
     edit_node_class = \
         "woost.controllers.backoffice.fileeditnode.FileEditNode"
@@ -64,13 +65,13 @@ class File(Publishable):
 
     file_name = schema.String(
         required = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         member_group = "content"
     )
 
     file_size = schema.Integer(
         required = True,
-        editable = schema.READ_ONLY,
+        editable = schema.NOT_EDITABLE,
         translate_value = lambda size, language = None, **kwargs:
             "" if size in (None, "") else format_bytes(size),
         min = 0,
@@ -98,6 +99,13 @@ class File(Publishable):
                 assign_file_name = not self.file_name
             )
             self._v_initializing = False
+
+    @property
+    def image_id(self):
+        if self._v_upload_id:
+            return "upload-" + self._v_upload_id
+        else:
+            return str(self.id) if self.id else None
 
     @property
     def file_extension(self):

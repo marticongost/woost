@@ -6,6 +6,7 @@
 
     <ui:requires component="woost.admin.ui.TranslationsDropdown"/>
     <ui:requires component="woost.admin.ui.SettingsScopeDropdown"/>
+    <ui:requires component="woost.admin.ui.FileUploader"/>
 
     <ui:symbol name="LOCALE_STATES"/>
 

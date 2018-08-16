@@ -9,6 +9,7 @@ from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod, camel_to_underscore
 from cocktail.caching import Cache
 from cocktail.controllers import context, folder_publisher
+from cocktail.controllers.asyncupload import AsyncUploader
 from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
 
@@ -163,8 +164,14 @@ http://woost.info
 
     url_mapping = property(_get_url_mapping, _set_url_mapping)
 
+    # Asynchronous file uploads
+    async_uploader = AsyncUploader()
+    async_uploader.session_prefix = "woost.async_upload."
+
+    # Tracebacks
     traceback_link_style = "disabled"
 
+    # Context
     def clear_context(self):
         for prop in self._contextual_properties:
             setattr(self, prop.attr, None)

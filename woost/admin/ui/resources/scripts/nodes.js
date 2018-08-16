@@ -117,6 +117,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
+                            itemNode.initData();
                             itemNode.consumePathSegment(path, "new object trigger");
                             itemNode.consumePathSegment(path, "new object model");
                             return itemNode.resolvePath(path);
@@ -146,6 +147,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                             itemNode.item = item;
                             itemNode.itemKey = key;
                             itemNode.model = model;
+                            itemNode.initData();
                             if (this.consumesKeySegment) {
                                 itemNode.consumePathSegment(path, "existing object identifier");
                             }
@@ -622,6 +624,9 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
         createEditSchema() {
             return this.model.copy(this.editSchemaOptions);
         }
+
+        initData() {
+        }
     }
 }
 
@@ -637,6 +642,33 @@ woost.admin.nodes.WebsiteEditNode = class WebsiteEditNode extends woost.admin.no
                         .filter((member) => !member[woost.models.isSetting])
             }
         );
+    }
+}
+
+woost.admin.nodes.FileEditNode = class FileEditNode extends woost.admin.nodes.EditNode {
+
+    createEditSchema() {
+
+        const schema = super.createEditSchema();
+
+        class FileUpload extends cocktail.schema.Member {
+        }
+
+        schema.membersOrder.splice(
+            schema.membersOrder.indexOf("title") + 1,
+            0,
+            "_upload"
+        );
+
+        schema.addMember(
+            new FileUpload({
+                name: "_upload",
+                [cocktail.ui.group]: "content",
+                [cocktail.ui.formControl]: () => woost.admin.ui.FileUploader
+            })
+        );
+
+        return schema;
     }
 }
 
