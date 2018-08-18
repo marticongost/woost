@@ -87,10 +87,24 @@
         return !element.slotInfo;
     }
 
-    newBlock(blockType, placement, target, locales = null) {
+    newBlock(blockType, placement, target, params = null) {
+
+        const locales = params && params.locales;
+
         return blockType.newInstance(locales).then((block) => {
             return this.placeBlock(block, placement, target);
-        });
+        })
+            .then((blockDisplay) => {
+
+                const slotDisplay = blockDisplay.slotDisplay;
+
+                cocktail.ui.trigger(this, "newBlock", {
+                    container: slotDisplay.item,
+                    slot: slotDisplay.slot,
+                    block: blockDisplay.item,
+                    focus: params && params.focus
+                });
+            });
     }
 
     placeBlock(block, placement, target) {
@@ -119,18 +133,26 @@
             blockDisplay = this.createBlockDisplay(block, slotDisplay.depth);
         }
 
+        const blocksArray = slotDisplay.item[slotDisplay.slot.name];
+
         if (placement == "inside") {
             slotDisplay.slotBlocks.appendChild(blockDisplay);
+            blocksArray.push(block);
         }
         else {
             const targetDisplay = target.blockDisplay;
-            slotDisplay.slotBlocks.insertBefore(
-                blockDisplay,
-                placement == "after" ? targetDisplay.nextSibling : targetDisplay
-            );
+            const sibling = placement == "after" ? targetDisplay.nextSibling : targetDisplay;
+            slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
+
+            if (!sibling) {
+                blocksArray.push(block);
+            }
+            else {
+                const index = sibling.parentNode.childNodes.indexOf(sibling);
+                blocksArray.splice(index, 0, block);
+            }
         }
 
-        // TODO: modify root slot value (rebuild tree recursively)
         return blockDisplay;
     }
     ?>
@@ -255,7 +277,7 @@
 
         update() {
             this.selectableId = `slot-${this.item.id}-${this.slot.name}`;
-            if (!this.isSingleSlot) {
+            if (!this.depth || !this.isSingleSlot) {
                 this.row = cls.SlotRow.create();
                 this.row.slotInfo = {member: this.slot, container: this.item};
                 this.slotBlocks.parentNode.insertBefore(this.row, this.slotBlocks);

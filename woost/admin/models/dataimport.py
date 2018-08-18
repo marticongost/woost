@@ -15,6 +15,7 @@ from cocktail.persistence import datastore
 from woost import app
 from woost.models import (
     Item,
+    Slot,
     ReadPermission,
     CreatePermission,
     ModifyPermission,
@@ -72,7 +73,6 @@ class Import(object):
 
     obj = None
     data = None
-    creating_new_object = False
     new_translations = None
     deleted_translations = None
     user = None
@@ -81,24 +81,39 @@ class Import(object):
 
     def __init__(
         self,
-        obj,
         data,
+        obj = None,
+        model = None,
         deleted_translations = None,
         user = None,
         import_primary_keys = False,
         dry_run = False
     ):
+        self.__temp_objects = {}
         self.__allowed_translations_cache = defaultdict(set)
-        self.obj = obj
         self.data = data
-        self.creating_new_object = not obj.is_inserted
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
         self.user = user
         self.import_primary_keys = import_primary_keys
         self.dry_run = dry_run
         self.after_commit_callbacks = []
-        self.import_object(obj, data)
+
+        if obj:
+            self.obj = obj
+            self.import_object(obj, data)
+        else:
+            self.obj = self.produce_object(data, model or Item)
+
+    def get_instance(self, id, cls = Item):
+
+        if isinstance(id, basestring):
+            if id.startswith("_"):
+                return self.__temp_objects.get(id)
+            else:
+                id = int(id)
+
+        return cls.get_instance(id)
 
     def after_commit(self, callback, *args, **kwargs):
         self.after_commit_callbacks.append((callback, args, kwargs))
@@ -248,56 +263,60 @@ class Import(object):
                     member.class_family
                 )
             else:
-                id = None
-
-                if isinstance(value, int):
-                    read_child_data = False
-                    id = value
-                elif isinstance(value, dict):
-                    read_child_data = True
-                    id = value.get("id") or None
-
-                    # Ignore the temporary IDs generated client side by the
-                    # backoffice
-                    if isinstance(id, basestring) and id.startswith("_"):
-                        id = None
-                else:
-                    raise ValueError(
-                        "Invalid data type for member %s" % member
-                    )
-
-                item = id and member.related_type.get_instance(id)
-
-                if item is None:
-                    if read_child_data:
-                        model_name = value.get("_class")
-                        if model_name:
-                            model = self.get_model_by_dotted_name(
-                                model_name,
-                                member.related_type
-                            )
-                        else:
-                            model = member.related_type
-
-                        if not model:
-                            raise TypeError(
-                                "Missing a valid _class declaration (%r %r)"
-                                % (member, value)
-                            )
-
-                        item = model.new()
-                elif self.permission_check and self.user:
-                    self.user.require_permission(
-                        ReadPermission,
-                        target = item
-                    )
-
-                if read_child_data:
-                    self.import_object(item, value)
-
-                value = item
+                value = self.produce_object(value, member.related_type)
 
         return value
+
+    def produce_object(self, value, root_model = Item):
+
+        id = None
+
+        if isinstance(value, int):
+            read_child_data = False
+            id = value
+        elif isinstance(value, dict):
+            read_child_data = True
+            id = value.get("id") or None
+        else:
+            raise ValueError(
+                "Invalid data type for %s" % root_model.__name__
+            )
+
+        item = id and self.get_instance(id, root_model)
+
+        if item is None:
+            if read_child_data:
+                model_name = value.get("_class")
+                if model_name:
+                    model = self.get_model_by_dotted_name(
+                        model_name,
+                        root_model
+                    )
+                else:
+                    model = root_model
+
+                if not model:
+                    raise TypeError(
+                        "Missing a valid _class declaration (%r)" % value
+                    )
+
+                item = model()
+                if isinstance(id, basestring) and id.startswith("_"):
+                    self.__temp_objects[id] = item
+
+                if not self.dry_run:
+                    item.insert()
+
+        elif self.permission_check and self.user:
+            self.user.require_permission(
+                ReadPermission,
+                target = item
+            )
+
+        if read_child_data:
+            self.import_object(item, value)
+
+        return item
 
     def should_import_member(self, obj, member):
         return (
@@ -308,6 +327,7 @@ class Import(object):
                     and member.primary
                     and not obj.is_inserted
                 )
+                or isinstance(member, Slot)
             )
             and (
                 self.user is None

@@ -112,46 +112,47 @@ woost.preview.setSelectorsVisible = function (visible) {
 
 woost.preview.Update = class Update {
 
-    static canUpdate(element, data, member) {
+    static canUpdate(element, editState, blockData, member) {
         return true;
     }
 
-    static update(element, data, member) {
+    static update(element, editState, blockData, member) {
     }
 }
 
 woost.preview.HeadingUpdate = class HeadingUpdate extends woost.preview.Update {
 
-    static canUpdate(element, data, member) {
+    static canUpdate(element, editState, blockData, member) {
         return (
-            (data.heading_display == "on" || data.heading_display == "custom")
+            (blockData.heading_display == "on" || blockData.heading_display == "custom")
             && element.querySelector(".heading")
         );
     }
 
-    static update(element, data, member) {
+    static update(element, editState, blockData, member) {
         const heading = element.querySelector(".heading");
         if (heading) {
-            let field = (data.heading_display == "custom") ? "custom_heading" : "heading";
-            heading.innerHTML = data[field][cocktail.getLanguage()];
+            let field = (blockData.heading_display == "custom") ? "custom_heading" : "heading";
+            heading.innerHTML = blockData[field][cocktail.getLanguage()];
         }
     }
 }
 
 woost.preview.EmbeddedStylesUpdate = class EmbeddedStylesUpdate extends woost.preview.Update {
 
-    static update(element, data, member) {
+    static update(element, editState, blockData, member) {
+        const blockId = blockData.id;
         return woost.preview.request({
             content: "styles",
-            block: data.id,
-            data: JSON.stringify(data)
+            editState: editState,
+            params: {block: blockId}
         })
             .then((xhr) => {
-                let styles = woost.preview.getBlockStylesElement(data.id);
+                let styles = woost.preview.getBlockStylesElement(blockId);
                 if (!styles) {
                     styles = document.createElement("style");
                     styles.type = "text/css";
-                    styles.setAttribute("data-woost-block-styles", data.id);
+                    styles.setAttribute("data-woost-block-styles", blockId);
                     document.head.appendChild(styles);
                 }
                 styles.innerHTML = xhr.responseText;
@@ -161,11 +162,15 @@ woost.preview.EmbeddedStylesUpdate = class EmbeddedStylesUpdate extends woost.pr
 
 woost.preview.TextBlockTextUpdate = class TextBlockTextUpdate extends woost.preview.Update {
 
-    static update(element, data, member) {
+    static canUpdate(element, editState, blockData, member) {
+        const text = blockData.text[cocktail.getLanguage()];
+        return text && element.querySelector(".text_container");
+    }
+
+    static update(element, editState, blockData, member) {
+        const text = blockData.text[cocktail.getLanguage()];
         const textContainer = element.querySelector(".text_container");
-        if (textContainer) {
-            textContainer.innerHTML = data.text[cocktail.getLanguage()];
-        }
+        textContainer.innerHTML = text;
     }
 }
 
@@ -178,7 +183,7 @@ woost.preview.memberUpdates = {
     "woost.models.TextBlock.text": woost.preview.TextBlockTextUpdate,
 }
 
-woost.preview.updateBlock = function (blockData, changedMembers = null) {
+woost.preview.updateBlock = function (editState, blockData, changedMembers = null) {
 
     let needsReload = true;
     const element = this.getBlock(blockData.id);
@@ -190,7 +195,7 @@ woost.preview.updateBlock = function (blockData, changedMembers = null) {
             needsReload = false;
             for (let memberName of changedMembers) {
                 const update = woost.preview.memberUpdates[memberName];
-                if (!update || !update.canUpdate(element, blockData, memberName)) {
+                if (!update || !update.canUpdate(element, editState, blockData, memberName)) {
                     needsReload = true;
                     break;
                 }
@@ -200,7 +205,7 @@ woost.preview.updateBlock = function (blockData, changedMembers = null) {
 
                 const updateProcesses = [];
                 for (let memberName of changedMembers) {
-                    const updateProcess = woost.preview.memberUpdates[memberName].update(element, blockData, memberName);
+                    const updateProcess = woost.preview.memberUpdates[memberName].update(element, editState, blockData, memberName);
                     updateProcesses.push(Promise.resolve(updateProcess));
                 }
                 Promise.all(updateProcesses)
@@ -211,70 +216,105 @@ woost.preview.updateBlock = function (blockData, changedMembers = null) {
 
         // Render the full block server side
         if (needsReload) {
-            woost.preview.reloadBlock(element, blockData);
+            woost.preview.reloadBlock(element, editState);
         }
     }
     // Render the full page server side
     else {
-        woost.preview.reload();
+        woost.preview.reload(editState);
     }
 }
 
-woost.preview.reloadBlock = function (block, blockData = null) {
+woost.preview.updateElement = function (element, requestParams, handleResponse) {
+    element.previewOverlay.setAttribute("data-woost-preview-state", "updating");
+    return woost.preview.request(requestParams)
+        .then((xhr) => {
+
+            const loadables = [];
+
+            // Add resources
+            for (let link of xhr.responseXML.querySelectorAll("link[href]")) {
+                if (!document.querySelector(`link[href='${link.href}']`)) {
+                    loadables.push(link);
+                    document.head.appendChild(link);
+                }
+            }
+
+            // TODO: add linked scripts, client variables, client models?
+
+            // Handle the received content
+            const updateRoot = handleResponse(xhr);
+
+            // Look for images
+            loadables.push(...updateRoot.querySelectorAll("img"));
+
+            return Promise.all(
+                loadables.map((loadable) => new Promise((resolve, reject) => {
+                    if (loadable.loaded) {
+                        resolve(loadable);
+                    }
+                    else {
+                        loadable.onload = () => resolve(loadable);
+                        loadable.onerror = () => reject(loadable);
+                    }
+                }))
+            )
+                .finally(() => woost.preview.update());
+        })
+        .finally(() => element.previewOverlay.setAttribute("data-woost-preview-state", "idle"));
+}
+
+woost.preview.updateSlot = function (editState, containerId, slotName) {
+    const element = this.getSlot(containerId, slotName);
+    if (element) {
+        this.updateElement(
+            element,
+            {
+                content: "slot",
+                editState: editState,
+                params: {container: containerId, slot: slotName}
+            },
+            (xhr) => {
+                const loadedElement = woost.preview.getSlot(containerId, slotName, xhr.responseXML);
+                element.innerHTML = loadedElement.innerHTML;
+                cocktail.init();
+                return element;
+            }
+        );
+    }
+    else {
+        return Promise.reject("Can't find slot");
+    }
+}
+
+woost.preview.reloadBlock = function (block, editState) {
     const element = block instanceof Element ? block : this.getBlock(block);
     if (element) {
-        element.previewOverlay.setAttribute("data-woost-preview-state", "updating");
         const blockId = element.getAttribute("data-woost-block");
-        return woost.preview.request({
-            content: "block",
-            block: blockId,
-            data: blockData ? JSON.stringify(blockData) : null
-        })
-            .then((xhr) => {
-
-                const loadables = [];
-
-                // Add resources
-                for (let link of xhr.responseXML.querySelectorAll("link[href]")) {
-                    if (!document.querySelector(`link[href='${link.href}']`)) {
-                        loadables.push(link);
-                        document.head.appendChild(link);
-                    }
-                }
-
-                // TODO: add linked scripts, client variables, client models?
-
-                // Replace the block
+        return this.updateElement(
+            element,
+            {
+                content: "block",
+                editState: editState,
+                params: {block: blockId}
+            },
+            (xhr) => {
                 const newElement = xhr.responseXML.body.querySelector(`.block[data-woost-block='${blockId}']`);
                 newElement.previewOverlay = element.previewOverlay;
                 newElement.previewOverlay.block = newElement;
-                element.parentNode.replaceChild(newElement, element);
+                element.replaceWith(newElement);
                 cocktail.init(newElement);
-
-                // Look for images
-                loadables.push(...newElement.querySelectorAll("img"));
-
-                return Promise.all(
-                    loadables.map((loadable) => new Promise((resolve, reject) => {
-                        if (loadable.loaded) {
-                            resolve(loadable);
-                        }
-                        else {
-                            loadable.onload = () => resolve(loadable);
-                            loadable.onerror = () => reject(loadable);
-                        }
-                    }))
-                )
-                    .finally(() => woost.preview.update());
-            })
-            .finally(() => element.previewOverlay.setAttribute("data-woost-preview-state", "idle"));
+                return newElement;
+            }
+        );
     }
     else {
         return Promise.reject("Can't find block");
     }
 }
 
-woost.preview.reload = function () {
+woost.preview.reload = function (editState) {
+    // TODO
 }
 
 woost.preview.postMessage = function (data) {
@@ -285,14 +325,10 @@ woost.preview.request = function (req) {
 
     return new Promise((resolve, reject) => {
 
-        let uri = URI(woost.preview.baseURL).segment(req.content).segment(String(woost.publishable));
+        let uri = URI(woost.preview.baseURL).segment(req.content);
 
-        if (req.block) {
-            uri = uri.segment(String(req.block));
-        }
-
-        if (req.query) {
-            uri = uri.query((q) => Object.assign(q, req.query));
+        if (req.params) {
+            uri = uri.query((q) => Object.assign(q, req.params));
         }
 
         const xhr = new XMLHttpRequest();
@@ -306,14 +342,14 @@ woost.preview.request = function (req) {
             }
         }
 
-        if (req.content == "page" || req.content == "block") {
+        if (req.content != "styles") {
             xhr.responseType = "document";
         }
 
         xhr.open("POST", uri.toString());
         cocktail.csrfprotection.setupRequest(xhr);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(req.data);
+        xhr.send(JSON.stringify(req.editState));
     });
 }
 
@@ -334,8 +370,8 @@ woost.preview.getBlock = function (blockId) {
     return document.querySelector(`[data-woost-block='${blockId}']`);
 }
 
-woost.preview.getSlot = function (containerId, slotName) {
-    return document.querySelector(`[data-woost-container='${containerId}'][data-woost-slot='${slotName}']`);
+woost.preview.getSlot = function (containerId, slotName, root = null) {
+    return (root || document).querySelector(`[data-woost-container='${containerId}'][data-woost-slot='${slotName}']`);
 }
 
 woost.preview.getOverlay = function (selectableId) {
@@ -364,7 +400,18 @@ window.addEventListener("message", (e) => {
             woost.preview.hover(e.data.target, false);
         }
         else if (e.data.type == "updateBlock") {
-            woost.preview.updateBlock(e.data.blockData, e.data.changedMembers);
+            woost.preview.updateBlock(
+                e.data.editState,
+                e.data.blockData,
+                e.data.changedMembers
+            );
+        }
+        else if (e.data.type == "updateSlot") {
+            woost.preview.updateSlot(
+                e.data.editState,
+                e.data.containerId,
+                e.data.slotName
+            );
         }
         else if (e.data.type == "rulers") {
             woost.preview.setRulersVisible(e.data.visible);
