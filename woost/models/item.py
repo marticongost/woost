@@ -143,14 +143,16 @@ class Item(PersistentObject):
 
     def _generate_global_id(self):
 
-        if not app.installation_id:
-            raise ValueError(
-                "No value set for woost.app.installation_id; "
-                "make sure your settings file specifies a unique "
-                "identifier for this installation of the site."
-            )
+        if isinstance(self.id, int):
 
-        self.global_id = "%s-%d" % (app.installation_id, self.id)
+            if not app.installation_id:
+                raise ValueError(
+                    "No value set for woost.app.installation_id; "
+                    "make sure your settings file specifies a unique "
+                    "identifier for this installation of the site."
+                )
+
+            self.global_id = "%s-%d" % (app.installation_id, self.id)
 
     # Backoffice customization
     #--------------------------------------------------------------------------
@@ -581,7 +583,7 @@ class Item(PersistentObject):
         """Obtains a cache tag that can be used to match all cache entries
         related to this item.
         """
-        return "%s-%d" % (self.__class__.__name__, self.id)
+        return "%s-%s" % (self.__class__.__name__, self.id)
 
     def get_cache_tags(self, language = None, cache_part = None):
         """Obtains the list of cache tags that apply to this item.

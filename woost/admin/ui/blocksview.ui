@@ -69,6 +69,7 @@
                     instance[POST_MESSAGE]({
                         type: "updateBlock",
                         blockData: e.detail.newValue,
+                        editState: instance.getEditState(),
                         changedMembers
                     });
                 });
@@ -186,7 +187,7 @@
             cocktail.ui.request({
                 url,
                 method: "POST",
-                data: this.navigationNode.model.toJSONValue(this.navigationNode.item)
+                data: this.getEditState()
             })
                 .then((xhr) => {
                     const previewDoc = this.previewFrame.contentDocument;
@@ -205,6 +206,10 @@
         return this.navigationNode.model;
     }
 
+    getEditState() {
+        return this.navigationNode.parent.editForm.getJSONValue();
+    }
+
     closeNode() {
         if (this.blockEditor) {
             this.blockEditor.closeNode();
@@ -215,7 +220,7 @@
     }
 
     getPreviewURL() {
-        return `${woost.admin.url}/preview/page/${this.editedItem.id}`;
+        return `${woost.admin.url}/preview/page`;
     }
 
     [POST_MESSAGE](data) {
@@ -342,6 +347,24 @@
                     instance[POST_MESSAGE]({
                         type: "hover",
                         target: newValue ? newValue.selectableId : null
+                    });
+                }
+                ?>
+
+                <?on newBlock
+                instance[POST_MESSAGE]({
+                    type: "updateSlot",
+                    containerId: e.detail.container.id,
+                    slotName: e.detail.slot.name,
+                    editState: instance.getEditState()
+                });
+
+                if (e.detail.focus) {
+                    const tree = instance.blocksTree;
+                    tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
+                    instance.actionList.getAction("edit").invoke({
+                        selection: tree.selectedValues,
+                        selectionObjectPath: tree.selectedElement.objectPath
                     });
                 }
                 ?>

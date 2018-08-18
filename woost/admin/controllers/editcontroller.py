@@ -109,8 +109,8 @@ class EditController(Controller):
 
     def _import_object(self, obj, data, **kwargs):
         return Import(
-            obj,
             data,
+            obj = obj,
             user = app.user,
             **kwargs
         )

@@ -56,7 +56,11 @@
             blocksTree.newBlock(
                 this.selectedElement.model,
                 addBlockDropdown.placementSelector.value,
-                blocksTree.selectedElement
+                blocksTree.selectedElement,
+                {
+                    locales: [cocktail.getLanguage()],
+                    focus: true
+                }
             );
         }
         ?>
