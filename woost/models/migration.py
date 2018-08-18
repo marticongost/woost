@@ -1755,7 +1755,7 @@ def create_block_catalogs(e):
     for block in Block.select():
         for slot_key in slot_keys:
             value = getattr(block, slot_key, None)
-            if value is not None and not isinstance(value, Block):
+            if value is not None and not isinstance(value, Item):
                 if len(value) == 1:
                     setattr(block, slot_key, value[0])
                 elif len(value) == 0:
