@@ -20,6 +20,7 @@
     link_destination = None
     link_parameters = None
     link_opens_in_new_window = False
+    autohide = True
     _has_heading = False
 
     alignments_with_text_above = ["column_right", "center_bottom", "bottom_left"]
@@ -44,12 +45,18 @@
         self._column_layout = (self.image_alignment in ("column_left", "column_right"))
 
         if not self._images:
+            has_images = False
             self.add_class("no_images")
-        elif len(self._images) == 1:
-            self.add_class("single_image")
+        else:
+            has_images = True
+            if len(self._images) == 1:
+                self.add_class("single_image")
 
         if not self.text and not (self._has_heading and self.heading_alignment == "inside"):
+            has_text = False
             self.add_class("no_text")
+        else:
+            has_text = True
 
         if self._column_layout:
             self.content_wrapper.tag = "div"
@@ -77,6 +84,9 @@
 
         if self.link_opens_in_new_window:
             self.block_link["target"] = "_blank"
+
+        if self.autohide and not has_text and not has_images:
+            self.visible = False
         ?>
     </py:ready>
 

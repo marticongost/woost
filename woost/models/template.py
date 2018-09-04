@@ -9,6 +9,7 @@ u"""
 from cocktail import schema
 from .item import Item
 from .theme import Theme
+from cocktail.html import templates
 
 
 class Template(Item):
@@ -51,4 +52,17 @@ class Template(Item):
         editable = schema.NOT_EDITABLE,
         visible = False
     )
+
+    view_initialization = schema.CodeBlock(
+        language = "python"
+    )
+
+    def create_view(self):
+        view = templates.new(self.identifier)
+        if self.view_initialization:
+            self.__class__.view_initialization.execute(self, {
+                "view": view,
+                "template": self
+            })
+        return view
 

@@ -59,6 +59,7 @@ from .publishable import (
 )
 from .document import Document
 from .defaulttemplate import with_default_template, get_default_templates
+from .defaultcontroller import with_default_controller
 from .theme import Theme
 from .template import Template
 from .controller import Controller
@@ -132,6 +133,13 @@ from .caching import CachingPolicy
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings
 from . import staticpublication
+
+# Delayed declaration to avoid a reference cycle; Website and File depend on
+# each other
+with_default_controller("publishable")(Publishable)
+with_default_controller("file")(File)
+with_default_controller("uri")(URI)
+with_default_controller("feed")(Feed)
 
 # Blocks
 from .slot import Slot

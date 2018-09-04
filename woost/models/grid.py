@@ -15,6 +15,7 @@ class Grid(Item):
     members_order = [
         "title",
         "column_count",
+        "side_margin",
         "sizes"
     ]
 
@@ -29,6 +30,11 @@ class Grid(Item):
     column_count = schema.Integer(
         required = True,
         default = 12
+    )
+
+    side_margin = schema.Integer(
+        required = True,
+        default = 50
     )
 
     sizes = schema.Collection(
@@ -63,9 +69,10 @@ class Grid(Item):
                 )
             )
 
-        return "@include define_grid((%s), $col-count: %d);" % (
+        return "@include define_grid((%s), $col-count: %d, $margin: %d);" % (
             ", ".join(size_defs),
-            self.column_count
+            self.column_count,
+            self.side_margin
         )
 
 

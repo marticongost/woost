@@ -8,7 +8,7 @@ from threading import local
 from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod, camel_to_underscore
 from cocktail.caching import Cache
-from cocktail.controllers import context, folder_publisher
+from cocktail.controllers import context, folder_publisher, Cached
 from cocktail.controllers.asyncupload import AsyncUploader
 from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
@@ -102,6 +102,17 @@ http://woost.info
             from woost.iconresolver import IconResolver
             self.__icon_resolver = IconResolver()
         return self.__icon_resolver
+
+    def ascend_navigation(self):
+        pub = self.publishable
+        nav_point = self.navigation_point
+        if pub is nav_point:
+            for pub in pub.ascend_tree(include_self = True):
+                yield pub
+        else:
+            yield pub
+            for pub in nav_point.ascend_tree(include_self = True):
+                yield pub
 
     # Language scheme
     def _get_language(self):
@@ -362,4 +373,7 @@ class EditingProperty(ContextualProperty):
 @GenericMethod
 def get_navigation_point(self):
     return self
+
+
+Cached.cache = Application.cache
 

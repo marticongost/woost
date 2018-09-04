@@ -11,11 +11,11 @@ fr: Commande
     en: Shop orders
     fr: Commandes
 
-    [description_for_gateway]
-    ca: Comanda de %s
-    es: Pedido de %s
-    en: Order at %s
-    fr: Commande de %s
+    [description_for_gateway(name)]
+    ca: Comanda de ${name}
+    es: Pedido de ${name}
+    en: Order at ${name}
+    fr: Commande de ${name}
 
     [tabs]
 

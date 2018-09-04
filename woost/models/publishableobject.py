@@ -32,6 +32,8 @@ class PublishableObject(object):
     resource_type = "document"
     encoding = "utf-8"
     controller = None
+    template = None
+    theme = None
     parent = None
     menu_title = None
     path = None
@@ -48,10 +50,27 @@ class PublishableObject(object):
     end_date = None
     requires_https = False
     caching_policies = ()
+    redirection_mode = None
+    redirection_target = None
+    redirection_method = None
+
+    def get_controller(self):
+        return self.controller or self.get_default_controller()
+
+    def get_default_controller(self):
+        return None
 
     def resolve_controller(self):
-        if self.controller and self.controller.python_name:
-            return import_object(self.controller.python_name)
+        controller = self.get_controller()
+        if controller and controller.python_name:
+            return import_object(controller.python_name)
+        return None
+
+    def get_template(self):
+        return self.template or self.get_default_template()
+
+    def get_default_template(self):
+        return None
 
     def get_effective_caching_policy(self, **context):
 

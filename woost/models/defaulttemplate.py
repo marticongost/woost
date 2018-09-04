@@ -45,7 +45,6 @@ def with_default_template(template_name, **field_kwargs):
             Configuration.instance.get_setting(field_name)
             or base_get_default_template(self)
         )
-
         return cls
 
     return decorator

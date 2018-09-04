@@ -117,6 +117,13 @@ class Field(Item):
         listed_by_default = False
     )
 
+    field_validations = schema.Collection(
+        items = "woost.extensions.forms.formvalidation.FormValidation",
+        bidirectional = True,
+        integral = True,
+        member_group = "field_properties"
+    )
+
     field_initialization = schema.CodeBlock(
         language = "python",
         listed_by_default = False,
@@ -178,6 +185,9 @@ class Field(Item):
             self.field_name or "field%d" % self.id
         )
         self._init_member(member)
+
+        for validation in self.field_validations:
+            validation.add_to_member(member)
 
         if self.field_initialization:
             label = "%s #%s.field_initialization" % (
@@ -269,14 +279,17 @@ class FieldSet(Field):
             member.add_member(child_member, append = True)
 
         @extend(member)
-        def translate_group(member, group):
+        def translate_group(member, group, suffix = None):
             try:
                 field_set_id = int(group.split(".")[-1])
             except:
-                return call_base(group)
+                return call_base(group, suffix = suffix)
             else:
                 fieldset = FieldSet.require_instance(field_set_id)
-                return fieldset.visible_title or translations(fieldset)
+                if suffix == ".explanation":
+                    return fieldset.explanation
+                else:
+                    return fieldset.visible_title or translations(fieldset)
 
     def create_form_model(self):
 

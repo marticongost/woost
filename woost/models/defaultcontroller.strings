@@ -1,0 +1,12 @@
+
+@init
+from cocktail.translations.helpers import ca_possessive
+@end
+
+[woost.models.defaultcontroller]
+
+    [field(member)]
+    ca: Controlador ${ca_possessive(translations(member.controller_owner).lower())} per defecte
+    es: Controlador de ${translations(member.controller_owner).lower()} por defecto
+    en: Default ${translations(member.controller_owner).lower()} controller
+

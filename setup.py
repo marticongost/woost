@@ -63,7 +63,8 @@ of its features include:\n"
         "twitterpublication": ["oauth2"],
         "amazon_s3_static_publication": ["boto"],
         "newsletters": ["premailer"],
-        "identity": ["google-api-python-client"]
+        "identity": ["google-api-python-client"],
+        "analytics": ["oauth2client", "google-api-python-client"]
     },
     packages = find_packages(),
     include_package_data = True,
@@ -78,7 +79,7 @@ of its features include:\n"
             "sitemap = woost.extensions.sitemap:SitemapExtension",
             "pdf = woost.extensions.pdf:PDFExtension",
             "vimeo = woost.extensions.vimeo:VimeoExtension",
-			"signup = woost.extensions.signup:SignUpExtension",
+            "signup = woost.extensions.signup:SignUpExtension",
             "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
             "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
             "googletagmanager=woost.extensions.googletagmanager:GoogleTagManagerExtension",
@@ -111,7 +112,7 @@ of its features include:\n"
             "identity = woost.extensions.identity:IdentityExtension",
             "attributes = woost.extensions.attributes:AttributesExtension",
             "staticpub = woost.extensions.staticpub:StaticPubExtension",
-			"nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension"
+            "nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

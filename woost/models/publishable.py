@@ -62,6 +62,8 @@ class Publishable(Item, PublishableObject):
     groups_order = [
         "content",
         "navigation",
+        "navigation.menu",
+        "navigation.redirection",
         "presentation",
         "presentation.behavior",
         "presentation.format",
@@ -76,11 +78,14 @@ class Publishable(Item, PublishableObject):
         "resource_type",
         "encoding",
         "parent",
-        "menu_title",
+        "login_page",
         "path",
         "full_path",
+        "menu_title",
         "hidden",
-        "login_page",
+        "redirection_mode",
+        "redirection_target",
+        "redirection_method",
         "per_language_publication",
         "enabled",
         "enabled_translations",
@@ -147,10 +152,8 @@ class Publishable(Item, PublishableObject):
         shadows_attribute = True
     )
 
-    menu_title = schema.String(
-        translated = True,
+    login_page = schema.Reference(
         listed_by_default = False,
-        spellcheck = True,
         member_group = "navigation",
         shadows_attribute = True
     )
@@ -174,17 +177,44 @@ class Publishable(Item, PublishableObject):
         shadows_attribute = True
     )
 
+    menu_title = schema.String(
+        translated = True,
+        listed_by_default = False,
+        spellcheck = True,
+        member_group = "navigation.menu",
+        shadows_attribute = True
+    )
+
     hidden = schema.Boolean(
         required = True,
         default = False,
         listed_by_default = False,
-        member_group = "navigation",
+        member_group = "navigation.menu",
         shadows_attribute = True
     )
 
-    login_page = schema.Reference(
+    redirection_mode = schema.String(
+        enumeration = ["first_child", "custom_target"],
         listed_by_default = False,
-        member_group = "navigation",
+        text_search = False,
+        member_group = "navigation.redirection",
+        shadows_attribute = True
+    )
+
+    redirection_target = schema.Reference(
+        required = redirection_mode.equal("custom_target"),
+        listed_by_default = False,
+        member_group = "navigation.redirection",
+        shadows_attribute = True
+    )
+
+    redirection_method = schema.String(
+        required = True,
+        default = "temp",
+        enumeration = ["temp", "perm", "client"],
+        listed_by_default = False,
+        text_search = False,
+        member_group = "navigation.redirection",
         shadows_attribute = True
     )
 
@@ -283,6 +313,11 @@ class Publishable(Item, PublishableObject):
         member_group = "publication",
         shadows_attribute = True
     )
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("full_path", schema.undefined)
+        kwargs.setdefault("resource_type", schema.undefined)
+        Item.__init__(self, *args, **kwargs)
 
     @event_handler
     def handle_changed(cls, event):
@@ -478,7 +513,10 @@ class Publishable(Item, PublishableObject):
             return ((-1, 1), impl)
 
 Publishable.login_page.type = Publishable
-Publishable.related_end = schema.Collection()
+Publishable.login_page.related_end = schema.Collection()
+
+Publishable.redirection_target.type = Publishable
+Publishable.redirection_target.related_end = schema.Collection()
 
 # Exposed at the module's root for backwards compatibility
 IsPublishedExpression = Publishable.IsPublishedExpression

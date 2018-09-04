@@ -9,7 +9,7 @@ from json import loads
 from cocktail import schema
 from cocktail.urls import URL
 from cocktail.events import event_handler
-from woost.models import Publishable, Controller
+from woost.models import Publishable, with_default_controller
 
 ISSUU_DOCUMENT_URL_PATTERN = \
     re.compile(r"http://issuu.com/(.+)/docs/([^/\?]+)/?(\d+)?(\?e=(\d+/\d+))?.*")
@@ -25,16 +25,12 @@ def extract_issuu_document_metadata(url):
     else:
         return {}
 
-
+@with_default_controller("issuu_document")
 class IssuuDocument(Publishable):
 
     instantiable = True
     default_per_language_publication = True
     type_group = "resource"
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.issuu_document_controller")
-    )
 
     members_order = [
         "title",

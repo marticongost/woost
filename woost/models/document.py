@@ -8,7 +8,6 @@ u"""
 """
 from cocktail import schema
 from cocktail.events import event_handler
-from cocktail.html import templates
 from cocktail.controllers import redirect
 from .publishable import Publishable
 from .controller import Controller
@@ -40,14 +39,7 @@ class Document(Publishable):
         "description",
         "keywords",
         "children",
-        "redirection_mode",
-        "redirection_target",
-        "redirection_method",
         "robots_should_follow"
-    )
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(qname = "woost.document_controller")
     )
 
     title = schema.String(
@@ -108,6 +100,7 @@ class Document(Publishable):
         bidirectional = True,
         listed_by_default = False,
         after_member = "controller",
+        shadows_attribute = True,
         member_group = "presentation.behavior"
     )
 
@@ -115,7 +108,8 @@ class Document(Publishable):
         type = Theme,
         related_end = schema.Collection(),
         listed_by_default = False,
-        member_group = "presentation.behavior"
+        member_group = "presentation.behavior",
+        shadows_attribute = True
     )
 
     styles = schema.Collection(
@@ -132,30 +126,6 @@ class Document(Publishable):
         related_key = "parent",
         cascade_delete = True,
         after_member = "parent",
-        member_group = "navigation"
-    )
-
-    redirection_mode = schema.String(
-        enumeration = ["first_child", "custom_target"],
-        listed_by_default = False,
-        text_search = False,
-        member_group = "navigation"
-    )
-
-    redirection_target = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        required = redirection_mode.equal("custom_target"),
-        listed_by_default = False,
-        member_group = "navigation"
-    )
-
-    redirection_method = schema.String(
-        required = True,
-        default = "temp",
-        enumeration = ["temp", "perm", "client"],
-        listed_by_default = False,
-        text_search = False,
         member_group = "navigation"
     )
 
@@ -185,12 +155,6 @@ class Document(Publishable):
                 for descendant in child.descend_tree(True):
                     yield descendant
 
-    def get_template(self):
-        return self.template or self.get_default_template()
-
-    def get_default_template(self):
-        return None
-
     def render(self, **values):
         """Renders the document using its template."""
 
@@ -201,7 +165,7 @@ class Document(Publishable):
 
         values["publishable"] = self
 
-        view = templates.new(template.identifier)
+        view = template.create_view()
         for key, value in values.iteritems():
             setattr(view, key, value)
 

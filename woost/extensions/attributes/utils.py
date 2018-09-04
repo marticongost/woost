@@ -20,7 +20,8 @@ def init_element(element, item, scope = "ref", env = None):
         scope,
         env
     ):
-        element[attribute.attribute_name] = export_attribute_value(value)
+        element[attribute.attribute_name] = \
+            export_attribute_value(value) or None
 
 def iter_attributes(item, scope = "ref", env = None):
     for attribute in Attribute.select([

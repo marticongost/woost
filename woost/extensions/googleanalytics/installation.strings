@@ -19,12 +19,17 @@
         en: Woost: path
 
         [publishable.title]
-        ca: Woost: publicable
-        es: Woost: publicable
-        en: Woost: publishable
+        ca: Woost: document actiu
+        es: Woost: documento activo
+        en: Woost: active document
 
         [type.title]
         ca: Woost: tipus
         es: Woost: tipo
         en: Woost: type
+
+        [target.title]
+        ca: Woost: destí
+        es: Woost: destino
+        en: Woost: target
 
