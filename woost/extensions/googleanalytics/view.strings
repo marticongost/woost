@@ -1,0 +1,23 @@
+
+[woost.extensions.googleanalytics.view.View]
+ca: Vista de Google Analytics
+es: Vista de Google Analytics
+en: Google Analytics view
+
+    [plural]
+    ca: Vistes de Google Analytics
+    es: Vistas de Google Analytics
+    en: Google Analytics views
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+

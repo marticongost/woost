@@ -9,7 +9,7 @@ except ImportError:
     from StringIO import StringIO
 
 from warnings import warn
-from collections import Sequence, Set, defaultdict, Counter
+from collections import Sequence, Mapping, Set, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
 from itertools import izip_longest
@@ -37,6 +37,11 @@ from woost.models import (
     File,
     User,
     Slot,
+    Template,
+    Controller,
+    Publishable,
+    Document,
+    Block,
     changeset_context
 )
 
@@ -91,7 +96,11 @@ def resolve_object_ref(cls, ref):
     for key, value in ref.iteritems():
         if value is not None and value != "" and not key.startswith("@"):
             member = cls.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj = cls.get_instance(**{key: value})
                 if obj is not None:
                     return obj
@@ -105,7 +114,11 @@ def create_object_from_ref(cls, ref):
     for key, value in ref.iteritems():
         if not key.startswith("@"):
             member = obj.__class__.get_member(key)
-            if member.unique and not member.translated:
+            if (
+                member.unique
+                and not member.translated
+                and isinstance(member, (schema.String, schema.Integer))
+            ):
                 obj.set(key, value)
 
     obj.insert()
@@ -115,23 +128,63 @@ def create_object_from_ref(cls, ref):
 class ObjectExporter(object):
 
     verbose = False
+    _depth = 0
     language_subset = None
     date_format = "%Y-%m-%d"
     time_format = "%H:%M:%S"
     datetime_format = date_format + " " + time_format
     json_encoder_defaults = {"check_circular": False}
 
-    def __init__(self):
-        self.__member_export_modes = {
-            Item.id: ExportMode.ignore,
-            Item.translations: ExportMode.ignore,
-            Item.last_update_time: ExportMode.ignore,
-            Item.last_translation_update_time: ExportMode.ignore,
-            Item.changes: ExportMode.ignore
-        }
-        self.__model_export_modes = TypeMapping()
+    default_model_export_modes = {
+        File: ExportMode.expand
+    }
+
+    default_model_colors = {
+        Publishable: "slate_blue",
+        File: "pink",
+        Item: "brown",
+        Block: "cyan"
+    }
+
+    default_model_styles = {
+        Item: "normal",
+        Document: "bold"
+    }
+
+    default_member_export_modes = {
+        Item.id: ExportMode.ignore,
+        Item.translations: ExportMode.ignore,
+        Item.last_update_time: ExportMode.ignore,
+        Item.last_translation_update_time: ExportMode.ignore,
+        Item.changes: ExportMode.ignore,
+        Controller.published_items: ExportMode.ignore,
+        Template.documents: ExportMode.ignore,
+        Document.children: ExportMode.expand
+    }
+
+    def __init__(self, verbose = False):
+        self.__member_export_modes = self.default_member_export_modes.copy()
+        self.__model_export_modes = TypeMapping(self.default_model_export_modes)
+        self.__model_colors = TypeMapping(self.default_model_colors)
+        self.__model_styles = TypeMapping(self.default_model_styles)
         self.__exported_data = {}
+        self.verbose = verbose
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
+
+    @contextmanager
+    def _description(self, message, visible = True):
+
+        if self.verbose and message and visible:
+            if self.verbose:
+                print " " * self._depth * 2 + message
+
+            self._depth += 1
+            try:
+                yield None
+            finally:
+                self._depth -= 1
+        else:
+            yield None
 
     def dump(self, dest, **kwargs):
 
@@ -150,20 +203,8 @@ class ObjectExporter(object):
         return json.dumps(self.__exported_data.values(), **options)
 
     def add_all(self, objects):
-
-        if self.verbose:
-            if not isinstance(objects, Sequence):
-                objects = list(objects)
-            bar = ProgressBar(len(objects))
-            bar.update()
-
         for obj in objects:
             self.add(obj)
-            if self.verbose:
-                bar.update(1)
-
-        if self.verbose:
-            bar.finish()
 
     def add(self, obj):
 
@@ -177,11 +218,20 @@ class ObjectExporter(object):
         if obj in self.__exported_data:
             return False
 
-        self.__exported_data[obj] = data = {
-            "@class": get_full_name(node.value.__class__)
-        }
+        with self._description(
+            styled(
+                repr(obj),
+                self.__model_colors[obj.__class__],
+                style = self.__model_styles[obj.__class__]
+            )
+            if self.verbose
+            else None
+        ):
+            self.__exported_data[obj] = data = {
+                "@class": get_full_name(node.value.__class__)
+            }
+            self._export_object_data(node, data)
 
-        self._export_object_data(node, data)
         return True
 
     def _export_object_data(self, node, data):
@@ -241,7 +291,11 @@ class ObjectExporter(object):
             elif isinstance(value, schema.SchemaObject):
                 value = self._get_object_ref(node)
                 if expand_object:
-                    self.add(node)
+                    with self._description(
+                        node.member and node.member.name,
+                        visible = node.member
+                    ):
+                        self.add(node)
             elif isinstance(node.member, schema.Tuple):
                 value = [
                     self._export_value(
@@ -259,7 +313,7 @@ class ObjectExporter(object):
                 ]
             elif (
                 not isinstance(value, basestring)
-                and not isinstance(node.member, schema.Tuple)
+                and not isinstance(value, (Mapping, DictWrapper))
                 and isinstance(
                     value,
                     (
@@ -270,24 +324,46 @@ class ObjectExporter(object):
                     )
                 )
             ):
-                items = []
-                for index, item in enumerate(value):
-                    item_node = ExportNode(
-                        self,
-                        item,
-                        parent = node,
-                        member = node.member.items,
-                        language = node.language,
-                        index = index
-                    )
-                    if item_node.export_mode != ExportMode.ignore:
-                        item_copy = self._export_value(
-                            item_node,
-                            expand_object =
-                                (item_node.export_mode == ExportMode.expand)
+                items = None
+
+                if node.member and node.member.items:
+                    item_nodes = []
+                    has_expansion = False
+
+                    for index, item in enumerate(value):
+                        item_node = ExportNode(
+                            self,
+                            item,
+                            parent = node,
+                            member = node.member.items,
+                            language = node.language,
+                            index = index
                         )
-                        items.append(item_copy)
-                value = items
+                        if item_node.export_mode != ExportMode.ignore:
+                            item_nodes.append(item_node)
+                            if item_node.export_mode == ExportMode.expand:
+                                has_expansion = True
+
+                    if item_nodes:
+                        with self._description(
+                            (
+                                node.member.name
+                                + styled(" (%s)" % len(item_nodes), "dark_gray")
+                            ),
+                            visible = has_expansion
+                        ):
+                            items = [
+                                self._export_value(
+                                    item_node,
+                                    expand_object =
+                                        (item_node.export_mode == ExportMode.expand)
+                                )
+                                for item_node in item_nodes
+                            ]
+                        value = items
+
+                value = list(value) if items is None else items
+
             elif isinstance(value, DictWrapper):
                 items = {}
                 for k, v in value.iteritems():
@@ -398,6 +474,70 @@ class ObjectExporter(object):
 
     def get_model_export_mode(self, model):
         return self.__model_export_modes.get(model)
+
+    def expand(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.expand`.
+        """
+        self._set_mode(args, ExportMode.expand)
+
+    def export(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.export`.
+        """
+        self._set_mode(args, ExportMode.export)
+
+    def ignore(self, *args):
+        """Convenience method to set the export mode for several elements to
+        `ExportMode.ignore`.
+        """
+        self._set_mode(args, ExportMode.ignore)
+
+    def _set_mode(self, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                self.set_model_export_mode(obj, mode)
+            elif isinstance(obj, schema.Member):
+                self.set_member_export_mode(obj, mode)
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
+
+    @classmethod
+    def expand_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.expand`.
+        """
+        cls._set_default_mode(args, ExportMode.expand)
+
+    @classmethod
+    def export_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.export`.
+        """
+        cls._set_default_mode(args, ExportMode.export)
+
+    @classmethod
+    def ignore_by_default(cls, *args):
+        """Convenience method to set the default export mode for several
+        elements to `ExportMode.ignore`.
+        """
+        cls._set_default_mode(args, ExportMode.ignore)
+
+    @classmethod
+    def _set_default_mode(cls, lst, mode):
+        for obj in lst:
+            if isinstance(obj, schema.SchemaClass):
+                cls.default_model_export_modes[obj] = mode
+            elif isinstance(obj, schema.Member):
+                cls.default_member_export_modes[obj] = mode
+            else:
+                raise ValueError(
+                    "Expected a model or a member, got %r instead"
+                    % obj
+                )
 
     def run_cli(self, func):
         parser = self._cli_create_parser()

@@ -4,21 +4,16 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Publishable, Controller
+from woost.models import Publishable, with_default_controller
 
 
+@with_default_controller("text_file")
 class TextFile(Publishable):
 
     instantiable = True
     per_language_publication = False
     default_mime_type = "text/plain"
     default_hidden = True
-
-    default_controller = schema.DynamicDefault(
-        lambda: Controller.get_instance(
-            qname = "woost.extensions.textfile.TextFileController"
-        )
-    )
 
     members_order = ["title", "content"]
 

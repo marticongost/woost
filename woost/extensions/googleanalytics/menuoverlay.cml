@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.extensions.googleanalytics.utils import get_ga_value
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.Menu">
+
+    <?py-class
+    ga_event_action = "click"
+    ?>
+
+    <?py
+    self.ga_event_category = get_ga_value(self.__class__)
+    ?>
+
+    <py:with py:def="label" py:args="item" py:ga_event_source="${item}"/>
+
+</py:overlay>
+

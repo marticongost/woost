@@ -9,6 +9,7 @@ from cocktail.translations import translations
 from cocktail.persistence import PersistentList
 from cocktail.controllers import request_property
 from woost.models import Block, EmailTemplate, Publishable
+from woost.models.objectio import ObjectExporter
 from .fields import FieldSet, Field, OptionsFieldOption
 
 
@@ -89,4 +90,11 @@ class FormBlock(Block):
     @request_property
     def form_model(self):
         return self.field_set.create_form_model()
+
+
+ObjectExporter.expand_by_default(
+    FormBlock.field_set,
+    FormBlock.agreements,
+    FormBlock.email_messages
+)
 

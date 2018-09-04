@@ -1,0 +1,11 @@
+
+[woost.extensions.googleanalytics.readreportspermission.ReadReportsPermission]
+ca: Permís per veure informe de Google Analytics
+es: Permiso para ver informes de Google Analytics
+en: Permission to see Google Analytics reports
+
+    [plural]
+    ca: Permisos per veure informe de Google Analytics
+    es: Permisos para ver informes de Google Analytics
+    en: Permissions to see Google Analytics reports
+

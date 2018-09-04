@@ -16,7 +16,8 @@ class FormAgreement(Item):
         "forms",
         "title",
         "text",
-        "document"
+        "document",
+        "document_title"
     ]
 
     forms = schema.Collection(
@@ -42,5 +43,9 @@ class FormAgreement(Item):
     document = schema.Reference(
         type = Publishable,
         related_end = schema.Collection()
+    )
+
+    document_title = schema.String(
+        translated = True
     )
 

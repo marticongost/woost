@@ -46,11 +46,16 @@ cocktail.bind({
                     image = new Image();
                     loadedImages[src] = image;
                     image.onload = function () {
-                        this.loaded = true;
-                        if (image.showStatus) {
-                            $imageGallery.get(0).setLoading(false);
-                        }
-                        $imageGallery.trigger("imageLoaded", this);
+                        setTimeout(
+                            function () {
+                                image.loaded = true;
+                                if (image.showStatus) {
+                                    $imageGallery.get(0).setLoading(false);
+                                }
+                                $imageGallery.trigger("imageLoaded", image);
+                            },
+                            1
+                        );
                     }
                     image.showStatus = showStatus;
                     image.src = src;
@@ -245,12 +250,6 @@ cocktail.bind({
                     .click(function () {
                         $imageGallery.get(0).showNextImage(entry);
                     });
-
-                    // Only show dialog controls when hovering over the image
-                    $dialog.hover(
-                        function () { $dialogControls.show(); },
-                        function () { $dialogControls.hide(); }
-                    );
             }
 
             return $dialog.get(0);

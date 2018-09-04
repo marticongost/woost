@@ -1,0 +1,11 @@
+
+[woost.extensions.googleanalytics.PageReport]
+
+    [toggle_button]
+    *: GA
+
+    [pageviews_label]
+    ca: Visualitzacions totals de la pàgina:
+    es: Visualizaciones totales de la página:
+    en: Total page views:
+

@@ -215,6 +215,7 @@ class ECommerceExtension(Extension):
 
         translations.load_bundle("woost.extensions.ecommerce.installation")
 
+        config = Configuration.instance
         website = Website.select()[0]
 
         catalog = self._create_document("catalog")
@@ -243,7 +244,9 @@ class ECommerceExtension(Extension):
             child.parent = catalog
             child.insert()
 
-        self._create_controller("product").insert()
+        controller = self._create_controller("product")
+        config.default_ecommerce_product_controller = controller
+        controller.insert()
         self._create_ecommerceorder_completed_trigger().insert()
         self._create_incoming_order_trigger().insert()
         self._create_image_factories()

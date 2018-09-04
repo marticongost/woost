@@ -67,3 +67,10 @@ def create_block_views(blocks, **kwargs):
             if view is not None:
                 yield view
 
+def replace_block(old_block, new_block):
+    for path in list(old_block.find_paths()):
+        container, slot = path[-1]
+        blocks = container.get(slot)
+        index = blocks.index(old_block)
+        blocks[index] = new_block
+

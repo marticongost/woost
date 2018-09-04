@@ -58,10 +58,11 @@ class NewslettersExtension(Extension):
 
     def _install(self):
 
+        config = Configuration.instance
         translations.load_bundle("woost.extensions.newsletters.installation")
 
         # Newsletter controller
-        newsletter_controller = self._create_asset(
+        config.default_newsletter_controller = self._create_asset(
             Controller,
             "newsletter_controller",
             python_name =

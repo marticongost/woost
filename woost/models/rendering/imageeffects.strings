@@ -1,4 +1,14 @@
 
+@init
+def _translate_alignment(instance):
+    valign = instance.get_translated_value("vertical_alignment")
+    halign = instance.get_translated_value("horizontal_alignment")
+    if valign == halign:
+        return valign.lower()
+    else:
+        return u"%s, %s" % (valign, halign)
+@end
+
 [woost.models.rendering.imageeffects]
 
     [ImageEffect]
@@ -11,6 +21,12 @@
         es: Efectos de imagen
         en: Image effects
 
+        [members]
+
+            [condition]
+            ca: Condició
+            es: Condición
+            en: Condition
 
     [horizontal_alignment]
 
@@ -55,6 +71,11 @@
         ca: Efectes de redimensionat
         es: Efectos de redimensionat
         en: Resize effects
+
+        [instance(instance, **kwargs)]
+        ca: Redimensionar a ${instance.width} x ${instance.height}
+        es: Redimensionar a ${instance.width} x ${instance.height}
+        en: ${instance.width} x ${instance.height} thumbnail
 
         [members]
 
@@ -125,6 +146,11 @@
         es: Efectos redimensionar y recortar
         en: Thumbnail and crop effects
 
+        [instance(instance, **kwargs)]
+        ca: Redimensionar i retallar a ${instance.width} x ${instance.height}
+        es: Redimensionar y recortar a ${instance.width} x ${instance.height}
+        en: Fill ${instance.width} x ${instance.height} area
+
         [members]
 
             [width]
@@ -167,6 +193,11 @@
         es: Rotaciones
         en: Rotations
 
+        [instance(instance, **kwargs)]
+        ca: Rotar ${instance.angle} graus
+        es: Rotar ${instance.angle} grados
+        en: Rotate ${instance.angle} degrees
+
         [members]
 
             [angle]
@@ -183,6 +214,11 @@
         ca: Efectes d'intensitat del color
         es: Efectos de intensidad del color
         en: Color intensity effects
+
+        [instance(instance, **kwargs)]
+        ca: Color ${instance.level}
+        es: Color ${instance.level}
+        en: Color ${instance.level}
 
         [members]
 
@@ -201,6 +237,11 @@
         es: Efectos de luminosidad
         en: Brightness effects
 
+        [instance(instance, **kwargs)]
+        ca: Lluminositat ${instance.level}
+        es: Luminosidad ${instance.level}
+        en: Brightness ${instance.level}
+
         [members]
 
             [level]
@@ -218,6 +259,11 @@
         es: Efectos de contraste
         en: Contrast effects
 
+        [instance(instance, **kwargs)]
+        ca: Contrast ${instance.level}
+        es: Contraste ${instance.level}
+        en: Contrast ${instance.level}
+
         [members]
 
             [level]
@@ -234,6 +280,11 @@
         ca: Efectes de definició
         es: Efectos de definición
         en: Sharpness effects
+
+        [instance(instance, **kwargs)]
+        ca: Definició ${instance.level}
+        es: Definición ${instance.level}
+        en: Sharpness ${instance.level}
 
         [members]
 
@@ -315,6 +366,11 @@
         ca: Reduccions d'opacitat
         es: Reducciones de opacidad
         en: Opacity reductions
+
+        [instance(instance, **kwargs)]
+        ca: Opacitat ${instance.level}
+        es: Opacidad ${instance.level}
+        en: Opacity ${instance.level}
 
         [members]
 
@@ -419,6 +475,11 @@
         es: Efectos de volteado
         en: Flip effects
 
+        [instance(instance, **kwargs)]
+        ca: Capgirar ${instance.get_translated_value('axis').lower()}ment
+        es: Voltear ${instance.get_translated_value('axis').lower()}mente
+        en: Flip ${instance.get_translated_value('axis').lower()}ly
+
         [members]
 
             [axis]
@@ -447,6 +508,17 @@
         ca: Alineaments
         es: Alineamientos
         en: Alignments
+
+        [instance(instance, **kwargs)]
+        ca:
+            Alinear ${_translate_alignment(instance)}
+            a una àrea de ${instance.width} x ${instance.height}
+        es:
+            Alinear ${_translate_alignment(instance)}
+            en una area de ${instance.width} x ${instance.height}
+        en:
+            Align ${_translate_alignment(instance)}
+            in ${instance.width} x ${instance.height} area
 
         [members]
 
