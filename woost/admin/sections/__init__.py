@@ -8,6 +8,7 @@ from .section import Section
 from .folder import Folder
 from .crud import CRUD
 from .settings import Settings
+from .rootsection import RootSection
 
 translations.load_bundle("woost.admin.sections.package")
 
