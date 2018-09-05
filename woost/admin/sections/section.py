@@ -24,10 +24,15 @@ class Section(object):
     node = None
     ui_component = None
 
-    def __init__(self, id):
+    def __init__(self, id, **kwargs):
+
         self.__id = id
         self.__parent = None
         self.__children = []
+
+        for key, value in kwargs.iteritems():
+            setattr(self, key, value)
+
         self._fill()
         self.declared()
 
