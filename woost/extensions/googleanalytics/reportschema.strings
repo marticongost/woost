@@ -1,0 +1,43 @@
+
+[woost.extensions.googleanalytics.reportschema.ReportSchema]
+
+    [members]
+
+        [view]
+        ca: Vista
+        es: Vista
+        en: View
+
+        [start_date]
+        ca: Data d'inici
+        es: Fecha de inicio
+        en: Start date
+
+        [end_date]
+        ca: Data de fi
+        es: Fecha de fin
+        en: End date
+
+        [source_publishable]
+        ca: Pàgina d'emissió dels esdeveniments
+        es: Página de emisión de los eventos
+        en: Events emitter page
+
+[woost.extensions.googleanalytics.reportschema.ReportFormSchema]
+
+    [members]
+
+        [source_publishable]
+
+            [none]
+            ca: Incloure esdeveniments de totes les pàgines
+            es: Incluir eventos de todas las páginas
+            en: Include events from all pages
+
+            [values]
+
+                [current_page]
+                ca: Limitar a esdeveniments de la pàgina activa
+                es: Limitar a eventos de la página activa
+                en: Limit to events from the current page
+

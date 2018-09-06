@@ -1493,7 +1493,7 @@ def assign_default_controllers(e):
         from woost.extensions.ecommerce.ecommerceproduct \
             import ECommerceProduct
         model_controllers[ECommerceProduct] = (
-            "product",
+            "ecommerce_product",
             "woost.extensions.ecommerce.productcontroller."
             "ProductController"
         )

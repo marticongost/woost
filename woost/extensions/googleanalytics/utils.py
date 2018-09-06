@@ -66,7 +66,10 @@ def get_ga_value(value, language = None):
     elif isinstance(value, (int, float, Decimal)):
         return str(value)
     elif isinstance(value, type):
-        return escape_ga_string(translations(value, language = language))
+        return escape_ga_string(
+            translations(value, language = language)
+            or value.__name__
+        )
     elif isinstance(value, (set, frozenset, SetWrapper)):
         value = map(get_ga_value, value)
         value.sort()

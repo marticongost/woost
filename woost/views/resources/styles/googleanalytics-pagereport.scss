@@ -1,0 +1,194 @@
+
+$color: #1a7000;
+$target-color: #613473;
+$insert-opacity: 50%;
+
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@import "cocktail://styles/utils";
+
+.ga_page_report {
+    font-family: sans-serif;
+    color: black;
+    position: fixed;
+    z-index: 100000;
+    top: 0;
+    left: 0;
+
+    .toggle_button {
+        border: none;
+        text-transform: none;
+        padding: 5px;
+        background-color: $color;
+        color: white;
+        font-size: 14px;
+
+        &:hover {
+            background-color: darken($color, 8);
+        }
+    }
+
+    .report_form {
+        position: relative;
+        display: none;
+        margin: 0;
+        padding: 15px;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #bbb;
+        border-right: 1px solid #bbb;
+        box-shadow: 0 0 16px rgba(black, 0.6);
+
+        .close_button {
+            @include transparent-button;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+
+            svg {
+                height: 15px;
+                width: auto;
+                fill: #888;
+            }
+
+            &:hover svg {
+                fill: #333;
+            }
+        }
+
+        .field {
+            margin-bottom: 15px;
+
+            .field_label {
+                width: auto;
+                display: block;
+                margin-bottom: 4px;
+
+                .label_title {
+                    font-size: 14px;
+                }
+            }
+
+            .ui-datepicker-trigger {
+                position: relative;
+                left: 5px;
+                top: 3px;
+            }
+        }
+
+        .RadioSelector .radio_entry {
+            font-size: 14px;
+
+            & + .radio_entry {
+                margin-top: 5px;
+            }
+
+            input {
+                margin-left: 0;
+            }
+        }
+
+        .source_publishable_field .field_label {
+            display: none;
+        }
+
+        .loading_sign {
+            display: none;
+            animation: 2s linear spin infinite;
+            transform-origin: center center;
+
+            svg {
+                height: 30px;
+                width: auto;
+                fill: #555;
+            }
+        }
+
+        .results {
+            display: none;
+            margin-top: 10px;
+
+            .pageviews_label,
+            .pageviews_count {
+                font-size: 14px;
+            }
+
+            .pageviews_count {
+                margin-left: 4px;
+            }
+        }
+    }
+
+    &[data-load-state='loading'] .report_form {
+
+        .buttons {
+            display: none;
+        }
+
+        .loading_sign {
+            display: inline-block;
+        }
+    }
+
+    &[data-load-state='loaded'][data-report-scope='page'] .report_form .results {
+        display: block;
+    }
+
+    &[data-report-state='visible'] {
+
+        .toggle_button {
+            display: none;
+        }
+
+        .report_form {
+            display: block;
+        }
+    }
+}
+
+.ga_page_report_insert {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-radius: 2px;
+    padding: 2px;
+    background-color: rgba($color, $insert-opacity);
+    color: white;
+    font-style: italic;
+    font-family: monospace;
+    white-space: nowrap;
+
+    .abs {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .percent {
+        font-size: 12px;
+        margin-left: 4px;
+        opacity: 0.8;
+
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+.SlideShow .slides .ga_page_report_insert:not(.ga_page_report_target_insert) {
+    top: 30px;
+}
+
+.ga_page_report_target_insert {
+    top: auto;
+    bottom: 0;
+    font-weight: normal;
+    background-color: rgba($target-color, $insert-opacity);
+}
+

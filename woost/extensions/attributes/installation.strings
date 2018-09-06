@@ -31,3 +31,8 @@
     es: Usuario
     en: User
 
+    [target.title]
+    ca: Destí
+    es: Destino
+    en: Target
+
