@@ -34,15 +34,15 @@ class DummyPaymentGatewayController(PaymentGatewayController):
         urlopen(str(notification_url))
 
         # Redirect the user after the transaction's over
-        redirection = None
+        dest = None
 
         if self.payment_gateway.payment_status == "accepted":
-            redirection = self.payment_gateway.payment_successful_page
+            dest = self.payment_gateway.get_payment_successful_url(payment)
         elif self.payment_gateway.payment_status == "failed":
-            redirection = self.payment_gateway.payment_failed_page
+            dest = self.payment_gateway.get_payment_failed_url(payment)
 
-        if redirection is None:
-            redirection = app.website.home
+        if dest is None:
+            dest = app.website.home.get_uri(host = "!")
 
-        redirect(redirection.get_uri(host = "!"))
+        redirect(dest)
 

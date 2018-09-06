@@ -13,7 +13,7 @@ from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.controllers import post_redirection
 from woost import app
-from woost.models import Item
+from woost.models import Item, Configuration
 
 
 class PaymentGateway(Item):
@@ -60,6 +60,20 @@ class PaymentGateway(Item):
         required = True,
         default = False
     )
+
+    @property
+    def payment_successful_url(self):
+        if self.payment_successful_page:
+            return self.payment_successful_page.get_uri(host = "!")
+
+    @property
+    def payment_failed_url(self):
+        if self.payment_failed_page:
+            return self.payment_failed_page.get_uri(host = "!")
+
+    @property
+    def payment_hash_secret(self):
+        return Configuration.instance.secret_key
 
     def initiate_payment(self, payment_id):
         """Begin a payment transaction, redirecting the user to the payment

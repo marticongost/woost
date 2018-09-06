@@ -43,17 +43,3 @@ class PayPalPaymentGateway(PaymentGateway, Implementation):
         related_end = schema.Reference()
     )
 
-    def get_payment_successful_url(self, payment):
-        if self.payment_successful_page:
-            return self.payment_successful_page.get_uri(
-                host = "!",
-                parameters = {"payment_id": payment.id}
-            )
-
-    def get_payment_failed_url(self, payment):
-        if self.payment_failed_page:
-            return self.payment_failed_page.get_uri(
-                host = "!",
-                parameters = {"payment_id": payment.id}
-            )
-
