@@ -8,6 +8,7 @@ u"""
 """
 import sys
 import os.path
+import traceback
 from string import ascii_letters
 from sha import sha
 from random import choice
@@ -290,7 +291,10 @@ class CMSController(BaseCMSController):
         return None
 
     def should_enforce_canonical_url(self):
-        return app.publishable is not None
+        return (
+            app.publishable is not None
+            and app.url_resolution.canonical_validation
+        )
 
     def _enforce_canonical_url(self):
         """Redirect the current request to the canonical URL for the selected
@@ -419,6 +423,10 @@ class CMSController(BaseCMSController):
                 response.status = status
 
             if error_page:
+
+                if status == 500:
+                    traceback.print_exc()
+
                 event.handled = True
                 app.original_publishable = app.publishable
                 app.publishable = error_page

@@ -47,7 +47,9 @@ class GoogleAnalyticsExtension(Extension):
             block,
             element,
             eventredirection,
-            customdefinition
+            customdefinition,
+            view,
+            readreportspermission
         )
 
         # Install an overlay to generate events for links pointing to
@@ -55,6 +57,8 @@ class GoogleAnalyticsExtension(Extension):
         from cocktail.html import templates
         templates.get_class("woost.extensions.googleanalytics.BaseViewOverlay")
         templates.get_class("woost.extensions.googleanalytics.LinkOverlay")
+        templates.get_class("woost.extensions.googleanalytics.MenuOverlay")
+        templates.get_class("woost.extensions.googleanalytics.StandardViewOverlay")
         templates.get_class("woost.extensions.googleanalytics.TextBlockViewOverlay")
         templates.get_class("woost.extensions.googleanalytics.LanguageSelectorOverlay")
 
@@ -73,6 +77,11 @@ class GoogleAnalyticsExtension(Extension):
                     html += " "
                 html += self.get_analytics_page_hit_script(publishable)
                 e.output["head_end_html"] = html
+
+        from woost.extensions.googleanalytics.reportcontroller \
+            import ReportController
+
+        CMSController.ga_report = ReportController
 
         self.install()
 
@@ -131,7 +140,15 @@ class GoogleAnalyticsExtension(Extension):
                     "   for cls in publishable.__class__.__mro__\n"
                     "   if cls is not Publishable and issubclass(cls, Publishable)\n"
                     "]"
-            )
+            ),
+            self._create_asset(
+                GoogleAnalyticsCustomDefinition,
+                "default_custom_definitions.target",
+                title = extension_translations,
+                identifier = "woost.target",
+                initialization =
+                    "value = publishable"
+            ),
         ])
 
     inclusion_code = {

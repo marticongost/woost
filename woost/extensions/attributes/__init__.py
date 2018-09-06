@@ -40,6 +40,7 @@ class AttributesExtension(Extension):
 
         templates.get_class("woost.extensions.attributes.BaseViewOverlay")
         templates.get_class("woost.extensions.attributes.LinkOverlay")
+        templates.get_class("woost.extensions.attributes.MenuOverlay")
 
         self.install()
 
@@ -56,6 +57,7 @@ class AttributesExtension(Extension):
             "default_attributes.publishable",
             title = extension_translations,
             attribute_name = "data-woost-publishable",
+            scope = "page",
             code = "value = publishable"
         )
 
@@ -92,5 +94,14 @@ class AttributesExtension(Extension):
             attribute_name = "data-woost-roles",
             scope = "page",
             code = "value = app.user.roles"
+        )
+
+        self._create_asset(
+            Attribute,
+            "default_attributes.target",
+            title = extension_translations,
+            attribute_name = "data-woost-target",
+            scope = "ref",
+            code = "value = publishable"
         )
 

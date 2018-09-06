@@ -218,16 +218,14 @@ class ObjectExporter(object):
         if obj in self.__exported_data:
             return False
 
-        if self.verbose:
-            color = self.__model_colors[obj.__class__]
-            style = self.__model_styles[obj.__class__]
-
         with self._description(
             styled(
                 repr(obj),
-                color,
-                style = style
+                self.__model_colors[obj.__class__],
+                style = self.__model_styles[obj.__class__]
             )
+            if self.verbose
+            else None
         ):
             self.__exported_data[obj] = data = {
                 "@class": get_full_name(node.value.__class__)

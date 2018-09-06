@@ -12,6 +12,10 @@
     background-image: none;
 }
 
+.Dialog .close_dialog_button svg {
+    width: 40px;
+}
+
 .Dialog .dialog_header {
     padding: 1.4em 0;
 }

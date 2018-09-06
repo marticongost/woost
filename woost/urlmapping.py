@@ -205,6 +205,7 @@ class URLResolution(object):
     publishable = None
     website = None
     language = None
+    canonical_validation = True
 
     def __init__(self, path_segments):
         self.__consumed_segments = []
@@ -477,7 +478,20 @@ class Home(URLComponent):
 
 class IdInPath(URLComponent):
 
+    prefix = None
+    model = None
     include_file_extensions = True
+
+    def __init__(
+        self,
+        prefix = None,
+        model = None,
+        include_file_extensions = True
+    ):
+        URLComponent.__init__(self)
+        self.prefix = prefix
+        self.model = model
+        self.include_file_extensions = include_file_extensions
 
     def build_url(
         self,
@@ -485,7 +499,12 @@ class IdInPath(URLComponent):
         publishable = None,
         **kwargs
     ):
-        if publishable:
+        if publishable and (
+            self.model is None or isinstance(publishable, self.model)
+        ):
+            if self.prefix:
+                url_builder.path.append(self.prefix)
+
             string = str(publishable.id)
 
             if self.include_file_extensions:
@@ -500,9 +519,18 @@ class IdInPath(URLComponent):
 
     def resolve(self, url, resolution):
 
-        if resolution.remaining_segments:
-
-            id_string = resolution.remaining_segments[0]
+        if (
+            resolution.remaining_segments
+            and (
+                not self.prefix
+                or (
+                    len(resolution.remaining_segments) >= 2
+                    and resolution.remaining_segments[0] == self.prefix
+                )
+            )
+        ):
+            id_index = 1 if self.prefix else 0
+            id_string = resolution.remaining_segments[id_index]
             if self.include_file_extensions:
                 id_string = strip_extension(id_string)
 
@@ -512,8 +540,13 @@ class IdInPath(URLComponent):
                 pass
             else:
                 publishable = get_publishable(id)
-                if publishable:
+                if publishable and (
+                    self.model is None
+                    or isinstance(publishable, self.model)
+                ):
                     resolution.publishable = publishable
+                    if self.prefix:
+                        resolution.consume_segment()
                     resolution.consume_segment()
                     return MATCH
 

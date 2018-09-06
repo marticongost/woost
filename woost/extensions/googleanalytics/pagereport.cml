@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.extensions.googleanalytics.reportschema import report_form_schema
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://styles/googleanalytics-pagereport.scss.css ?>
+    <?resource woost://scripts/googleanalytics-pagereport.js ?>
+
+    <button py:id="toggle_button" type="button">
+        ${view_translations("toggle_button")}
+    </button>
+
+    <py:cocktail.html.Form
+        py:id="report_form"
+        py:schema="${report_form_schema}"
+        py:value="${report_form_schema.produce_default()}">
+
+        <button
+            py:local_id="close_button"
+            type="button">
+            <?inline-svg woost://images/close.svg ?>
+        </button>
+
+        <div py:local_id="loading_sign" py:after="report_form.buttons">
+            <?inline-svg woost://images/loading.svg ?>
+        </div>
+
+        <div py:local_id="results" py:after="report_form.buttons">
+            <span py:local_id="pageviews_label">
+                ${view_translations("pageviews_label")}
+            </span>
+            <span py:local_id="pageviews_count"/>
+        </div>
+
+    </py:cocktail.html.Form>
+
+</div>
+

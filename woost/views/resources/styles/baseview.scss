@@ -247,3 +247,94 @@
     cursor: pointer;
 }
 
+// Dialogs and image galleries
+.dialog-background {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(black, 0.95);
+    z-index: 10000;
+}
+
+body.modal {
+    overflow: hidden;
+}
+
+.Dialog {
+    position: fixed;
+    z-index: 10001;
+}
+
+.ImageGallery-dialog {
+    $idle-border-color: #333;
+    $idle-color: #666;
+    $hover-color: #aaa;
+
+    .dialog_header {
+        position: fixed;
+        padding: 0 !important;
+        left: 30px;
+        right: 30px;
+        top: 30px;
+
+        .close_dialog_button svg {
+            width: 40px;
+            height: auto;
+
+            .circle {
+                fill: black !important;
+                stroke: $idle-border-color !important;
+            }
+
+            .cross {
+                fill: $idle-color !important;
+            }
+
+            &:hover {
+                .circle {
+                    stroke: $hover-color !important;
+                }
+
+                .cross {
+                    fill: $hover-color !important;
+                }
+            }
+        }
+    }
+
+    .previous_button,
+    .next_button {
+        position: fixed;
+        top: calc(50% - 50px) !important;
+        background-color: black !important;
+        opacity: 1 !important;
+        border: 1px solid $idle-border-color;
+        border-radius: 8px;
+
+        svg {
+            fill: #666;
+        }
+
+        &:hover {
+            border-color: $hover-color;
+            svg {
+                fill: $hover-color;
+            }
+        }
+    }
+
+    .previous_button {
+        left: 30px;
+    }
+
+    .next_button {
+        right: 30px;
+    }
+
+    .image {
+        outline: none !important;
+    }
+}
+
