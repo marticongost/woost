@@ -283,6 +283,15 @@
             return options;
         }
 
+        invalidation(change) {
+            if (change.type == "create") {
+                this.reload();
+            }
+            else {
+                super.invalidation(change);
+            }
+        }
+
         selectionActivated() {
             let listing = this.parentInstance;
             listing.defaultActionList.getAction(listing.defaultAction).invoke({selection: this.selectedValues});
