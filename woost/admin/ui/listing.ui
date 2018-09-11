@@ -58,7 +58,11 @@
         this.relationOwner = node.item;
         this.table.exporter = node.exporter;
         this.table.treeChildrenCollection = node.treeChildrenCollection;
-        this.model = node.adaptedModel;
+
+        if (!this.model || this.model.name != node.adaptedModel.name) {
+            this.model = node.adaptedModel;
+        }
+
         this.filters = node.filters;
 
         if (!previousNode || previousNode.queryString != node.queryString) {
