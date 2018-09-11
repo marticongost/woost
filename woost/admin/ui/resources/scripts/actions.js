@@ -727,7 +727,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.BaseSaveAction {
 
     getState(context) {
-        if (this.objectPath) {
+        if (this.objectPath && this.objectPath[0].member.integral) {
             return "hidden";
         }
         return super.getState(context);
@@ -745,7 +745,7 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
     }
 
     getState(context) {
-        if (!this.objectPath || this.insideBlockEditPanel) {
+        if (!(this.objectPath && this.objectPath[0].member.integral) || this.insideBlockEditPanel) {
             return "hidden";
         }
         return super.getState(context);
