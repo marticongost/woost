@@ -271,7 +271,7 @@ class Import(object):
 
         id = None
 
-        if isinstance(value, int):
+        if isinstance(value, (int, basestring)):
             read_child_data = False
             id = value
         elif isinstance(value, dict):
@@ -279,7 +279,9 @@ class Import(object):
             id = value.get("id") or None
         else:
             raise ValueError(
-                "Invalid data type for %s" % root_model.__name__
+                "Invalid data type for %s; expected int, string or dict, "
+                "got %s instead"
+                % (root_model.__name__, type(value).__name__)
             )
 
         item = id and self.get_instance(id, root_model)
