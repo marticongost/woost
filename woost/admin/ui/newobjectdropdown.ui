@@ -21,6 +21,7 @@
 
     <?on value:changed
     if (newValue) {
+        this.value = null;
         this.action.invoke({
             selectedModel: newValue
         });
