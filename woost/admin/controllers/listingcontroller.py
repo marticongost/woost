@@ -247,7 +247,9 @@ class ListingController(Controller):
 
                 try:
                     owner_id = int(id)
-                except TypeError:
+                except ValueError:
+                    if id.startswith("_"):
+                        return None
                     raise cherrypy.HTTPError(400, "Invalid relation owner")
 
                 owner = Item.get_instance(owner_id)
