@@ -3,10 +3,14 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from woost.models import Controller
-from .crud import CRUD
+from .folder import Folder
+from .controllerslistingsection import ControllersListingSection
+from .defaultcontrollerssection import DefaultControllersSection
 
 
-class ControllersSection(CRUD):
-    model = Controller
+class ControllersSection(Folder):
+
+    def _fill(self):
+        self.append(ControllersListingSection("listing"))
+        self.append(DefaultControllersSection("defaults"))
 
