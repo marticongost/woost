@@ -59,7 +59,7 @@ from .publishable import (
 )
 from .document import Document
 from .defaulttemplate import with_default_template, get_default_templates
-from .defaultcontroller import with_default_controller
+from .defaultcontroller import with_default_controller, get_default_controllers
 from .theme import Theme
 from .template import Template
 from .controller import Controller
