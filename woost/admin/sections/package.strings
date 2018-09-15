@@ -85,6 +85,11 @@
     es: Plantillas por defecto
     en: Default templates
 
+    [defaultcontrollerssection.DefaultControllersSection.instance]
+    ca: Controladors per defecte
+    es: Controladores por defecto
+    en: Default controllers
+
     [themessection.ThemesSection.instance]
     ca: Temes
     es: Temas
