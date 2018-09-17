@@ -534,7 +534,7 @@ def import_remote(
         expr = "req(%d)" % expr
 
     remote_command = (
-        "%s -c 'from %s.scripts.shell import *; print export_json(%s)'"
+        "%s -c 'from %s.scripts.shell import *; print export_json(%s, verbose = False)'"
         % (python_executable, app.package, expr)
     )
     json = check_output(list(ssh_command) + [host, remote_command])
