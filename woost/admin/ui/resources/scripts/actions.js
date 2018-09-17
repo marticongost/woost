@@ -674,8 +674,13 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                         const newNode = cocktail.ui.root.stack.stackTop;
                         newNode.animationType = "fade";
 
+                        let parent = cocktail.navigation.node.parent;
+                        if (parent instanceof woost.admin.nodes.RelationNode) {
+                            parent = parent.parent;
+                        }
+
                         const editURL = (
-                            cocktail.navigation.node.parent.url
+                            parent.url
                             + "/" + newState.id
                             + "?"
                             + form.tabs.queryParameter
@@ -683,6 +688,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                             + form.tabs.selectedTab.tabId
                         );
 
+                        woost.admin.actions.addToParent([newState], null, false);
                         woost.admin.ui.redirectionAfterInsertion = editURL;
                         cocktail.navigation.replace(editURL).then(cleanup);
                     }
@@ -776,7 +782,7 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
     }
 }
 
-woost.admin.actions.addToParent = function (selection, sourceNode = null) {
+woost.admin.actions.addToParent = function (selection, sourceNode = null, redirect = true) {
 
     sourceNode = sourceNode || cocktail.navigation.node;
     let node = sourceNode.parent;
@@ -825,7 +831,9 @@ woost.admin.actions.addToParent = function (selection, sourceNode = null) {
         field.value = root[rootKey];
     });
 
-    woost.admin.actions.up(sourceNode);
+    if (redirect) {
+        woost.admin.actions.up(sourceNode);
+    }
 }
 
 woost.admin.actions.up = function (sourceNode) {
