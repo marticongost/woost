@@ -1,0 +1,44 @@
+
+[woost.models.listing.Listing]
+ca: Llistat
+es: Listado
+en: Listing
+
+    [plural]
+    ca: Llistats
+    es: Listados
+    en: Listings
+
+    [members]
+
+        [subset]
+        ca: Subconjunt
+        es: Subconjunto
+        en: Subset
+
+            [explanation]
+            ca:
+                Permet seleccionar les entrades específiques que haurien
+                d'aparèixer al llistat. Si es deixa en blanc el llistat
+                s'omplirà automàticament seguint els seus criteris
+                de filtrat, ordenació i paginació.
+            es:
+                Permite seleccionar las entradas específicas que deberían
+                aparecer en el listado. Si se deja en blanco el listado
+                se llenará automáticamente siguiendo sus criterios de
+                filtrado, ordenación y paginación.
+            en:
+                Select the specific entries that should be included in the
+                listing. Leave blank to fill the listing automatically,
+                according to its filtering, sorting and pagination rules.
+
+        [page_size]
+        ca: Entrades per pàgina
+        es: Entradas por página
+        en: Entries per page
+
+        [paginated]
+        ca: Mostrar controls de paginació
+        es: Mostrar controles de paginación
+        en: Show pagination controls
+
