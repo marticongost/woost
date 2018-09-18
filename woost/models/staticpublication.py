@@ -66,7 +66,15 @@ def create_links(file, links = None, encoding = None):
             pass
 
         # Create the new link
+        _make_dir(os.path.dirname(link))
         os.symlink(linked_file, link)
+
+def _make_dir(path):
+    if not os.path.exists(path):
+        parent = os.path.dirname(path)
+        if parent and parent != "/":
+            _make_dir(parent)
+        os.mkdir(path)
 
 def remove_links(file, links = None, encoding = None):
 
