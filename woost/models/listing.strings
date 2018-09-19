@@ -9,6 +9,13 @@ en: Listing
     es: Listados
     en: Listings
 
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
     [members]
 
         [subset]
