@@ -30,6 +30,7 @@
     ca: Usuari
     es: Usuario
     en: User
+    fr: Utilisateur
 
     [target.title]
     ca: Destí
