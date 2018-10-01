@@ -87,7 +87,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
             if confirmation_email_template:
                 confirmation_email_template.send({
                     "user": self.user,
-                    "confirmation_url": self.confirmation_url
+                    "confirmation_url": str(self.confirmation_url)
                 })
 
         @request_property

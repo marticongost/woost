@@ -55,6 +55,7 @@ of its features include:\n"
         "simplejson",
         "enum34",
         "libsass",
+        "mako==1.*",
         "cocktail==1.12b1"
     ],
     extras_require = {
