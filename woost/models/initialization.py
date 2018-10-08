@@ -69,6 +69,7 @@ from woost.models import (
     rendering,
     load_extensions
 )
+from woost.admin.initialization import create_admin
 
 translations.load_bundle("woost.models.initialization")
 
@@ -158,8 +159,6 @@ class SiteInitializer(object):
         "default",
         "icon16",
         "icon32",
-        "backoffice_thumbnail",
-        "backoffice_small_thumbnail",
         "edit_blocks_thumbnail",
         "close_up",
         "default_thumbnail",
@@ -319,8 +318,21 @@ class SiteInitializer(object):
         # Default stylesheets
         self.user_stylesheet = self.create_user_stylesheet()
 
+        # Renderers
+        self.content_renderer = self.create_content_renderer()
+        self.icon16_renderer = self.create_icon16_renderer()
+        self.icon32_renderer = self.create_icon32_renderer()
+
+        # Image factories
+        for image_factory_id in self.image_factories:
+            key = image_factory_id + "_image_factory"
+            method_name = "create_%s_image_factory" % image_factory_id
+            method = getattr(self, method_name)
+            image_factory = method()
+            setattr(self, key, image_factory)
+
         # Backoffice
-        self.backoffice = self.create_backoffice()
+        self.backoffice = create_admin()
 
         # Error pages
         self.generic_error_page = self.create_generic_error_page()
@@ -346,19 +358,6 @@ class SiteInitializer(object):
         # User views
         self.page_tree_user_view = self.create_page_tree_user_view()
         self.create_file_gallery_user_view()
-
-        # Renderers
-        self.content_renderer = self.create_content_renderer()
-        self.icon16_renderer = self.create_icon16_renderer()
-        self.icon32_renderer = self.create_icon32_renderer()
-
-        # Image factories
-        for image_factory_id in self.image_factories:
-            key = image_factory_id + "_image_factory"
-            method_name = "create_%s_image_factory" % image_factory_id
-            method = getattr(self, method_name)
-            image_factory = method()
-            setattr(self, key, image_factory)
 
         # Extensions
         self.enable_extensions()
@@ -626,7 +625,6 @@ class SiteInitializer(object):
             "URI",
             "Styles",
             "Feed",
-            "BackOffice",
             "FirstChildRedirection",
             "Login",
             "PasswordChange",
@@ -663,22 +661,6 @@ class SiteInitializer(object):
             Controller.require_instance(
                 qname = "woost.feed_controller"
             )
-        )
-
-        # The backoffice controller is placed at an irregular location
-        self.backoffice_controller.python_name = (
-            "woost.controllers.backoffice.backofficecontroller."
-            "BackOfficeController"
-        )
-
-        # Prevent anonymous access to the backoffice controller
-        self._create(
-            ReadPermission,
-            role = self.anonymous_role,
-            content_type = Publishable,
-            content_expression =
-                """items.add_filter(cls.qname.equal("woost.backoffice"))""",
-            authorized = False
         )
 
     def create_default_page_template(self):
@@ -736,17 +718,6 @@ class SiteInitializer(object):
                     server_side_cache = True
                 )
             ]
-        )
-
-    def create_backoffice(self):
-        return self._create(
-            Document,
-            qname = "woost.backoffice",
-            title = TranslatedValues(),
-            hidden = True,
-            path = "cms",
-            per_language_publication = False,
-            controller = self.backoffice_controller
         )
 
     def create_generic_error_page(self):
@@ -958,48 +929,6 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "icon32",
             renderer = self.icon32_renderer,
-            applicable_to_blocks = False
-        )
-
-    def create_backoffice_thumbnail_image_factory(self):
-        return self._create(
-            rendering.ImageFactory,
-            qname = "woost.backoffice_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "backoffice_thumbnail",
-            effects = [
-                self._create(
-                    rendering.Thumbnail,
-                    width = "100",
-                    height = "100"
-                ),
-                self._create(
-                    rendering.Frame,
-                    edge_width = 1,
-                    edge_color = "ddd",
-                    vertical_padding = "4",
-                    horizontal_padding = "4",
-                    background = "eee"
-                )
-            ],
-            fallback = self.icon32_image_factory,
-            applicable_to_blocks = False
-        )
-
-    def create_backoffice_small_thumbnail_image_factory(self):
-        return self._create(
-            rendering.ImageFactory,
-            qname = "woost.backoffice_small_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "backoffice_small_thumbnail",
-            effects = [
-                self._create(
-                    rendering.Thumbnail,
-                    width = "32",
-                    height = "32"
-                )
-            ],
-            fallback = self.icon16_image_factory,
             applicable_to_blocks = False
         )
 
