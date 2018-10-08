@@ -11,6 +11,7 @@ import sha
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
+from getpass import getpass
 from cocktail.stringutils import random_string
 from cocktail.translations import translations
 from cocktail.iteration import first
@@ -194,7 +195,7 @@ class SiteInitializer(object):
             self.admin_email = raw_input("Administrator email: ") or "admin@localhost"
 
         if self.admin_password is None:
-            self.admin_password = raw_input("Administrator password: ") \
+            self.admin_password = getpass("Administrator password: ") \
                 or random_string(8)
 
         if options.hostname:
@@ -211,12 +212,13 @@ class SiteInitializer(object):
 
         self.initialize()
 
-        print u"Your site has been successfully created. You can start it by " \
-              u"executing the 'run.py' script. An administrator account for the " \
-              u"content manager interface has been generated, with the " \
-              u"following credentials:\n\n" \
-              u"\tEmail:     %s\n" \
-              u"\tPassword:  %s\n\n" % (self.admin_email, self.admin_password)
+        print (
+            u"Your site has been successfully created. You can start it by "
+            u"executing the 'run.py' script. An administrator account for the "
+            u"content manager interface has been generated with email "
+            u"%s and the supplied password."
+            % self.admin_email
+        )
 
     def initialize(self):
         self.reset_database()
