@@ -398,6 +398,7 @@ class SiteInitializer(object):
         return self._create(
             Website,
             site_name = TranslatedValues("website.site_name"),
+            identifier = self.hosts[0].split(".")[0],
             hosts = self.hosts
         )
 
