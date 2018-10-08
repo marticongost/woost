@@ -129,19 +129,19 @@
     ca:
         <p>
             El teu lloc web s'ha creat correctament. Ja pots començar a
-            <a href='/cms'>treballar-hi</a> i substituir aquesta pàgina
+            <a href='/admin'>treballar-hi</a> i substituir aquesta pàgina
             amb els teus propis continguts.
         </p>
     es:
         <p>
             Tu sitio web se ha creado correctamente. Ya puedes empezar
-            a <a href='/cms'>trabajar</a> en él y sustituir esta página
+            a <a href='/admin'>trabajar</a> en él y sustituir esta página
             con tus propios contenidos.
         </p>
     en:
         <p>
             Your web site has been created successfully. You can start
-            <a href='/cms'>working on it</a> and replace this page with
+            <a href='/admin'>working on it</a> and replace this page with
             your own content.
         </p>
 
