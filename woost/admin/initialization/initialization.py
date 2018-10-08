@@ -39,6 +39,7 @@ def create_admin():
 
     return Admin.new(
         path = "admin",
+        qname = "woost.backoffice",
         access_level = AccessLevel.get_instance(
             qname = "woost.editor_access_level"
         ),
