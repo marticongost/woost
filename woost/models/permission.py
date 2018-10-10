@@ -779,9 +779,9 @@ translations.define(
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"el miembro %s",
-                u"los miembros %s"
-            ) % subject,
+                u"el miembro %s" % subject,
+                u"los miembros %s" % subject
+            ),
         lambda count, content_type, **kwargs:
             plural2(count, u"1 miembro", u"%d miembros" % count)
             + u" de " + (translations(content_type)),
@@ -792,9 +792,9 @@ translations.define(
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"the %s member",
-                u"the %s members"
-            ) % subject,
+                u"the %s member" % subject,
+                u"the %s members" % subject
+            ),
         lambda count, content_type, **kwargs:
             plural2(count, u"1 member", u"%d members" % count)
             + u" of " + (translations(content_type)),
