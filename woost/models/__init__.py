@@ -149,6 +149,7 @@ from .blockclone import BlockClone
 from .containerblock import ContainerBlock
 from .blockimagefactoryreference import BlockImageFactoryReference
 from .customblock import CustomBlock
+from .listing import Listing
 from .eventlisting import EventListing
 from .facebooklikebox import FacebookLikeBox
 from .facebooklikebutton import FacebookLikeButton

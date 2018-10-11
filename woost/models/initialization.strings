@@ -260,7 +260,7 @@
     pt: Alterar chave de acesso
 
     [password_change_confirmation_page.body]
-    ca: <p>Introduïx la nova contrasenya pel teu compte d'usuari:</p>
+    ca: <p>Introdueix la nova contrasenya pel teu compte d'usuari:</p>
     es: <p>Introduce tu nueva contraseña para tu cuenta de usuario:</p>
     en: <p>Enter the new password for your user account:</p>
     pt: <p>Digite a nova senha para a sua conta de usuário:</p>
@@ -285,13 +285,13 @@
         [body]
         ca:
             Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
-            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+            <a href="${confirmation_url}">${confirmation_url}</a>
         es:
             Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
-            <a href='\${confirmation_url}'>\${confirmation_url}</a>
+            <a href="${confirmation_url}">${confirmation_url}</a>
         en:
             Open the following link to set your new password:<br/>
-            <a href='\${confirmation_url}'> \${confirmation_url}</a>
+            <a href="${confirmation_url}">${confirmation_url}</a>
 
     [login_page.title]
     ca: Autenticació d'usuari
