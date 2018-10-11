@@ -785,7 +785,11 @@ class SiteInitializer(object):
             blocks = [
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("password_change_page.body")
+                    text = TranslatedValues("password_change_page.body"),
+                    initialization =
+                        'import cherrypy\n'
+                        'if cherrypy.request.method == "POST":\n'
+                        '    view.visible = False'
                 ),
                 self._create(
                     CustomBlock,
@@ -808,7 +812,13 @@ class SiteInitializer(object):
             blocks = [
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("password_change_confirmation_page.body")
+                    text = TranslatedValues(
+                        "password_change_confirmation_page.body"
+                    ),
+                    initialization =
+                        'import cherrypy\n'
+                        'if cherrypy.request.method == "POST":\n'
+                        '    view.visible = False'
                 ),
                 self._create(
                     CustomBlock,
@@ -827,6 +837,7 @@ class SiteInitializer(object):
         return self._create(
             EmailTemplate,
             qname = "woost.password_change_email_template",
+            template_engine = "mako",
             title = TranslatedValues(),
             subject = TranslatedValues(),
             body = TranslatedValues(),

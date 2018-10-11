@@ -285,7 +285,7 @@ class ExportJob(object):
 
     def process_html_url(self, element, attr, url, resource):
 
-        if url.scheme == "javascript":
+        if url.scheme in ("javascript", "mailto"):
             return url
 
         url = self.normalize_href(url, resource)
