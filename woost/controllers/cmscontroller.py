@@ -235,7 +235,10 @@ class CMSController(BaseCMSController):
 
     def mount(self):
 
-        app = cherrypy.Application(self.ApplicationContainer(self))
+        app = cherrypy.Application(
+            self.ApplicationContainer(self),
+            script_name = self.virtual_path
+        )
 
         # Session middleware
         app.wsgiapp.pipeline.append(
