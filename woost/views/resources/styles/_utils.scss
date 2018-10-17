@@ -1,0 +1,16 @@
+
+@mixin view-variant($name, $value) {
+    @if type-of($value) == 'list' {
+        @each $option in $value {
+            body[data-woost-variant-#{$name}='#{$option}'] & {
+                @content;
+            }
+        }
+    }
+    @else {
+        body[data-woost-variant-#{$name}='#{$value}'] & {
+            @content;
+        }
+    }
+}
+

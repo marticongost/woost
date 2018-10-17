@@ -36,11 +36,9 @@
     margin-top: 1em;
 }
 
-.EditPanel .edit_panel_section_content {
-    padding-left: 1em;
-}
-
-.EditPanel .edit_panel_title {
+.EditPanel .edit_panel_title,
+.EditPanel .view_variants_heading {
+    font-size: 1.1em;
     font-weight: bold;
     margin-bottom: 0.2em;
     color: #222;

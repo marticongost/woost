@@ -16,6 +16,7 @@ from woost.models.utils import any_translation
 
     <?py-class
     publishable = None
+    view_variants_schema = None
 
     def get_slots(self):
         return [
@@ -70,10 +71,30 @@ from woost.models.utils import any_translation
     </button>
 
     <div py:id="panel_content">
+
         <py:woost.views.EditLink
             py:id="modify_link"
             py:action="modify"
             py:target="@{self.publishable}"/>
+
+        <section py:id="view_variants_section">
+            <py:binding>
+                <?py
+                if not self.view_variants_schema or not self.view_variants_schema.members():
+                    element.visible = False
+                ?>
+            </py:binding>
+            <h1 py:id="view_variants_heading">
+                ${view_translations("view_variants_heading")}
+            </h1>
+            <py:cocktail.html.Form
+                py:id="view_variants_form"
+                py:schema="@{self.view_variants_schema}"
+                py:value="@{self.view_variants_schema.produce_default()}">
+                <py:with py:element="element.buttons" py:visible="${False}"/>
+            </py:cocktail.html.Form>
+        </section>
+
         <py:ready>
             <py:new
                 py:element="self.create_block_section(slot, blocks_source)"

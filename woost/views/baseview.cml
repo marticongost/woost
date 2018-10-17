@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
+from cocktail import schema
 from cocktail.html import Content
 from woost import app
 from woost.models import Configuration, Publishable, Document
@@ -59,6 +60,11 @@ from woost.models import Configuration, Publishable, Document
 
     def rendering_home_page(self):
         return self.publishable.is_home_page()
+
+    def create_view_variants_schema(self):
+        from cocktail.styled import styled
+        print styled("Yeah", "yellow")
+        return schema.Schema(name = "woost.views.variants")
     ?>
 
     <?resource woost://styles/baseview.scss.css ?>
@@ -224,7 +230,13 @@ from woost.models import Configuration, Publishable, Document
         </py:binding>
     </py:cocktail.html.GridRulers>
 
-    <py:woost.views.EditPanel py:id="cms_edit_panel"/>
+    <py:woost.views.EditPanel py:id="cms_edit_panel">
+        <py:ready>
+            <?py
+            element.view_variants_schema = self.create_view_variants_schema()
+            ?>
+        </py:ready>
+    </py:woost.views.EditPanel>
 
     <div py:id="main_content">
         <py:woost.views.BlockList
