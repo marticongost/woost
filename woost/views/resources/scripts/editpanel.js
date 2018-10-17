@@ -78,6 +78,21 @@ cocktail.bind(".EditPanel", function ($panel) {
                 $panel.get(0).setHighlightedBlock(null);
             }
         );
+
+    function applyVariants() {
+        var fields = $variantsForm.serializeArray();
+        var $body = jQuery(document.body);
+        for (var i = 0; i < fields.length; i++) {
+            var key = "data-woost-variant-" + fields[i].name;
+            var value = fields[i].value;
+            $body.attr(key, value);
+        }
+    }
+
+    var $variantsForm = $panel.find(".view_variants_form");
+    $variantsForm.on("change", function () { applyVariants(); });
+
+    applyVariants();
 });
 
 cocktail.bind(".block", function ($block) {

@@ -5,6 +5,11 @@ from cocktail.translations import translate_locale
 
 [woost.views.BaseView]
 
+    [view_variants_heading]
+    ca: Variants
+    es: Variantes
+    en: Variants
+
     [alternate_language_link(lang)]
     ca: Versió en ${translate_locale(lang)}
     es: Versión en ${translate_locale(lang)}
