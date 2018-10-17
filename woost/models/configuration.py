@@ -300,7 +300,6 @@ class Configuration(Item):
         member_group = "presentation.appearence"
     )
 
-
     renderers = schema.Collection(
         items = schema.Reference(type = Renderer),
         bidirectional = True,
