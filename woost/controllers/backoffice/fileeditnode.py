@@ -57,7 +57,9 @@ class FileEditNode(EditNode):
             FileUpload("upload",
                 async = True,
                 async_uploader = async_uploader,
-                async_upload_url = "/async_upload",
+                async_upload_url = app.url_mapping.get_url(
+                    path = ["async_upload"]
+                ),
                 hash_algorithm = "md5",
                 get_file_destination = lambda upload: self.temp_file_path,
                 member_group = "content",

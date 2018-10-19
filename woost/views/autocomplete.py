@@ -7,6 +7,7 @@ from cocktail.pkgutils import resolve
 from cocktail.translations import require_language
 from cocktail.html.resources import resource_repositories
 from cocktail.html.autocomplete import Autocomplete as BaseAutocomplete
+from woost import app
 
 
 class Autocomplete(BaseAutocomplete):
@@ -38,20 +39,26 @@ class Autocomplete(BaseAutocomplete):
 
         if self.show_types:
             self.add_resource(
-                "/cms_metadata?language=%s&format=javascript"
-                % require_language(),
+                app.url_mapping.get_url(
+                    path = ["cms_metadata"],
+                    parameters = {
+                        "language": require_language(),
+                        "format": "javascript"
+                    }
+                ),
                 mime_type = "text/javascript"
             )
 
     def get_default_ajax_url(self):
-        return (
-            "/autocomplete/%s/QUERY?lang=%s"
-            % (
+        return app.url_mapping.get_url(
+            path = [
+                "autocomplete",
                 self.member.original_member.get_qualified_name(
                     include_ns = True
                 ),
-                require_language()
-            )
+                "QUERY"
+            ],
+            parameterers = {"lang": require_language()}
         )
 
     def create_autocomplete_source(self):
