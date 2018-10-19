@@ -9,6 +9,7 @@ from tempfile import mkdtemp
 from shutil import move, rmtree
 from cocktail import schema
 from cocktail.controllers import Form, FileUpload, request_property
+from woost import app
 from woost.models import File
 from woost.controllers import async_uploader
 
@@ -18,7 +19,6 @@ class UploadForm(Form):
     default_upload_options = {
         "async": True,
         "async_uploader": async_uploader,
-        "async_upload_url": "/async_upload",
         "hash_algorithm": "md5"
     }
 
@@ -53,6 +53,12 @@ class UploadForm(Form):
     def get_upload_options(self):
         options = self.default_upload_options.copy()
         options.update(self.upload_options)
+
+        if "async_upload_url" not in options:
+            options["async_upload_url"] = app.url_mapping.get_url(
+                path = ["async_upload"]
+            )
+
         return options
 
     def get_upload_member_options(self, source_member):

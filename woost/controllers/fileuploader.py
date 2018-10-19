@@ -11,6 +11,7 @@ from cocktail import schema
 from cocktail.controllers import FileUpload, request_property
 from woost.models import File
 from woost.controllers import async_uploader
+from woost import app
 
 
 class FileUploader(object):
@@ -19,8 +20,7 @@ class FileUploader(object):
 
     upload_options = {
         "async": True,
-        "async_uploader": async_uploader,
-        "async_upload_url": "/async_upload"
+        "async_uploader": async_uploader
     }
 
     def __init__(self,
@@ -45,6 +45,11 @@ class FileUploader(object):
         self.upload_options = self.upload_options.copy()
         if upload_options:
             self.upload_options.update(upload_options)
+
+        if "async_upload_url" not in self.upload_options:
+            self.upload_options["async_upload_url"] = app.url_mapping.get_url(
+                path = ["async_upload"]
+            )
 
         self.properties = self.properties.copy()
         if properties:
