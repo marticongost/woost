@@ -1885,3 +1885,14 @@ def remove_role_hidden_content_types(e):
         except AttributeError:
             pass
 
+@migration_step
+def remove_role_default_content_type(e):
+
+    from woost.models import Role
+
+    for role in Role.select():
+        try:
+            del role._default_content_type
+        except AttributeError:
+            pass
+
