@@ -1,8 +1,0 @@
-
-[woost.views.BackOfficeItemSelectorView]
-
-    [title(type)]
-    es: Seleccionar ${translations(type).lower()}
-    ca: Seleccionar ${translations(type).lower()}
-    en: Select ${translations(type).lower()}
-
