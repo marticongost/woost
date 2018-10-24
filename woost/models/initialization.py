@@ -42,7 +42,6 @@ from woost.models import (
     Grid,
     GridSize,
     File,
-    UserView,
     Permission,
     ReadPermission,
     CreatePermission,
@@ -110,7 +109,6 @@ class SiteInitializer(object):
         GridSize,
         Trigger,
         TriggerResponse,
-        UserView,
         Extension
     ]
 
@@ -354,10 +352,6 @@ class SiteInitializer(object):
         # Login page
         self.login_page = self.create_login_page()
         self.configuration.login_page = self.login_page
-
-        # User views
-        self.page_tree_user_view = self.create_page_tree_user_view()
-        self.create_file_gallery_user_view()
 
         # Extensions
         self.enable_extensions()
@@ -849,35 +843,6 @@ class SiteInitializer(object):
             blocks = [
                 self._create(LoginBlock)
             ]
-        )
-
-    def create_page_tree_user_view(self):
-        return self._create(
-            UserView,
-            qname = "woost.page_tree_user_view",
-            title = TranslatedValues(),
-            roles = [self.everybody_role],
-            parameters = {
-                "type": "woost.models.publishable.Publishable",
-                "content_view": "tree",
-                "filter": None,
-                "members": None
-            }
-        )
-
-    def create_file_gallery_user_view(self):
-        return self._create(
-            UserView,
-            qname = "woost.file_gallery_user_view",
-            title = TranslatedValues(),
-            roles = [self.everybody_role],
-            parameters = {
-                "type": "woost.models.file.File",
-                "content_view": "thumbnails",
-                "filter": None,
-                "order": None,
-                "members": None
-            }
         )
 
     def create_content_renderer(self):

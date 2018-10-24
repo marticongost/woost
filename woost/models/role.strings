@@ -21,11 +21,6 @@ en: Role
         es: Usuarios
         en: Users
 
-        [user_views]
-        ca: Vistes d'usuari
-        es: Vistas de usuario
-        en: User views
-
         [permissions]
         ca: Permisos
         es: Permisos

@@ -1896,3 +1896,20 @@ def remove_role_default_content_type(e):
         except AttributeError:
             pass
 
+@migration_step
+def remove_user_views(e):
+
+    from woost.models import Item, Role
+    from woost.models.utils import remove_broken_type
+
+    for role in Role.select():
+        try:
+            del role._user_views
+        except AttributeError:
+            pass
+
+    remove_broken_type(
+        "woost.models.userview.UserView",
+        existing_bases = (Item,)
+    )
+

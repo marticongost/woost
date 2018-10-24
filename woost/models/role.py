@@ -32,7 +32,6 @@ class Role(Item):
         "child_roles",
         "users",
         "permissions",
-        "user_views",
         "access_levels"
     ]
 
@@ -67,11 +66,6 @@ class Role(Item):
         items = "woost.models.Permission",
         bidirectional = True,
         integral = True
-    )
-
-    user_views = schema.Collection(
-        items = "woost.models.UserView",
-        bidirectional = True
     )
 
     implicit = schema.Boolean(
