@@ -41,11 +41,6 @@ en: Role
         es: Roles derivados
         en: Derived roles
 
-        [default_content_type]
-        ca: Tipus per defecte
-        es: Tipo por defecto
-        en: Default content type
-
         [implicit]
         ca: Implícit
         es: Implícito
