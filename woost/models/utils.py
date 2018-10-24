@@ -61,14 +61,6 @@ def remove_broken_type(
         languages = languages
     )
 
-    for role in Role.select():
-        for cls in list(role.hidden_content_types):
-            if (
-                issubclass(cls, Broken)
-                and cls.__module__ + "." + cls.__name__ == full_name
-            ):
-                role.hidden_content_types.remove(cls)
-
     for permission in ContentPermission.select():
         content_type = permission.content_type
         if content_type.__module__ + "." + content_type.__name__ == full_name:
