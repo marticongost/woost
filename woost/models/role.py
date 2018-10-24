@@ -34,7 +34,6 @@ class Role(Item):
         "permissions",
         "user_views",
         "default_content_type",
-        "hidden_content_types",
         "access_levels"
     ]
 
@@ -78,19 +77,6 @@ class Role(Item):
 
     default_content_type = schema.Reference(
         class_family = Item
-    )
-
-    hidden_content_types = schema.Collection(
-        items = schema.Reference(
-            class_family = Item
-        ),
-        edit_inline = True,
-        edit_control = display_factory(
-            "woost.views.ContentTypePicker",
-            selection_mode = MULTIPLE_SELECTION,
-            filter_item = lambda content_type:
-                content_type.visible and content_type.visible_from_root
-        )
     )
 
     implicit = schema.Boolean(

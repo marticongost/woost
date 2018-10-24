@@ -501,13 +501,7 @@ class SiteInitializer(object):
         role = self._create(
             Role,
             qname = "woost.editors",
-            title = TranslatedValues(),
-            hidden_content_types = [
-                Template,
-                Controller,
-                Style,
-                EmailTemplate
-            ]
+            title = TranslatedValues()
         )
 
         # Restrict readable types

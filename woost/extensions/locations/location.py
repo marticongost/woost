@@ -11,7 +11,6 @@ from cocktail.translations.localetranslations \
 from cocktail import schema
 from woost.models import Item
 from woost.models.objectio import get_object_ref, resolve_object_ref
-from woost.controllers.backoffice.contentviews import global_content_views
 
 
 class Location(Item):
@@ -248,16 +247,6 @@ class Location(Item):
                 descendants.extend(location.list_level(depth - 1))
             return descendants
 
-
-global_content_views.add(
-    Location,
-    "woost.views.TreeContentView",
-    is_default = True,
-    inherited = False,
-    params = {
-        "children_collection": Location.locations
-    }
-)
 
 @get_object_ref.implementation_for(Location)
 def get_location_ref(location):

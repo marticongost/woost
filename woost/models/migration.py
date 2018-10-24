@@ -4,7 +4,7 @@ u"""Defines migrations to the database schema for woost.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.events import when
-from cocktail.persistence import MigrationStep
+from cocktail.persistence import MigrationStep, migration_step
 from cocktail.persistence.migration import migration_steps
 from cocktail.persistence.utils import remove_broken_type, is_broken
 from warnings import warn
@@ -1871,4 +1871,17 @@ def assign_default_controllers(e):
             config.set(key, controller)
             for item in list(controller.published_items):
                 item.controller = None
+
+#------------------------------------------------------------------------------
+
+@migration_step
+def remove_role_hidden_content_types(e):
+
+    from woost.models import Role
+
+    for role in Role.select():
+        try:
+            del role._hidden_content_types
+        except AttributeError:
+            pass
 
