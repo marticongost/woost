@@ -61,7 +61,7 @@ def remove_broken_type(
         languages = languages
     )
 
-    for permission in ContentPermission.select():
+    for permission in list(ContentPermission.select()):
         content_type = permission.content_type
         if content_type.__module__ + "." + content_type.__name__ == full_name:
             del permission._content_type
