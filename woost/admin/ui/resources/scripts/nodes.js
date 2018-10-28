@@ -205,6 +205,15 @@ woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
         }
         return map;
     }
+
+    activate() {
+        for (let k in this.children) {
+            let uri = URI(location.href).query("");
+            uri = uri.segment([...uri.segment(), k]);
+            cocktail.navigation.replace(uri.normalizePath().toString());
+            break;
+        }
+    }
 }
 
 woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
