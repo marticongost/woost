@@ -10,6 +10,7 @@ $submenu-heading-color: #555;
 $submenu-heading-font-size: 1.5em;
 $submenu-icon-color: desaturate(lighten($hl-foreground, 18), 40);
 $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
+$submenu-transition: 0.4s ease;
 
 * {
     box-sizing: border-box;
@@ -37,6 +38,25 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
     flex: 1 1 auto;
     flex-direction: column;
     position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(#333, 0.5);
+        z-index: 999;
+        transition: opacity $submenu-transition;
+        opacity: 0;
+        pointer-events: none;
+
+        :host([menuExpanded='true']) & {
+            opacity: 1;
+            pointer-events: all;
+        }
+    }
 }
 
 #stack {
@@ -145,14 +165,14 @@ $submenu-selected-background-color: desaturate(darken($hl-background, 5), 50);
             background-color: $submenu-background-color;
             padding: $vpadding 0;
             box-shadow: 0.8em 0 2em -0.5em rgba(#555, 0.2);
-            transition: all ease 0.5s;
+            transition: all $submenu-transition;
 
             .MenuEntry {
                 flex-direction: row;
                 align-items: center;
                 width: $submenu-width;
                 opacity: 1;
-                transition: opacity ease 0.3s;
+                transition: opacity $submenu-transition;
 
                 .entryDescription {
                     padding: 0.4em $hpadding;
