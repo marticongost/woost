@@ -68,6 +68,12 @@
         ?>
     </ui:property>
 
+    <ui:property
+        name="menuExpanded"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
     <?class
     static main(container) {
 
@@ -179,7 +185,13 @@
             name="menuExpanded"
             type="boolean"
             reflected="true"
-            default="false"/>
+            default="false">
+            <?on changed
+            if (this.parentInstance) {
+                this.parentInstance.menuExpanded = newValue;
+            }
+            ?>
+        </ui:property>
 
         <ui:symbol name="ACTIVATE"/>
 
