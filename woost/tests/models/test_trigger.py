@@ -38,9 +38,9 @@ class TriggerMatchTestCase(BaseTestCase):
         r2 = Role()
         r3 = Role(base_roles = [r2])
 
-        u1 = User(roles = [r1])
-        u2 = User(roles = [r2])
-        u3 = User(roles = [r3])
+        u1 = User(role = r1)
+        u2 = User(role = r2)
+        u3 = User(role = r3)
 
         self.assert_match(
             ContentTrigger(matching_roles = [r2]),

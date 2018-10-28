@@ -55,10 +55,10 @@ en: User
         es: Contingut creado por el usuario
         en: Content created by the user
 
-        [roles]
-        ca: Rols
-        es: Roles
-        en: Roles
+        [role]
+        ca: Rol
+        es: Rol
+        en: Role
 
         [enabled]
         ca: Activat

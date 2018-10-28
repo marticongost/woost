@@ -287,7 +287,7 @@ class SiteInitializer(object):
         self.anonymous_user = self.create_anonymous_user()
 
         self.administrator_role = self.create_administrator_role()
-        self.administrator.roles.append(self.administrator_role)
+        self.administrator.role = self.administrator_role
 
         self.everybody_role = self.create_everybody_role()
         self.authenticated_role = self.create_authenticated_role()
@@ -410,7 +410,7 @@ class SiteInitializer(object):
             User,
             qname = "woost.anonymous_user",
             email = "anonymous@localhost",
-            roles = [self.anonymous_role],
+            role = self.anonymous_role,
             anonymous = True
         )
 
