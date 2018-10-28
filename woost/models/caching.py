@@ -90,8 +90,8 @@ class CachingPolicy(Item):
         cache_key = (
             str(url.get_url()),
             None
-            if user is None or user.anonymous
-            else tuple(role.id for role in user.roles)
+            if user is None or user.role is None
+            else user.role.id
         )
         key_qualifier = None
         expression = self.cache_key_expression

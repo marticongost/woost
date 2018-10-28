@@ -1913,3 +1913,23 @@ def remove_user_views(e):
         existing_bases = (Item,)
     )
 
+@migration_step
+def convert_user_roles_collection_to_single_reference(e):
+
+    from woost.models import User
+
+    for user in User.select():
+        try:
+            roles = user._roles
+        except AttributeError:
+            continue
+        else:
+            del user._roles
+            if roles:
+                assert len(roles) == 1, \
+                    "Users should have a single role; %r has %r" \
+                    % (user, roles)
+                user._role = roles[0]
+            else:
+                user._role = None
+

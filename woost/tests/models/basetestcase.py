@@ -42,7 +42,7 @@ class BaseTestCase(TempStorageMixin, TestCase):
         self.anonymous_role.insert()
 
         self.anonymous_user = User(qname = "woost.anonymous_user")
-        self.anonymous_user.roles.append(self.anonymous_role)
+        self.anonymous_user.role = self.anonymous_role
         self.anonymous_user.insert()
 
         self.everybody_role = Role(qname = "woost.everybody")

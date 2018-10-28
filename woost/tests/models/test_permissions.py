@@ -37,7 +37,7 @@ class PermissionTestCase(BaseTestCase):
 
         R = lambda **kwargs: Role(permissions = [ReadPermission()], **kwargs)
         r1 = R()
-        r2 = R()
+        r2 = R(base_roles = [r1])
         r3 = R()
         r4 = R(base_roles = [r3])
         r5 = R(base_roles = [r2, r4])
@@ -46,14 +46,14 @@ class PermissionTestCase(BaseTestCase):
         self.authenticated_role.permissions.append(ReadPermission())
 
         user = User()
-        user.roles = [r1, r5]
+        user.role = r5
 
         print list(user.iter_permissions())
 
         assert list(user.iter_permissions()) == [
-            r1.permissions[0],
             r5.permissions[0],
             r2.permissions[0],
+            r1.permissions[0],
             r4.permissions[0],
             r3.permissions[0],
             self.authenticated_role.permissions[0],
@@ -87,7 +87,7 @@ class PermissionTestCase(BaseTestCase):
             DeletePermission
         ]:
             role = Role()
-            user = User(roles = [role])
+            user = User(role = role)
 
             # Permission denied (no permissions defined)
             self.assert_not_authorized(user, permission_type, target = doc)
@@ -142,7 +142,7 @@ class PermissionTestCase(BaseTestCase):
         for permission_type in [ReadMemberPermission, ModifyMemberPermission]:
 
             role = Role()
-            user = User(roles = [role])
+            user = User(role = role)
 
             # No permissions by default
             self.assert_not_authorized(user, permission_type, member = m1)
@@ -208,7 +208,7 @@ class PermissionTestCase(BaseTestCase):
             DeleteTranslationPermission
         ]:
             role = Role()
-            user = User(roles = [role])
+            user = User(role = role)
 
             # No permissions by default
             self.assert_not_authorized(user, permission_type, language = l1)
