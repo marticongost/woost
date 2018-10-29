@@ -682,6 +682,29 @@ woost.admin.nodes.FileEditNode = class FileEditNode extends woost.admin.nodes.Ed
     }
 }
 
+woost.admin.nodes.UserEditNode = class FileEditNode extends woost.admin.nodes.EditNode {
+
+    createEditSchema() {
+
+        const schema = super.createEditSchema();
+
+        schema.membersOrder.splice(
+            schema.membersOrder.indexOf("password"),
+            0,
+            "_change_password"
+        );
+
+        schema.addMember(
+            new cocktail.schema.Boolean({
+                name: "_change_password",
+                [cocktail.ui.group]: "user_data"
+            })
+        );
+
+        return schema;
+    }
+}
+
 woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woost.admin.nodes.Listing(woost.admin.nodes.StackNode) {
 
     constructor(parent = null) {

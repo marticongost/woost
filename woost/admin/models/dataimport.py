@@ -15,6 +15,7 @@ from cocktail.persistence import datastore
 from woost import app
 from woost.models import (
     Item,
+    User,
     Slot,
     ReadPermission,
     CreatePermission,
@@ -61,6 +62,17 @@ def should_import_item_member(self, imp, data, member):
             )
         )
     )
+
+@should_import_member.implementation_for(User)
+def should_import_user_member(self, imp, data, member):
+
+    if not should_import_item_member(self, imp, data, member):
+        return False
+
+    if member is User.password and not data.get("_change_password"):
+        return False
+
+    return True
 
 @import_object.implementation_for(File)
 def import_file(self, imp, data):

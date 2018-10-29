@@ -6,12 +6,23 @@
     es: Creando MODEL
     en: Creating MODEL
 
-[woost.models.File.woost.admin.editSchema]
+[woost.models]
 
-    [members]
+    [File.woost.admin.editSchema]
 
-        [_upload]
-        ca: Fitxer
-        es: Fichero
-        en: File
+        [members]
+
+            [_upload]
+            ca: Fitxer
+            es: Fichero
+            en: File
+
+    [User.woost.admin.editSchema]
+
+        [members]
+
+            [_change_password]
+            ca: Canviar la contrasenya
+            es: Cambiar la contraseña
+            en: Change password
 

@@ -24,5 +24,6 @@ woost.models.File[woost.admin.ui.describeType] = function (obj) {
 
 woost.models.File[woost.admin.nodes.itemNodeClass] = woost.admin.nodes.FileEditNode;
 
+woost.models.User[woost.admin.nodes.itemNodeClass] = woost.admin.nodes.UserEditNode;
 woost.models.Website[woost.admin.nodes.itemNodeClass] = woost.admin.nodes.WebsiteEditNode;
 
