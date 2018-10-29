@@ -11,6 +11,7 @@ from cocktail.translations import (
 from cocktail.events import event_handler
 from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
+from cocktail.persistence import PersistentObject
 from woost import app
 from woost.models import Configuration
 from woost.controllers.publishablecontroller import PublishableController
@@ -46,6 +47,11 @@ class AdminController(PublishableController):
             for section in root_section.descend_tree()
             if section.ui_component
         )
+
+        # Collect UI component dependencies for models
+        for model in PersistentObject.schema_tree():
+            if model.admin_edit_view:
+                dependencies.add(components.get(model.admin_edit_view))
 
         return components.get("woost.admin.ui.Layout").render_page(
             title = translations("woost.admin.ui.Layout.heading"),

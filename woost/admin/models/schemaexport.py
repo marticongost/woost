@@ -60,6 +60,7 @@ schema.Member.ui_column_width = None
 
 schema.SchemaObject.admin_show_descriptions = False
 schema.SchemaObject.admin_show_thumbnails = False
+schema.SchemaObject.admin_edit_view = None
 
 def exports_member(member_type):
     def decorator(cls):
@@ -387,6 +388,9 @@ class SchemaExport(MemberExport):
 
         if member.admin_show_thumbnails:
             yield (u"[woost.admin.ui.showThumbnails]", "true")
+
+        if member.admin_edit_view:
+            yield (u"[woost.admin.ui.editView]", u"() => %s" % member.admin_edit_view)
 
         if issubclass(member, Block):
             yield (u"views", dumps(member.views))
