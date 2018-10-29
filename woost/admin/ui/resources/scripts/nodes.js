@@ -608,7 +608,8 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
         }
 
         get component() {
-            return this.model[woost.admin.ui.editView] || woost.admin.ui.EditView;
+            const component = this.model[woost.admin.ui.editView] || woost.admin.ui.EditView;
+            return component.create ? component : component();
         }
 
         get editForm() {
