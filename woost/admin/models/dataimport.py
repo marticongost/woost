@@ -31,10 +31,36 @@ import_object = GenericMethod(
     name = "woost.admin.models.dataimport.import_object"
 )
 
+should_import_member = GenericMethod(
+    name = "woost.admin.models.dataimport.should_import_member"
+)
+
 @import_object.implementation_for(Item)
 def import_item(self, imp, data):
     imp.import_members(self, data)
     imp.delete_translations(self, data.get("_deleted_translations"))
+
+@should_import_member.implementation_for(Item)
+def should_import_item_member(self, imp, data, member):
+    return (
+        member.visible
+        and (
+            member.editable == schema.EDITABLE
+            or (
+                imp.import_primary_keys
+                and member.primary
+                and not obj.is_inserted
+            )
+            or isinstance(member, Slot)
+        )
+        and (
+            imp.user is None
+            or imp.user.has_permission(
+                ModifyMemberPermission,
+                member = member
+            )
+        )
+    )
 
 @import_object.implementation_for(File)
 def import_file(self, imp, data):
@@ -168,7 +194,7 @@ class Import(object):
 
     def import_members(self, obj, data):
         for member in obj.__class__.iter_members():
-            if self.should_import_member(obj, member):
+            if self.should_import_member(obj, data, member):
                 try:
                     value = data[member.name]
                 except KeyError:
@@ -320,25 +346,8 @@ class Import(object):
 
         return item
 
-    def should_import_member(self, obj, member):
-        return (
-            (
-                member.editable == schema.EDITABLE
-                or (
-                    self.import_primary_keys
-                    and member.primary
-                    and not obj.is_inserted
-                )
-                or isinstance(member, Slot)
-            )
-            and (
-                self.user is None
-                or self.user.has_permission(
-                    ModifyMemberPermission,
-                    member = member
-                )
-            )
-        )
+    def should_import_member(self, obj, data, member):
+        return should_import_member(obj, self, data, member)
 
     def delete_translations(self, obj, deleted_translations):
         if deleted_translations:
