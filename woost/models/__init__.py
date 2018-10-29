@@ -35,7 +35,7 @@ from .slot import Slot
 from .localemember import LocaleMember
 from .configuration import Configuration
 from .website import Website
-from .settings import add_setting
+from .settings import get_setting, add_setting
 from .websitesession import (
     get_current_website,
     set_current_website

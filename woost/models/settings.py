@@ -17,6 +17,9 @@ from .caching import CachingPolicy
 
 translations.load_bundle("woost.models.settings")
 
+def get_setting(key):
+    return Configuration.instance.get_setting(key)
+
 def add_setting(
     member,
     scopes = (Configuration, Website),
