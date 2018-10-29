@@ -99,6 +99,7 @@ class User(Item):
             "cocktail.html.PasswordBox",
             autocomplete = "off"
         ),
+        ui_form_control = "cocktail.ui.PasswordInput",
         apply_imported_value = _apply_imported_password,
         member_group = "user_data"
     )
