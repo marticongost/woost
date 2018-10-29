@@ -41,6 +41,7 @@ from .websitesession import (
     set_current_website
 )
 from .changesets import ChangeSet, Change, changeset_context
+from .extension import extensions_manager
 from .item import Item
 from .grid import Grid, GridSize
 from .style import Style
@@ -101,11 +102,6 @@ from .news import News
 from .event import Event
 from .uri import URI
 from .file import File
-from .extension import (
-    Extension,
-    extension_translations,
-    load_extensions
-)
 from .trigger import (
     Trigger,
     ContentTrigger,

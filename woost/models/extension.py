@@ -1,173 +1,84 @@
 #-*- coding: utf-8 -*-
 u"""
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			December 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from pkg_resources import iter_entry_points
+import pkgutil
+import importlib
 from threading import RLock
-from ZODB.POSException import ConflictError
-from cocktail.iteration import first
-from cocktail.modeling import classgetter
-from cocktail.events import Event, event_handler
-from cocktail.pkgutils import resolve
-from cocktail.translations import translations
-from cocktail import schema
-from cocktail.persistence import datastore, transaction
-from .item import Item
-from .configuration import Configuration
-
-extension_translations = object()
-_loaded_extensions = set()
-_extensions_lock = RLock()
-
-def load_extensions():
-    """Load all available extensions.
-
-    This is tipically called during application start up, and follows this
-    sequence:
-
-        * New available extensions are installed
-        * Previously installed exceptions that are no longer available are
-          uninstalled
-        * All installed and enabled extensions are initialized
-    """
-    with _extensions_lock:
-
-        for entry_point in iter_entry_points("woost.extensions"):
-
-            extension_type = entry_point.load()
-            extension = extension_type.instance
-
-            # Create an instance of each new extension
-            if extension is None:
-                def create_extension_instance():
-                    extension = extension_type()
-                    extension.insert()
-
-                transaction(
-                    create_extension_instance,
-                    max_attempts = 5,
-                    desist = lambda: extension_type.instance is not None
-                )
-
-            # Load enabled extensions
-            elif extension.enabled:
-                extension.load()
+from cocktail.events import Event
+from woost import extensions as ext_root
 
 
-class ExtensionMetaclass(Item.__metaclass__):
+class ExtensionsManager(object):
 
-    def __new__(meta, name, bases, members):
-        cls = Item.__metaclass__.__new__(meta, name, bases, members)
-        cls.instantiable = False
-        return cls
+    extension_loaded = Event()
 
+    def __init__(self):
+        self.__extensions_lock = RLock()
+        self.__loaded_extensions = set()
 
-class Extension(Item):
-    """Base model for Woost extensions."""
+    def iter_extensions(self):
+        """Find all available extensions.
 
-    __metaclass__ = ExtensionMetaclass
+        Woost extensions are implemented as subpackages of the woost.extensions
+        namespace package.
 
-    instantiable = False
-    admin_show_descriptions = False
-    type_group = "setup"
-    collapsed_backoffice_menu = True
-    backoffice_listing_includes_element_column = True
-    edit_node_class = "woost.controllers.backoffice.extensioneditnode." \
-                      "ExtensionEditNode"
-
-    installed = False
-
-    @property
-    def loaded(self):
-        return self.__class__ in _loaded_extensions
-
-    member_order = (
-        "extension_author",
-        "license",
-        "web_page",
-        "description",
-        "enabled"
-    )
-
-    extension_author = schema.String(
-        editable = schema.READ_ONLY,
-        listed_by_default = False
-    )
-
-    license = schema.String(
-        editable = schema.READ_ONLY,
-        listed_by_default = False
-    )
-
-    web_page = schema.String(
-        editable = schema.READ_ONLY
-    )
-
-    description = schema.String(
-        editable = schema.READ_ONLY,
-        translated = True
-    )
-
-    enabled = schema.Boolean(
-        required = True,
-        default = False
-    )
-
-    loading = Event("""An event triggered during application start up.""")
-
-    installing = Event(
-        """An event triggered when an extension creates its assets, the first
-        time it is loaded.
+        :return: An iterable sequence of packages.
         """
-    )
+        for finder, name, ispkg in pkgutil.iter_modules(
+            ext_root.__path__,
+            ext_root.__name__ + "."
+        ):
+            yield importlib.import_module(name)
 
-    @classgetter
-    def instance(cls):
-        return first(cls.select())
+    def load_extensions(self):
+        """Load all available extensions.
 
-    def load(self):
-        with _extensions_lock:
-            if self.__class__ not in _loaded_extensions:
-                _loaded_extensions.add(self.__class__)
-                self._load()
-                self.loading()
+        This is tipically called during application start up, and follows this
+        sequence:
 
-    def _load(self):
-        pass
-
-    def install(self):
-        if not self.installed:
-            def install_extension():
-                self._install()
-                self.installing()
-                self.installed = True
-
-            transaction(install_extension, desist = lambda: self.installed)
-
-    def _install(self):
-        pass
-
-    def _create_asset(self, cls, id, **values):
-        """Convenience method for creating content when installing an
-        extension.
+            * Extensions are discovered by invoking `iter_extensions()`
+            * Each extension is initialized, in order, by passing it to
+              the `load_extension()` function
         """
-        asset = cls()
-        asset.qname = qname = self.full_name.rsplit(".", 1)[0] + "." + id
+        for extension in self.iter_extensions():
+            self.load_extension(extension)
 
-        if values:
-            for key, value in values.iteritems():
-                if value is extension_translations:
-                    for language in Configuration.instance.languages:
-                        value = translations(qname + "." + key, language)
-                        if value:
-                            asset.set(key, value, language)
-                else:
-                    asset.set(key, value)
+    def load_extension(self, extension):
+        """Initializes the given extension.
 
-        asset.insert()
-        return asset
+        If the extension package defines a 'load()' function at its root, it will
+        be called.
+
+        It is safe to call this function on the same extension multiple times;
+        subsequent calls will become a no-op.
+
+        :param extension: An extension package.
+
+        :return: True if the extension had not been loaded yet and has been
+            initialized; False otherwise.
+        """
+        if extension in self.__loaded_extensions:
+            return False
+
+        with self.__extensions_lock:
+
+            if extension in self.__loaded_extensions:
+                return False
+
+            load_ext = getattr(extension, "load", None)
+            if load_ext:
+                load_ext()
+
+            self.extension_loaded(extension = extension)
+            self.__loaded_extensions.add(extension)
+
+        return True
+
+
+extensions_manager = ExtensionsManager()
+
+# Required for backwards compatibility
+load_extensions = extensions_manager.load_extensions
 
