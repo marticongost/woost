@@ -1,0 +1,8 @@
+
+[woost.extensions.textfile]
+
+    [controller.title]
+    ca: Controlador de fitxer de text
+    es: Controlador de fichero de texto
+    en: Text file controller
+

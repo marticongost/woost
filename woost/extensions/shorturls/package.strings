@@ -1,0 +1,11 @@
+
+[woost.extensions.shorturls.ShortURLsExtension]
+ca: URLs curtes
+es: URLs cortas
+en: Short URLs
+
+    [plural]
+    ca: URLs curtes
+    es: URLs cortas
+    en: Short URLs
+

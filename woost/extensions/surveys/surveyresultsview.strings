@@ -1,0 +1,37 @@
+
+[woost.extensions.surveys.SurveyResultsView]
+
+    [answers_heading]
+    ca: Respostes
+    es: Respuestas
+    en: Answers
+
+    [submission_count(count)]
+    @switch count > 0
+
+        [with_answers]
+        @case True
+        ca:
+            L'enquesta ha estat emplenada per
+            <strong>${count}</strong> ${plural2(count, u"usuari", u"usuaris")}.
+        es:
+            La encuesta ha sido contestada por
+            <strong>${count}</strong> ${plural2(count, u"usuario", u"usuarios")}.
+        en:
+            The survey has been answered by
+            <strong>${count}</strong> ${plural2(count, u"user", u"users")}.
+
+        [no_answers_yet]
+        @case False
+        ca:
+            L'enquesta encara no ha estat emplenada per cap usuari.
+        es:
+            La encuesta todavía no sido contestada por ningún usuario.
+        en:
+            The survey hasn't been answered by anybody yet.
+
+    [download_excel_link]
+    ca: Descarregar totes les respostes
+    es: Descargar todas las respuestas
+    en: Download all answers
+

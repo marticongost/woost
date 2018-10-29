@@ -1,0 +1,30 @@
+
+[woost.extensions.vimeo.vimeovideo.VimeoVideo]
+ca: Vídeo de Vimeo
+es: Video de Vimeo
+en: Vimeo video
+
+    [plural]
+    ca: Vídeos de Vimeo
+    es: Videos de Vimeo
+    en: Vimeo videos
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [video_id]
+        ca: Identificador del vídeo
+        es: Identificador del video
+        en: Video ID
+

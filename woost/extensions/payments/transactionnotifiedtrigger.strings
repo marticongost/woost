@@ -1,0 +1,11 @@
+
+[woost.extensions.payments.transactionnotifiedtrigger.TransactionNotifiedTrigger]
+ca: Disparador de notificació de pagament
+es: Disparador de notificación de pago
+en: Payment notification trigger
+
+    [plural]
+    ca: Disparadors de notificació de pagament
+    es: Disparadores de notificación de pago
+    en: Payment notification triggers
+

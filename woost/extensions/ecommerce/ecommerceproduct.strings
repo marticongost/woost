@@ -1,0 +1,76 @@
+
+[woost.extensions.ecommerce.ecommerceproduct.ECommerceProduct]
+ca: Producte
+es: Producto
+en: Product
+fr: Produit
+
+    [plural]
+    ca: Productes
+    es: Productos
+    en: Products
+    fr: Produits
+
+    [backoffice.menu_label]
+    ca: Tots els productes
+    es: Todos los productos
+    en: All products
+    fr: Tous les produits
+
+    [groups]
+
+        [product_data]
+        ca: Dades del producte
+        es: Datos del producto
+        en: Product data
+        fr: Détails sur le produit
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+        fr: Titre
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+        fr: Image
+
+        [description]
+        ca: Descripció
+        es: Descripción
+        en: Description
+        fr: Description
+
+        [price]
+        ca: Preu
+        es: Precio
+        en: Price
+        fr: Prix
+
+        [weight]
+        ca: Pes
+        es: Peso
+        en: Weight
+        fr: Poids
+
+        [purchase_model]
+        ca: Model de compra
+        es: Modelo de compra
+        en: Purchase model
+        fr: Achat modèle
+
+        [purchases]
+        ca: Compres
+        es: Compras
+        en: Purchases
+        fr: Achats
+
+        [blocks]
+        ca: Cos
+        es: Cuerpo
+        en: Body
+

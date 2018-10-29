@@ -1,0 +1,32 @@
+@init
+from cocktail.stringutils import decapitalize
+@end
+
+[woost.extensions.translationworkflow]
+
+    [transitions_notice(new_state, count)]
+    ca:
+        ${plural2(count, u"Una petició passada", u"%d peticions passades")}
+        a l'estat <em>${decapitalize(translations(new_state))}</em>.
+    es:
+        ${plural2(count, u"Una petición pasada", u"%d peticiones pasadas")}
+        al estado <em>${decapitalize(translations(new_state))}</em>.
+    en:
+        ${plural2(count, u"One request", u"%d requests")}
+        transitioned to the <em>${decapitalize(translations(new_state))}</em> state.
+
+    [silence_notice(count)]
+    @switch count > 0
+
+        [multiple]
+        @case True
+        ca: S'han ignorat ${count} canvis a peticions silenciades
+        es: Se han ignorado ${count} cambios a peticiones silenciadas
+        en: ${count} changes to silenced requests have been ignored
+
+        [single]
+        @case False
+        ca: S'ha ignorat un canvi a una petició silenciada
+        es: Se ha ignorado un cambio a una petición silenciada
+        en: A change to a silenced request has been ignored
+

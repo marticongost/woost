@@ -1,0 +1,30 @@
+
+[woost.models.newslisting.NewsListing]
+ca: Llistat de notícies
+es: Listado de noticias
+en: News listing
+
+    [plural]
+    ca: Llistats de notícies
+    es: Listados de noticias
+    en: News listings
+
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
+    [members]
+
+        [paginated]
+        ca: Paginar els resultats
+        es: Paginar los resultados
+        en: Paginate results
+
+        [page_size]
+        ca: Mida del llistat
+        es: Tamaño del listado
+        en: Listing size
+

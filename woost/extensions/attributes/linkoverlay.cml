@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.extensions.attributes.utils import init_element
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.Link">
+
+    <?py-class
+    @property
+    def custom_attributes_source(self):
+        return self.value
+    ?>
+
+</py:overlay>
+

@@ -1,0 +1,11 @@
+
+[woost.extensions.ecommerce.incomingordertrigger.IncomingOrderTrigger]
+ca: Disparador de nova comanda
+es: Disparador de nuevo pedido
+en: Incoming order trigger
+
+    [plural]
+    ca: Disparadors de nova comanda
+    es: Disparadores de nuevo pedido
+    en: Incoming order triggers
+

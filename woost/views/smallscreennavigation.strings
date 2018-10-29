@@ -1,0 +1,8 @@
+
+[woost.views.SmallScreenNavigation]
+
+    [menu_button]
+    ca: Mostrar / ocultar menú
+    es: Mostrar / ocultar menú
+    en: Show / hide menu
+

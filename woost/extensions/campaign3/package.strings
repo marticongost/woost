@@ -1,0 +1,11 @@
+
+[woost.extensions.campaign3.CampaignMonitor3Extension]
+ca: Campaign Monitor v3
+es: Campaign Monitor v3
+en: Campaign Monitor v3
+
+    [plural]
+    ca: Campaign Monitor v3
+    es: Campaign Monitor v3
+    en: Campaign Monitor v3
+

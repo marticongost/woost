@@ -1,0 +1,28 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [services.google_analytics]
+        @reuse "woost.models.configuration.Configuration.services.google_analytics"
+
+    [members]
+
+        [google_analytics_account]
+        @reuse "woost.models.configuration.Configuration.members.google_analytics_account"
+
+        [google_analytics_domain]
+        @reuse "woost.models.configuration.Configuration.members.google_analytics_domain"
+
+        [google_analytics_language]
+        @reuse "woost.models.configuration.Configuration.members.google_analytics_language"
+
+            [explanation]
+            @reuse "woost.models.configuration.Configuration.members.google_analytics_language.explanation"
+
+        [google_analytics_custom_definitions]
+        @reuse "woost.models.configuration.Configuration.members.google_analytics_custom_definitions"
+
+            [explanation]
+            @reuse "woost.models.configuration.Configuration.members.google_analytics_custom_definitions.explanation"
+

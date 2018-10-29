@@ -1,0 +1,30 @@
+
+[woost.extensions.tv3alacarta.tv3alacartavideo.TV3ALaCartaVideo]
+ca: Vídeo de TV3 a la carta
+es: Video de TV3 a la carta
+en: TV3 a la carta video
+
+    [plural]
+    ca: Vídeos de TV3 a la carta
+    es: Videos de TV3 a la carta
+    en: TV3 a la carta videos
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [video_id]
+        ca: Identificador del vídeo
+        es: Identificador del video
+        en: Video ID
+

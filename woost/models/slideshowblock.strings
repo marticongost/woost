@@ -1,0 +1,121 @@
+
+[woost.models.slideshowblock.SlideShowBlock]
+ca: Passador
+es: Pasador
+en: Slide show
+
+    [plural]
+    ca: Passadors
+    es: Pasadores
+    en: Slide shows
+
+    [groups]
+
+        [transition_settings]
+        ca: Transicions
+        es: Transiciones
+        en: Transitions
+
+        [controls]
+        ca: Controls
+        es: Controles
+        en: Controls
+
+    [members]
+
+        [slides]
+        ca: Diapositives
+        es: Diapositivas
+        en: Slides
+
+        [autoplay]
+        ca: Transicions automàtiques
+        es: Transiciones automáticas
+        en: Autoplay
+
+        [navigation_controls]
+        ca: Mostrar controls de navegació
+        es: Mostrar controles de navegación
+        en: Show navigation controls
+
+        [bullet_controls]
+        ca: Mostrar botons de diapositiva
+        es: Mostrar botones de diapositiva
+        en: Show slide bullets
+
+        [bullet_view_class]
+        ca: Aparença dels botons de diapositiva
+        es: Apariencia de los botones de diapositiva
+        en: Slide bullets appearence
+
+            [values]
+
+                [woost.views.SlideShowButtonBullet]
+                ca: Botó
+                es: Botón
+                en: Button
+
+                [woost.views.SlideShowTextBullet]
+                ca: Text
+                es: Texto
+                en: Text
+
+                [woost.views.SlideShowImageBullet]
+                ca: Imatge
+                es: Imagen
+                en: Image
+
+                [woost.views.SlideShowTextAndImageBullet]
+                ca: Imatge i text
+                es: Imagen y texto
+                en: Image and text
+
+
+        [bullet_image_factory]
+        ca: Processat d'imatge pels botons de diapositiva
+        es: Procesado de imagen para los botones de diapositiva
+        en: Image processing for slide bullets
+
+        [interval]
+        ca: Freqüència de les transicions
+        es: Frecuencia de las transiciones
+        en: Time between transitions
+
+            [explanation]
+            ca:
+                Si s'activen les transicions automàtiques, indica el nombre de
+                milisegons abans que el bloc passi a la següent diapositiva.
+            es:
+                Si se activan las transiciones automáticas, indica el número de
+                milisegundos antes que el bloque pase a la diapositiva siguiente.
+            en:
+                If autoplay is enabled, indicates the number of milliseconds that
+                pass between automatic transitions.
+
+        [transition_duration]
+        ca: Duració de les transicions
+        es: Duración de las transiciones
+        en: Transition duration
+
+            [explanation]
+            ca: Especifica la duració de l'efecte de transició, en milisegons
+            es: Especifica la duración del efecto de transición, en milisegundos
+            en: Sets the duration of the slide transition effect, in milliseconds
+
+        [transition_effect]
+        ca: Efecte de transició
+        es: Efecto de transición
+        en: Transition effect
+
+            [values]
+
+                [fade]
+                ca: Fondre
+                es: Fundir
+                en: Fade
+
+                [topBottomSlide]
+                ca: Lliscar de dalt a baix
+                es: Deslizar de arriba abajo
+                en: Top-bottom slide
+

@@ -1,0 +1,22 @@
+
+[woost.models.publishable.Publishable]
+
+    [groups]
+
+        [meta.open_graph]
+        ca: Integració amb OpenGraph/Facebook
+        es: Integración con OpenGraph/Facebook
+        en: OpenGraph/Facebook integration
+
+    [members]
+
+        [open_graph_enabled]
+        ca: Publicar metadades per OpenGraph/Facebook
+        es: Publicar metadatos para OpenGraph/Facebook
+        en: Publish OpenGraph/Facebook metadata
+
+        [open_graph_type]
+        ca: Tipus d'objecte
+        es: Tipo de objeto
+        en: Object type
+

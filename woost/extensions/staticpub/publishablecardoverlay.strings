@@ -1,0 +1,13 @@
+
+[woost.extensions.staticpub.PublishableCardOverlay]
+
+    [static_pub_remark(languages)]
+    ca: Pendent d'exportar a ${join(languages)}
+    es: Pendiente de exportar a ${join(languages)}
+    en: Export pending for ${join(languages)}
+
+    [static_pub_remark_details(languages)]
+    ca: Pendent d'exportar a ${len(languages)} idiomes
+    es: Pendiente de exportar a ${len(languages)} idiomas
+    en: Export pending for ${len(languages)} idiomes
+

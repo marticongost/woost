@@ -1,0 +1,13 @@
+
+[woost.extensions.sitemap]
+
+    [sitemap_controller.title]
+    ca: Controlador de mapa web
+    es: Controlador de mapa web
+    en: Sitemap controller
+
+    [sitemap_document.title]
+    ca: Mapa XML del lloc web
+    es: Mapa XML del sitio web
+    en: XML sitemap
+

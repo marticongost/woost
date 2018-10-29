@@ -1,0 +1,8 @@
+
+[woost.extensions.translationworkflow.BackOfficeFieldsViewOverlay]
+
+    [translation_workflow_auto_transition_label(transition)]
+    ca: t{transition} automàticament
+    es: t{transition} automaticamente
+    en: t{transition} automatically
+

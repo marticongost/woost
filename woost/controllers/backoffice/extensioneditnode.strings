@@ -1,0 +1,25 @@
+
+[woost.controllers.backoffice.extensioneditnode]
+
+    [extension_enabled_reload_notice(extension)]
+    ca:
+        L'extensió <strong>t{extension}</strong> s'activarà quan es torni a
+        iniciar l'aplicació.
+    es:
+        La extensión <strong>t{extension}</strong> se activará cuando se
+        reinicie la aplicación.
+    en:
+        The <strong>t{extension}</strong> will be loaded the next time the
+        application starts.
+
+    [extension_disabled_reload_notice(extension)]
+    ca:
+        L'extensió <strong>t{extension}</strong> es desactivarà quan es torni a
+        iniciar l'aplicació.
+    es:
+        La extensión <strong>t{extension}</strong> se desactivará cuando se
+        reinicie la aplicación.
+    en:
+        The <strong>t{extension}</strong> will be unloaded the next time the
+        application starts.
+

@@ -1,0 +1,39 @@
+[woost.models.uri.URI]
+ca: Adreça web
+es: Dirección web
+en: Web address
+
+    [plural]
+    ca: Adreces web
+    es: Direcciones web
+    en: Web addresses
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [uri]
+        ca: Adreça
+        es: Dirección
+        en: Address
+
+        [language_specific_uri]
+        ca: Adreça per idioma
+        es: Dirección por idioma
+        en: Language specific address
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+

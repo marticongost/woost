@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.html.selectable import selectable, MULTIPLE_SELECTION
+from cocktail.html.uigeneration import UIGenerator
+from woost.views.uigeneration import backoffice_element_column_display
+from woost.controllers.backoffice.useractions import export_user_actions
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:mixins="UIGenerator">
+
+    <?resource cocktail://scripts/jquery-ui.js ?>
+    <?resource woost://scripts/itemcollectioneditor.js ?>
+
+    <?py-class
+    value = ()
+    base_ui_generators = [backoffice_element_column_display]
+    referer = None
+    grouping = None
+    ?>
+
+    <?py
+    selectable(
+        self,
+        mode = MULTIPLE_SELECTION,
+        entry_selector = ".entries .entry"
+    )
+    ?>
+
+    <py:ready>
+        <?py
+        if self.grouping:
+            if isinstance(self.grouping, type):
+                self.grouping = self.grouping()
+            if self.value:
+                self.grouping.populate(self.value)
+
+        element["data-cocktail-grouped"] = "true" if self.grouping else "false"
+        ?>
+    </py:ready>
+
+    <!-- Toolbar -->
+    <py:woost.views.ActionBar
+        py:id="toolbar"
+        py:action_target="@{self.member.related_type}"
+        py:selection_field="relation_selection-@{self.member.name}"
+        py:empty_result_set="@{not self.value}"
+        py:relation="@{self.member.original_member}">
+
+        <py:binding>
+            <?py
+            element.action_context.add("toolbar")
+            ?>
+        </py:binding>
+
+    </py:woost.views.ActionBar>
+
+    <ul py:id="entries">
+        <py:ready>
+            <?py
+            if self.grouping:
+                for grouping in self.grouping.groups:
+                    element.append(self.create_group(grouping))
+                for item in self.grouping.items:
+                    element.append(self.create_entry(item))
+            else:
+                for item in self.value:
+                    element.append(self.create_entry(item))
+            ?>
+        </py:ready>
+    </ul>
+
+    <li py:def="group" py:args="grouping">
+        <py:new py:element="self.create_group_heading(grouping)"/>
+        <py:new py:element="self.create_group_entries(grouping)"/>
+    </li>
+
+    <div py:def="group_heading" py:args="grouping">
+        <span py:local_id="group_heading_text">
+            ${translations(grouping)}
+        </span>
+    </div>
+
+    <ul py:def="group_entries" py:args="grouping">
+        <py:new py:element="self.create_group(child)" py:for="child in grouping.groups"/>
+        <py:new py:element="self.create_entry(item)" py:for="item in grouping.items"/>
+    </ul>
+
+    <li py:def="entry" py:args="item">
+
+        <?py
+        export_user_actions(element, self.toolbar.action_context, item)
+        ?>
+
+        <input
+            py:local_id="hidden"
+            type="hidden"
+            name="${self.name}"
+            value="${item.id}"/>
+
+        <input
+            py:local_id="checkbox"
+            type="checkbox"
+            name="relation_selection-${self.member.name}"
+            value="${item.id}"/>
+
+        <span py:local_id="checkbox_wrapper" py:wrap="entry.checkbox"/>
+
+        <py:new
+            py:local_id="item_display"
+            py:element="self.create_item_display(item)">
+            <?py
+            label_element = getattr(element, "item_label", element)
+            label_element.tag = "label"
+            label_element["for"] = entry.checkbox.require_id()
+            ?>
+        </py:new>
+
+        <py:new
+            py:local_id="context_menu"
+            py:element="self.create_item_context_menu(item)"/>
+    </li>
+
+    <py:new
+        py:def="item_display" py:args="item"
+        py:element="self.create_object_display(item, referer = self.referer)"
+        py:item="${item}"/>
+
+    <py:woost.views.ItemContextMenu
+        py:def="item_context_menu" py:args="item"
+        py:item="${item}"
+        py:effect_on_selection="change"/>
+
+    <?py
+    self.toolbar.connect_selectable(self)
+    ?>
+
+</div>
+

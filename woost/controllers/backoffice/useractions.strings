@@ -1,0 +1,331 @@
+@init
+def describe_selection_error_limit(error, min_label, max_label, singular, plural):
+
+    if error.action.min and error.selection_size < error.action.min:
+        label = min_label
+        limit = error.action.min
+    else:
+        label = max_label
+        limit = error.action.max
+
+    return label + " " + plural2(limit, singular, plural)
+@end
+
+[woost.actions]
+
+    [new]
+    ca: Nou
+    es: Nuevo
+    en: New
+
+        [shortcut]
+        ca: n
+        es: n
+        en: n
+
+    [installation_sync]
+    ca: Importar canvis
+    es: Importar cambios
+    en: Import changes
+
+    [edit]
+    ca: Fitxa
+    es: Ficha
+    en: Edit
+
+        [shortcut]
+        ca: e
+        es: e
+        en: e
+
+    [duplicate]
+    ca: Duplicar
+    es: Duplicar
+    en: Duplicate
+
+        [shortcut]
+        ca: u
+        es: u
+        en: u
+
+    [delete]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+
+        [shortcut]
+        ca: r
+        es: r
+        en: d
+
+    [changelog]
+    ca: Històric
+    es: Histórico
+    en: Changelog
+
+    [add]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
+        [shortcut]
+        ca: a
+        es: a
+        en: a
+
+    [pick]
+    ca: Llistar
+    es: Listar
+    en: Browse
+
+    [pick_new]
+    ca: Nou
+    es: Nuevo
+    en: New
+
+    [add_new]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
+        [shortcut]
+        ca: a
+        es: a
+        en: a
+
+    [unlink]
+    ca: Desvincular
+    es: Desvincular
+    en: Unlink
+
+    [remove]
+    ca: Treure
+    es: Quitar
+    en: Remove
+
+        [shortcut]
+        ca: r
+        es: r
+        en: r
+
+    [diff]
+    ca: Veure canvis
+    es: Ver cambios
+    en: Show changes
+
+        [shortcut]
+        ca: c
+        es: c
+        en: c
+
+    [preview]
+    ca: Vista prèvia
+    es: Vista previa
+    en: Preview
+
+        [shortcut]
+        ca: p
+        es: p
+        en: p
+
+    [open_resource]
+    ca: Veure publicat
+    es: Ver publicado
+    en: Show published
+
+        [shortcut]
+        ca: b
+        es: b
+        en: b
+
+    [references]
+    ca: Referències
+    es: Referencias
+    en: References
+
+        [shortcut]
+        ca: f
+        es: f
+        en: f
+
+    [upload_files]
+    ca: Importar fitxers
+    es: Importar ficheros
+    en: Import files
+
+    [export_xls]
+    ca: Exportar a MS Excel
+    es: Exportar a MS Excel
+    en: Export to MS Excel
+
+    [save]
+    ca: Desar
+    es: Guardar
+    en: Save
+
+    [save_and_close]
+    ca: Desar i tancar
+    es: Guardar y cerrar
+    en: Save and close
+
+        [shortcut]
+        ca: s
+        es: g
+        en: s
+
+    [invalidate_cache]
+    ca: Netejar el cache
+    es: Limpiar el cache
+    en: Clear cache
+
+    [select]
+    ca: Seleccionar
+    es: Seleccionar
+    en: Select
+
+        [shortcut]
+        ca: s
+        es: s
+        en: s
+
+    [close]
+    ca: Tancar
+    es: Cerrar
+    en: Close
+
+        [shortcut]
+        ca: c
+        es: c
+        en: c
+
+    [cancel]
+    ca: Cancelar
+    es: Cancelar
+    en: Cancel
+
+        [shortcut]
+        ca: c
+        es: c
+        en: c
+
+    [edit_blocks]
+    ca: Editar blocs
+    es: Editar bloques
+    en: Edit blocks
+
+    [revert]
+    ca: Desfer
+    es: Deshacer
+    en: Undo
+
+    [add_block]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
+    [add_block_before]
+    ca: Afegir davant
+    es: Añadir en frente
+    en: Add before
+
+    [add_block_after]
+    ca: Afegir darrere
+    es: Añadir detrás
+    en: Add after
+
+    [edit_block]
+    ca: Editar
+    es: Editar
+    en: Edit
+
+    [remove_block]
+    ca: Treure
+    es: Quitar
+    en: Remove
+
+    [copy_block]
+    ca: Copiar
+    es: Copiar
+    en: Copy
+
+    [cut_block]
+    ca: Retallar
+    es: Cortar
+    en: Cut
+
+    [paste_block]
+    ca: Enganxar
+    es: Pegar
+    en: Paste
+
+    [paste_block_after]
+    ca: Enganxar darrere
+    es: Pegar detrás
+    en: Paste after
+
+    [paste_block_before]
+    ca: Enganxar davant
+    es: Pegar delante
+    en: Paste before
+
+    [share_block]
+    ca: Afegir a la llibreria
+    es: Añadir a la libreria
+    en: Add to the library
+
+[woost]
+
+    [cache_invalidated_notice(subset)]
+    @switch subset is None
+
+        [whole_site]
+        @case True
+        ca: S'ha netejat el cache de tota la web
+        es: Se ha limpiado el cache de toda la web
+        en: Cleared the cache for the whole site
+
+        [subset]
+        @case False
+        ca: S'ha netejat el cache de ${plural2(subset, "%d elements", "1 element")}
+        es: Se ha limpiado el cache de toda la web ${plural2(subset, "%d elementos", "1 elemento")}
+        en: Cleared the cache for the whole site ${plural2(subset, "%d elements", "1 element")}
+
+    [duplicate_created_notice]
+    ca:
+        S'ha creat el duplicat. Assegura't de revisar-lo i editar-lo com
+        correspongui.
+    es:
+        Se ha creado el duplicado. Asegurate de revisarlo y modificarlo
+        como corresponda.
+    en:
+        Your duplicated element is ready. Make sure to review and modify
+        it as necessary.
+
+    [block_clipboard]
+
+        [empty]
+        ca: El portaretalls no conté cap bloc
+        es: El portapapeles no cotiene ningún bloque
+        en: The clipboard is empty
+
+        [error]
+        ca: El contingut del portaretalls no és vàlid
+        es: El contenido del portapapeles no es válido
+        en: The clipboard content is not valid
+
+[woost.controllers.backoffice.useractions]
+
+    [SelectionError.instance(error)]
+    ca:
+        No es pot aplicar l'acció <em>${translations(error.action).lower()}</em>
+        a una selecció ${plural2(error.selection_size, u"d'un sol element", "de %d elements")};
+        el ${describe_selection_error_limit(error, u"mínim", u"màxim", "és d'1 element", "és de %d elements")}.
+    es:
+        No se puede aplicar la acción <em>${translations(error.action).lower()}</em>
+        a una selección de ${plural2(error.selection_size, u"un solo elemento", "%d elementos")};
+        el ${describe_selection_error_limit(error, u"mínimo", u"máximo", "es de 1 elemento", "es de %d elementos")}.
+    en:
+        Can't apply action <em>${translations(error.action).lower()}</em>
+        to a selection of ${plural2(error.selection_size, u"a single element", "%d elements")};
+        the ${describe_selection_error_limit(error, u"minimum required", u"maximum allowed", "is one element", "is %d elements")}.
+

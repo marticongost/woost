@@ -1,0 +1,8 @@
+
+[woost.controllers.backoffice.basebackofficecontroller]
+
+    [EditStateLostError.instance]
+    ca: La sessió d'edició en que estaves treballant s'ha perdut.
+    es: La sesión de edición en que estabas trabajando se ha perdido.
+    en: The edit session you were working on has been lost.
+

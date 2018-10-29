@@ -1,0 +1,24 @@
+
+[woost.models.configuration.Configuration]
+
+    [members]
+
+        [open_graph_default_image]
+        ca: Imatge per defecte per Open Graph
+        es: Imagen por defecto para Open Graph
+        en: Open Graph default image
+
+            [explanation]
+            ca:
+                Imatge per defecte que s'utilitzarà en publicar contingut a
+                Facebook i a altres aplicacions Open Graph. En cas de no
+                indicar-ne cap s'utilitzarà el logotip de la pàgina.
+            es:
+                Imagen que se utilizará al publicar contenido en Facebook y
+                otras aplicaciones Open Graph. En caso de no indicar ninguna
+                se utilizará el logotipo de la página.
+            en:
+                Image that will be used when publishing content in Facebook or
+                other Open Graph applications. If empty, the page logo will be
+                used instead.
+

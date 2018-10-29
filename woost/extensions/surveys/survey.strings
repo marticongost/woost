@@ -1,0 +1,111 @@
+
+[woost.extensions.surveys.survey]
+
+    [survey_field(member, **kwargs)]
+    *: t{member.question}
+
+    [Survey]
+    ca: Enquesta
+    es: Encuesta
+    en: Survey
+
+        [plural]
+        ca: Enquesta
+        es: Encuesta
+        en: Survey
+
+        [members]
+
+            [title]
+            ca: Títol
+            es: Título
+            en: Title
+
+            [questions]
+            ca: Preguntes
+            es: Preguntas
+            en: Questions
+
+    [SurveyQuestion]
+    ca: Pregunta d'enquesta
+    es: Pregunta de encuesta
+    en: Survey question
+
+        [plural]
+        ca: Preguntes d'enquestes
+        es: Preguntas de encuesta
+        en: Survey questions
+
+        [members]
+
+            [title]
+            ca: Enunciat
+            es: Enunciado
+            en: Question
+
+            [survey]
+            ca: Enquesta
+            es: Encuesta
+            en: Survey
+
+            [active]
+            ca: Activa
+            es: Activa
+            en: Active
+
+    [SurveyOptionsQuestion]
+    ca: Pregunta amb opcions
+    es: Pregunta con opciones
+    en: Options question
+
+        [plural]
+        ca: Preguntes amb opcions
+        es: Preguntas con opciones
+        en: Options questions
+
+        [members]
+
+            [options]
+            ca: Opcions
+            es: Opciones
+            en: Options
+
+    [SurveyOption]
+    ca: Opció
+    es: Opción
+    en: Option
+
+        [plural]
+        ca: Opcions
+        es: Opciones
+        en: Options
+
+        [members]
+
+            [title]
+            ca: Text
+            es: Texto
+            en: Text
+
+            [active]
+            ca: Activa
+            es: Activa
+            en: Active
+
+    [SurveyTextQuestion]
+    ca: Pregunta de text lliure
+    es: Pregunta de texto libre
+    en: Text question
+
+        [plural]
+        ca: Preguntes de text lliure
+        es: Preguntas de texto libre
+        en: Text questions
+
+        [members]
+
+            [mandatory]
+            ca: Obligatòria
+            es: Obligatoria
+            en: Mandatory
+

@@ -1,0 +1,28 @@
+
+[woost.models.userview.UserView]
+ca: Vista d'usuari
+es: Vista de usuario
+en: User view
+
+    [plural]
+    ca: Vistes d'usuari
+    es: Vistas de usuario
+    en: User views
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [parameters]
+        ca: Vista
+        es: Vista
+        en: View
+
+        [roles]
+        ca: Rols
+        es: Roles
+        en: Roles
+

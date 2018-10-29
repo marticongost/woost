@@ -1,0 +1,17 @@
+
+[woost.extensions.ecommerce.SummaryBlockView]
+
+    [modify_basket_link]
+    ca: Modificar el contingut de la comanda
+    es: Modificar el contenido del pedido
+    en: Edit the shopping basket
+	fr: Modifier le contenu de la commande
+    pt: Modificar o pedido
+
+    [modify_checkout_link]
+    ca: Modificar les dades de la comanda
+    es: Modificar los datos del pedido
+    en: Edit checkout data
+	fr: Modifier les données checkout
+    pt: Modificar dados do pedido
+

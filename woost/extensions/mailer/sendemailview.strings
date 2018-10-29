@@ -1,0 +1,90 @@
+
+@init
+from cocktail.translations import translate_locale
+@end
+
+[woost.extensions.mailer.SendEmailView]
+
+    [continue]
+    ca: Continuar
+    es: Continuar
+    en: Continue
+
+    [send]
+    ca: Enviar
+    es: Enviar
+    en: Send
+
+    [confirmation_text(mailing)]
+    ca:
+        S'enviarà el document <strong>t{mailing.document}</strong>
+        en <strong>${translate_locale(mailing.language)}</strong>
+        als següents usuaris:
+    es:
+        Se enviará el documento <strong>t{mailing.document}</strong> en
+        </strong>${translate_locale(mailing.language)}</strong> a los
+        siguientes usuarios:
+    en:
+        You are about to send the document <strong>t{mailing.document}</strong>
+        in <strong>${translate_locale(mailing.language)}</strong> to the
+        following users:
+
+    [total]
+    ca: Total:
+    es: Total:
+    en: Total:
+
+    [accessibility_warning]
+    ca:
+        Tingues en compte que en aquests moments el document que estàs enviant
+        no és accessible pels usuaris anònims.
+    es:
+        Ten en cuenta que en estos momentos el documento que estás enviando no
+        es accesible para los usuarios anónimos.
+    en:
+        Note that at this moment the document you are sending is not accessible
+        for anonymous users.
+
+    [doing_email_delivery]
+    ca: Realitzant enviament
+    es: Realizando envio
+    en: Doing email delivery
+
+    [email_delivery_finished]
+    ca: Enviament finalitzat
+    es: Envio finalizado
+    en: Mail delivery finished
+
+    [error_email_delivery]
+    ca: No s'han pogut enviar alguns correus. Posa't en contacte amb l'administrador.
+    es: No se han podido enviar algunos correos. Ponte en contacto con el administrador.
+    en: Unable to send some emails. Please, contact your administrator.
+
+    [mailer_summary]
+    ca: S'ha enviat <strong>{0}</strong> correus de <strong>{1}</strong>.
+    es: Se han enviado <strong>{0}</strong> correos de <strong>{1}</strong>.
+    en: <strong>{0}</strong> of <strong>{1}</strong> emails have been sent.
+
+    [test_explanation]
+    ca:
+        Degut a que molts clients de correu electrònic mostren el disseny del correu
+        de forma diferent, recomanem enviar alguna prova abans de realitzar
+        l'enviament definitiu.
+    es:
+        Debido a que muchos clientes de correo electrónico muestran el diseño del correo
+        de forma diferente, recomendamos enviar alguna prueba antes de realitzar el envio
+        definitivo.
+    en:
+        Because most email clients will display your email design differently, we
+        recommend sending yourself a few tests before scheduling the final campaign.
+
+    [test_email]
+    ca: Correu electrònic
+    es: Correo electrónico
+    en: E-mail address
+
+    [test]
+    ca: Enviar el correu de prova
+    es: Enviar el correo de prueba
+    en: Send the test email
+

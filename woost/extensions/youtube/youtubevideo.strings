@@ -1,0 +1,30 @@
+
+[woost.extensions.youtube.youtubevideo.YouTubeVideo]
+ca: Vídeo de YouTube
+es: Video de YouTube
+en: YouTube video
+
+    [plural]
+    ca: Vídeos de YouTube
+    es: Videos de YouTube
+    en: YouTube videos
+
+    [groups]
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [video_id]
+        ca: Identificador del vídeo
+        es: Identificador del video
+        en: Video ID
+

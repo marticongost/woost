@@ -1,0 +1,83 @@
+
+[woost.extensions.ecommerce.ecommercepurchase.ECommercePurchase]
+ca: Línia de comanda
+es: Linea de pedido
+en: Purchase
+fr: Achat en ligne
+
+    [plural]
+    ca: Línies de comanda
+    es: Lineas de pedido
+    en: Purchases
+    fr: Achats en ligne
+
+    [groups]
+
+        [billing]
+        ca: Facturació
+        es: Facturación
+        en: Billing
+        fr: Facturation
+
+    [members]
+
+        [order]
+        ca: Comanda
+        es: Pedido
+        en: Order
+        fr: Commande
+
+        [product]
+        ca: Producte
+        es: Producto
+        en: Product
+        fr: Produit
+
+        [quantity]
+        ca: Quantitat
+        es: Cantidad
+        en: Quantity
+        fr: Quantité
+
+        [total_price]
+        ca: Preu
+        es: Precio
+        en: Price
+        fr: Prix
+
+        [pricing]
+        ca: Modificacions al preu
+        es: Modificaciones al precio
+        en: Pricing
+        fr: Modifications au prix
+
+        [total_shipping_costs]
+        ca: Costos d'enviament
+        es: Costes de envío
+        en: Shipping costs
+        fr: Frais d'expédition
+
+        [shipping_costs]
+        ca: Costos d'enviament aplicats
+        es: Costes de envío aplicados
+        en: Applied shipping costs
+        fr: Frais d'expédition appliqués
+
+        [total_taxes]
+        ca: Taxes
+        es: Tasas
+        en: Taxes
+        fr: Impôts
+
+        [taxes]
+        ca: Taxes aplicades
+        es: Tasas aplicadas
+        en: Applied taxes
+        fr: Impôts appliqués
+
+        [total]
+        ca: Total
+        es: Total
+        en: Total
+        fr: Total
+

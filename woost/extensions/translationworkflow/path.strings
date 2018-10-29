@@ -1,0 +1,21 @@
+
+@init
+from cocktail.translations import translate_locale
+@end
+
+[woost.extensions.translationworkflow.translation_path(source_language, target_language, **kwargs)]
+ca:
+    ${ca_possessive(translate_locale(source_language).lower())}
+    a
+    ${translate_locale(target_language).lower()}
+es:
+    De
+    ${translate_locale(source_language).lower()}
+    a
+    ${translate_locale(target_language).lower()}
+en:
+    From
+    ${translate_locale(source_language).lower()}
+    to
+    ${translate_locale(target_language).lower()}
+

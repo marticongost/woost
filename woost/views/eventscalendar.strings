@@ -1,0 +1,23 @@
+
+[woost.views.EventsCalendar]
+
+    [previous_month_link]
+    ca: Mes anterior
+    es: Mes anterior
+    en: Previous month
+
+    [next_month_link]
+    ca: Mes següent
+    es: Mes siguiente
+    en: Next month
+
+    [previous_year_link]
+    ca: Any anterior
+    es: Año anterior
+    en: Previous year
+
+    [next_year_link]
+    ca: Any següent
+    es: Año siguiente
+    en: Next year
+

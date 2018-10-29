@@ -1,0 +1,18 @@
+
+[woost.models.rendering.renderer.Renderer]
+ca: Pintador d'imatges
+es: Pintador de imágenes
+en: Renderer
+
+    [plural]
+    ca: Pintadors d'imatges
+    es: Pintadores de imágenes
+    en: Renderers
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+

@@ -1,0 +1,43 @@
+
+[woost.extensions.audio.audioencoder.AudioEncoder]
+ca: Codificador d'àudio
+es: Codificador de audio
+en: Audio encoder
+
+    [plural]
+    ca: Codificadors d'àudio
+    es: Codificadores de audio
+    en: Audio encoders
+
+    [members]
+
+        [identifier]
+        ca: Identificador
+        es: Identificador
+        en: Identifier
+
+        [mime_type]
+        ca: Tipus MIME
+        es: Tipo MIME
+        en: MIME type
+
+        [extension]
+        ca: Extensió
+        es: Extensión
+        en: Extension
+
+        [command]
+        ca: Comanda
+        es: Comando
+        en: Command
+
+        [timeout]
+        ca: Temps màxim d'execució
+        es: Tiempo máximo de ejecución
+        en: Timeout
+
+        [timeout_size_factor]
+        ca: Temps d'execució addicional segons la mida del fitxer
+        es: Tiempo de ejecución adicional según la mida del fichero
+        en: Timeout file size factor
+

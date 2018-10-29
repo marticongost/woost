@@ -1,0 +1,59 @@
+@init
+from cocktail import schema
+
+def _translate_node_subject(node):
+    return translations(
+        node.parent_node
+        and node.parent_node.member
+        or node.content_type
+    ).lower()
+
+def _translate_relation_node(node, add_verb, select_verb):
+    return u"%s %s" % (
+        add_verb if isinstance(node.member, schema.Collection) else select_verb,
+        translations(node.member).lower()
+    )
+@end
+
+[woost.controllers.backoffice.editstack]
+
+    [EditNode.instance(node)]
+    ca: ${translations(node.item) if node.item.is_inserted else u"Creant " + translations(node.content_type).lower()}
+    es: ${translations(node.item) if node.item.is_inserted else u"Creando " + translations(node.content_type).lower()}
+    en: ${translations(node.item) if node.item.is_inserted else u"Creating " + translations(node.content_type).lower()}
+
+    [EditBlocksNode.instance(node)]
+    ca: Editant els blocs ${ca_possessive(translations(node.item))}
+    es: Editando los bloques de t{node.item}
+    en: Editing the blocks for t{node.item}
+
+    [SelectionNode.instance(node)]
+    ca: Seleccionar ${_translate_node_subject(node)}
+    es: Seleccionar ${_translate_node_subject(node)}
+    en: Select ${_translate_node_subject(node)}
+
+    [RelationNode.instance(node)]
+    ca: ${_translate_relation_node(node, u"Afegir", u"Seleccionar")}
+    es: ${_translate_relation_node(node, u"Añadir", u"Seleccionar")}
+    en: ${_translate_relation_node(node, u"Add", u"Select")}
+
+    [WrongEditStackError.instance]
+    ca: La sessió d'edició indicada no existeix o ha expirat.
+    es: La sesión de edición indicada no existe o ha expirado.
+    en: The indicated edit session doesn't exist, or has expired.
+
+    [ItemSavedNotification.instance(notification)]
+    @switch notification.item_is_new
+
+        [created]
+        @case True
+        ca: S'ha creat l'element <strong>t{notification.item}</strong>
+        es: Se ha creado el elemento <strong>t{notification.item}</strong>
+        en: New item <strong>t{notification.item}</strong> created
+
+        [modified]
+        @case False
+        ca: Canvis a <strong>t{notification.item}</strong> desats
+        es: Cambios en <strong>t{notification.item}</strong> guardados
+        en: Saved changes to <strong>t{notification.item}</strong>
+

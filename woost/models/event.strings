@@ -1,0 +1,43 @@
+
+[woost.models.event.Event]
+ca: Esdeveniment
+es: Evento
+en: Event
+
+    [plural]
+    ca: Esdeveniments
+    es: Eventos
+    en: Events
+
+    [members]
+
+        [event_start]
+        ca: Inici de l'esdeveniment
+        es: Inicio del evento
+        en: Event start
+
+        [event_end]
+        ca: Fí de l'esdeveniment
+        es: Fin del evento
+        en: Event end
+
+        [event_location]
+        ca: Lloc
+        es: Lugar
+        en: Place
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+
+        [summary]
+        ca: Sumari
+        es: Sumario
+        en: Summary
+
+        [blocks]
+        ca: Cos
+        es: Cuerpo
+        en: Body
+

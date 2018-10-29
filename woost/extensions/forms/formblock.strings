@@ -1,0 +1,82 @@
+
+[woost.extensions.forms.formblock.FormBlock]
+ca: Formulari personalitzat
+es: Formulario personalizado
+en: Custom form
+
+    [plural]
+    ca: Formularis personalitzat
+    es: Formularios personalizados
+    en: Custom forms
+
+    [groups]
+
+        [form]
+        ca: Formulari
+        es: Formulario
+        en: Form
+
+    [members]
+
+        [field_set]
+        ca: Conjunt de camps
+        es: Conjunto de campos
+        en: Field set
+
+        [agreements]
+        ca: Termes i condicions
+        es: Términos y condiciones
+        en: Agreements
+
+        [notification_receivers]
+        ca: Receptors de la notificació
+        es: Receptores de la notificación
+        en: E-mail notification receivers
+
+            [explanation]
+            ca:
+                Indica les adreces de correu electrònic a les que es notificarà
+                quan un usuari completi el formulari. Només s'aplica a la
+                notificació estàndard: altres notificacions poden tenir altres
+                maneres de decidir els seus destinataris.
+            es:
+                Indica las direcciones de correo electrónico a las que se
+                notificará cuando un usuario complete el formulario. Solo se
+                aplica a las notificaciones estándar: otras notificaciones pueden
+                tener otras maneras de decidir sus destinatarios.
+            en:
+                Indicates the e-mail addresses that should be notified when a user
+                submits the form. This only applies to the standard notification:
+                other notifications can have different means of deciding their
+                receivers.
+
+        [email_messages]
+        ca: Notificacions per correu electrònic
+        es: Notificaciones por correo electrónico
+        en: E-mail notifications
+
+        [redirection]
+        ca: Redirecció
+        es: Redirección
+        en: Redirection
+
+        [redirection-explanation]
+        ca: Deixar en blanc per redirigir a la primera pàgina filla
+        es: Dejar en blanco para redirigr a la primera página hija
+        en: Leave blank to redirect to the first child page
+
+        [submit_code]
+        ca: Codi a executar quan s'envii el formulari
+        es: Código a ejecutar cuando se envíe el formulario
+        en: Code to execute when the form is submitted
+
+        [after_submit_code]
+        ca: Codi a executar després que s'hagi enviat el formulari
+        es: Código a ejecutar después que se haya enviado el formulario
+        en: Code to execute after the form has been submitted
+
+        [view_class]
+        ca: Vista
+        es: Vista
+        en: View
+

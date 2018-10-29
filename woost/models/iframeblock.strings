@@ -1,0 +1,28 @@
+
+[woost.models.iframeblock.IFrameBlock]
+ca: IFrame
+es: IFrame
+en: IFrame
+
+    [plural]
+    ca: IFrames
+    es: IFrames
+    en: IFrames
+
+    [members]
+
+        [src]
+        ca: Adreça a mostrar
+        es: Dirección a mostrar
+        en: Content URL
+
+        [width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [height]
+        ca: Alçada
+        es: Alto
+        en: Height
+

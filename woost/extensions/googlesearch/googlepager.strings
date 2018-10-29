@@ -1,0 +1,15 @@
+
+[woost.extensions.googlesearch.GooglePager]
+
+    [next]
+    es: Siguiente
+    en: Next
+    fr: Suivante
+    ca: Següent
+
+    [previous]
+    es: Anterior
+    en: Previous
+    fr: Dernière
+    ca: Anterior
+

@@ -1,0 +1,50 @@
+[woost.models.userfilter]
+
+    [IsPublishedFilter]
+
+        [instance]
+        ca: Elements publicats
+        es: Elementos publicados
+        en: Published elements
+
+    [TypeFilter]
+
+        [instance]
+        ca: Tipus
+        es: Tipo
+        en: Type
+
+    [ChangeSetHasChangeFilter]
+
+        [instance]
+        ca: Canvis efectuats
+        es: Cambios efectuados
+        en: Applied changes
+
+        [members]
+
+            [target]
+            ca: Element afectat
+            es: Elemento afectado
+            en: Target object
+
+            [target_type]
+            ca: Tipus afectat
+            es: Tipo afectado
+            en: Target type
+
+                [none]
+                ca: Qualsevol tipus
+                es: Cualquier tipo
+                en: Any type
+
+            [action]
+            ca: Acció
+            es: Acción
+            en: Action
+
+                [none]
+                ca: Qualsevol acció
+                es: Cualquier acción
+                en: Any action
+

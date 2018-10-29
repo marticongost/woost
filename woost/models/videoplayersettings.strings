@@ -1,0 +1,38 @@
+
+[woost.models.videoplayersettings.VideoPlayerSettings]
+ca: Opcions de reproductor de vídeo
+es: Opciones de reproductor de video
+en: Video player settings
+
+    [plural]
+    ca: Opcions de reproductor de vídeo
+    es: Opciones de reproductor de video
+    en: Video player settings
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [height]
+        ca: Alçada
+        es: Alto
+        en: Height
+
+        [autoplay]
+        ca: Iniciar la reproducció automàticament
+        es: Iniciar la reproducción automáticamente
+        en: Autoplay
+
+        [show_player_controls]
+        ca: Mostrar controls de reproducció
+        es: Mostrar controles de reproducción
+        en: Show player controls
+

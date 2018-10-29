@@ -1,0 +1,11 @@
+
+[woost.extensions.newsletters.NewslettersExtension]
+ca: Butlletins de correu electrònic
+es: Boletines de correo electrónico
+en: Newsletters
+
+    [plural]
+    ca: Butlletins de correu electrònic
+    es: Boletines de correo electrónico
+    en: Newsletters
+

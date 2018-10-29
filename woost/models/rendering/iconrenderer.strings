@@ -1,0 +1,37 @@
+
+[woost.models.rendering.iconrenderer.IconRenderer]
+ca: Llibreria d'icones
+es: Librería de iconos
+en: Icon library
+
+    [plural]
+    ca: Llibreries de icones
+    es: Librerías de iconos
+    en: Icon libraries
+
+    [members]
+
+        [icon_resolver_expression]
+        ca: Proveïdor d'icones
+        es: Proveedor de iconos
+        en: Icon resolver
+
+            [explanation]
+            ca:
+                Referència a una instància de
+                <em>woost.iconresolver.IconResolver.</em> Deixar buit per
+                utilitzar <em>woost.app.icon_resolver</em>.
+            es:
+                Referencia a una instancia de
+                <em>woost.iconresolver.IconResolver.</em> Dejar vacío para
+                utilizar <em>woost.app.icon_resolver</em>.",
+            en:
+                Reference to an instance of
+                <em>woost.iconresolver.IconResolver.</em> Leave blank to use
+                <em>woost.app.icon_resolver</em>.
+
+        [icon_size]
+        ca: Mida de les icones
+        es: Tamaño de los iconos
+        en: Icon size
+

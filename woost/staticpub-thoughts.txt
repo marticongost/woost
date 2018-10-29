@@ -1,0 +1,106 @@
+Marcant contingut brut:
+
+    Cada destinació necessitarà el seu registre particular de continguts bruts.
+
+    Marcar com a nou contingut:
+        Tot el contingut existent, quan es crei una destinació
+        Quan s'insereixi el publicable, marcar les seves traduccions publicades
+        Quan es modifiqui el publicable, marcar les seves traduccions que passin a estar
+        publicades
+
+    Marcar com a contingut a modificar:
+        Totes les parelles d'element / traducció marcades amb un tag que sigui invalidat
+
+    Marcar com a contingut a eliminar:
+        Quan s'elimini el publicable, marcar totes les seves traduccions
+        Quan es modifiqui el publicable, marcar totes les seves traduccions que passin a
+        estar despublicades
+
+    Pel contingut marcat com a modificat, seria interessant poder detectar els canvis que
+    ho han causat. Si guardem l'últim changeset existent quan s'exporta (al moment en que
+    el vinculem als tags), hauríem de ser capaços de fer-ho: cada cop que sigui invalidat,
+    podem guardar el tag que causa la invalidació. Després, creuant aquests tags amb els
+    tags corresponents als elements creats / modificats / eliminats a l'històric a partir
+    de la última data d'exportació podem obtenir la llista d'instàncies de Change
+    rellevants. A partir d'allà, es tractaria de visualitzar-les i mostrar-ne els diffs.
+    Fet i fet, es podria estudiar fer el mateix per explicar les eliminacions, també (per
+    saber si s'elimina a causa d'una eliminació, o d'una despublicació - tot i que aquí és
+    menys interessant).
+
+Marcant els tags del contingut exportat
+
+    L'exportador enviarà una capçalera X-Woost-Publication-Details; en detectar-la, el
+    gestor afegirà capçaleres HTTP X-Woost-Publishable, X-Woost-Language i
+    X-Woost-Invalidation-Tags, que permetran identificar el publicable i idioma servits,
+    així com els tags d'invalidació resultants.
+    
+    Important: caldrà assegurar-se que disposem dels tags d'invalidació encara que no
+    s'estigui aplicant cache. És possible que calgui generalitzar el mecanisme d'invalidació,
+    canviant el nom a algunes APIs i deslligant-ho tot del cache.
+
+    Amb la informació obtinguda de les capçaleres s'actualitzarà el registre d'estat del
+    contingut per la destinació exportada.
+
+    Caldrà estructurar bé l'operació de desat dels tags per evitar problemes de
+    concurrència amb les transaccions, i per gestionar errors a qualsevol punt del procés
+    (s'hauria d'actualitzar el registre sii s'aconsegueix exportar el contingut extret).
+
+Què passa amb les finestres de publicació per temps??
+
+    Amb Apache 2.4 es poden fer expressions d'aquest estil a un fitxer .htaccess:
+    
+        Require expr "%{TIME_HOUR} -ge 9 && %{TIME_HOUR} -le 17"
+
+    Però l'estat de publicació d'un element no l'afecta només a ell, també pot tenir
+    incidència en la resta d'elements (llistats, menús, etc).
+
+    Possible opció: poder programar exportacions estàtiques (especificant subconjunts,
+    etc) per tal que s'executin a certes hores.
+
+    L'opció anterior no haurà marcat els continguts que canviin com a pendents d'exportar
+    o eliminar! O es fa al moment, o canviem el sistema de publicació per temps per
+    basar-lo en un cron. Dit això, amb aquest segon mètode poder programar les exportacions
+    seguiria sent necessari, perquè l'únic que faria seria marcar el contingut com a "brut".
+
+    Passar les finestres de temps a una solució basada en cron pot tenir impactes...
+    naturalment, caldria una branca nova de Woost, i en particular, estudiar l'impacte sobre
+    el cache (la data d'inici / fi de publicació s'utilitza com a data d'expiració de les
+    entrades; en principi això ja no caldria).
+    
+    A banda d'aquests canvis, podria simplificar unes quantes coses, com ara la creació
+    d'events published/unpublished, que d'altra manera no podem tenir.
+
+Què passa amb els permisos?
+
+    En principi, no els tindrem en compte per decidir què està pendent de publicar /
+    despublicar: són de complexitat arbitrària i calcular la seva incidència sobre
+    l'accessibilitat dels elements és molt difícil o impossible. Si es canvien caldrà
+    reexportar a ma.
+  
+    L'alternativa seria marcar tot el contingut existent com a brut quan es creii / 
+    modifiqui / elimini una instància de ContentPermission d'un rol que s'apliqui a l'usuari
+    que recorre la web durant l'exportació (normalment serien "tothom" i "anònim"). També es
+    podrien generar tags d'invalidació basats en tots els rols de l'usuari actiu i els seus
+    permisos de lectura (això podria ser una solució més neta, i que resoldria aquest mateix
+    problema pel cache de contingut). No és una solució exacta (els permisos poden dependre
+    de tercers elements, i és impossible conèixer aquestes dependències, que s'expressen amb
+    codi).
+
+Interfície
+
+    Seria interessant oferir un filtre "Pendent d'exportar a X en Y" que llistés
+    publicables que s'hagin d'exportar a la destinació seleccionada en l'idioma indicat
+    (tots dos paràmetres tindrien l'opció "Qualsevol").
+
+    Seria pràctic afegir indicadors visuals (estil Tortoise) en pintar els elements al
+    backoffice. Per fer-ho però, caldria definir una destinació per defecte (per saber
+    amb quina s'ha de comparar). També seria bò poder-ho veure desglossat per idioma;
+    potser es podrien afegir a la columna Traduccions?
+
+    S'haurien de poder seleccionar elements específics per exportar.
+
+    S'hauria de poder exportar tot el contingut brut, en X idiomes.
+
+    S'hauria de poder exportar una branca sencera, o tot el contingut brut d'una branca
+    sencera.
+

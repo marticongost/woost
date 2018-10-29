@@ -1,0 +1,27 @@
+
+[woost.extensions.staticsite.exportstaticsitecontroller]
+
+    [ExportForm]
+
+        [members]
+
+            [update_only]
+            ca: Exportar únicament el contingut modificat
+            es: Exportar únicamente el contenido modificado
+            en: Only export modified content
+
+            [destination]
+            ca: Destí
+            es: Destino
+            en: Destination
+
+            [snapshoter]
+            ca: Exportador
+            es: Exportador
+            en: Exporter
+
+            [follow_links]
+            ca: Seguir els enllaços
+            es: Seguir los enlaces
+            en: Follow links
+

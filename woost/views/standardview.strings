@@ -1,0 +1,8 @@
+
+[woost.views.StandardView]
+
+    [site_navigation_title]
+    ca: Menú principal
+    es: Menú principal
+    en: Main navigation
+

@@ -1,0 +1,10 @@
+
+[woost.models.user.User]
+
+    [members]
+
+        [confirmed_email]
+        ca: Adreça de correu confirmada
+        es: Dirección de correo confirmada
+        en: Email address confirmed
+

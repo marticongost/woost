@@ -1,0 +1,10 @@
+
+[woost.models.item.Item]
+
+    [members]
+
+        [translation_requests]
+        ca: Peticions de traducció
+        es: Peticiones de traducción
+        en: Translation requests
+

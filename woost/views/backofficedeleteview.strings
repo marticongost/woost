@@ -1,0 +1,41 @@
+
+[woost.views.BackOfficeDeleteView]
+
+    [warning]
+    ca: S'eliminaran els elements indicats:
+    es: Se eliminarán los elementos indicados:
+    en: The following elements will be deleted:
+
+    [block_notice]
+    ca:
+        No es pot completar l'eliminació, ja que alguns dels elements
+        seleccionats tenen contingut relacionat que impedeix que puguin
+        ser eliminats:
+    es:
+        No se puede completar la eliminación, ya que algunos de los
+        elementos seleccionados contienen vinculaciones que impiden que
+        puedan ser eliminados:
+    en:
+        The delete operation could not be executed; it is blocked by the
+        the following relations:
+
+    [cascade_details]
+    ca: També eliminarà:
+    es: También eliminará:
+    en: Will also delete:
+
+    [block_details]
+    ca: Bloquejat per:
+    es: Bloqueado por:
+    en: Blocked by:
+
+    [confirm_delete_button]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+
+    [cancel_button]
+    ca: Cancel·lar
+    es: Cancelar
+    en: Cancel
+

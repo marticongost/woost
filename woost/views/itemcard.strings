@@ -1,0 +1,13 @@
+
+[woost.views.ItemCard]
+
+    [creating_item(content_type)]
+    ca: Creant ${translations(content_type).lower()}
+    es: Creando ${translations(content_type).lower()}
+    en: Creating ${translations(content_type).lower()}
+
+    [item_path.conjunction]
+    ca: a
+    es: en
+    en: in
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.PublishableListing
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    image_factory = "icon16"
+    ?>
+
+    <li py:def="entry" py:args="publishable, publishable_index">
+
+        <py:new
+            py:local_id="link"
+            py:element="self.create_publishable_link(publishable)">
+
+            <py:woost.views.Image
+                py:local_id="icon"
+                py:image="${publishable}"
+                py:image_factory="${self.image_factory}"
+                py:accessible_check="${False}"/>
+
+            <span py:local_id="title">
+                ${translations(publishable)}
+            </span>
+        </py:new>
+    </li>
+
+</py:woost.views.PublishableListing>
+

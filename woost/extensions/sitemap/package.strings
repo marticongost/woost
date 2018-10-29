@@ -1,0 +1,11 @@
+
+[woost.extensions.sitemap.SitemapExtension]
+ca: Refinament de l'indexat web
+es: Refinamiento del indexado web
+en: Web crawler hints
+
+    [plural]
+    ca: Refinament de l'indexat web
+    es: Refinamiento del indexado web
+    en: Web crawler hints
+

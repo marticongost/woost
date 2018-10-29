@@ -1,0 +1,270 @@
+
+[woost.models.permission]
+
+    [Permission]
+    ca: Permís
+    es: Permiso
+    en: Permission
+
+        [plural]
+        ca: Permisos
+        es: Permisos
+        en: Permissions
+
+        [members]
+
+            [role]
+            ca: Rol
+            es: Rol
+            en: Role
+
+            [authorized]
+            ca: Autoritzat
+            es: Autorizado
+            en: Authorized
+
+                [explanation]
+                ca: Si es desmarca, el permís passa a actuar com una prohibició
+                es: Si se desmarca, el permiso pasa a actuar como una prohibición
+                en: If unchecked, the permission is treated as a prohibition
+
+    [ContentPermission]
+    ca: Permís de contingut
+    es: Permiso de contenido
+    en: Content permission
+
+        [plural]
+        ca: Permisos de contingut
+        es: Permisos de contenido
+        en: Content permissions
+
+        [content_expression_error]
+        ca: (expressió de filtrat incorrecta)
+        es: (expresión de filtrado incorrecta)
+        en: (incorrect filter)
+
+        [members]
+
+            [content_type]
+            ca: Tipus d'element
+            es: Tipo de elemento
+            en: Content type
+
+            [content_expression]
+            ca: Expressió de filtrat
+            es: Expresión de filtrado
+            en: Filtering expression
+
+            [subject_description]
+            ca: Descripció de l'àmbit del permís
+            es: Descripción del ámbito del permiso
+            en: Permission scope description
+
+            [explanation]
+            ca:
+                Permet explicar els elements que es veuran afectats per aquest
+                permís. Deixar en blanc per utilitzar una descripció
+                automàtica, basada en el tipus i expressió de filtrats
+                seleccionats.
+            es:
+                Permite explicar los elementos que se verán afectados por este
+                permiso. Dejar en blanco para utilizar una descripción
+                automática basada en el tipo y expresión de filtrado
+                seleccionados.
+            en:
+                Describes the elements that should be afected by the permission.
+                Leave blank to use an automatically generated description, based
+                on the selected content type and filters.
+
+    [ReadPermission]
+    ca: Permís de lectura
+    es: Permiso de lectura
+    en: Read content permission
+
+        [plural]
+        ca: Permisos de lectura
+        es: Permisos de lectura
+        en: Read content permissions
+
+    [CreatePermission]
+    ca: Permís de creació
+    es: Permiso de creación
+    en: Create content permission
+
+        [plural]
+        ca: Permisos de creació
+        es: Permisos de creación
+        en: Create content permissions
+
+    [ModifyPermission]
+    ca: Permís de modificació
+    es: Permiso de modificación
+    en: Modify content permission
+
+        [plural]
+        ca: Permisos de modificació
+        es: Permisos de modificación
+        en: Modify content permissions
+
+    [DeletePermission]
+    ca: Permís d'eliminació
+    es: Permiso de eliminación
+    en: Delete content permission
+
+        [plural]
+        ca: Permisos d'eliminació
+        es: Permisos de eliminación
+        en: Delete content permissions
+
+    [RenderPermission]
+    ca: Permís de visualització d'imatges
+    es: Permiso de visualización de imágenes
+    en: Render permission
+
+        [plural]
+        ca: Permisos de visualització d'imatges
+        es: Permisos de visualización de imágenes
+        en: Render permissions
+
+        [members]
+
+            [image_factories]
+            ca: Processat
+            es: Procesado
+            en: Processing
+
+                [explanation]
+                ca:
+                    Limita el permís o prohibició a un subconjunt de les
+                    diferents visualitzacions suportades pel lloc web.
+                es:
+                    Limita el permiso o prohibición a un subconjunto de las
+                    distintas visualizaciones soportadas por el sitio web.
+                en:
+                    Limits the permission to a specific subset of the different
+                    renderings supported by the site.
+
+    [MemberPermission]
+    ca: Permís de membre
+    es: Permiso de miembro
+    en: Member permission
+
+        [plural]
+        ca: Permisos sobre els membres
+        es: Permisos sobre los miembros
+        en: Member permissions
+
+        [members]
+
+            [matching_members]
+            ca: Membres inclosos
+            es: Miembros incluidos
+            en: Included members
+
+    [ReadMemberPermission]
+    ca: Permís de lectura de membres
+    es: Permiso de lectura de miembros
+    en: Read members permission
+
+        [plural]
+        ca: Permisos de lectura de membres
+        es: Permisos de lectura de miembros
+        en: Read members permissions
+
+    [ModifyMemberPermission]
+    ca: Permís de modificació de membres
+    es: Permiso de modificación de miembros
+    en: Modify members permission
+
+        [plural]
+        ca: Permisos de lectura de membres
+        es: Permisos de lectura de miembros
+        en: Read members permissions
+
+    [TranslationPermission]
+    ca: Permís de traducció
+    es: Permiso de traducción
+    en: Translation permission
+
+        [plural]
+        ca: Permisos de traducció
+        es: Permisos de traducción
+        en: Translation permissions
+
+        [members]
+
+            [matching_languages]
+            ca: Idiomes inclosos
+            es: Idiomas incluidos
+            en: Included languages
+
+    [ReadTranslationPermission]
+    ca: Permís de lectura de traducció
+    es: Permiso de lectura de traducción
+    en: Read translation permission
+
+        [plural]
+        ca: Permisos de lectura de traducció
+        es: Permisos de lectura de traducción
+        en: Read translation permissions
+
+    [CreateTranslationPermission]
+    ca: Permís de creació de traducció
+    es: Permiso de creación de traducción
+    en: Create translation permission
+
+        [plural]
+        ca: Permisos de creació de traducció
+        es: Permisos de creación de traducción
+        en: Create translation permissions
+
+    [ModifyTranslationPermission]
+    ca: Permís de modificació de traducció
+    es: Permiso de modificación de traducción
+    en: Modify translation permission
+
+        [plural]
+        ca: Permisos de modificació de traducció
+        es: Permisos de modificación de traducción
+        en: Modify translation permissions
+
+    [DeleteTranslationPermission]
+    ca: Permís d'eliminació de traducció
+    es: Permiso de eliminación de traducción
+    en: Delete translation permission
+
+        [plural]
+        ca: Permisos d'eliminació de traducció
+        es: Permisos de eliminación de traducción
+        en: Delete translation permissions
+
+    [ReadHistoryPermission]
+    ca: Permís de lectura d'històric
+    es: Permiso de lectura de histórico
+    en: Read past revisions permission
+
+        [plural]
+        ca: Permisos de lectura d'històric
+        es: Permisos de lectura de histórico
+        en: Read past revisions permissions
+
+    [InstallationSyncPermission]
+    ca: Permís de sincronització
+    es: Permiso de sincronización
+    en: Synchronization permission
+
+        [plural]
+        ca: Permisos de sincronització
+        es: Permisos de sincronización
+        en: Synchronization permissions
+
+    [DebugPermission]
+    ca: Permís de depuració de codi
+    es: Permiso de depuración del código
+    en: Debug permission
+
+        [plural]
+        ca: Permisos de depuració de codi
+        es: Permisos de depuración del código
+        en: Debug permissions
+

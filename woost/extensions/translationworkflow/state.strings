@@ -1,0 +1,48 @@
+
+[woost.extensions.translationworkflow.state.TranslationWorkflowState]
+ca: Estat del circuït de traducció
+es: Estado del circuito de traducción
+en: Translation workflow state
+
+    [plural]
+    ca: Estats del circuït de traducció
+    es: Estados del circuito de traducción
+    en: Translation workflow states
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [plural_title]
+        ca: Nom en plural
+        es: Nombre en plural
+        en: Plural name
+
+        [color]
+        ca: Color
+        es: Color
+        en: Color
+
+        [incomming_transitions]
+        ca: Transicions entrants
+        es: Transiciones entrantes
+        en: Incomming transitions
+
+        [outgoing_transitions]
+        ca: Transicions de sortida
+        es: Transiciones de salida
+        en: Outgoing transitions
+
+        [state_after_source_change]
+        ca: Nou estat quan es modifiqui el text original
+        es: Nuevo estado cuando se modifique el texto original
+        en: State after the translated item is modified
+
+        [requests]
+        ca: Peticions de traducció
+        es: Peticiones de traducción
+        en: Translation requests
+

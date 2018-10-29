@@ -1,0 +1,18 @@
+
+[woost.views.BackOfficeFieldsView]
+
+    [translations_dropdown]
+    ca: Traduccions
+    es: Traducciones
+    en: Translations
+
+        [shortcut]
+        ca: t
+        es: t
+        en: t
+
+        [submit_button]
+        ca: Aplicar
+        es: Aplicar
+        en: Apply
+

@@ -1,0 +1,38 @@
+
+[woost.extensions.locations.location.Location]
+ca: Ubicació
+es: Ubicación
+en: Location
+
+    [plural]
+    ca: Ubicacions
+    es: Ubicaciones
+    en: Locations
+
+    [members]
+
+        [location_name]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [location_type]
+        ca: Tipus d'ubicació
+        es: Tipo de ubicación
+        en: Location type
+
+        [code]
+        ca: Codi
+        es: Código
+        en: Code
+
+        [parent]
+        ca: Ubicació pare
+        es: Ubicación padre
+        en: Parent location
+
+        [locations]
+        ca: Ubicacions contingudes
+        es: Ubicaciones contenidas
+        en: Child locations
+

@@ -1,0 +1,25 @@
+
+[woost.extensions.newsletters.newsletterbox.NewsletterBox]
+ca: Caixa
+es: Caja
+en: Box
+
+    [plural]
+    ca: Caixes
+    es: Cajas
+    en: Boxes
+
+    [members]
+
+        [blocks]
+        ca: Blocs
+        es: Bloques
+        en: Blocks
+
+[woost.models.block.Block.view_class.values]
+
+    [Block.view_class=woost.extensions.newsletters.NewsletterBoxView]
+    ca: Estàndard
+    es: Estándar
+    en: Standard
+

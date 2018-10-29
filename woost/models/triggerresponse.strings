@@ -1,0 +1,47 @@
+
+[woost.models.triggerresponse]
+
+    [TriggerResponse]
+    ca: Resposta
+    es: Respuesta
+    en: Trigger response
+
+        [plural]
+        ca: Respostes
+        es: Respuestas
+        en: Trigger responses
+
+    [CustomTriggerResponse]
+    ca: Resposta personalitzada
+    es: Respuesta personalizada
+    en: Custom response
+
+        [plural]
+        ca: Respostes personalitzades
+        es: Respuestas personalizadas
+        en: Custom responses
+
+        [members]
+
+            [code]
+            ca: Codi de resposta
+            es: Código de respuesta
+            en: Response code
+
+    [SendEmailTriggerResponse]
+    ca: Enviament de correu electrònic
+    es: Envío de correo electrónico
+    en: Send E-mail
+
+        [plural]
+        ca: Enviaments de correu electrònic
+        es: Envíos de correo electrónico
+        en: Send E-mail
+
+        [members]
+
+            [email_template]
+            ca: Plantilla de correu electrònic
+            es: Plantilla de correo electrónico
+            en: E-mail template
+

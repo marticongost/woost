@@ -1,0 +1,8 @@
+
+[woost.extensions.recaptcha.schemarecaptchas]
+
+    [ReCaptchaValidationError.instance]
+    ca: Ho sentim, el CAPTCHA és erroni. Si us plau, intenti-ho de nou.
+    es: Lo sentimos, el CAPTCHA es erroneo. Por favor inténtelo de nuevo.
+    en: Sorry, you failed the CAPTCHA. Please try again.
+

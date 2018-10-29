@@ -1,0 +1,18 @@
+
+[woost.extensions.googleanalytics.GoogleAnalyticsExtension]
+ca: Google Analytics
+es: Google Analytics
+en: Google Analytics
+
+    [plural]
+    ca: Google Analytics
+    es: Google Analytics
+    en: Google Analytics
+
+    [members]
+
+        [account]
+        ca: Compte
+        es: Cuenta
+        en: Account
+

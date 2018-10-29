@@ -1,0 +1,8 @@
+
+[woost.views.ChangeLog]
+
+    [change_list_grouped_entry]
+
+        [change_targets_display(model, count)]
+        *: ${count} t{model, suffix = ".plural" if count > 0 else ""}
+

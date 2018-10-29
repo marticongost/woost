@@ -1,0 +1,18 @@
+
+[woost.models.rendering.chainrenderer.ChainRenderer]
+ca: Pintador en cadena
+es: Pintador en cadena
+en: Chain renderer
+
+    [plural]
+    ca: Pintadors en cadena
+    es: Pintadores en cadena
+    en: Chain renderers
+
+    [members]
+
+        [renderers]
+        ca: Pintadors
+        es: Pintadores
+        en: Renderers
+

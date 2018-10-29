@@ -1,0 +1,12 @@
+[woost.views.IdentityBox]
+
+    [logout_button]
+    ca: Sortir
+    es: Salir
+    en: Log out
+    fr: Log out
+    de: Abmelden
+    pl: Zaloguj się
+    nl: Log uit
+    pt: Sair
+

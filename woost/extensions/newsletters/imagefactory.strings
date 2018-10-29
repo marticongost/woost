@@ -1,0 +1,10 @@
+
+[woost.models.rendering.imagefactory.ImageFactory]
+
+    [members]
+
+        [applicable_to_newsletters]
+        ca: Aplicable a butlletins de notícies
+        es: Aplicable a boletines de noticias
+        en: Applicable to newsletters
+

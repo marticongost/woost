@@ -1,0 +1,17 @@
+
+[woost.models.configuration.Configuration]
+
+    [groups]
+
+        [services.google_tag_manager]
+        ca: Google Tag Manager
+        es: Google Tag Manager
+        en: Google Tag Manager
+
+    [members]
+
+        [google_tag_manager_account]
+        ca: Compte de Google Tag Manager
+        es: Cuenta de Google Tag Manager
+        en: Google Tag Manager account
+

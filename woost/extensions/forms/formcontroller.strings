@@ -1,0 +1,9 @@
+
+[woost.extensions.forms.formcontroller]
+
+    [form_agreement(member, **kwargs)]
+    *: ${member.text}
+
+    [form_agreement.agreement_subject(member, **kwargs)]
+    *: ${member.document_title or translations("woost.controllers.formagreement.default_subject")}
+

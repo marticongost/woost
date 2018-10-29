@@ -1,0 +1,13 @@
+
+[woost.extensions.campaign3.ResubscribeFormView]
+
+    [unsubscribed_by_error]
+    ca: <strong>No volies donar-te de baixa?</strong> Clica a continuació per seguir rebent els nostres missatges.
+    es: <strong>No querías darte de baja?</strong> Haz clic a continuación para seguir recibiendo nuestros mensajes.
+    en: <strong>You did not want to unsubscribe?</strong> Click below to continue receiving our messages.
+
+    [resubscribe]
+    ca: Tornar a subscriure's
+    es: Volver a suscribirse
+    en: Re-subscribe
+

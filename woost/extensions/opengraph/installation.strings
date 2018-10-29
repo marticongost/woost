@@ -1,0 +1,247 @@
+
+[woost.extensions.opengraph.image_factory.title]
+ca: Miniatura per Facebook
+es: Miniatura para Facebook
+en: Facebook thumbnail
+
+[opengraph]
+
+    [categories]
+
+        [activities]
+        ca: Activitats
+        es: Actividades
+        en: Activities
+
+        [businesses]
+        ca: Negocis
+        es: Negocios
+        en: Businesses
+
+        [groups]
+        ca: Grups
+        es: Grupos
+        en: Groups
+
+        [organizations]
+        ca: Organitzacions
+        es: Organizaciones
+        en: Organizations
+
+        [people]
+        ca: Gent
+        es: Gente
+        en: People
+
+        [places]
+        ca: Llocs
+        es: Sitios
+        en: Places
+
+        [products_and_entertainment]
+        ca: Productes i entreteniment
+        es: Productos y entretenimiento
+        en: Products and entertainment
+
+        [websites]
+        ca: Llocs web
+        es: Sitios web
+        en: Web sites
+
+    [types]
+
+        [activity]
+        ca: Activitat
+        es: Actividad
+        en: Activity
+
+        [sport]
+        ca: Esport
+        es: Deporte
+        en: Sport
+
+        [bar]
+        ca: Bar
+        es: Bar
+        en: Bar
+
+        [company]
+        ca: Companyia
+        es: Compañía
+        en: Company
+
+        [cafe]
+        ca: Cafè
+        es: Café
+        en: Cafe
+
+        [hotel]
+        ca: Hotel
+        es: Hotel
+        en: Hotel
+
+        [restaurant]
+        ca: Restaurant
+        es: Restaurante
+        en: Restaurant
+
+        [cause]
+        ca: Causa
+        es: Causa
+        en: Cause
+
+        [sports_league]
+        ca: Lliga esportiva
+        es: Liga deportiva
+        en: Sports league
+
+        [sports_team]
+        ca: Equip esportiu
+        es: Equipo deportivo
+        en: Sports team
+
+        [band]
+        ca: Grup musical
+        es: Grupo musical
+        en: Band
+
+        [government]
+        ca: Govern
+        es: Gobierno
+        en: Government
+
+        [non_profit]
+        ca: ONG
+        es: ONG
+        en: NGO
+
+        [school]
+        ca: Escola
+        es: Escuela
+        en: School
+
+        [university]
+        ca: Universitat
+        es: Universidad
+        en: University
+
+        [actor]
+        ca: Actor
+        es: Actor
+        en: Actor
+
+        [athlete]
+        ca: Atleta
+        es: Atleta
+        en: Athlete
+
+        [author]
+        ca: Autor
+        es: Autor
+        en: Author
+
+        [director]
+        ca: Director de cine
+        es: Director de cine
+        en: Director
+
+        [musician]
+        ca: Músic
+        es: Músico
+        en: Musician
+
+        [politician]
+        ca: Polític
+        es: Político
+        en: Politician
+
+        [profile]
+        ca: Perfil
+        es: Perfil
+        en: Profile
+
+        [public_figure]
+        ca: Figura pública
+        es: Figura pública
+        en: Public figure
+
+        [city]
+        ca: Ciutat
+        es: Ciudad
+        en: City
+
+        [country]
+        ca: País
+        es: País
+        en: Country
+
+        [landmark]
+        ca: Punt d'interès
+        es: Punto de interés
+        en: Landmark
+
+        [state_province]
+        ca: Província o regió
+        es: Provincia o región
+        en: State province
+
+        [album]
+        ca: Àlbum
+        es: Álbum
+        en: Album
+
+        [book]
+        ca: Llibre
+        es: Libro
+        en: Book
+
+        [drink]
+        ca: Beguda
+        es: Bebida
+        en: Drink
+
+        [food]
+        ca: Menjar
+        es: Comida
+        en: Food
+
+        [game]
+        ca: Joc
+        es: Juego
+        en: Game
+
+        [movie]
+        ca: Pel·lícula
+        es: Película
+        en: Movie
+
+        [product]
+        ca: Producte
+        es: Producto
+        en: Product
+
+        [song]
+        ca: Cançó
+        es: Canción
+        en: Song
+
+        [tv_show]
+        ca: Programa de televisió
+        es: Programa de televisión
+        en: TV show
+
+        [article]
+        ca: Article
+        es: Artículo
+        en: Article
+
+        [blog]
+        ca: Blog
+        es: Blog
+        en: Blog
+
+        [website]
+        ca: Lloc web
+        es: Sitio web
+        en: Web site
+

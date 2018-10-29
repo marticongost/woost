@@ -1,0 +1,38 @@
+
+[woost.extensions.staticpub.BackOfficeStaticPubExportView]
+
+    [page_title]
+    ca: Exportació de contingut estàtic
+    es: Exportación de contenido estático
+    en: Exporting static content
+
+    [preview_button]
+    ca: Previsualitzar
+    es: Previsualizar
+    en: Preview
+
+    [submit_button]
+    ca: Exportar
+    es: Exportar
+    en: Export
+
+    [local_link]
+    ca: Local
+    es: Local
+    en: Local
+
+    [remote_link]
+    ca: Remot
+    es: Remoto
+    en: Remote
+
+    [loading_label]
+    ca: Carregant...
+    es: Cargando...
+    en: Loading...
+
+    [error_label]
+    ca: S'ha produït un error.
+    es: Se ha producido un error.
+    en: An error has occurred
+

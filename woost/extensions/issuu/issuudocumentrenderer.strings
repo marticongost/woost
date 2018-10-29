@@ -1,0 +1,11 @@
+
+[woost.extensions.issuu.issuudocumentrenderer.IssuuDocumentRenderer]
+ca: Pintador de document Issuu
+es: Pintador de documento Issuu
+en: Issuu document renderer
+
+    [plural]
+    ca: Pintador de documents Issuu
+    es: Pintador de documentos Issuu
+    en: Issuu documents renderer
+
