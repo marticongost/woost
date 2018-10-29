@@ -50,6 +50,7 @@ class User(Item):
     """
     type_group = "users"
     admin_show_descriptions = False
+    admin_edit_view = "woost.admin.ui.UserEditView"
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
