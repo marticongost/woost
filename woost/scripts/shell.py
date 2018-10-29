@@ -15,7 +15,7 @@ from woost import app
 from woost.models import *
 from woost.admin.models import *
 from woost.models.utils import *
-from woost.models.extension import load_extensions
+from woost.models.extension import extensions_manager
 from woost.models.objectio import (
     ExportMode,
     UnknownMemberPolicy,
@@ -32,18 +32,11 @@ def setup_shell(env):
     app.website = Website.select()[0]
 
     # Load extensions and import their models
-    load_extensions()
+    extensions_manager.load_extensions()
 
-    for extension in Extension.select():
-        pkg_name = extension.__class__.__module__
-        module_name = pkg_name.rsplit(".", 1)[1]
-        ext_module = sys.modules[pkg_name]
-        env[module_name] = ext_module
-        setattr(ext_module, "instance", extension)
-        if extension.enabled:
-            for cls in Item.derived_schemas():
-                if cls.full_name.startswith(pkg_name + "."):
-                    setattr(ext_module, cls.__name__, cls)
+    for extension in extensions_manager.iter_extensions():
+        module_name = extension.__name__[extension.__name__.rfind(".") + 1:]
+        env[module_name] = extension
 
 get = Item.get_instance
 req = Item.require_instance

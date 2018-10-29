@@ -1933,3 +1933,61 @@ def convert_user_roles_collection_to_single_reference(e):
             else:
                 user._role = None
 
+@migration_step
+def remove_extension_models(e):
+
+    from woost.models import Item
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.extension.Extension",
+        existing_bases = (Item,)
+    )
+
+    for ext in [
+        "woost.extensions.shop.ShopExtension",
+        "woost.extensions.countries.CountriesExtension",
+        "woost.extensions.payments.PaymentsExtension",
+        "woost.extensions.comments.CommentsExtension",
+        "woost.extensions.recaptcha.ReCaptchaExtension",
+        "woost.extensions.staticsite.StaticSiteExtension",
+        "woost.extensions.sitemap.SitemapExtension",
+        "woost.extensions.pdf.PDFExtension",
+        "woost.extensions.vimeo.VimeoExtension",
+        "woost.extensions.signup.SignUpExtension",
+        "woost.extensions.googlesearch.GoogleSearchExtension",
+        "woost.extensions.googleanalytics.GoogleAnalyticsExtension",
+        "woost.extensions.googletagmanager.GoogleTagManagerExtension",
+        "woost.extensions.campaignmonitor.CampaignMonitorExtension",
+        "woost.extensions.mailer.MailerExtension",
+        "woost.extensions.usermodels.UserModelsExtension",
+        "woost.extensions.locations.LocationsExtension",
+        "woost.extensions.webconsole.WebConsoleExtension",
+        "woost.extensions.blocks.BlocksExtension",
+        "woost.extensions.opengraph.OpenGraphExtension",
+        "woost.extensions.ecommerce.ECommerceExtension",
+        "woost.extensions.facebookpublication.FacebookPublicationExtension",
+        "woost.extensions.shorturls.ShortURLsExtension",
+        "woost.extensions.twitterpublication.TwitterPublicationExtension",
+        "woost.extensions.textfile.TextFileExtension",
+        "woost.extensions.audio.AudioExtension",
+        "woost.extensions.issuu.IssuuExtension",
+        "woost.extensions.campaign3.CampaignMonitor3Extension",
+        "woost.extensions.youtube.YouTubeExtension",
+        "woost.extensions.tv3alacarta.TV3ALaCartaExtension",
+        "woost.extensions.externalfiles.ExternalFilesExtension",
+        "woost.extensions.restrictedaccess.RestrictedAccessExtension",
+        "woost.extensions.annotations.AnnotationsExtension",
+        "woost.extensions.notices.NoticesExtension",
+        "woost.extensions.variables.VariablesExtension",
+        "woost.extensions.surveys.SurveysExtension",
+        "woost.extensions.newsletters.NewslettersExtension",
+        "woost.extensions.forms.FormsExtension",
+        "woost.extensions.translationworkflow.TranslationWorkflowExtension",
+        "woost.extensions.identity.IdentityExtension",
+        "woost.extensions.attributes.AttributesExtension",
+        "woost.extensions.staticpub.StaticPubExtension",
+        "woost.extensions.nocaptcha.NoCaptchaExtension"
+    ]:
+        remove_broken_type(ext)
+
