@@ -23,6 +23,7 @@ class Section(object):
     visible = True
     node = None
     ui_component = None
+    menu_entry_component = None
 
     def __init__(self, id, **kwargs):
 
@@ -239,6 +240,7 @@ class Section(object):
             "title": translations(self),
             "node": self.node,
             "ui_component": self.ui_component,
+            "menu_entry_component": self.menu_entry_component,
             "icon": icon_uri,
             "children": [
                 child.export_data()
