@@ -140,3 +140,18 @@
     es: Sistema
     en: System
 
+    [usersessionsection.UserSessionSection.instance]
+    ca: Sessió d'usuari
+    es: Sesión de usuario
+    en: User session
+
+    [myaccountsection.MyAccountSection.instance]
+    ca: El meu compte
+    es: Mi cuenta
+    en: My account
+
+    [logoutsection.LogoutSection.instance]
+    ca: Tancar la sessió
+    es: Cerrar la sesión
+    en: Logout
+

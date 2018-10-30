@@ -970,3 +970,43 @@ woost.admin.nodes.ObjectPath = class ObjectPath extends cocktail.schema.Member {
     }
 }
 
+woost.admin.nodes.MyAccountSection = class MyAccountSection extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.UserEditNode) {
+
+    get item() {
+        return woost.admin.user;
+    }
+
+    get model() {
+        return woost.models.User;
+    }
+}
+
+woost.admin.nodes.LogoutSection = class LogoutSection extends woost.admin.nodes.Section {
+
+    get createsStackUI() {
+        return false;
+    }
+
+    activate() {
+
+        cocktail.ui.Lock.show({
+            icon: this.iconURL,
+            message: cocktail.ui.translations["woost.admin.logging_out"]
+        });
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = woost.admin.url;
+
+        const logoutField = document.createElement("input");
+        logoutField.type = "hidden";
+        logoutField.name = "logout";
+        logoutField.value = "1";
+        form.appendChild(logoutField);
+
+        document.body.appendChild(form);
+        cocktail.csrfprotection.setupForm(form);
+        form.submit();
+    }
+}
+
