@@ -57,13 +57,9 @@ from woost.models import (
     DeleteTranslationPermission,
     ReadHistoryPermission,
     AccessLevel,
-    DeleteTrigger,
-    CustomTriggerResponse,
     EmailTemplate,
     CachingPolicy,
     Extension,
-    Trigger,
-    TriggerResponse,
     VideoPlayerSettings,
     rendering,
     load_extensions
@@ -107,8 +103,6 @@ class SiteInitializer(object):
         Theme,
         Grid,
         GridSize,
-        Trigger,
-        TriggerResponse,
         Extension
     ]
 

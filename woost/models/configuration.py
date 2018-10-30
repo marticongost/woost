@@ -18,7 +18,6 @@ from cocktail import schema
 from woost import app
 from .item import Item
 from .website import Website
-from .trigger import Trigger
 
 try:
     from fractions import Fraction
@@ -32,10 +31,6 @@ class Configuration(Item):
 
     instantiable = False
 
-    members_order = [
-        "triggers",
-    ]
-
     @classgetter
     def instance(cls):
         instance = datastore.get_transaction_value("woost.configuration")
@@ -48,15 +43,6 @@ class Configuration(Item):
         set_language(self.default_language)
         for language, fallback_languages in self.fallback_languages:
             set_fallback_languages(language, fallback_languages)
-
-    # administration
-    #--------------------------------------------------------------------------
-    triggers = schema.Collection(
-        items = schema.Reference(type = Trigger),
-        related_end = schema.Reference(),
-        integral = True,
-        member_group = "administration"
-    )
 
     def get_setting(self, key):
         """Obtains the value for the indicated configuration option.
