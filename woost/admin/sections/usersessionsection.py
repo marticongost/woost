@@ -11,6 +11,7 @@ from .logoutsection import LogoutSection
 class UserSessionSection(Folder):
 
     icon_uri = "woost.admin.ui://images/sections/session.svg"
+    menu_entry_component = "woost.admin.ui.Layout.UserSessionMenuEntry"
 
     def _fill(self):
         self.append(MyAccountSection("my-account"))
