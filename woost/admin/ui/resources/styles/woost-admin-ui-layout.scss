@@ -64,8 +64,17 @@ $submenu-transition: 0.4s ease;
     left: 1em;
 }
 
+#menu {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 #menuEntries {
     @include clear-list-styles;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     .moreSign {
         display: none;
@@ -284,6 +293,10 @@ $submenu-transition: 0.4s ease;
                     }
                 }
             }
+        }
+
+        &[sectionurl$='/session'] {
+            margin-top: auto;
         }
     }
 }

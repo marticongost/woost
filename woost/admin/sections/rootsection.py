@@ -9,6 +9,7 @@ from .newssection import NewsSection
 from .eventssection import EventsSection
 from .filessection import FilesSection
 from .settingsrootsection import SettingsRootSection
+from .usersessionsection import UserSessionSection
 
 
 class RootSection(Folder):
@@ -21,4 +22,5 @@ class RootSection(Folder):
         self.append(EventsSection("events"))
         self.append(FilesSection("files"))
         self.append(SettingsRootSection("settings"))
+        self.append(UserSessionSection("session"))
 
