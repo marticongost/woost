@@ -247,7 +247,12 @@
     <?js
     // Create sections
     for (let section of woost.admin.data._root_section.children) {
-        let entry = this.constructor.MenuEntry.create();
+
+        const entryClass = section.menu_entry_component ?
+            cocktail.getVariable(section.menu_entry_component)
+            : this.constructor.MenuEntry;
+
+        const entry = entryClass.create();
         entry.section = section;
         this.menuEntries.appendChild(entry);
     }
