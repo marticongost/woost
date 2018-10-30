@@ -12,6 +12,7 @@ import traceback
 from string import ascii_letters
 from sha import sha
 from random import choice
+import json
 from warnings import warn
 
 try:
@@ -27,6 +28,7 @@ from pkg_resources import resource_filename
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
+from cocktail.pkgutils import get_full_name
 from cocktail.events import Event, event_handler
 from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
@@ -395,48 +397,79 @@ class CMSController(BaseCMSController):
             publishable = app.publishable
         )
 
+    _error_response_types = {
+        "*/*": "html",
+        "text/html": "html",
+        "text/xhtml": "html",
+        "application/json": "json"
+    }
+
     @event_handler
     def handle_exception_raised(cls, event):
 
         app.error = error = event.exception
         app.traceback = sys.exc_info()[2]
 
-        # Couldn't establish the active website: show a generic error
-        if app.website is None:
-            return
-
         controller = event.source
+        response = cherrypy.response
+        response_type = None
 
-        content_type = cherrypy.response.headers.get("Content-Type")
-        pos = content_type.find(";")
+        # Honor the Accept header
+        accept_header = cherrypy.request.headers.get("Accept")
+        if accept_header:
+            accepted_content_types = []
+            for content_type_spec in accept_header.split(","):
+                content_type = content_type_spec.split(";")[0].strip()
+                response_type = controller._error_response_types.get(content_type)
+                if response_type:
+                    break
 
-        if pos != -1:
-            content_type = content_type[:pos]
+        # Otherwise, base the response type on the current response
+        # Content-Type
+        if not response_type:
+            content_type = cherrypy.response.headers.get("Content-Type")
+            pos = content_type.find(";")
+            if pos != -1:
+                content_type = content_type[:pos]
 
-        if content_type in ("text/html", "text/xhtml"):
+            response_type = controller._error_response_types.get(
+                accepted_content_type
+            )
 
-            error_page, status = event.source.get_error_page(error)
-            response = cherrypy.response
+        status = cherrypy.response.status
+        body = None
 
-            if status:
-                response.status = status
+        if response_type:
 
-            if error_page:
+            if response_type == "html":
+                error_page, status = controller.get_error_page(error)
 
-                if status == 500:
-                    traceback.print_exc()
+                if error_page:
+                    app.original_publishable = app.publishable
+                    app.publishable = error_page
+                    error_controller = error_page.resolve_controller()
 
-                event.handled = True
-                app.original_publishable = app.publishable
-                app.publishable = error_page
-                error_controller = error_page.resolve_controller()
+                    # Instantiate class based controllers
+                    if isinstance(error_controller, type):
+                        error_controller = error_controller()
+                        error_controller._rendering_format = "html"
 
-                # Instantiate class based controllers
-                if isinstance(error_controller, type):
-                    error_controller = error_controller()
-                    error_controller._rendering_format = "html"
+                    body = error_controller()
 
-                response.body = error_controller()
+            elif response_type == "json":
+                json_data, status = controller.get_error_json(error)
+                if json_data:
+                    body = json.dumps(json_data)
+
+        if status:
+            response.status = status
+
+        if body:
+            event.handled = True
+            response.body = body
+
+        if event.handled and status == 500:
+            traceback.print_exc()
 
     def get_error_page(self, error):
         """Produces a custom error page for the indicated exception.
@@ -492,6 +525,34 @@ class CMSController(BaseCMSController):
             return config.get_setting("generic_error_page"), 500
 
         return None, None
+
+    def get_error_json(self, error):
+        """Produces a JSON response to describe the indicated exception.
+
+        :param error: The exception to describe.
+        :type error: Exception
+
+        :return: A tuple containing two items:
+            - An object that can be serialized to JSON describing the
+              exception. This will be the body of the response.
+            - An integer specifying the status code for the response.
+        """
+        error_data = {
+            "type": get_full_name(error.__class__),
+            "label": translations(error)
+        }
+        error_document = {"error": error_data}
+
+        if isinstance(error, AuthorizationError):
+            error_data["user"] = {
+                "id": app.user.id,
+                "anonymous": app.user.anonymous
+            }
+            status = 403
+        else:
+            status = 500
+
+        return (error_document, status)
 
     @event_handler
     def handle_after_request(cls, event):
