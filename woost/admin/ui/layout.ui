@@ -251,6 +251,16 @@
         <ul id="subsectionsList"/>
     </li>
 
+    <ui:MenuEntry ui:component="UserSessionMenuEntry">
+
+        <?class
+        getMenuEntryTitle() {
+            return woost.admin.user._label;
+        }
+        ?>
+
+    </ui:MenuEntry>
+
     <?js
     // Create sections
     for (let section of woost.admin.data._root_section.children) {
