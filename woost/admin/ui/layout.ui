@@ -77,6 +77,18 @@
     <?class
     static main(container) {
 
+        // Reload the page if the session expires
+        cocktail.ui.request.addErrorHandler((request) => {
+            if (
+                request.responseType == "json"
+                && request.response.error
+                && request.response.error.type == "woost.models.user.AuthorizationError"
+                && request.response.error.user.anonymous
+            ) {
+                location.reload();
+            }
+        });
+
         function processSectionTree(parent, section, depth = 0) {
             section.url = (parent ? parent.url : woost.admin.url) + (section.id ? "/" + section.id : "");
             section.parent = parent;
