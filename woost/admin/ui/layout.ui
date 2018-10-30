@@ -131,13 +131,20 @@
 
     <li ui:component="MenuEntry" tabindex="0">
 
+        <?class
+        getMenuEntryTitle(section) {
+            return section.title;
+        }
+        ?>
+
         <ui:property
             name="section"
             reflected="false"
             final="true">
 
             <?on changed
-            let title = newValue.title;
+            let title = this.getMenuEntryTitle(newValue);
+
             if (newValue.parent.parent) {
                 this.heading.innerHTML = title;
             }
