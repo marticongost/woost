@@ -11,6 +11,7 @@ from .editcontroller import EditController
 from .deletecontroller import DeleteController
 from .defaultscontroller import DefaultsController
 from .settingsscopescontroller import SettingsScopesController
+from .currentusercontroller import CurrentUserController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
 
@@ -24,4 +25,5 @@ class DataController(HTTPMethodController):
 
     defaults = DefaultsController
     settings_scopes = SettingsScopesController
+    current_user = CurrentUserController
 

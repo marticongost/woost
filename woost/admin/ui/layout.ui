@@ -87,13 +87,19 @@
             }
         }
 
-        woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
-            processSectionTree(null, admin._root_section);
-            woost.admin.data = admin;
-            cocktail.navigation.prefix = URI(woost.admin.url).path();
-            cocktail.navigation.tree = cocktail.getVariable(admin._root_section.node);
-            super.main(container);
-        });
+        woost.models.User.dataSource.load({url: woost.admin.url + "/data/current_user"})
+            .then((user) => {
+                woost.admin.user = user;
+            })
+            .then(() => {
+                woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
+                    processSectionTree(null, admin._root_section);
+                    woost.admin.data = admin;
+                    cocktail.navigation.prefix = URI(woost.admin.url).path();
+                    cocktail.navigation.tree = cocktail.getVariable(admin._root_section.node);
+                    super.main(container);
+                });
+            });
     }
 
     closeMenu() {
