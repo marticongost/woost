@@ -59,10 +59,8 @@ from woost.models import (
     AccessLevel,
     EmailTemplate,
     CachingPolicy,
-    Extension,
     VideoPlayerSettings,
-    rendering,
-    load_extensions
+    rendering
 )
 from woost.admin.initialization import create_admin
 
@@ -102,8 +100,7 @@ class SiteInitializer(object):
         CachingPolicy,
         Theme,
         Grid,
-        GridSize,
-        Extension
+        GridSize
     ]
 
     read_only_members = [
@@ -346,9 +343,6 @@ class SiteInitializer(object):
         # Login page
         self.login_page = self.create_login_page()
         self.configuration.login_page = self.login_page
-
-        # Extensions
-        self.enable_extensions()
 
     def create_configuration(self):
         config = self._create(
@@ -966,13 +960,4 @@ class SiteInitializer(object):
                 )
             ]
         )
-
-    def enable_extensions(self):
-        # Enable the selected extensions
-        if self.extensions:
-            load_extensions()
-            for extension in Extension.select():
-                ext_name = extension.__class__.__name__[:-len("Extension")].lower()
-                if ext_name in self.extensions:
-                    extension.enabled = True
 
