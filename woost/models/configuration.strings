@@ -19,19 +19,3 @@ en: Global configuration
         es: Páginas web
         en: Websites
 
-        [triggers]
-        ca: Disparadors
-        es: Disparadores
-        en: Triggers
-
-            [explanation]
-            ca:
-                Permet programar accions que s'activin quan es produeixin canvis
-                al contingut.
-            es:
-                Permite programar acciones que se activen cuando se produzcan
-                cambios en el contenido.
-            en:
-                Program actions that will be activated when the site's content
-                changes.
-

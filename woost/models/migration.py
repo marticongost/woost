@@ -1991,3 +1991,32 @@ def remove_extension_models(e):
     ]:
         remove_broken_type(ext)
 
+@migration_step
+def remove_triggers(e):
+
+    from woost.models import Item
+    from woost.models.utils import remove_broken_type
+
+    for name in (
+        "Trigger",
+        "ContentTrigger",
+        "CreateTrigger",
+        "InsertTrigger",
+        "ModifyTrigger",
+        "DeleteTrigger"
+    ):
+        remove_broken_type(
+            "woost.models.trigger." + name,
+            existing_bases = (Item,)
+        )
+
+    for name in (
+        "TriggerResponse",
+        "CustomTriggerResponse",
+        "SendEmailTriggerResponse"
+    ):
+        remove_broken_type(
+            "woost.models.triggerresponse." + name,
+            existing_bases = (Item,)
+        )
+
