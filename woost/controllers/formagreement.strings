@@ -31,7 +31,7 @@ def describe_agreement_subject(member, link = True):
     es:
         He leído y acepto ${describe_agreement_subject(member)}
     en:
-        I have read and agree to the ${describe_agreement_subject(member)}
+        I have read and agree to ${describe_agreement_subject(member)}
     pt:
         Li e aceito ${describe_agreement_subject(member)}
 
@@ -44,4 +44,3 @@ def describe_agreement_subject(member, link = True):
         You must accept ${describe_agreement_subject(error.member)} of the form
     pt:
         Deve aceitar ${describe_agreement_subject(error.member)} deste formulário
-
