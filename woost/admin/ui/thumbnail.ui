@@ -26,8 +26,18 @@
             this.imageType = "image";
         }
         else if (newValue._class) {
-            const model = newValue._class;
-            const icon = model[woost.admin.ui.modelIconURL];
+            let icon;
+
+            if (
+                newValue.mime_type == "image/svg+xml"
+                && newValue._url
+            ) {
+                icon = newValue._url;
+            }
+            else {
+                icon = newValue._class[woost.admin.ui.modelIconURL];
+            }
+
             if (icon) {
                 this.icon.src = icon;
                 this.imageType = "icon";
