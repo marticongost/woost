@@ -41,6 +41,6 @@ $icon-height: 1.5em;
 
 #icon {
     flex: 0 0;
-    --height: $icon-height;
+    --height: #{$icon-height};
 }
 
