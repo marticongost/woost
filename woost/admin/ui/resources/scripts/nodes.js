@@ -6,6 +6,12 @@ woost.admin.ui.editView = Symbol.for("woost.admin.ui.editView");
 
 woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackNode {
 
+    static createSectionClass(section) {
+        let cls = class Section extends this {};
+        cls.section = section;
+        return cls;
+    }
+
     get title() {
         return "";
     }
@@ -218,12 +224,6 @@ woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
 
 woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
 
-    static createSectionClass(section) {
-        let cls = class Section extends this {};
-        cls.section = section;
-        return cls;
-    }
-
     get section() {
         return this.constructor.section;
     }
@@ -244,6 +244,11 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
             map[section.id] = sectionClass;
         }
         return map;
+    }
+
+    initializeStackNode(display) {
+        super.initializeStackNode();
+        display.animationType = "fade";
     }
 }
 
@@ -268,11 +273,6 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return cocktail.getVariable(this.section.ui_component);
         }
         return this.defaultComponent;
-    }
-
-    initializeStackNode(display) {
-        super.initializeStackNode();
-        display.animationType = "fade";
     }
 }
 
@@ -970,7 +970,7 @@ woost.admin.nodes.ObjectPath = class ObjectPath extends cocktail.schema.Member {
     }
 }
 
-woost.admin.nodes.MyAccountSection = class MyAccountSection extends woost.admin.nodes.BaseSectionNode(woost.admin.nodes.UserEditNode) {
+woost.admin.nodes.MyAccountSection = class MyAccountSection extends woost.admin.nodes.UserEditNode {
 
     get item() {
         return woost.admin.user;
@@ -978,6 +978,11 @@ woost.admin.nodes.MyAccountSection = class MyAccountSection extends woost.admin.
 
     get model() {
         return woost.models.User;
+    }
+
+    initializeStackNode(display) {
+        super.initializeStackNode();
+        display.animationType = "fade";
     }
 }
 
