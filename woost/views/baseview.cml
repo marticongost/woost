@@ -62,8 +62,6 @@ from woost.models import Configuration, Publishable, Document
         return self.publishable.is_home_page()
 
     def create_view_variants_schema(self):
-        from cocktail.styled import styled
-        print styled("Yeah", "yellow")
         return schema.Schema(name = "woost.views.variants")
     ?>
 
