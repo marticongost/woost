@@ -57,14 +57,19 @@ $icon-height: $card-height - $icon-padding * 2;
     flex-direction: row;
     align-items: center;
     color: inherit;
-}
-
-:host-context([meaningfulIcons='false']) {
-    padding: 0.4em;
+    padding: 0.2em 0.4em;
 }
 
 :host([autohide='true'][empty='true']) {
     display: none;
+}
+
+:host-context([meaningfulIcons='false']) {
+    padding: 0.7em 0.9em;
+}
+
+:host-context(.cocktail-ui-StackNode-header) {
+    padding: 0;
 }
 
 #imageFrame {
@@ -134,6 +139,10 @@ $icon-height: $card-height - $icon-padding * 2;
     --height: #{$icon-height};
     color: #999;
 
+    :host(:hover):host-context(.cocktail-ui-selected) & {
+        color: rgba(white, 0.6);
+    }
+
     :host([showThumbnails='true']) & {
         padding: $icon-padding;
     }
@@ -166,7 +175,7 @@ $icon-height: $card-height - $icon-padding * 2;
 
 #label {
     font-weight: bold;
-    color: #444;
+    color: rgba(black, 0.8);
     max-height: 2.3em;
     overflow: hidden;
 
@@ -200,21 +209,29 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 
     :host-context(.cocktail-ui-selected) & {
-        color: darken($selection-foreground, 10);
+        color: rgba(white, 0.8);
+    }
+
+    :host(:hover):host-context(.cocktail-ui-selected) & {
+        color: white;
     }
 }
 
 #typeLabel {
-    margin-top: 0.2em;
-    font-size: 0.85em;
-    color: #666;
+    margin-top: 0.3em;
+    font-size: 0.9em;
+    color: rgba(black, 0.55);
 
     :host-context([mixedContentTypes='false']) & {
         display: none;
     }
 
     :host-context(.cocktail-ui-selected) & {
-        color: darken($selection-foreground, 25);
+        color: rgba(white, 0.55);
+    }
+
+    :host(:hover):host-context(.cocktail-ui-selected) & {
+        color: rgba(white, 0.8);
     }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
