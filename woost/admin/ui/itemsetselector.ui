@@ -25,6 +25,12 @@
         reflected="true"
         default="true"/>
 
+    <ui:property
+        name="meaningfulIcons"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
     <?tail
     cls.prototype.itemsDisplayFactory = woost.admin.ui.itemSetSelectorDisplays;
     ?>
@@ -101,13 +107,14 @@
     ?>
 
     <?on dataBinding:changed
-    this.mixedContentTypes = (
+    let relatedType = (
         newValue
-        && newValue.member instanceof cocktail.schema.Collection
-        && newValue.member.items instanceof cocktail.schema.Reference
+        && newValue.member
+        && newValue.member.items
         && newValue.member.items.relatedType
-        && newValue.member.items.relatedType.derivedSchemas.length
     );
+    this.mixedContentTypes = Boolean(relatedType && relatedType.derivedSchemas.length);
+    this.meaningfulIcons = Boolean(this.mixedContentTypes || (relatedType && relatedType[woost.admin.ui.showThumbnails]));
 
     this.toolbar.actions = Array.from(woost.admin.actions.forContext({
         view: this,

@@ -59,12 +59,20 @@ $icon-height: $card-height - $icon-padding * 2;
     color: inherit;
 }
 
+:host-context([meaningfulIcons='false']) {
+    padding: 0.4em;
+}
+
 :host([autohide='true'][empty='true']) {
     display: none;
 }
 
 #imageFrame {
     flex: 0 0;
+
+    :host-context([meaningfulIcons='false']) & {
+        display: none;
+    }
 
     :host([showThumbnails='true']) & {
         margin-right: $image-separation;
@@ -157,7 +165,6 @@ $icon-height: $card-height - $icon-padding * 2;
 }
 
 #label {
-    font-size: 0.9em;
     font-weight: bold;
     color: #444;
     max-height: 2.3em;
