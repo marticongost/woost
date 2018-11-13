@@ -32,7 +32,11 @@
             }
 
             &:hover {
-                background-color: darken($panel-background-color, 10);
+                background-color: $hover-background-color;
+            }
+
+            &[selected]:hover {
+                background-color: $selected-hover-background-color;
             }
         }
     }
