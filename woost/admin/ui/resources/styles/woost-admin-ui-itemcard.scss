@@ -174,14 +174,9 @@ $icon-height: $card-height - $icon-padding * 2;
 }
 
 #label {
-    font-weight: bold;
     color: rgba(black, 0.8);
     max-height: 2.3em;
     overflow: hidden;
-
-    :host-context([mixedContentTypes='false']) & {
-        font-weight: normal;
-    }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='exposed']) & {
         color: $stacknode-exposed-heading-color;
@@ -218,7 +213,7 @@ $icon-height: $card-height - $icon-padding * 2;
 }
 
 #typeLabel {
-    margin-top: 0.3em;
+    margin-top: 0.2em;
     font-size: 0.9em;
     color: rgba(black, 0.55);
 
