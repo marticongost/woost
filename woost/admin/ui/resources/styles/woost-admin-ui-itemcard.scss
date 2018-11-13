@@ -163,6 +163,10 @@ $icon-height: $card-height - $icon-padding * 2;
     max-height: 2.3em;
     overflow: hidden;
 
+    :host-context([mixedContentTypes='false']) & {
+        font-weight: normal;
+    }
+
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='exposed']) & {
         color: $stacknode-exposed-heading-color;
     }
@@ -197,6 +201,10 @@ $icon-height: $card-height - $icon-padding * 2;
     margin-top: 0.2em;
     font-size: 0.85em;
     color: #666;
+
+    :host-context([mixedContentTypes='false']) & {
+        display: none;
+    }
 
     :host-context(.cocktail-ui-selected) & {
         color: darken($selection-foreground, 25);
