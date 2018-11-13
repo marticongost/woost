@@ -19,6 +19,12 @@
         reflected="true"
         default="edit"/>
 
+    <ui:property
+        name="mixedContentTypes"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
     <?tail
     cls.prototype.itemsDisplayFactory = woost.admin.ui.itemSetSelectorDisplays;
     ?>
@@ -95,6 +101,14 @@
     ?>
 
     <?on dataBinding:changed
+    this.mixedContentTypes = (
+        newValue
+        && newValue.member instanceof cocktail.schema.Collection
+        && newValue.member.items instanceof cocktail.schema.Reference
+        && newValue.member.items.relatedType
+        && newValue.member.items.relatedType.derivedSchemas.length
+    );
+
     this.toolbar.actions = Array.from(woost.admin.actions.forContext({
         view: this,
         slot: "collectionToolbar",
