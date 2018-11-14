@@ -93,11 +93,11 @@ class EmailTemplate(Item):
         listed_by_default = False
     )
 
-    body = schema.String(
+    body = schema.CodeBlock(
+        language = "html",
         translated = True,
         listed_by_default = False,
-        spellcheck = True,
-        edit_control = "cocktail.html.TextArea"
+        spellcheck = True
     )
 
     initialization_code = schema.CodeBlock(
