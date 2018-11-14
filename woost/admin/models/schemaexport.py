@@ -167,6 +167,15 @@ class MemberExport(object):
         ):
             yield u"enumeration", self._dump_enumeration(member.enumeration)
 
+        if (
+            member.translatable_enumeration
+            != member.__class__.translatable_enumeration
+        ):
+            yield (
+                u"translatableEnumeration",
+                dumps(member.translatable_enumeration)
+            )
+
         if member.member_group:
             yield u"[cocktail.ui.group]", dumps(member.member_group)
 
