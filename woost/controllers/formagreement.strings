@@ -24,6 +24,8 @@ def describe_agreement_subject(member, link = True):
         the terms and conditions
     pt:
         os termos e condições
+    fr:
+        les termes et conditions
 
     [FormAgreement.default_member_translation(member, **kwargs)]
     ca:
@@ -34,6 +36,8 @@ def describe_agreement_subject(member, link = True):
         I have read and agree to ${describe_agreement_subject(member)}
     pt:
         Li e aceito ${describe_agreement_subject(member)}
+    fr:
+        J'ai lu et accepte ${describe_agreement_subject(member)}
 
     [ConsentNotGivenError.instance(error)]
     ca:
@@ -44,3 +48,5 @@ def describe_agreement_subject(member, link = True):
         You must accept ${describe_agreement_subject(error.member)} of the form
     pt:
         Deve aceitar ${describe_agreement_subject(error.member)} deste formulário
+    fr:
+        Vous devez accepter ${describe_agreement_subject(error.member)} du formulaire
