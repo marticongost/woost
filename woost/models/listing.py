@@ -90,7 +90,9 @@ class Listing(Block):
             view.items = self.select_items()
 
     def select_items(self):
+
         items = self.listed_model.select(
+            base_collection = self.subset or None,
             order = self.listing_order if not self.subset else None
         )
 
