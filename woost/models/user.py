@@ -81,7 +81,8 @@ class User(Item):
         max = 255,
         indexed = True,
         format = "^.+@.+$",
-        member_group = "user_data"
+        member_group = "user_data",
+        ui_column_width = 20
     )
 
     def _apply_imported_password(obj, value, language = None):
