@@ -5,6 +5,24 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:with ui:element="editForm">
+
+        <?js
+        element.awaitFields().then((fields) => {
+
+            const changePasswordField = fields.get("_change_password");
+            const passwordField = fields.get("password");
+
+            changePasswordField.addEventListener("click", (e) => {
+                if (changePasswordField.value) {
+                    passwordField.focusControl();
+                }
+                else {
+                    changePasswordField.focusControl();
+                }
+            });
+        });
+        ?>
+
         <?on value:changed
         this.awaitFields().then((fields) => {
 
@@ -12,11 +30,9 @@
 
             if (newValue && newValue._change_password) {
                 passwordField.style.removeProperty("display");
-                passwordField.focusControl();
             }
             else {
                 passwordField.style.display = "none";
-                fields.get("_change_password").focusControl();
             }
         });
         ?>
