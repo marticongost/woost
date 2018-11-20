@@ -5,8 +5,10 @@ u"""
 """
 import pkgutil
 import importlib
+import os.path
 from threading import RLock
 from cocktail.events import Event
+from woost import app
 from woost import extensions as ext_root
 
 
@@ -67,6 +69,8 @@ class ExtensionsManager(object):
             if extension in self.__loaded_extensions:
                 return False
 
+            self._define_resource_repositories(extension)
+
             load_ext = getattr(extension, "load", None)
             if load_ext:
                 load_ext()
@@ -75,6 +79,40 @@ class ExtensionsManager(object):
             self.__loaded_extensions.add(extension)
 
         return True
+
+    def _define_resource_repositories(self, extension):
+
+        ext_path = os.path.dirname(extension.__file__)
+        from cocktail.styled import styled
+
+        # - woost.extensions.EXTENSION
+        resources_path = os.path.join(ext_path, "resources")
+        repo_name = extension.__name__
+
+        if os.path.exists(resources_path):
+            app.add_resources_repository(repo_name, resources_path)
+
+            # Icon repository
+            icon_path = os.path.join(resources_path, "images", "icons")
+
+            if os.path.exists(icon_path):
+                icon_url = "%s://images/icons" % repo_name
+                app.icon_resolver.icon_resolver.insert(0, (
+                    icon_path,
+                    icon_url
+                ))
+
+        # - woost.extensions.EXTENSION.admin.ui
+        admin_resources_path = os.path.join(
+            ext_path,
+            "admin", "ui", "resources"
+        )
+
+        if os.path.exists(admin_resources_path):
+            app.add_resources_repository(
+                repo_name + ".admin.ui",
+                admin_resources_path
+            )
 
 
 extensions_manager = ExtensionsManager()
