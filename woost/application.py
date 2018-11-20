@@ -191,7 +191,7 @@ http://woost.info
         from woost.controllers.cmsresourcescontroller import CMSResourcesController
         resource_repositories.define(
             repository_name,
-            "/resources/" + repository_name.replace(".", "/"),
+            "/resources/" + repository_name,
             repository_path
         )
         setattr(
