@@ -296,8 +296,6 @@ class View(object):
     ui_component = "woost.admin.ui.Table"
     controller = ListingController
     model = None
-    children_collection = None
-    partitioning = None
     export_class = Export
 
     def __init__(
@@ -306,8 +304,6 @@ class View(object):
         ui_component = DEFAULT,
         controller = DEFAULT,
         model = DEFAULT,
-        children_collection = DEFAULT,
-        partitioning = DEFAULT,
         export_class = DEFAULT
     ):
         if _views.get(name):
@@ -327,14 +323,8 @@ class View(object):
         if model is not DEFAULT:
             self.model = model
 
-        if children_collection is not DEFAULT:
-            self.children_collection = children_collection
-
         if export_class is not DEFAULT:
             self.export_class = export_class
-
-        if partitioning is not DEFAULT:
-            self.partitioning = partitioning
 
     @property
     def name(self):
@@ -360,12 +350,7 @@ class View(object):
             "label": translations(self),
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
-            "ui_component": self.ui_component,
-            "children_collection":
-                self.children_collection.name
-                if self.children_collection
-                else None,
-            "partitioning": None # TODO
+            "ui_component": self.ui_component
         }
 
 
