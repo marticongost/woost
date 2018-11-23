@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from threading import Lock
 from cocktail import schema
 from cocktail.pkgutils import import_object
 from woost.models import (
@@ -11,6 +12,9 @@ from woost.models import (
     AccessLevel,
     LocaleMember
 )
+
+_root_sections = {}
+_root_sections_lock = Lock()
 
 
 class Admin(Publishable):
@@ -50,6 +54,19 @@ class Admin(Publishable):
     )
 
     def create_root_section(self):
-        section_class = import_object(self.root_section)
-        return section_class(None)
+        section_cls = import_object(self.root_section)
+        return section_cls(None)
+
+    def get_root_section(self):
+        key = (self.root_section, self.id)
+        try:
+            return _root_sections[key]
+        except KeyError:
+            with _root_sections_lock:
+                try:
+                    return _root_sections[key]
+                except KeyError:
+                    root = self.create_root_section()
+                    _root_sections[key] = root
+                    return root
 
