@@ -58,5 +58,11 @@
 #viewContainer {
     flex: 1 1 auto;
     font-size: 1.4em;
+    display: flex;
+    align-items: stretch;
+
+    & > * {
+        flex: 1 1 auto;
+    }
 }
 
