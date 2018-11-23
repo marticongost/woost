@@ -326,6 +326,12 @@ class View(object):
         if export_class is not DEFAULT:
             self.export_class = export_class
 
+    def __repr__(self):
+        return "%s(%r)" % (
+            self.__class__.__name__,
+            self.__name
+        )
+
     @property
     def name(self):
         """The unique identifier for the view."""
