@@ -1,0 +1,19 @@
+
+[woost.admin.views]
+
+    [views.View.instance(instance, **kwargs)]
+    *: t{"woost.admin.views." + instance.name}
+
+    [listing]
+    ca: Llistat
+    es: Listado
+    en: Listing
+
+    [tree]
+    ca: Arbre
+    es: Árbol
+    en: Tree
+
+    [site_tree]
+    @reuse "woost.admin.views.tree"
+

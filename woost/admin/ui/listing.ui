@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:requires component="woost.admin.ui.ViewSelector"/>
     <ui:requires component="woost.admin.ui.FieldsDropdown"/>
     <ui:requires component="woost.admin.ui.LocalesDropdown"/>
     <ui:requires component="woost.admin.ui.FiltersDropdown"/>
@@ -23,8 +24,7 @@
             view: this,
             node: this.navigationNode,
             slot: this.actionSlotPrefix + "Toolbar",
-            model: this.model,
-            selectable: this.table
+            model: this.model
         }));
     }
 
@@ -33,8 +33,7 @@
             view: this,
             node: this.navigationNode,
             slot: this.actionSlotPrefix + "Controls",
-            model: this.model,
-            selectable: this.table
+            model: this.model
         }));
     }
 
@@ -56,8 +55,6 @@
 
         this.relation = node.relation;
         this.relationOwner = node.item;
-        this.table.exporter = node.exporter;
-        this.table.treeChildrenCollection = node.treeChildrenCollection;
 
         if (!this.model || this.model.name != node.adaptedModel.name) {
             this.model = node.adaptedModel;
@@ -65,9 +62,28 @@
 
         this.filters = node.filters;
 
+        const prevView = this.view;
+        const newView = this.navigationNode.view;
+        this.view = newView;
+        const currentComponent = prevView && prevView.ui_component;
+        const newComponent = newView && newView.ui_component;
+
+        if (newComponent !== currentComponent) {
+
+            if (this.viewDisplay) {
+                this.viewDisplay.parentNode.removeChild(this.viewDisplay);
+            }
+
+            if (newComponent) {
+                this.viewDisplay = newComponent.create();
+                this.viewContainer.appendChild(this.viewDisplay);
+                this.viewDisplay.listing = this;
+            }
+        }
+
         if (!previousNode || previousNode.queryString != node.queryString) {
             this[UPDATED_AT_LEAST_ONCE] = true;
-            this.table.reset();
+            cocktail.ui.trigger(this.viewDisplay, "listingReset");
         }
     }
     ?>
@@ -85,10 +101,45 @@
     ?>
 
     <ui:property
+        name="view"
+        type="new woost.admin.views.ViewReference()"
+        reflected="true">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({view: newValue || undefined});
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="selectable"
+        reflected="false">
+        <?on changed
+        this.actionList.selectable = newValue;
+
+        if (newValue) {
+
+            // Default action
+            newValue.addEventListener("selectionActivated", (e) => {
+                this.defaultActionList.getAction(this.defaultAction).invoke({
+                    selection: this.selectable.selectedValues
+                });
+            });
+
+            // Pressing the Up key at the top of the selectable goes back to the search box
+            newValue.addEventListener("keyboardSelectionOverflow", (e) => {
+                if (e.detail.direction == "up") {
+                    cocktail.ui.focus(this.searchBox);
+                }
+            });
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
         name="model"
         reflected="false">
         <?on changed
-        this.table.model = newValue;
         this.actionList.actions = this.getToolbarActions();
         this.listingControls.actions = this.getControlsActions();
         ?>
@@ -154,6 +205,14 @@
         reflected="true"
         default="edit"/>
 
+    <ui:property
+        name="resultCount"
+        reflected="false">
+        <?on changed
+        this.resultCountLabel.innerHTML = newValue && newValue.label || "";
+        ?>
+    </ui:property>
+
     <?class
     addFilter(filter, filterValues = null, edit = false) {
 
@@ -192,14 +251,14 @@
 
         <ui:cocktail.ui.SearchInput id="searchBox">
             <?on keydown
-            if (e.which == cocktail.ui.keys.DOWN) {
-                if (!instance.table.selectedElements.size) {
-                    let first = instance.table.getFirstSelectableElement();
+            if (e.which == cocktail.ui.keys.DOWN && instance.selectable) {
+                if (!instance.selectable.selectedElements.size) {
+                    let first = instance.selectable.getFirstSelectableElement();
                     if (first) {
-                        instance.table.selectedElements = [first];
+                        instance.selectable.selectedElements = [first];
                     }
                 }
-                cocktail.ui.focus(instance.table);
+                cocktail.ui.focus(instance.viewDisplay);
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -212,7 +271,7 @@
 
     <ui:with ui:element="main">
         <ui:woost.admin.ui.FiltersBar id="filtersBar"/>
-        <ui:Table id="table"/>
+        <div id="viewContainer"/>
     </ui:with>
 
     <?on nodeExposed
@@ -223,114 +282,8 @@
     ?>
 
     <?js
-    cocktail.ui.link(this, this.table, "empty");
-    cocktail.ui.link(this, this.table, ["members", "visibleMembers"]);
-    cocktail.ui.link(this, this.table, ["locales", "visibleLocales"]);
     cocktail.ui.link(this, this.searchBox, ["search", "value"]);
     cocktail.ui.link(this, this.filtersBar, "filters");
-
-    this.actionList.selectable = this.table;
-    ?>
-
-    <ui:cocktail.ui.Table
-        ui:component="Table"
-        tabindex="0"
-        selectionType="multiple"
-        paging="infiniteScroll">
-
-        <ui:using mixin="woost.admin.ui.ObjectSource"/>
-
-        <?class
-        createRow(record) {
-            const row = super.createRow(record);
-            row.draggable = true;
-            return row;
-        }
-
-        resolveObjectSourceTarget(e) {
-            for (let element of e.path) {
-                if (element.classList && element.classList.contains("cocktail-ui-Table-Row")) {
-                    return element;
-                }
-            }
-            return null;
-        }
-
-        getDataSourceOptions(page) {
-            let options = super.getDataSourceOptions(page);
-            let listing = this.parentInstance;
-            if (listing.search) {
-                options.parameters.search = listing.search;
-            }
-            if (listing.filters.length) {
-                Object.assign(
-                    options.parameters,
-                    cocktail.navigation.node.getQueryValuesForFilters(listing.filters)
-                )
-            }
-            if (listing.relation) {
-                let owner = listing.relationOwner;
-                if (owner && owner.id) {
-                    options.parameters.relation = `${owner.id}-${listing.relation.name}`;
-                }
-                else {
-                    options.parameters.relation = listing.relation.fullName;
-                }
-            }
-            if (this.exporter) {
-                options.parameters["export"] = this.exporter;
-            }
-            return options;
-        }
-
-        invalidation(change) {
-            if (change.type == "create") {
-                this.reload();
-            }
-            else {
-                super.invalidation(change);
-            }
-        }
-
-        selectionActivated() {
-            let listing = this.parentInstance;
-            listing.defaultActionList.getAction(listing.defaultAction).invoke({selection: this.selectedValues});
-        }
-        ?>
-
-        <?on keyboardSelectionOverflow
-        // The up arrow moves the focus to the search box
-        if (e.detail.direction == "up") {
-            cocktail.ui.focus(this.parentInstance.searchBox);
-        }
-        ?>
-
-        <?on resultCount:changed
-        this.parentInstance.resultCountLabel.innerHTML = newValue && newValue.label || "";
-        ?>
-
-        <ui:cocktail.ui.Table.TreeRow ui:component="TreeRow">
-
-            <ui:property
-                name="treeFiltersMatch"
-                type="string"
-                reflected="true"/>
-
-            <?class
-            getRowLabel() {
-                return this.translateValue();
-            }
-            ?>
-
-            <?on value:changed
-            this.treeFiltersMatch = newValue._match;
-            ?>
-
-        </ui:cocktail.ui.Table.TreeRow>
-
-    </ui:cocktail.ui.Table>
-
-    <?js
     this.defaultActionList = this.actionList;
     ?>
 

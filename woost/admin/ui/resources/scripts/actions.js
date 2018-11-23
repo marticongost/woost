@@ -218,6 +218,12 @@ woost.admin.actions.ActionRegistrationError = class ActionRegistrationError {
 }
 
 // -- Action declaration --
+woost.admin.actions.SelectViewAction = class SelectViewAction extends woost.admin.actions.Action {
+
+    createEntry() {
+        return woost.admin.ui.ViewSelector.create();
+    }
+}
 
 {
     const ELIGIBLE_MODELS = Symbol();
@@ -874,6 +880,10 @@ woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends 
 }
 
 // -- Action registration --
+woost.admin.actions.SelectViewAction.register({
+    id: "select-view",
+    slots: ["listingToolbar", "relationSelectorToolbar"]
+});
 
 woost.admin.actions.NewAction.register({
     id: "new",

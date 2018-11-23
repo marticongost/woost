@@ -24,6 +24,7 @@
 
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
 
+    <ui:resource href="woost.admin.ui://scripts/views.js"/>
     <ui:resource href="woost.admin.ui://scripts/editstate.js"/>
     <ui:resource href="woost.admin.ui://scripts/filters.js"/>
     <ui:resource href="woost.admin.ui://scripts/models.js"/>
@@ -90,10 +91,12 @@
         });
 
         function processSectionTree(parent, section, depth = 0) {
+
             section.url = (parent ? parent.url : woost.admin.url) + (section.id ? "/" + section.id : "");
             section.parent = parent;
             section.root = parent ? parent.root : section;
             section.depth = depth;
+
             for (let child of section.children) {
                 processSectionTree(section, child, depth + 1);
             }
@@ -105,6 +108,11 @@
             })
             .then(() => {
                 woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
+
+                    for (let viewData of admin._views) {
+                        woost.admin.views.addView(viewData);
+                    }
+
                     processSectionTree(null, admin._root_section);
                     woost.admin.data = admin;
                     cocktail.navigation.prefix = URI(woost.admin.url).path();

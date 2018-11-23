@@ -3,108 +3,30 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import os
 from datetime import date, time, datetime
 from decimal import Decimal
 from fractions import Fraction
 from collections import defaultdict
-from shutil import move
 from cocktail.modeling import GenericMethod
 from cocktail import schema
-from cocktail.persistence import datastore
-from woost import app
 from woost.models import (
     Item,
-    User,
-    Slot,
     ReadPermission,
     CreatePermission,
     ModifyPermission,
     CreateTranslationPermission,
     ModifyTranslationPermission,
-    DeleteTranslationPermission,
-    ModifyMemberPermission
+    DeleteTranslationPermission
 )
-from woost.models.file import File, file_hash
 from woost.models.utils import get_model_dotted_name
 
 import_object = GenericMethod(
-    name = "woost.admin.models.dataimport.import_object"
+    name = "woost.admin.dataimport.import_object"
 )
 
 should_import_member = GenericMethod(
-    name = "woost.admin.models.dataimport.should_import_member"
+    name = "woost.admin.dataimport.should_import_member"
 )
-
-@import_object.implementation_for(Item)
-def import_item(self, imp, data):
-    imp.import_members(self, data)
-    imp.delete_translations(self, data.get("_deleted_translations"))
-
-@should_import_member.implementation_for(Item)
-def should_import_item_member(self, imp, data, member):
-    return (
-        member.visible
-        and (
-            member.editable == schema.EDITABLE
-            or (
-                imp.import_primary_keys
-                and member.primary
-                and not obj.is_inserted
-            )
-            or isinstance(member, Slot)
-        )
-        and (
-            imp.user is None
-            or imp.user.has_permission(
-                ModifyMemberPermission,
-                member = member
-            )
-        )
-    )
-
-@should_import_member.implementation_for(User)
-def should_import_user_member(self, imp, data, member):
-
-    if not should_import_item_member(self, imp, data, member):
-        return False
-
-    if member is User.password and not data.get("_change_password"):
-        return False
-
-    return True
-
-@import_object.implementation_for(File)
-def import_file(self, imp, data):
-
-    upload_id = data.get("_upload")
-    import_item(self, imp, data)
-
-    if upload_id:
-        upload = app.async_uploader.get(upload_id)
-        if not upload:
-            raise ValueError("No current upload with id %s" % upload_id)
-
-        # Store file metadata
-        self.file_name = upload.name
-        self.file_size = upload.size
-        self.mime_type = upload.type
-
-        if imp.dry_run:
-            self._v_upload_id = upload_id
-        else:
-            temp_file = app.async_uploader.get_temp_path(upload_id)
-
-            # Compute the file hash
-            self.file_hash = file_hash(temp_file)
-
-            # Move the temporary file only after the transaction has been
-            # committed
-            imp.after_commit(move, temp_file, self.file_path)
-
-def _move_upload(temp_file, dest):
-    if transaction_success:
-        move(temp_file, dest)
 
 
 class Import(object):

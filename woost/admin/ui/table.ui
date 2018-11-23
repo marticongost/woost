@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.Table
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    tabindex="0"
+    selectionType="multiple"
+    paging="infiniteScroll">
+
+    <ui:using mixin="woost.admin.ui.ObjectSource"/>
+
+    <ui:property
+        name="listing"
+        reflected="false"
+        final="true">
+
+        <?on changed
+        cocktail.ui.link(newValue, this, "model");
+        cocktail.ui.link(newValue, this, "empty");
+        cocktail.ui.link(newValue, this, ["members", "visibleMembers"]);
+        cocktail.ui.link(newValue, this, ["locales", "visibleLocales"]);
+        cocktail.ui.link(newValue, this, "resultCount");
+        newValue.selectable = this;
+        ?>
+
+    </ui:property>
+
+    <?class
+    createRow(record) {
+        const row = super.createRow(record);
+        row.draggable = true;
+        return row;
+    }
+
+    resolveObjectSourceTarget(e) {
+        for (let element of e.path) {
+            if (element.classList && element.classList.contains("cocktail-ui-Table-Row")) {
+                return element;
+            }
+        }
+        return null;
+    }
+
+    getDataSourceOptions(page) {
+
+        const options = super.getDataSourceOptions(page);
+        const listing = this.listing;
+
+        if (listing.view) {
+            options.url = listing.view.dataURL;
+            options.parameters.model = this.model.originalMember.name;
+        }
+
+        if (listing.search) {
+            options.parameters.search = listing.search;
+        }
+
+        if (listing.filters.length) {
+            Object.assign(
+                options.parameters,
+                cocktail.navigation.node.getQueryValuesForFilters(listing.filters)
+            )
+        }
+
+        if (listing.relation) {
+            let owner = listing.relationOwner;
+            if (owner && owner.id) {
+                options.parameters.relation = `${owner.id}-${listing.relation.name}`;
+            }
+            else {
+                options.parameters.relation = listing.relation.fullName;
+            }
+        }
+
+        return options;
+    }
+
+    invalidation(change) {
+        if (change.type == "create") {
+            this.reload();
+        }
+        else {
+            super.invalidation(change);
+        }
+    }
+    ?>
+
+    <?on listingReset
+    this.treeChildrenCollection = this.listing.view.children_collection;
+    this.reset();
+    ?>
+
+    <ui:cocktail.ui.Table.TreeRow ui:component="TreeRow">
+
+        <ui:property
+            name="treeFiltersMatch"
+            type="string"
+            reflected="true"/>
+
+        <?class
+        getRowLabel() {
+            return this.translateValue();
+        }
+        ?>
+
+        <?on value:changed
+        this.treeFiltersMatch = newValue._match;
+        ?>
+
+    </ui:cocktail.ui.Table.TreeRow>
+
+</ui:cocktail.ui.Table>
+
