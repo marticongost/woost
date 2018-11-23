@@ -841,6 +841,9 @@ woost.admin.actions.up = function (sourceNode) {
     while (node && !node.isCloseDestination) {
         node = node.parent;
     }
+    if (node.stackNode && node.stackNode.navigationNode) {
+        node = node.stackNode.navigationNode;
+    }
     cocktail.navigation.push(node);
 }
 
