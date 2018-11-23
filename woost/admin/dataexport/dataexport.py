@@ -36,6 +36,7 @@ class Export(object):
     apply_filters = True
     relation = None
     range = None
+    order = None
     verbose = False
 
     @classmethod
@@ -125,6 +126,9 @@ class Export(object):
         if self.apply_filters:
             for filter in self.filters:
                 root.add_filter(filter)
+
+        if self.order:
+            root.order = self.order
 
         return root
 
