@@ -8,6 +8,7 @@ from cocktail.events import EventHub, Event
 from cocktail.modeling import camel_to_underscore
 from cocktail.translations import translations
 from cocktail.html import resource_repositories
+from cocktail.ui import components
 
 
 class Section(object):
@@ -228,6 +229,10 @@ class Section(object):
             return True
 
         return False
+
+    def required_ui_components(self):
+        if self.ui_component:
+            yield components.resolve(self.ui_component)
 
     def export_data(self):
 

@@ -42,11 +42,8 @@ class AdminController(PublishableController):
         )
 
         root_section = app.publishable.create_root_section()
-        dependencies.update(
-            components.get(section.ui_component)
-            for section in root_section.descend_tree()
-            if section.ui_component
-        )
+        for section in root_section.descend_tree():
+            dependencies.update(section.required_ui_components())
 
         # Collect UI component dependencies for models
         for model in PersistentObject.schema_tree():
