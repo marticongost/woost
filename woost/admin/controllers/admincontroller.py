@@ -23,6 +23,17 @@ from .previewcontroller import PreviewController
 
 class AdminController(PublishableController):
 
+    ui_component_properties = [
+        "admin_edit_view",
+        "ui_display",
+        "ui_inert_display",
+        "ui_form_control",
+        "ui_read_only_form_control",
+        "ui_item_set_selector_display",
+        "ui_collection_editor_control",
+        "ui_autocomplete_control"
+    ]
+
     @event_handler
     def handle_traversed(cls, e):
         set_language(
@@ -36,19 +47,34 @@ class AdminController(PublishableController):
         url = unicode(app.publishable.get_uri()).rstrip("/")
 
         # Collect UI component dependencies for the admin sections
-        dependencies = set(
-            components.get(component_name)
-            for component_name in app.publishable.ui_components
-        )
+        dependencies = set()
+
+        def require_component(component):
+            if isinstance(component, tuple):
+                component = component[0]
+            dependencies.add(components.get(component))
+
+        for component_name in app.publishable.ui_components:
+            require_component(component)
 
         root_section = app.publishable.get_root_section()
         for section in root_section.descend_tree():
             dependencies.update(section.required_ui_components())
 
-        # Collect UI component dependencies for models
+        # Collect UI component dependencies for models and their members
         for model in PersistentObject.schema_tree():
-            if model.admin_edit_view:
-                dependencies.add(components.get(model.admin_edit_view))
+
+            for prop in self.ui_component_properties:
+                component = getattr(model, prop, None)
+                if component:
+                    require_component(component)
+
+            for member in model.iter_members(recursive = False):
+                if member.visible:
+                    for prop in self.ui_component_properties:
+                        component = getattr(member, prop, None)
+                        if component:
+                            require_component(component)
 
         return components.get("woost.admin.ui.Layout").render_page(
             title = translations("woost.admin.ui.Layout.heading"),
