@@ -561,3 +561,8 @@ def get_model_dotted_name(model):
         parts.pop(-2)
     return ".".join(parts)
 
+def get_model_from_dotted_name(name):
+    for cls in PersistentObject.schema_tree():
+        if get_model_dotted_name(cls) == name:
+            return cls
+
