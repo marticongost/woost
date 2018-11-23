@@ -13,7 +13,7 @@ from cocktail.controllers import Controller
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from cocktail.persistence import PersistentObject
 from woost import app
-from woost.admin.models.schemaexport import SchemaExport
+from woost.admin.schemaexport import SchemaExport
 from woost.admin.filters import (
     get_filters,
     get_filters_by_member_type,

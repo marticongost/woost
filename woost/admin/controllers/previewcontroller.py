@@ -19,7 +19,7 @@ from woost.models import (
     ModifyPermission
 )
 from woost.models.utils import get_matching_website
-from woost.admin.models.dataimport import Import
+from woost.admin.dataimport import Import
 
 JSON_MIME = "application/json"
 

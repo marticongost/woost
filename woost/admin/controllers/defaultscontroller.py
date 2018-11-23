@@ -14,7 +14,7 @@ from woost.models import (
     CreateTranslationPermission
 )
 from woost.models.utils import get_model_dotted_name
-from woost.admin.models.dataexport import Export
+from woost.admin.dataexport import Export
 
 
 class DefaultsController(Controller):

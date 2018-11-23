@@ -15,8 +15,8 @@ from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
 from woost.models import Item, ReadPermission
 from woost.models.utils import get_model_dotted_name
-from woost.admin.models.dataexport import Export
-from woost.admin.models.dataimport import Import
+from woost.admin.dataexport import Export
+from woost.admin.dataimport import Import
 from .utils import resolve_object_ref
 
 

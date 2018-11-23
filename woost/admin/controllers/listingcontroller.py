@@ -7,114 +7,100 @@ import json
 import cherrypy
 from cocktail.translations import translations, get_language
 from cocktail.schema.expressions import Self
-from cocktail.persistence import PersistentObject, Query
-from cocktail.controllers import Controller, get_parameter
+from cocktail.controllers import Controller, get_parameter, request_property
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
 from woost.models import Item, ReadPermission, Configuration
-from woost.models.utils import get_model_dotted_name
-from woost.admin.models.dataexport import (
-    Export,
-    PageTreeExport,
-    AdminExport
+from woost.models.utils import (
+    get_model_dotted_name,
+    get_model_from_dotted_name
 )
+from woost.admin.dataexport import Export
+from woost.admin.dataexport.sitetreeexport import SiteTreeExport
+from woost.admin.dataexport.adminexport import AdminExport
 from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
 
 
 class ListingController(Controller):
 
+    view = None
     default_export = "default"
     exports = {
         "default": Export,
-        "page_tree": PageTreeExport,
+        "site_tree": SiteTreeExport,
         "admin": AdminExport
     }
-    max_page_size = 100
+    max_page_size = 10000
 
     @no_csrf_token_injection
-    def __call__(
-        self,
-        model,
-        id = None,
-        export = None,
-        locales = "_object",
-        members = None,
-        page = None,
-        page_size = None,
-        search = None,
-        relation = None,
-        **kwargs
-    ):
-        model = self._resolve_model(model)
-        locales = self._resolve_locales(locales)
-        export = self._resolve_export(export, locales)
-        rng = self._resolve_range(page, page_size, implicit = not id)
-        filters = self._resolve_filters(model, kwargs)
-        relation = self._resolve_relation(relation)
+    def __call__(self, **kwargs):
 
         # Returning a single object
-        if id:
-            if rng:
+        if self.instance:
+
+            if self.range:
                 raise cherrypy.HTTPError(
                     400,
                     "Can't apply a range when retrieving a single element"
                 )
 
-            if search:
+            if self.search:
                 raise cherrypy.HTTPError(
                     400,
                     "Can't search by text when retrieving a single element"
                 )
 
-            if filters:
+            if self.filters:
                 raise cherrypy.HTTPError(
                     400,
                     "Can't apply filters when retrieving a single element"
                 )
 
-            if relation:
+            if self.relation:
                 raise cherrypy.HTTPError(
                     400,
                     "Can't apply relation constraints when retrieving a "
                     "single element"
                 )
 
-            obj = resolve_object_ref(id)
-
-            if not app.user.has_permission(ReadPermission, target = obj):
+            if not app.user.has_permission(
+                ReadPermission,
+                target = self.instance
+            ):
                 raise cherrypy.HTTPError(403, "Unauthorized object access")
 
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
-            return json.dumps(export.export_object(obj))
+
+            object_data = self.export.export_object(self.instance)
+            return json.dumps(object_data)
 
         # Returning a list of objects
         else:
             filter_expressions = []
 
-            if search:
+            if self.search:
                 filter_expressions.append(
                     Self.search(
-                        search,
+                        self.search,
                         match_mode = "prefix",
                         languages =
-                            locales
+                            self.locales
                             or [None] + list(Configuration.instance.languages)
                     )
                 )
 
-            if filters:
-                for filter in filters:
-                    expr = filter.filter_expression()
-                    if expr is not None:
-                        filter_expressions.append(expr)
+            for filter in self.filters:
+                expr = filter.filter_expression()
+                if expr is not None:
+                    filter_expressions.append(expr)
 
-            export.model = model
-            export.relation = relation
-            export.filters = filter_expressions
-            export.range = rng
-            results, count = export.get_results()
+            self.export.model = self.model
+            self.export.relation = self.relation
+            self.export.filters = filter_expressions
+            self.export.range = self.range
+            results, count = self.export.get_results()
 
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
@@ -124,7 +110,7 @@ class ListingController(Controller):
                 json.dumps(
                     translations(
                         "woost.admin.controllers.datacontroller.count",
-                        model = model,
+                        model = self.model,
                         count = count
                     )
                 )
@@ -140,52 +126,79 @@ class ListingController(Controller):
             html.append(u"]}")
             return u"".join(html)
 
-    def _resolve_model(self, model_name):
+    @request_property
+    def model(self):
 
-        if not model_name:
-            raise cherrypy.HTTPError(400, "No model specified")
+        model_name = cherrypy.request.params.get("model")
 
-        for cls in PersistentObject.schema_tree():
-            if get_model_dotted_name(cls) == model_name:
-                return cls
+        if model_name:
+            model = get_model_from_dotted_name(model_name)
+            if model:
+                return model
+            else:
+                raise cherrypy.HTTPError(400, "Unknown model")
 
-        raise cherrypy.HTTPError(404, "Unknown model")
+        model = self.view and self.view.model
+        if model:
+            return model
 
-    def _resolve_locales(self, locales):
+        raise cherrypy.HTTPError(400, "No model specified")
 
-        if locales == "_object":
+    @request_property
+    def instance(self):
+
+        id = cherrypy.request.params.get("id")
+
+        if id:
+            return resolve_object_ref(id)
+
+        return None
+
+    @request_property
+    def locales(self):
+
+        value = cherrypy.request.params.get("locales", "_object")
+
+        if value == "_object":
             return None
 
-        if isinstance(locales, basestring):
-            return locales.split()
+        if isinstance(value, basestring):
+            return value.split()
 
-        return locales or [get_language()]
+        return value or [get_language()]
 
-    def _resolve_export(self, export_id, languages):
+    @request_property
+    def export(self):
 
-        if export_id:
+        export_class = cherrypy.request.params.get(
+            "export",
+            self.view and self.view.export_class
+            or self.default_export
+        )
+
+        if isinstance(export_class, basestring):
             try:
-                export_class = self.exports[export_id]
+                export_class = self.exports[export_class]
             except KeyError:
                 raise cherrypy.HTTPError(400, "Invalid export")
-        else:
-            export_id = self.default_export
-            export_class = self.exports.get(export_id)
 
         if not export_class:
             raise ValueError("Missing export class")
 
-        return export_class(languages = languages)
+        return export_class(languages = self.locales)
 
-    def _resolve_range(self, page, page_size, implicit = False):
+    @request_property
+    def range(self):
 
-        if page == "":
-            page = None
+        get_param = cherrypy.request.params.get
+        page = get_param("page") or None
+        page_size = get_param("page_size") or None
 
-        if page_size == "":
-            page_size = None
+        # Disable implicit paging on requests for a single object
+        if get_param("id") and not page and not page_size:
+            return None
 
-        if page_size is None and implicit:
+        if page_size is None:
             page_size = self.max_page_size
 
         if page is None and page_size is None:
@@ -217,12 +230,18 @@ class ListingController(Controller):
         start = page_size * page
         return (start, start + page_size)
 
-    def _resolve_filters(self, model, params):
+    @request_property
+    def search(self):
+        return cherrypy.request.params.get("search")
+
+    @request_property
+    def filters(self):
 
         filters = []
+        get_param = cherrypy.request.params.get
 
-        for filter_class in get_filters(model):
-            param_value = params.get(filter_class.parameter_name)
+        for filter_class in get_filters(self.model):
+            param_value = get_param(filter_class.parameter_name)
             if param_value is not None:
                 filter = self._parse_filter(filter_class, param_value)
                 if filter:
@@ -230,17 +249,24 @@ class ListingController(Controller):
 
         return filters
 
-    def _resolve_relation(self, relation):
+    @request_property
+    def relation(self):
+
+        relation = cherrypy.request.params.get("relation")
 
         if relation:
             pos = relation.find("-")
             if pos == -1:
                 owner = None
+
                 try:
                     model_name, rel_name = relation.rsplit(".", 1)
-                    model = self._resolve_model(model_name)
                 except ValueError:
-                    raise cherrypy.HTTPError(400, "Invalid relation")
+                    raise cherrypy.HTTPError(400, "Invalid relation spec")
+
+                model = get_model_from_dotted_name(model_name)
+                if model is None:
+                    raise cherrypy.HTTPError(400, "Invalid related model")
             else:
                 id = relation[:pos]
                 rel_name = relation[pos + 1:]
@@ -287,8 +313,4 @@ class ListingController(Controller):
             errors = "ignore"
         )
         return filter if filter_class.validate(filter) else None
-
-
-class DeleteController(Controller):
-    pass
 

@@ -7,9 +7,7 @@ from woost.models import Publishable, Document
 from .crud import CRUD
 
 
-class SiteTreeSection(CRUD):
+class PublishableItemsSection(CRUD):
     model = Publishable
-    tree_children_collection = Document.children
-    exporter = "page_tree"
-    icon_uri = "woost.admin.ui://images/sections/tree.svg"
+    views = ["site_tree", "listing"]
 

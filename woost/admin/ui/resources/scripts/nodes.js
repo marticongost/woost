@@ -303,10 +303,6 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return null;
         }
 
-        get treeChildrenCollection() {
-            return null;
-        }
-
         get adaptedModel() {
             return this[ADAPTED_MODEL] || (this.listedModel && (this[ADAPTED_MODEL] = this.adaptModel(this.listedModel)));
         }
@@ -371,7 +367,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 );
             }
 
-            if (model[woost.admin.ui.showDescriptions] && !this.treeChildrenCollection) {
+            if (model[woost.admin.ui.showDescriptions] && !this.view.children_collection) {
                 extraMembers.push(
                     new class ElementColumn extends cocktail.schema.String {
 
@@ -390,8 +386,17 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return extraMembers;
         }
 
+        get availableViews() {
+            return [woost.admin.views.listing];
+        }
+
         defineQueryParameters() {
             return [
+                new woost.admin.views.ViewReference({
+                    name: "view",
+                    enumeration: this.availableViews,
+                    defaultValue: this.availableViews[0]
+                }),
                 new cocktail.schema.Collection({
                     name: "locales",
                     items: new cocktail.schema.Locale(),
@@ -399,12 +404,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 }),
                 new cocktail.schema.Collection({
                     name: "members",
-                    items: new cocktail.schema.MemberReference({
-                        sourceSchema: this.adaptedModel
-                    }),
-                    defaultValue: Array.from(this.adaptedModel.orderedMembers()).filter(
-                        (member) => member[cocktail.ui.listedByDefault]
-                    )
+                    items: new cocktail.schema.MemberReference()
                 }),
                 new cocktail.schema.String({
                     name: "search"
@@ -433,6 +433,16 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             }
             else {
                 super.applyQueryParameter(parameter, value);
+
+                // Alter the available / default fields once the active view has been set
+                if (parameter.name == "view") {
+                    const members = this.queryParameters.members;
+                    const model = this.adaptedModel;
+                    members.items.sourceSchema = model;
+                    members.defaultValue = Array.from(model.orderedMembers()).filter(
+                        (member) => member[cocktail.ui.listedByDefault]
+                    );
+                }
             }
         }
 
@@ -499,12 +509,11 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
         return this.model;
     }
 
-    get exporter() {
-        return this.section.exporter;
-    }
-
-    get treeChildrenCollection() {
-        return this.section.tree_children_collection;
+    get availableViews() {
+        return woost.admin.views.resolve(
+            this.section.views,
+            this.model[woost.admin.views.views]
+        );
     }
 
     static createSectionClass(section) {
@@ -729,6 +738,12 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
 
     get listedModel() {
         return this.relation.relatedType;
+    }
+
+    get availableViews() {
+        return woost.admin.views.resolve(
+            this.relation[woost.admin.views.views]
+        );
     }
 
     get defaultComponent() {

@@ -8,7 +8,7 @@ import cherrypy
 from cocktail.controllers import Controller
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
-from woost.admin.models.dataexport import Export
+from woost.admin.dataexport import Export
 
 
 class CurrentUserController(Controller):

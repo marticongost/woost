@@ -55,6 +55,24 @@ cocktail.declare("woost.admin.ui");
     }
 
     woost.models.ModelDataSource = class ModelDataSource extends cocktail.ui.HTTPDataSource {
+
+        constructor(model, parameters = null) {
+            super(parameters);
+            this.model = model;
+        }
+
+        getRequestParameters(parameters = null) {
+            const customUrl = parameters && parameters.url;
+            parameters = super.getRequestParameters(parameters);
+            if (!customUrl) {
+                if (!parameters.parameters) {
+                    parameters.parameters = {};
+                }
+                parameters.parameters.model = this.model.name;
+            }
+            return parameters;
+        }
+
         loadObject(id, parameters = null) {
             return this.load({
                 parameters: Object.assign({id}, parameters)
@@ -71,9 +89,10 @@ cocktail.declare("woost.admin.ui");
         get dataSource() {
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
-                dataSource = new woost.models.ModelDataSource({
-                    url: woost.admin.url + "/data/" + this.originalMember.name
-                });
+                dataSource = new woost.models.ModelDataSource(
+                    this.originalMember,
+                    {url: woost.admin.url + "/data/"}
+                );
                 this[DATA_SOURCE] = dataSource;
             }
             return dataSource;
