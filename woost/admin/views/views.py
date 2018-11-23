@@ -297,6 +297,7 @@ class View(object):
     controller = ListingController
     model = None
     children_collection = None
+    partitioning = None
     export_class = Export
 
     def __init__(
@@ -306,6 +307,7 @@ class View(object):
         controller = DEFAULT,
         model = DEFAULT,
         children_collection = DEFAULT,
+        partitioning = DEFAULT,
         export_class = DEFAULT
     ):
         if _views.get(name):
@@ -330,6 +332,9 @@ class View(object):
 
         if export_class is not DEFAULT:
             self.export_class = export_class
+
+        if partitioning is not DEFAULT:
+            self.partitioning = partitioning
 
     @property
     def name(self):
@@ -359,7 +364,8 @@ class View(object):
             "children_collection":
                 self.children_collection.name
                 if self.children_collection
-                else None
+                else None,
+            "partitioning": None # TODO
         }
 
 

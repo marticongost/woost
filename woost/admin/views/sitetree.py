@@ -5,9 +5,10 @@ u"""
 """
 from woost.models import Publishable, Document
 from woost.admin.dataexport.sitetreeexport import SiteTreeExport
-from .views import View, register_view
+from .views import register_view
+from .tree import Tree
 
-site_tree = View(
+site_tree = Tree(
     "site_tree",
     children_collection = Document.children,
     export_class = SiteTreeExport

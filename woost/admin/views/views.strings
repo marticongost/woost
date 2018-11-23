@@ -4,6 +4,12 @@
     [views.View.instance(instance, **kwargs)]
     *: t{"woost.admin.views." + instance.name}
 
+    [listing.Listing.instance(instance, **kwargs)]
+    *: ${translations("woost.admin.views." + instance.name) or translations("woost.admin.views.listing")}
+
+    [tree.Tree.instance(instance, **kwargs)]
+    *: ${translations("woost.admin.views." + instance.name) or translations("woost.admin.views.tree")}
+
     [listing]
     ca: Llistat
     es: Listado
@@ -13,7 +19,4 @@
     ca: Arbre
     es: Árbol
     en: Tree
-
-    [site_tree]
-    @reuse "woost.admin.views.tree"
 
