@@ -23,6 +23,7 @@ class Tree(View):
             based on (example: Document.children).
         :type children_collection: `~cocktail.schema.Collection`
         """
+
         # Default data exporter
         if kwargs.get("export_class", DEFAULT) is DEFAULT:
             kwargs["export_class"] = \
@@ -34,7 +35,21 @@ class Tree(View):
     def _get_default_tree_export(self, collection):
 
         class DefaultTreeExport(TreeExport):
+
             children_collection = collection
+
+            # Provide a default order for the root entries. We use a property
+            # to prevent import cycles when resolving related_end.
+
+            @property
+            def order(self):
+                return (
+                    self
+                    .children_collection
+                    .related_end
+                    .related_type
+                    .descriptive_member
+                )
 
         return DefaultTreeExport
 
