@@ -13,6 +13,7 @@ from .views import (
     registered_views,
     UnavailableViewError
 )
-from . import listing
+from .listing import Listing
+from .tree import Tree
 from . import sitetree
 

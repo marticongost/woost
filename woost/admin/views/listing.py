@@ -6,6 +6,10 @@ u"""
 from woost.models import Item
 from .views import View, register_view
 
-listing = View("listing")
+
+class Listing(View):
+    pass
+
+listing = Listing("listing")
 register_view(listing, Item)
 
