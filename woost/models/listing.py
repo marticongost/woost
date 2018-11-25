@@ -57,6 +57,7 @@ class Listing(Block):
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
+    groups_order.insert(groups_order.index("content") + 2, "pagination")
 
     members_order = [
         "pagination_method",
@@ -68,13 +69,13 @@ class Listing(Block):
             "pager",
             "infinite_scroll"
         ],
-        member_group = "listing"
+        member_group = "pagination"
     )
 
     page_size = schema.Integer(
         min = 1,
         required = pagination_method,
-        member_group = "listing"
+        member_group = "pagination"
     )
 
     def init_view(self, view):
