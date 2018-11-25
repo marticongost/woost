@@ -5,7 +5,7 @@ u"""Defines migrations to the database schema for woost.
 """
 from cocktail.events import when
 from cocktail.persistence import MigrationStep
-from cocktail.persistence.migration import migration_steps
+from cocktail.persistence.migration import migration_steps, migration_step
 from cocktail.persistence.utils import remove_broken_type, is_broken
 from warnings import warn
 
@@ -1506,4 +1506,15 @@ def assign_default_controllers(e):
             config.set(key, controller)
             for item in list(controller.published_items):
                 item.controller = None
+
+#------------------------------------------------------------------------------
+
+@migration_step
+def add_listing_pagination_method(e):
+
+    from woost.models import Listing
+
+    for listing in Listing.select():
+        listing.pagination_method = "pager" if listing._paginated else None
+        del listing._paginated
 

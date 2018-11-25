@@ -32,7 +32,7 @@ class Listing(Block):
                     name = "subset",
                     items = schema.Reference(type = cls.listed_model),
                     related_end = schema.Collection(),
-                    before_member = "paginated",
+                    before_member = "pagination_method",
                     custom_translation_key =
                         "woost.models.listing.Listing.members.subset",
                     member_group = "listing"
@@ -59,19 +59,21 @@ class Listing(Block):
     groups_order.insert(groups_order.index("content") + 1, "listing")
 
     members_order = [
-        "paginated",
+        "pagination_method",
         "page_size"
     ]
 
-    paginated = schema.Boolean(
-        required = True,
-        default = False,
+    pagination_method = schema.String(
+        enumeration = [
+            "pager",
+            "infinite_scroll"
+        ],
         member_group = "listing"
     )
 
     page_size = schema.Integer(
         min = 1,
-        required = paginated,
+        required = pagination_method,
         member_group = "listing"
     )
 
@@ -79,11 +81,12 @@ class Listing(Block):
         Block.init_view(self, view)
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
+        view.pagination_method = self.pagination_method
 
         if not self.subset:
             view.depends_on(self.listed_model)
 
-        if self.paginated:
+        if self.pagination_method:
             view.pagination = self.pagination
         else:
             view.items = self.select_items()
@@ -95,7 +98,7 @@ class Listing(Block):
             order = self.listing_order if not self.subset else None
         )
 
-        if not self.paginated and self.page_size:
+        if not self.pagination_method and self.page_size:
             items.range = (0, self.page_size)
 
         e = self.selecting_items(items = items)

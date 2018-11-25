@@ -39,13 +39,30 @@ en: Listing
                 listing. Leave blank to fill the listing automatically,
                 according to its filtering, sorting and pagination rules.
 
+        [pagination_method]
+        ca: Tipus de paginació
+        es: Tipo de paginación
+        en: Pagination method
+
+            [none]
+            ca: Sense paginació
+            es: Sin paginación
+            en: No pagination
+
+            [values]
+
+                [pager]
+                ca: Controls de paginació
+                es: Controles de paginación
+                en: Pagination controls
+
+                [infinite_scroll]
+                ca: Scroll infinit
+                es: Scroll infinito
+                en: Infinite scroll
+
         [page_size]
         ca: Entrades per pàgina
         es: Entradas por página
         en: Entries per page
-
-        [paginated]
-        ca: Mostrar controls de paginació
-        es: Mostrar controles de paginación
-        en: Show pagination controls
 

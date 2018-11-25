@@ -1,0 +1,47 @@
+
+@import "theme://";
+
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+.Listing {
+
+    &[data-pagination-method='infinite_scroll'] {
+        .pager {
+            @include scripting-enabled {
+                display: none;
+            }
+        }
+    }
+
+    .loading_notice {
+        display: none;
+        align-items: center;
+        margin-top: 60px;
+        font-size: 18px;
+
+        .loading_notice_icon {
+            margin-right: 16px;
+
+            svg {
+                height: 26px;
+                width: auto;
+                fill: #999;
+                animation: spin 1.5s infinite linear;
+            }
+        }
+    }
+
+    &[data-infinite-scroll-state='loading'] {
+        .loading_notice {
+            display: flex;
+        }
+    }
+}
+
