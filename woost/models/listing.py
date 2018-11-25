@@ -70,7 +70,6 @@ class Listing(Block):
     )
 
     page_size = schema.Integer(
-        "page_size",
         min = 1,
         required = paginated,
         member_group = "listing"
