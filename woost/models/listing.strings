@@ -16,6 +16,11 @@ en: Listing
         es: Listado
         en: Listing
 
+        [pagination]
+        ca: Paginació
+        es: Paginación
+        en: Pagination
+
     [members]
 
         [subset]
