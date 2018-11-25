@@ -2,10 +2,15 @@
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    data-pagination-method="@{self.pagination_method or 'none'}">
+
+    <?resource woost://styles/listing.scss.css ?>
+    <?resource woost://scripts/listing.js ?>
 
     <?py-class
     items = None
+    pagination_method = None
     pagination = None
     name_prefix = None
     name_suffix = None
@@ -19,6 +24,9 @@
         <?py
         if self.autohide and not self.items and not self.pagination:
             self.visible = False
+
+        if self.pagination_method == "infinite_scroll":
+            self.add_resource("cocktail://scripts/infinitescroll.js")
         ?>
     </py:ready>
 
@@ -41,6 +49,17 @@
         py:pagination="@{self.pagination}"
         py:name_prefix="@{self.name_prefix}"
         py:name_suffix="@{self.name_suffix}"/>
+
+    <div py:id="loading_notice" py:client_model=".loadingNotice">
+
+        <div py:id="loading_notice_icon">
+            <?inline-svg woost://images/loading.svg ?>
+        </div>
+
+        <div py:id="loading_notice_text">
+            ${view_translations("loading_notice")}
+        </div>
+    </div>
 
 </div>
 
