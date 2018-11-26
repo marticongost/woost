@@ -11,6 +11,7 @@ from cocktail.controllers import (
     Pagination
 )
 from .block import Block
+from .publishableobject import PublishableObject
 
 Listing = None
 
@@ -72,6 +73,18 @@ class Listing(Block):
         member_group = "pagination"
     )
 
+    item_accessibility = schema.String(
+        required = True,
+        enumeration = [
+            "accessible",
+            "published",
+            "any"
+        ],
+        default = "accessible",
+        edit_control = "cocktail.html.RadioSelector",
+        member_group = "listing"
+    )
+
     page_size = schema.Integer(
         min = 1,
         required = pagination_method,
@@ -94,10 +107,21 @@ class Listing(Block):
 
     def select_items(self):
 
-        items = self.listed_model.select(
-            base_collection = self.subset or None,
-            order = self.listing_order if not self.subset else None
-        )
+        items = None
+
+        if issubclass(self.listed_model, PublishableObject):
+            if self.item_accessibility == "accessible":
+                items = self.listed_model.select_accessible()
+            elif self.item_accessibility == "published":
+                items = self.listed_model.select_published()
+
+        if items is None:
+            items = self.listed_model.select()
+
+        if self.subset:
+            items.base_collection = self.subset
+        else:
+            items.order = self.listing_order
 
         if not self.pagination_method and self.page_size:
             items.range = (0, self.page_size)

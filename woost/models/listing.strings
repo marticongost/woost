@@ -44,6 +44,28 @@ en: Listing
                 listing. Leave blank to fill the listing automatically,
                 according to its filtering, sorting and pagination rules.
 
+        [item_accessibility]
+        ca: Control d'estat dels elements
+        es: Control de estado de los elementos
+        en: Item accessibility check
+
+            [values]
+
+                [accessible]
+                ca: Elements publicats i amb drets de lectura
+                es: Elementos publicados y con derechos de lectura
+                en: Published items with read privileges
+
+                [published]
+                ca: Elements publicats, tinguin o no drets de lectura
+                es: Elementos publicados, tengan o no derechos de lectura
+                en: Published items, regardless of read privileges
+
+                [any]
+                ca: Qualsevol element
+                es: Cualquier elemento
+                en: Any item
+
         [pagination_method]
         ca: Tipus de paginació
         es: Tipo de paginación
