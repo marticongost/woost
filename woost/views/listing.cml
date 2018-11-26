@@ -18,11 +18,14 @@
 
     def create_entry(self, item):
         raise TypeError("%s doesn't implement the create_entry() method" % self)
+
+    def should_autohide(self):
+        return not self.items and not self.pagination
     ?>
 
     <py:ready>
         <?py
-        if self.autohide and not self.items and not self.pagination:
+        if self.autohide and self.should_autohide():
             self.visible = False
 
         if self.pagination_method == "infinite_scroll":
