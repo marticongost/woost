@@ -83,7 +83,6 @@ class ExtensionsManager(object):
     def _define_resource_repositories(self, extension):
 
         ext_path = os.path.dirname(extension.__file__)
-        from cocktail.styled import styled
 
         # - woost.extensions.EXTENSION
         resources_path = os.path.join(ext_path, "resources")
