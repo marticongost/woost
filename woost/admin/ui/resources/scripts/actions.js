@@ -471,7 +471,7 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
 woost.admin.actions.RefreshAction = class RefreshAction extends woost.admin.actions.Action {
 
     invoke(context) {
-        this.selectable.reload();
+        context.selectable.reload();
     }
 }
 
