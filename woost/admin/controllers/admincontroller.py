@@ -92,7 +92,7 @@ class AdminController(PublishableController):
                             if view.ui_component:
                                 require_component(view.ui_component)
 
-        return components.get("woost.admin.ui.Layout").render_page(
+        html = components.get("woost.admin.ui.Layout").render_page(
             title = translations("woost.admin.ui.Layout.heading"),
             global_style_sheet = "woost.admin.ui://styles/global.scss.css",
             locales = sorted(config.languages, key = translate_locale),
@@ -104,6 +104,7 @@ class AdminController(PublishableController):
                 "woost.admin.id": app.publishable.id
             }
         )
+        return html.replace("--ADMIN--", url)
 
     schemas = SchemasController()
     data = DataController()

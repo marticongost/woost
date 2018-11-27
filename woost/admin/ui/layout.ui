@@ -29,7 +29,7 @@
     <ui:resource href="woost.admin.ui://scripts/filters.js"/>
     <ui:resource href="woost.admin.ui://scripts/models.js"/>
     <ui:resource href="woost.admin.ui://scripts/nodes.js"/>
-    <ui:resource href="/admin/schemas" type="text/javascript"/>
+    <ui:resource href="--ADMIN--/schemas" type="text/javascript"/>
     <ui:resource href="woost.admin.ui://scripts/modelcustomization.js"/>
     <ui:resource href="woost.admin.ui://scripts/actions.js"/>
 
