@@ -6,6 +6,7 @@ u"""
 from cocktail import schema
 from .schemaexport import MemberExport, exports_member
 
+schema.DateTime.ui_column_width = 12
 schema.DateTime.ui_member_class = "cocktail.schema.DateTime"
 schema.Date.ui_member_class = "cocktail.schema.Date"
 
