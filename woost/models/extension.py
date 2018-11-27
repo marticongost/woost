@@ -8,6 +8,7 @@ import importlib
 import os.path
 from threading import RLock
 from cocktail.events import Event
+from cocktail.ui import components
 from woost import app
 from woost import extensions as ext_root
 
@@ -108,10 +109,12 @@ class ExtensionsManager(object):
         )
 
         if os.path.exists(admin_resources_path):
+            admin_repo_name = repo_name + ".admin.ui"
             app.add_resources_repository(
-                repo_name + ".admin.ui",
+                admin_repo_name,
                 admin_resources_path
             )
+            components.theme.add_location(admin_repo_name + "://styles")
 
 
 extensions_manager = ExtensionsManager()
