@@ -55,7 +55,7 @@ class AdminController(PublishableController):
             dependencies.add(components.get(component))
 
         for component_name in app.publishable.ui_components:
-            require_component(component)
+            require_component(component_name)
 
         root_section = app.publishable.get_root_section()
         for section in root_section.descend_tree():
