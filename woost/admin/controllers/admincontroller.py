@@ -9,13 +9,15 @@ from cocktail.translations import (
     translate_locale
 )
 from cocktail.events import event_handler
+from cocktail import schema
 from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
-from cocktail.persistence import PersistentObject
+from cocktail.persistence import PersistentClass, PersistentObject
 from woost import app
 from woost.models import Configuration
 from woost.controllers.publishablecontroller import PublishableController
 import woost.admin.ui
+from woost.admin.views import available_views
 from .schemascontroller import SchemasController
 from .datacontroller import DataController
 from .previewcontroller import PreviewController
@@ -64,17 +66,31 @@ class AdminController(PublishableController):
         # Collect UI component dependencies for models and their members
         for model in PersistentObject.schema_tree():
 
+            for view in available_views(model):
+                if view.ui_component:
+                    require_component(view.ui_component)
+
             for prop in self.ui_component_properties:
                 component = getattr(model, prop, None)
                 if component:
                     require_component(component)
 
             for member in model.iter_members(recursive = False):
+
                 if member.visible:
+
                     for prop in self.ui_component_properties:
                         component = getattr(member, prop, None)
                         if component:
                             require_component(component)
+
+                    if (
+                        isinstance(member, schema.RelationMember)
+                        and isinstance(member.related_type, PersistentClass)
+                    ):
+                        for view in available_views(member):
+                            if view.ui_component:
+                                require_component(view.ui_component)
 
         return components.get("woost.admin.ui.Layout").render_page(
             title = translations("woost.admin.ui.Layout.heading"),
