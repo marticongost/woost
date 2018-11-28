@@ -673,32 +673,7 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
         }
 
         getMemberEditMode(member) {
-
-            if (member[cocktail.ui.editable] == cocktail.ui.NOT_EDITABLE) {
-                return cocktail.ui.NOT_EDITABLE;
-            }
-
-            if (!member[woost.models.permissions].read) {
-                return cocktail.ui.NOT_EDITABLE;
-            }
-
-            if (member.relatedType && !member.relatedType[woost.models.permissions].read) {
-                return cocktail.ui.NOT_EDITABLE;
-            }
-
-            if (member[cocktail.ui.editable] == cocktail.ui.READ_ONLY) {
-                return cocktail.ui.READ_ONLY;
-            }
-
-            if (!member[woost.models.permissions].modify) {
-                return cocktail.ui.READ_ONLY;
-            }
-
-            if (member.relatedType && !member.relatedType[woost.models.permissions].modify) {
-                return cocktail.ui.READ_ONLY;
-            }
-
-            return cocktail.ui.EDITABLE;
+            return woost.models.getMemberEditMode(member);
         }
 
         initData() {
