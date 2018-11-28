@@ -80,8 +80,10 @@
 
         // Reload the page if the session expires
         cocktail.ui.request.addErrorHandler((request) => {
+
             if (
                 request.responseType == "json"
+                && request.response
                 && request.response.error
                 && request.response.error.type == "woost.models.user.AuthorizationError"
                 && request.response.error.user.anonymous
