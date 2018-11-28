@@ -28,6 +28,35 @@ cocktail.declare("woost.admin.ui");
         return permissions && permissions[permission] || false;
     }
 
+    woost.models.getMemberEditMode = function (member) {
+
+        if (member[cocktail.ui.editable] == cocktail.ui.NOT_EDITABLE) {
+            return cocktail.ui.NOT_EDITABLE;
+        }
+
+        if (!woost.models.hasPermission(member, "read")) {
+            return cocktail.ui.NOT_EDITABLE;
+        }
+
+        if (member.relatedType && !woost.models.hasPermission(member.relatedType, "read")) {
+            return cocktail.ui.NOT_EDITABLE;
+        }
+
+        if (member[cocktail.ui.editable] == cocktail.ui.READ_ONLY) {
+            return cocktail.ui.READ_ONLY;
+        }
+
+        if (!woost.models.hasPermission(member, "modify")) {
+            return cocktail.ui.READ_ONLY;
+        }
+
+        if (member.relatedType && !woost.models.hasPermission(member.relatedType, "modify")) {
+            return cocktail.ui.READ_ONLY;
+        }
+
+        return cocktail.ui.EDITABLE;
+    }
+
     woost.admin.ui.formControls = cocktail.ui.formControls.extend("woost.admin.ui.formControl");
     cocktail.schema.Collection[woost.admin.ui.formControl] = (dataBinding) => {
         if (dataBinding.member.items instanceof cocktail.schema.Reference) {
