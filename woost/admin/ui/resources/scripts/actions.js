@@ -680,6 +680,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     const cleanup = () => {
                         cocktail.ui.Lock.clear();
                         if (!this.editingIntegralChild) {
+                            form.errors = [];
                             cocktail.ui.Notice.show({
                                 summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
                                 category: "success"
@@ -729,6 +730,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     }
                     cocktail.ui.Lock.clear();
                     if (!this.editingIntegralChild) {
+                        form.errors = [];
                         cocktail.ui.Notice.show({
                             summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
                             category: "success"
