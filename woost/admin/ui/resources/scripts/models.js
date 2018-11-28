@@ -20,6 +20,14 @@ cocktail.declare("woost.admin.ui");
     woost.admin.ui.showDescriptions = Symbol.for("woost.admin.ui.showDescriptions");
     woost.admin.ui.showThumbnails = Symbol.for("woost.admin.ui.showThumbnails");
 
+    woost.models.hasPermission = function (target, permission) {
+        if (target instanceof cocktail.schema.Member) {
+            target = target.originalMember;
+        }
+        const permissions = target[woost.models.permissions];
+        return permissions && permissions[permission] || false;
+    }
+
     woost.admin.ui.formControls = cocktail.ui.formControls.extend("woost.admin.ui.formControl");
     cocktail.schema.Collection[woost.admin.ui.formControl] = (dataBinding) => {
         if (dataBinding.member.items instanceof cocktail.schema.Reference) {

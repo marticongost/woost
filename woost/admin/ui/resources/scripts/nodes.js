@@ -341,11 +341,11 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
 
         shouldIncludeMember(member) {
 
-            if (!member[woost.models.permissions].read) {
+            if (!woost.models.hasPermission(member, "read")) {
                 return false;
             }
 
-            if (member.relatedType && !member.relatedType[woost.models.permissions].read) {
+            if (member.relatedType && !woost.models.hasPermission(member.relatedType, "read")) {
                 return false;
             }
 

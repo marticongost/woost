@@ -46,7 +46,7 @@
     }
 
     shouldIncludeModel(model) {
-        return !this.instantiableModelsOnly || (model.instantiable && model[woost.models.permissions].create);
+        return !this.instantiableModelsOnly || (model.instantiable && woost.models.hasPermission(model, "create"));
     }
 
     addModel(model) {
