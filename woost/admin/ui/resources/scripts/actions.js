@@ -653,7 +653,14 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
         const form = this.view.editForm;
 
-        const state = form.getJSONValue();
+        let serializationParameters = {
+            includeMember: (member) => {
+                return woost.models.getMemberEditMode(member) === cocktail.ui.EDITABLE;
+            },
+            getMemberParameters: (member) => serializationParameters
+        };
+
+        const state = form.getJSONValue(serializationParameters);
         const id = this.item.id
         state.id = id;
         state._new = this.item._new;
