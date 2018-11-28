@@ -132,6 +132,7 @@ cocktail.declare("woost.admin.actions");
             this[MATCHING_SLOTS] = new Set();
             this.actionParameters = parameters.parameters;
             this.enabled = true;
+            this.requiredPermission = parameters.requiredPermission;
 
             cocktail.sets.update(this[MATCHING_MODELS], parameters.models || actionClass.defaultMatchingModels);
 
@@ -186,6 +187,10 @@ cocktail.declare("woost.admin.actions");
         }
 
         matchesModel(model) {
+
+            if (this.requiredPermission && !model[woost.models.permissions][this.requiredPermission]) {
+                return false;
+            }
 
             let matchingModels = this[MATCHING_MODELS];
             model = model.originalMember;
@@ -891,7 +896,8 @@ woost.admin.actions.NewAction.register({
         "listingToolbar",
         "referenceToolbar",
         "collectionToolbar"
-    ]
+    ],
+    requiredPermission: "create"
 });
 
 woost.admin.actions.AddAction.register({
@@ -953,7 +959,8 @@ woost.admin.actions.DeleteAction.register({
         "listingToolbar",
         "editToolbar",
         "collectionToolbar"
-    ]
+    ],
+    requiredPermission: "delete"
 });
 
 woost.admin.actions.RefreshAction.register({
