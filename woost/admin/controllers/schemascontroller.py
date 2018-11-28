@@ -5,12 +5,10 @@ u"""
 """
 from json import dumps
 import cherrypy
-from threading import Lock
 from cocktail.modeling import camel_to_underscore
 from cocktail import schema
 from cocktail.translations import set_language
-from cocktail.controllers import Controller
-from cocktail.controllers.csrfprotection import no_csrf_token_injection
+from cocktail.controllers import Controller, Cached, request_property
 from cocktail.persistence import PersistentObject
 from woost import app
 from woost.admin.schemaexport import SchemaExport
@@ -21,23 +19,31 @@ from woost.admin.filters import (
     MultiValueFilter
 )
 
-_lock = Lock()
-_output = None
 _standard_filter_templates = (Filter, MultiValueFilter)
 
+# Invalidate the cache each time new code is loaded
+if app.cache:
+    app.cache.clear("woost.admin.schemas")
 
-class SchemasController(Controller):
 
-    @no_csrf_token_injection
-    def __call__(self):
-        global _output
-        if not _output:
-            with _lock:
-                if not _output:
-                    _output = "".join(self.produce_output())
-        return _output
+class SchemasController(Cached, Controller):
 
-    def produce_output(self):
+    @request_property
+    def invalidation(self):
+        invalidation = Cached.invalidation(self)
+        invalidation.depends_on("woost.admin.schemas")
+
+        for role in app.user.iter_roles():
+            invalidation.depends_on(role)
+            invalidation.depends_on(role.permissions)
+
+        return invalidation
+
+    @request_property
+    def cache_key(self):
+        return Cached.cache_key(self), app.user.role.id
+
+    def _produce_content(self):
 
         language = (
             app.user.prefered_language
