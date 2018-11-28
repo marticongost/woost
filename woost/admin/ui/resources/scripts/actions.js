@@ -188,7 +188,7 @@ cocktail.declare("woost.admin.actions");
 
         matchesModel(model) {
 
-            if (this.requiredPermission && !model[woost.models.permissions][this.requiredPermission]) {
+            if (this.requiredPermission && !woost.models.hasPermission(model, this.requiredPermission)) {
                 return false;
             }
 
@@ -245,7 +245,7 @@ woost.admin.actions.SelectViewAction = class SelectViewAction extends woost.admi
         }
 
         modelIsEligible(model) {
-            return model.instantiable && model[woost.models.permissions].create;
+            return model.instantiable && woost.models.hasPermission(model, "create");
         }
 
         createEntry() {
@@ -401,7 +401,10 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
         let hasSlots = false;
 
         for (let member of model.members()) {
-            if (member instanceof woost.models.Slot && member[woost.models.permissions].read) {
+            if (
+                member instanceof woost.models.Slot
+                && woost.models.hasPermission(member, "read")
+            ) {
                 hasSlots = true;
                 break;
             }
