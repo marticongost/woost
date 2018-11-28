@@ -16,7 +16,9 @@ from woost.models import (
     ModifyPermission,
     CreateTranslationPermission,
     ModifyTranslationPermission,
-    DeleteTranslationPermission
+    DeleteTranslationPermission,
+    ReadMemberPermission,
+    ModifyMemberPermission
 )
 from woost.models.utils import get_model_dotted_name
 
@@ -51,6 +53,7 @@ class Import(object):
     ):
         self.__temp_objects = {}
         self.__allowed_translations_cache = defaultdict(set)
+        self.__checked_members = set()
         self.data = data
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
@@ -94,9 +97,9 @@ class Import(object):
 
     def edit_permission_check(self, obj):
         self.user.require_permission(
-            CreatePermission
+            ModifyPermission
                 if obj.is_inserted
-                else ModifyPermission,
+                else CreatePermission,
             target = obj
         )
 
@@ -126,6 +129,18 @@ class Import(object):
 
             perm_cache.add(language)
 
+    def check_member_permission(self, member):
+        if member not in self.__checked_members:
+            self.user.require_permission(
+                ReadMemberPermission,
+                member = member
+            )
+            self.user.require_permission(
+                ModifyMemberPermission,
+                member = member
+            )
+            self.__checked_members.add(member)
+
     def import_members(self, obj, data):
         for member in obj.__class__.iter_members():
             if self.should_import_member(obj, data, member):
@@ -138,12 +153,16 @@ class Import(object):
 
     def import_member_value(self, obj, member, value, language = None):
 
+        # Prevent writing forbidden members
+        if self.permission_check:
+            self.check_member_permission(member)
+
         if member.translated and not language:
             self.require_value_type(member, dict, value)
             for language, language_value in value.iteritems():
                 self.import_member_value(obj, member, language_value, language)
         else:
-            # Skip forbidden languages
+            # Prevent writing forbidden translations
             if language and self.permission_check and self.user:
                 self.check_translation_permission(obj, language)
 
