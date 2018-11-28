@@ -90,6 +90,8 @@
             ) {
                 location.reload();
             }
+
+            return false;
         });
 
         function processSectionTree(parent, section, depth = 0) {
