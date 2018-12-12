@@ -11,6 +11,7 @@ from cocktail.controllers import (
     Pagination
 )
 from .block import Block
+from .publishableobject import PublishableObject
 
 Listing = None
 
@@ -32,7 +33,7 @@ class Listing(Block):
                     name = "subset",
                     items = schema.Reference(type = cls.listed_model),
                     related_end = schema.Collection(),
-                    before_member = "paginated",
+                    before_member = "pagination_method",
                     custom_translation_key =
                         "woost.models.listing.Listing.members.subset",
                     member_group = "listing"
@@ -57,46 +58,72 @@ class Listing(Block):
 
     groups_order = list(Block.groups_order)
     groups_order.insert(groups_order.index("content") + 1, "listing")
+    groups_order.insert(groups_order.index("content") + 2, "pagination")
 
     members_order = [
-        "paginated",
+        "pagination_method",
         "page_size"
     ]
 
-    paginated = schema.Boolean(
+    pagination_method = schema.String(
+        enumeration = [
+            "pager",
+            "infinite_scroll"
+        ],
+        member_group = "pagination"
+    )
+
+    item_accessibility = schema.String(
         required = True,
-        default = False,
+        enumeration = [
+            "accessible",
+            "published",
+            "any"
+        ],
+        default = "accessible",
+        edit_control = "cocktail.html.RadioSelector",
         member_group = "listing"
     )
 
     page_size = schema.Integer(
-        "page_size",
         min = 1,
-        required = paginated,
-        member_group = "listing"
+        required = pagination_method,
+        member_group = "pagination"
     )
 
     def init_view(self, view):
         Block.init_view(self, view)
         view.name_prefix = self.name_prefix
         view.name_suffix = self.name_suffix
+        view.pagination_method = self.pagination_method
 
         if not self.subset:
             view.depends_on(self.listed_model)
 
-        if self.paginated:
+        if self.pagination_method:
             view.pagination = self.pagination
         else:
             view.items = self.select_items()
 
     def select_items(self):
 
-        items = self.listed_model.select(
-            base_collection = self.subset or None,
-            order = self.listing_order if not self.subset else None
-        )
+        items = None
 
-        if not self.paginated and self.page_size:
+        if issubclass(self.listed_model, PublishableObject):
+            if self.item_accessibility == "accessible":
+                items = self.listed_model.select_accessible()
+            elif self.item_accessibility == "published":
+                items = self.listed_model.select_published()
+
+        if items is None:
+            items = self.listed_model.select()
+
+        if self.subset:
+            items.base_collection = self.subset
+        else:
+            items.order = self.listing_order
+
+        if not self.pagination_method and self.page_size:
             items.range = (0, self.page_size)
 
         e = self.selecting_items(items = items)
