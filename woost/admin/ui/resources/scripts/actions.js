@@ -36,6 +36,10 @@ cocktail.declare("woost.admin.actions");
             }
         }
 
+        static matchesContext(context) {
+            return true;
+        }
+
         static register(parameters) {
 
             if (!parameters) {
@@ -180,6 +184,10 @@ cocktail.declare("woost.admin.actions");
             }
 
             if (context.slot && !this.matchesSlot(context.slot)) {
+                return false;
+            }
+
+            if (this.actionClass && !this.actionClass.matchesContext(context)) {
                 return false;
             }
 
