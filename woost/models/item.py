@@ -400,7 +400,7 @@ class Item(PersistentObject):
             if action in ("create", "modify"):
                 value = copy_mutable_containers(event.value)
 
-                if language:
+                if event.member.translated:
                     change.item_state[member_name][language] = value
                 else:
                     change.item_state[member_name] = value
