@@ -710,7 +710,8 @@ woost.admin.nodes.FileEditNode = class FileEditNode extends woost.admin.nodes.Ed
             new FileUpload({
                 name: "_upload",
                 [cocktail.ui.group]: "content",
-                [cocktail.ui.formControl]: () => woost.admin.ui.FileUploader
+                [cocktail.ui.formControl]: () => woost.admin.ui.FileUploader,
+                [woost.models.permissions]: {read: true, modify: true}
             })
         );
 
