@@ -18,6 +18,7 @@ from woost.models.utils import (
 from woost.admin.dataexport import Export
 from woost.admin.dataexport.sitetreeexport import SiteTreeExport
 from woost.admin.dataexport.adminexport import AdminExport
+from woost.admin.partitioning import parse_partition_parameter
 from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
 
@@ -38,6 +39,12 @@ class ListingController(Controller):
 
         # Returning a single object
         if self.instance:
+
+            if self.partition:
+                raise cherrypy.HTTPError(
+                    400,
+                    "Can't apply a partition when retrieving a single element"
+                )
 
             if self.range:
                 raise cherrypy.HTTPError(
@@ -98,6 +105,7 @@ class ListingController(Controller):
 
             self.export.model = self.model
             self.export.relation = self.relation
+            self.export.partition = self.partition
             self.export.filters = filter_expressions
             self.export.range = self.range
             results, count = self.export.get_results()
@@ -105,17 +113,16 @@ class ListingController(Controller):
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
 
-            html = [u'{"count": {"value": %d, "label": %s}, "records": [\n' % (
-                count,
-                json.dumps(
-                    translations(
-                        "woost.admin.controllers.datacontroller.count",
-                        model = self.model,
-                        count = count
-                    )
-                )
-            )]
+            if self.partition:
+                count_obj = self._export_count(count[0][1])
+                count_obj["partitions"] = [
+                    self._export_count(part_count, part_value)
+                    for part_value, part_count in count
+                ]
+            else:
+                count_obj = self._export_count(count)
 
+            html = [u'{"count": %s, "records": [\n' % json.dumps(count_obj)]
             glue = u""
 
             for record in results:
@@ -125,6 +132,41 @@ class ListingController(Controller):
 
             html.append(u"]}")
             return u"".join(html)
+
+    @cherrypy.expose
+    def contains(self, **kwargs):
+
+        cherrypy.response.headers["Content-Type"] = "application/json"
+
+        instance = self.instance
+        if instance is None:
+            raise cherrypy.HTTPError(400, "No instance specified")
+
+        query = self.model.select()
+
+        if self.search:
+            query.add_filter(
+                Self.search(
+                    self.search,
+                    match_mode = "prefix",
+                    languages =
+                        self.locales
+                        or [None] + list(Configuration.instance.languages)
+                )
+            )
+
+        for filter in self.filters:
+            expr = filter.filter_expression()
+            if expr is not None:
+                query.add_filter(expr)
+
+        if self.partition:
+            part_method, part_value = self.partition
+            expr = part_method.get_expression(part_value)
+            if expr is not None:
+                query.add_filter(expr)
+
+        return json.dumps(instance in query)
 
     @request_property
     def model(self):
@@ -231,6 +273,17 @@ class ListingController(Controller):
         return (start, start + page_size)
 
     @request_property
+    def partition(self):
+        value = cherrypy.request.params.get("partition")
+        if value:
+            partition = parse_partition_parameter(value)
+            if not partition:
+                raise cherrypy.HTTPError(400, "Invalid partition: " + value)
+            return partition
+        else:
+            return None
+
+    @request_property
     def search(self):
         return cherrypy.request.params.get("search")
 
@@ -313,4 +366,21 @@ class ListingController(Controller):
             errors = "ignore"
         )
         return filter if filter_class.validate(filter) else None
+
+    def _export_count(self, count, partition_value = None):
+
+        count_obj = {
+            "value": count,
+            "label": translations(
+                "woost.admin.controllers.datacontroller.count",
+                model = self.model,
+                count = count
+            )
+        }
+
+        if partition_value:
+            method = self.partition[0]
+            count_obj["partition"] = method.serialize_value(partition_value)
+
+        return count_obj
 

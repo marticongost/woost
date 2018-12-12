@@ -20,6 +20,8 @@ cocktail.declare("woost.admin.ui");
     woost.admin.ui.showDescriptions = Symbol.for("woost.admin.ui.showDescriptions");
     woost.admin.ui.showThumbnails = Symbol.for("woost.admin.ui.showThumbnails");
 
+    woost.admin.partitioningMethods = Symbol("woost.admin.partitioningMethods");
+
     woost.models.hasPermission = function (target, permission) {
         if (target instanceof cocktail.schema.Member) {
             target = target.originalMember;

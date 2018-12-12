@@ -15,6 +15,7 @@ class CRUD(Section):
     node = "woost.admin.nodes.CRUD"
     model = None
     views = None
+    partitioning_methods = None
 
     @property
     def icon_uri(self):
@@ -34,5 +35,6 @@ class CRUD(Section):
         data = Section.export_data(self)
         data["model"] = get_model_dotted_name(self.model)
         data["views"] = self.views
+        data["partitioning_methods"] = self.partitioning_methods
         return data
 

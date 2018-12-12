@@ -23,8 +23,10 @@
     <ui:requires component="woost.admin.ui.NewObjectDropdown"/>
 
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
+    <ui:requires-translation-bundle name="woost.admin.ui.partitioning"/>
 
     <ui:resource href="woost.admin.ui://scripts/views.js"/>
+    <ui:resource href="woost.admin.ui://scripts/partitioning.js"/>
     <ui:resource href="woost.admin.ui://scripts/editstate.js"/>
     <ui:resource href="woost.admin.ui://scripts/filters.js"/>
     <ui:resource href="woost.admin.ui://scripts/models.js"/>
@@ -115,6 +117,10 @@
 
                     for (let viewData of admin._views) {
                         woost.admin.views.addView(viewData);
+                    }
+
+                    for (let partMethodData of admin._partitioning_methods) {
+                        woost.admin.partitioning.addMethod(partMethodData);
                     }
 
                     processSectionTree(null, admin._root_section);

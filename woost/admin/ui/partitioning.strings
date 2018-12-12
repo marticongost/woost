@@ -1,0 +1,8 @@
+
+[woost.admin.partitioning]
+
+    [no_partitioning]
+    ca: Sense segmentació
+    es: Sin segmentación
+    en: No partitioning
+

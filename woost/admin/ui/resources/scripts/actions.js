@@ -238,6 +238,24 @@ woost.admin.actions.SelectViewAction = class SelectViewAction extends woost.admi
     }
 }
 
+woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMethodAction extends woost.admin.actions.Action {
+
+    static matchesContext(context) {
+        if (
+            !context.node
+            || !context.node.availablePartitioningMethods
+            || !context.node.availablePartitioningMethods.length
+        ) {
+            return false;
+        }
+        return super.matchesContext(context);
+    }
+
+    createEntry() {
+        return woost.admin.ui.PartitioningMethodSelector.create();
+    }
+}
+
 {
     const ELIGIBLE_MODELS = Symbol();
 
@@ -993,6 +1011,11 @@ woost.admin.actions.ExcelAction.register({
     id: "excel",
     slots: ["listingToolbar"],
     parameters: {position: "extra"}
+});
+
+woost.admin.actions.SelectPartitioningMethodAction.register({
+    id: "select-partitioning-method",
+    slots: ["listingControls", "relationSelectorControls"]
 });
 
 woost.admin.actions.FieldsAction.register({
