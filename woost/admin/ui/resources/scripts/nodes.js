@@ -401,12 +401,19 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return [woost.admin.views.listing];
         }
 
+        get availablePartitioningMethods() {
+            return [];
+        }
+
         defineQueryParameters() {
             return [
                 new woost.admin.views.ViewReference({
                     name: "view",
                     enumeration: this.availableViews,
                     defaultValue: this.availableViews[0]
+                }),
+                new woost.admin.partitioning.PartitionSpecifier({
+                    name: "partition"
                 }),
                 new cocktail.schema.Collection({
                     name: "locales",
@@ -445,14 +452,21 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             else {
                 super.applyQueryParameter(parameter, value);
 
-                // Alter the available / default fields once the active view has been set
+                // Alter the available / default fields and partitioning methods once
+                // the active view has been set
                 if (parameter.name == "view") {
+
+                    // Fields
                     const members = this.queryParameters.members;
                     const model = this.adaptedModel;
                     members.items.sourceSchema = model;
                     members.defaultValue = Array.from(model.orderedMembers()).filter(
                         (member) => member[cocktail.ui.listedByDefault]
                     );
+
+                    // Partitioning methods
+                    const partition = this.queryParameters.partition;
+                    partition.availableMethods = this.availablePartitioningMethods;
                 }
             }
         }
@@ -524,6 +538,14 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
         return woost.admin.views.resolve(
             this.section.views,
             this.model[woost.admin.views.views]
+        );
+    }
+
+    get availablePartitioningMethods() {
+        return woost.admin.partitioning.resolve(
+            this.view && this.view.partitioning_methods,
+            this.section.partitioning_methods,
+            this.listedModel[woost.admin.partitioning.methods]
         );
     }
 
@@ -771,6 +793,14 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
     get availableViews() {
         return woost.admin.views.resolve(
             this.relation[woost.admin.views.views]
+        );
+    }
+
+    get availablePartitioningMethods() {
+        return woost.admin.partitioning.resolve(
+            this.view && this.view.partitioningMethods,
+            this.relation[woost.admin.partitioning.methods],
+            this.listedModel[woost.admin.partitioning.methods]
         );
     }
 

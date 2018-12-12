@@ -17,7 +17,7 @@ from woost.models import (
     DeletePermission
 )
 from woost.models.utils import get_model_dotted_name
-from woost.admin.views import available_views
+from woost.admin import views, partitioning
 from .schemaexport import (
     MemberExport,
     exports_member,
@@ -146,8 +146,16 @@ class SchemaExport(MemberExport):
 
         yield (u"[woost.admin.views.views]", dumps([
             view.name
-            for view in available_views(member)
+            for view in views.available_views(member)
         ]))
+
+        yield (
+            u"[woost.admin.partitioning.methods]",
+            dumps([
+                method.name
+                for method in partitioning.available_methods(member)
+            ])
+        )
 
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):

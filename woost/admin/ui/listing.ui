@@ -5,6 +5,7 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
     <ui:requires component="woost.admin.ui.ViewSelector"/>
+    <ui:requires component="woost.admin.ui.PartitioningMethodSelector"/>
     <ui:requires component="woost.admin.ui.FieldsDropdown"/>
     <ui:requires component="woost.admin.ui.LocalesDropdown"/>
     <ui:requires component="woost.admin.ui.FiltersDropdown"/>
@@ -42,6 +43,7 @@
         let node = this.navigationNode;
         this.members = node.members;
         this.locales = node.locales;
+        this.partition = node.partition;
 
         if (!this.searchBox.dataBinding) {
             this.searchBox.dataBinding = {
@@ -107,6 +109,17 @@
         <?on changed
         if (!this[NAVIGATING] && oldValue !== undefined) {
             cocktail.navigation.changeQuery({view: newValue || undefined});
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="partition"
+        type="new woost.admin.partitioning.PartitionSpecifier()"
+        reflected="true">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({partition: newValue || undefined});
         }
         ?>
     </ui:property>
@@ -210,6 +223,7 @@
         reflected="false">
         <?on changed
         this.resultCountLabel.innerHTML = newValue && newValue.label || "";
+        this.partitionTabs.resultCount = newValue;
         ?>
     </ui:property>
 
@@ -270,8 +284,21 @@
     </ui:with>
 
     <ui:with ui:element="main">
+
         <ui:woost.admin.ui.FiltersBar id="filtersBar"/>
+
+        <ui:woost.admin.ui.PartitionTabs id="partitionTabs">
+            <?js
+            cocktail.ui.link(
+                this,
+                element,
+                ["partition", "value"]
+            );
+            ?>
+        </ui:woost.admin.ui.PartitionTabs>
+
         <div id="viewContainer"/>
+
     </ui:with>
 
     <?on nodeExposed

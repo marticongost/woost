@@ -297,6 +297,7 @@ class View(object):
     controller = ListingController
     model = None
     export_class = Export
+    partitioning_methods = None
 
     def __init__(
         self,
@@ -356,7 +357,8 @@ class View(object):
             "label": translations(self),
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
-            "ui_component": self.ui_component
+            "ui_component": self.ui_component,
+            "partitioning_methods": self.partitioning_methods
         }
 
 

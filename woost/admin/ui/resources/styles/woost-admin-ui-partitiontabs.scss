@@ -1,0 +1,41 @@
+
+@import "cocktail.ui://styles/tabs";
+
+#entries {
+    @include tab-strip;
+    background-color: darken($panel-background, 3);
+
+    .PartitionEntry {
+        @include tab-button;
+        display: flex;
+        align-items: baseline;
+
+        .label {
+            font-size: 1.3em;
+        }
+
+        .countLabel {
+            font-weight: normal;
+            font-size: 1.2em;
+            color: #999;
+            margin-left: 0.5em;
+
+            &:empty {
+                display: none;
+            }
+
+            &:before {
+                content: '(';
+            }
+
+            &:after {
+                content: ')';
+            }
+        }
+
+        &[aria-selected='true'] .countLabel {
+            color: #555;
+        }
+    }
+}
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdownSelector
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    includeEmptyOption="true"
+    selectionDisplayed="false"
+    buttonStyle="textOnly">
+
+    <?on action:changed
+    this.dataBinding = {
+        member: new woost.admin.partitioning.PartitioningMethodReference({
+            enumeration: newValue.node.availablePartitioningMethods
+        }),
+        value: newValue.view.partitioningMethod
+    }
+
+    cocktail.ui.link(
+        newValue.view,
+        this,
+        ["partition", "value"],
+        (view, selector) => { selector.value = view.partition ? view.partition.method : null; },
+        async (selector, view) => {
+            if (selector.value) {
+                await cocktail.ui.request({
+                    url: `${woost.admin.url}/data/partitions/${selector.value.name}`,
+                    responseType: "json"
+                })
+                    .then((xhr) => {
+                        const partitions = xhr.response;
+                        view.partition = {method: selector.value, value: partitions[0]};
+                    });
+            }
+            else {
+                view.partition = null;
+            }
+        }
+    );
+    ?>
+
+</ui:cocktail.ui.ActionListDropdownSelector>
+

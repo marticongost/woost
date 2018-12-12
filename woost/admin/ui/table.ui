@@ -51,6 +51,10 @@
             options.parameters.model = this.model.originalMember.name;
         }
 
+        if (listing.partition) {
+            options.parameters.partition = listing.navigationNode.queryParameters.partition.serializeValue(listing.partition);
+        }
+
         if (listing.search) {
             options.parameters.search = listing.search;
         }

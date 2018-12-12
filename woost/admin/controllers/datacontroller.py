@@ -12,6 +12,7 @@ from .defaultscontroller import DefaultsController
 from .settingsscopescontroller import SettingsScopesController
 from .currentusercontroller import CurrentUserController
 from .viewscontroller import ViewsController
+from .partitionscontroller import PartitionsController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
 
@@ -24,6 +25,7 @@ class DataController(HTTPMethodController):
     DELETE = DeleteController
 
     views = ViewsController
+    partitions = PartitionsController
     defaults = DefaultsController
     settings_scopes = SettingsScopesController
     current_user = CurrentUserController

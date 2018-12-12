@@ -32,6 +32,7 @@ class Export(object):
     ref_exporters = ChainTypeMapping()
 
     model = None
+    partition = None
     filters = None
     apply_filters = True
     relation = None
@@ -110,7 +111,12 @@ class Export(object):
 
     def resolve_results(self):
         query = self.select_objects()
-        return query, len(query)
+
+        if self.partition:
+            part_method, part_value = self.partition
+            return part_method.partition_query(query, part_value)
+        else:
+            return query, len(query)
 
     def select_objects(self):
 

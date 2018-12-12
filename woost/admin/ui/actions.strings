@@ -41,6 +41,11 @@
     es: Idiomas
     en: Languages
 
+    [select-partitioning-method]
+    ca: Segmentació
+    es: Segmentación
+    en: Partitioning
+
     [fields]
     ca: Camps
     es: Campos
