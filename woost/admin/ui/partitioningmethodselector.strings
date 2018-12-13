@@ -1,0 +1,8 @@
+
+[woost.admin.ui.PartitioningMethodSelector]
+
+    [noPartitioning]
+    ca: Sense segmentació
+    es: Sin segmentación
+    en: Partitioning
+
