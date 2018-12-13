@@ -1,5 +1,20 @@
 
-[woost.admin.ui.actions]
+[woost.admin.actions]
+
+    [defaultLock]
+    ca: S'estan aplicant els canvis
+    es: Se están aplicando los cambios
+    en: Applying changes
+
+    [defaultSuccessNotice]
+    ca: S'han aplicat els canvis
+    es: Se han aplicado los cambios
+    en: Changes applied successfully
+
+    [defaultErrorNotice]
+    ca: S'ha produït un error que ha impedit que s'apliquessin els canvis
+    es: Se ha producido un error que ha impedido que se aplicasen los cambios
+    en: An error prevented the changes from being applied
 
     [new]
     ca: Crear
@@ -40,11 +55,6 @@
     ca: Idiomes
     es: Idiomas
     en: Languages
-
-    [select-partitioning-method]
-    ca: Segmentació
-    es: Segmentación
-    en: Partitioning
 
     [fields]
     ca: Camps
