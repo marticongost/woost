@@ -652,6 +652,11 @@ class UploadField(Field):
         return None
 
 
+class IBANField(Field):
+    visible_from_root = False
+    member_type = schema.IBAN
+
+
 def _validate_accepted_file_types(context):
 
     if context.value:

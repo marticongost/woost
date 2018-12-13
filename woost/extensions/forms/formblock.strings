@@ -28,6 +28,11 @@ en: Custom form
         es: Términos y condiciones
         en: Agreements
 
+        [requires_captcha]
+        ca: Requereix Captcha
+        es: Requiere Captcha
+        en: Requires Captcha
+
         [notification_receivers]
         ca: Receptors de la notificació
         es: Receptores de la notificación

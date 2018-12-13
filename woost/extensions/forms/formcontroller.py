@@ -16,6 +16,7 @@ from cocktail.controllers import (
 from woost import app
 from woost.controllers.uploadform import UploadForm
 from woost.controllers.formagreement import requires_agreement
+from woost.extensions.nocaptcha.form import add_nocaptcha
 
 translations.load_bundle("woost.extensions.forms.formcontroller")
 
@@ -39,6 +40,9 @@ class FormController(FormProcessor, Controller):
                     agreement_member.document_title = agreement.document_title
                     agreement_member.custom_translation_key = \
                         "woost.extensions.forms.formcontroller.form_agreement"
+
+            if getattr(self.controller.block, "requires_captcha", False):
+                add_nocaptcha(self)
 
         @property
         def model(self):
