@@ -22,6 +22,8 @@ from woost.admin.partitioning import parse_partition_parameter
 from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
 
+undefined = object()
+
 
 class ListingController(Controller):
 
@@ -367,7 +369,7 @@ class ListingController(Controller):
         )
         return filter if filter_class.validate(filter) else None
 
-    def _export_count(self, count, partition_value = None):
+    def _export_count(self, count, partition_value = undefined):
 
         count_obj = {
             "value": count,
@@ -378,7 +380,7 @@ class ListingController(Controller):
             )
         }
 
-        if partition_value:
+        if partition_value is not undefined:
             method = self.partition[0]
             count_obj["partition"] = method.serialize_value(partition_value)
 
