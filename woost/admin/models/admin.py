@@ -23,6 +23,7 @@ class Admin(Publishable):
         "title",
         "default_language",
         "root_section",
+        "main_ui_component",
         "ui_components"
     ]
 
@@ -47,6 +48,11 @@ class Admin(Publishable):
     root_section = schema.String(
         required = True,
         default = "woost.admin.sections.rootsection.RootSection"
+    )
+
+    main_ui_component = schema.String(
+        required = True,
+        default = "woost.admin.ui.Layout"
     )
 
     ui_components = schema.Collection(

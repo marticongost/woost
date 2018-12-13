@@ -26,6 +26,22 @@ en: Administration panel
         es: Árbol de secciones
         en: Section tree
 
+        [ui_component]
+        ca: Component visual principal
+        es: Componente visual principal
+        en: Main UI component
+
+            [explanation]
+            ca:
+                El component de <em>cocktail.ui</em> a utilitzar per generar la interfície
+                d'usuari per l'administració.
+            es:
+                El componente de <em>cocktail.ui</em> a utilizar para generar la interfaz
+                de usuario para la administración.
+            en:
+                The <em>cocktail.ui</em> component to use to generate the user interface for
+                the admin.
+
         [ui_components]
         ca: Components visuals
         es: Componentes visuales
