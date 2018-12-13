@@ -77,8 +77,8 @@ def clear_image_cache(item = None, factory = None):
         paths = []
 
         if item is not None:
-            paths.append(app.path("image-cache", str(item.id)))
-            paths.append(app.path("static", "images", str(item.id)))
+            paths.append(app.path("image-cache", item.image_id))
+            paths.append(app.path("static", "images", item.image_id))
         else:
             for base in (
                 app.path("image-cache"),
@@ -165,11 +165,11 @@ def require_rendering(
 
     identifier = factory.identifier or "factory%d" % factory.id
     file_name = "%s.%s" % (identifier, ext)
-    item_id = item.full_name if isinstance(item, type) else str(item.id)
+    image_id = item.full_name if isinstance(item, type) else item.image_id
 
     # If the image hasn't been generated yet, do so and store it in the
     # application's image cache
-    image_cache_file = app.path("image-cache", item_id, file_name)
+    image_cache_file = app.path("image-cache", image_id, file_name)
 
     if not os.path.exists(image_cache_file):
 
@@ -181,7 +181,7 @@ def require_rendering(
 
         # Store the generated image in the image cache
         try:
-            os.mkdir(app.path("image-cache", item_id))
+            os.mkdir(app.path("image-cache", image_id))
         except OSError:
             pass
 
@@ -227,9 +227,9 @@ def require_rendering(
     # If the image is accessible to anonymous users, create a link in the
     # application's static content folder (further requests will be served
     # by the web server, no questions asked).
-    if hasattr(os, "symlink"):
+    if hasattr(os, "symlink") and getattr(item, "_v_upload_id", None) is None:
         static_publication_link = \
-            app.path("static", "images", item_id, file_name)
+            app.path("static", "images", image_id, file_name)
 
         if not os.path.lexists(static_publication_link):
             anonymous = User.require_instance(qname = "woost.anonymous_user")
@@ -240,7 +240,7 @@ def require_rendering(
                 image_factory = factory
             ):
                 try:
-                    os.mkdir(app.path("static", "images", item_id))
+                    os.mkdir(app.path("static", "images", image_id))
                 except OSError:
                     pass
                 os.symlink(image_cache_file, static_publication_link)

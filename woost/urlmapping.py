@@ -11,6 +11,7 @@ from cocktail.controllers import get_request_url
 from woost import app
 from woost.models import (
     Configuration,
+    Website,
     Item,
     PublishableObject,
     get_publishable,
@@ -51,7 +52,7 @@ class URLMapping(object):
             if publishable:
                 website = get_matching_website(publishable)
             else:
-                website = Configuration.instance.websites[0]
+                website = Website.select()[0]
 
         # HTTPS policy
         if scheme is None and website:
@@ -324,6 +325,41 @@ class Optional(URLComponent):
             return result
 
 
+class Conditional(URLComponent):
+
+    def __init__(self, condition, component):
+        URLComponent.__init__(self)
+        self.condition = condition
+        self.component = component
+
+    def build_url(
+        self,
+        url_builder,
+        **kwargs
+    ):
+        result = self.component.build_url(
+            url_builder,
+            **kwargs
+        )
+
+        if result == NO_MATCH:
+            if self.condition(**kwargs):
+                return NO_MATCH
+            else:
+                return IGNORED
+        else:
+            return result
+
+    def resolve(self, url, resolution):
+
+        result = self.component.resolve(url, resolution)
+
+        if result == NO_MATCH:
+            return IGNORED
+        else:
+            return result
+
+
 class FixedHostname(URLComponent):
 
     hostname = None
@@ -459,7 +495,7 @@ class Home(URLComponent):
         **kwargs
     ):
         if publishable:
-            for website in Configuration.instance.websites:
+            for website in Website.select():
                 if publishable is website.home:
                     return MATCH
 
@@ -499,8 +535,13 @@ class IdInPath(URLComponent):
         publishable = None,
         **kwargs
     ):
-        if publishable and (
-            self.model is None or isinstance(publishable, self.model)
+        if (
+            publishable
+            and publishable.id
+            and (
+                self.model is None
+                or isinstance(publishable, self.model)
+            )
         ):
             if self.prefix:
                 url_builder.path.append(self.prefix)

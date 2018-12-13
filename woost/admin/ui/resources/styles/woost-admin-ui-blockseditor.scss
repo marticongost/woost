@@ -1,0 +1,19 @@
+
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+}
+
+#fieldsContainer {
+    flex: 0 0 35em;
+    padding: 1em;
+}
+
+#previewFrame {
+    flex: 1 1 auto;
+    background-color: #eee;
+    border: none;
+}
+

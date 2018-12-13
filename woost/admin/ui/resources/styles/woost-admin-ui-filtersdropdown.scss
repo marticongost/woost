@@ -1,0 +1,22 @@
+
+@import "woost.admin.ui://styles/common";
+
+#filtersList {
+    @include clear-list-styles;
+}
+
+.Filter {
+
+    .button {
+        @include transparent-button;
+        text-align: left;
+        white-space: nowrap;
+        cursor: pointer;
+        padding: 0.3em 0;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+

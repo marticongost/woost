@@ -10,6 +10,7 @@ from .item import Item
 class Grid(Item):
 
     type_group = "customization"
+    admin_show_descriptions = False
 
     members_order = [
         "title",
@@ -39,7 +40,8 @@ class Grid(Item):
     sizes = schema.Collection(
         items = "woost.models.GridSize",
         bidirectional = True,
-        integral = True
+        integral = True,
+        listed_by_default = True
     )
 
     def get_sass_code(self):

@@ -11,6 +11,7 @@ import sha
 from string import letters, digits
 from random import choice
 from optparse import OptionParser
+from getpass import getpass
 from cocktail.stringutils import random_string
 from cocktail.translations import translations
 from cocktail.iteration import first
@@ -41,7 +42,6 @@ from woost.models import (
     Grid,
     GridSize,
     File,
-    UserView,
     Permission,
     ReadPermission,
     CreatePermission,
@@ -51,25 +51,18 @@ from woost.models import (
     ReadMemberPermission,
     ModifyMemberPermission,
     CreateTranslationPermission,
-    InstallationSyncPermission,
     DebugPermission,
     ReadTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     ReadHistoryPermission,
     AccessLevel,
-    DeleteTrigger,
-    CustomTriggerResponse,
     EmailTemplate,
     CachingPolicy,
-    Extension,
-    Trigger,
-    TriggerResponse,
-    SiteInstallation,
     VideoPlayerSettings,
-    rendering,
-    load_extensions
+    rendering
 )
+from woost.admin.initialization import create_admin
 
 translations.load_bundle("woost.models.initialization")
 
@@ -105,14 +98,9 @@ class SiteInitializer(object):
         Controller,
         Permission,
         CachingPolicy,
-        SiteInstallation,
         Theme,
         Grid,
-        GridSize,
-        Trigger,
-        TriggerResponse,
-        UserView,
-        Extension
+        GridSize
     ]
 
     read_only_members = [
@@ -133,7 +121,6 @@ class SiteInitializer(object):
     restricted_members = [
         "woost.models.item.Item.qname",
         "woost.models.item.Item.global_id",
-        "woost.models.item.Item.synchronizable",
         "woost.models.publishable.Publishable.encoding",
         "woost.models.publishable.Publishable.login_page",
         "woost.models.publishable.Publishable.requires_https",
@@ -146,9 +133,6 @@ class SiteInitializer(object):
         "woost.models.configuration.Configuration.smtp_host",
         "woost.models.configuration.Configuration.smtp_user",
         "woost.models.configuration.Configuration.smtp_password",
-        "woost.models.configuration.Configuration.renderers",
-        "woost.models.configuration.Configuration.image_factories",
-        "woost.models.configuration.Configuration.video_player_settings",
         "woost.models.configuration.Configuration.theme",
         "woost.models.website.Website.hosts",
         "woost.models.website.Website.https_policy",
@@ -164,8 +148,6 @@ class SiteInitializer(object):
         "default",
         "icon16",
         "icon32",
-        "backoffice_thumbnail",
-        "backoffice_small_thumbnail",
         "edit_blocks_thumbnail",
         "close_up",
         "default_thumbnail",
@@ -201,7 +183,7 @@ class SiteInitializer(object):
             self.admin_email = raw_input("Administrator email: ") or "admin@localhost"
 
         if self.admin_password is None:
-            self.admin_password = raw_input("Administrator password: ") \
+            self.admin_password = getpass("Administrator password: ") \
                 or random_string(8)
 
         if options.hostname:
@@ -218,12 +200,13 @@ class SiteInitializer(object):
 
         self.initialize()
 
-        print u"Your site has been successfully created. You can start it by " \
-              u"executing the 'run.py' script. An administrator account for the " \
-              u"content manager interface has been generated, with the " \
-              u"following credentials:\n\n" \
-              u"\tEmail:     %s\n" \
-              u"\tPassword:  %s\n\n" % (self.admin_email, self.admin_password)
+        print (
+            u"Your site has been successfully created. You can start it by "
+            u"executing the 'run.py' script. An administrator account for the "
+            u"content manager interface has been generated with email "
+            u"%s and the supplied password."
+            % self.admin_email
+        )
 
     def initialize(self):
         self.reset_database()
@@ -289,24 +272,19 @@ class SiteInitializer(object):
 
         # Default website
         self.website = self.create_website()
-        self.configuration.websites.append(self.website)
 
         # Roles
         self.anonymous_role = self.create_anonymous_role()
         self.anonymous_user = self.create_anonymous_user()
 
         self.administrator_role = self.create_administrator_role()
-        self.administrator.roles.append(self.administrator_role)
+        self.administrator.role = self.administrator_role
 
         self.everybody_role = self.create_everybody_role()
         self.authenticated_role = self.create_authenticated_role()
         self.editor_role = self.create_editor_role()
 
         self.editor_access_level = self.create_editor_access_level()
-
-        # File deletion trigger
-        self.file_deletion_trigger = self.create_file_deletion_trigger()
-        self.configuration.triggers.append(self.file_deletion_trigger)
 
         # Standard theme
         self.configuration.theme = self.create_default_theme()
@@ -329,8 +307,21 @@ class SiteInitializer(object):
         # Default stylesheets
         self.user_stylesheet = self.create_user_stylesheet()
 
+        # Renderers
+        self.content_renderer = self.create_content_renderer()
+        self.icon16_renderer = self.create_icon16_renderer()
+        self.icon32_renderer = self.create_icon32_renderer()
+
+        # Image factories
+        for image_factory_id in self.image_factories:
+            key = image_factory_id + "_image_factory"
+            method_name = "create_%s_image_factory" % image_factory_id
+            method = getattr(self, method_name)
+            image_factory = method()
+            setattr(self, key, image_factory)
+
         # Backoffice
-        self.backoffice = self.create_backoffice()
+        self.backoffice = create_admin()
 
         # Error pages
         self.generic_error_page = self.create_generic_error_page()
@@ -352,33 +343,6 @@ class SiteInitializer(object):
         # Login page
         self.login_page = self.create_login_page()
         self.configuration.login_page = self.login_page
-
-        # User views
-        self.page_tree_user_view = self.create_page_tree_user_view()
-        self.create_file_gallery_user_view()
-
-        # Renderers
-        self.content_renderer = self.create_content_renderer()
-        self.icon16_renderer = self.create_icon16_renderer()
-        self.icon32_renderer = self.create_icon32_renderer()
-
-        self.configuration.renderers = [
-            self.content_renderer,
-            self.icon16_renderer,
-            self.icon32_renderer
-        ]
-
-        # Image factories
-        for image_factory_id in self.image_factories:
-            key = image_factory_id + "_image_factory"
-            method_name = "create_%s_image_factory" % image_factory_id
-            method = getattr(self, method_name)
-            image_factory = method()
-            setattr(self, key, image_factory)
-            self.configuration.image_factories.append(image_factory)
-
-        # Extensions
-        self.enable_extensions()
 
     def create_configuration(self):
         config = self._create(
@@ -417,6 +381,7 @@ class SiteInitializer(object):
         return self._create(
             Website,
             site_name = TranslatedValues("website.site_name"),
+            identifier = self.hosts[0].split(".")[0],
             hosts = self.hosts
         )
 
@@ -433,7 +398,7 @@ class SiteInitializer(object):
             User,
             qname = "woost.anonymous_user",
             email = "anonymous@localhost",
-            roles = [self.anonymous_role],
+            role = self.anonymous_role,
             anonymous = True
         )
 
@@ -450,7 +415,6 @@ class SiteInitializer(object):
                 self._create(ReadMemberPermission),
                 self._create(ModifyMemberPermission),
                 self._create(ReadHistoryPermission),
-                self._create(InstallationSyncPermission),
                 self._create(DebugPermission)
             ]
         )
@@ -519,13 +483,7 @@ class SiteInitializer(object):
         role = self._create(
             Role,
             qname = "woost.editors",
-            title = TranslatedValues(),
-            hidden_content_types = [
-                Template,
-                Controller,
-                Style,
-                EmailTemplate
-            ]
+            title = TranslatedValues()
         )
 
         # Restrict readable types
@@ -575,13 +533,6 @@ class SiteInitializer(object):
                 )
             )
 
-        role.permissions.append(
-            self._create(
-                InstallationSyncPermission,
-                authorized = False
-            )
-        )
-
         role.permissions.append(self._create(DebugPermission))
 
         return role
@@ -591,24 +542,6 @@ class SiteInitializer(object):
             AccessLevel,
             qname = "woost.editor_access_level",
             roles_with_access = [self.editor_role]
-        )
-
-    def create_file_deletion_trigger(self):
-        return self._create(
-            DeleteTrigger,
-            qname = "woost.file_deletion_trigger",
-            title = TranslatedValues(),
-            execution_point = "after",
-            batch_execution = True,
-            content_type = File,
-            responses = [
-                self._create(
-                    CustomTriggerResponse,
-                    code = u"from os import remove\n"
-                           u"for item in items:\n"
-                           u"    remove(item.file_path)"
-                )
-            ]
         )
 
     def create_default_theme(self):
@@ -668,7 +601,6 @@ class SiteInitializer(object):
             "URI",
             "Styles",
             "Feed",
-            "BackOffice",
             "FirstChildRedirection",
             "Login",
             "PasswordChange",
@@ -705,22 +637,6 @@ class SiteInitializer(object):
             Controller.require_instance(
                 qname = "woost.feed_controller"
             )
-        )
-
-        # The backoffice controller is placed at an irregular location
-        self.backoffice_controller.python_name = (
-            "woost.controllers.backoffice.backofficecontroller."
-            "BackOfficeController"
-        )
-
-        # Prevent anonymous access to the backoffice controller
-        self._create(
-            ReadPermission,
-            role = self.anonymous_role,
-            content_type = Publishable,
-            content_expression =
-                """items.add_filter(cls.qname.equal("woost.backoffice"))""",
-            authorized = False
         )
 
     def create_default_page_template(self):
@@ -778,17 +694,6 @@ class SiteInitializer(object):
                     server_side_cache = True
                 )
             ]
-        )
-
-    def create_backoffice(self):
-        return self._create(
-            Document,
-            qname = "woost.backoffice",
-            title = TranslatedValues(),
-            hidden = True,
-            path = "cms",
-            per_language_publication = False,
-            controller = self.backoffice_controller
         )
 
     def create_generic_error_page(self):
@@ -928,35 +833,6 @@ class SiteInitializer(object):
             ]
         )
 
-    def create_page_tree_user_view(self):
-        return self._create(
-            UserView,
-            qname = "woost.page_tree_user_view",
-            title = TranslatedValues(),
-            roles = [self.everybody_role],
-            parameters = {
-                "type": "woost.models.publishable.Publishable",
-                "content_view": "tree",
-                "filter": None,
-                "members": None
-            }
-        )
-
-    def create_file_gallery_user_view(self):
-        return self._create(
-            UserView,
-            qname = "woost.file_gallery_user_view",
-            title = TranslatedValues(),
-            roles = [self.everybody_role],
-            parameters = {
-                "type": "woost.models.file.File",
-                "content_view": "thumbnails",
-                "filter": None,
-                "order": None,
-                "members": None
-            }
-        )
-
     def create_content_renderer(self):
         return self._create(
             rendering.ChainRenderer,
@@ -1011,48 +887,6 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             identifier = "icon32",
             renderer = self.icon32_renderer,
-            applicable_to_blocks = False
-        )
-
-    def create_backoffice_thumbnail_image_factory(self):
-        return self._create(
-            rendering.ImageFactory,
-            qname = "woost.backoffice_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "backoffice_thumbnail",
-            effects = [
-                self._create(
-                    rendering.Thumbnail,
-                    width = "100",
-                    height = "100"
-                ),
-                self._create(
-                    rendering.Frame,
-                    edge_width = 1,
-                    edge_color = "ddd",
-                    vertical_padding = "4",
-                    horizontal_padding = "4",
-                    background = "eee"
-                )
-            ],
-            fallback = self.icon32_image_factory,
-            applicable_to_blocks = False
-        )
-
-    def create_backoffice_small_thumbnail_image_factory(self):
-        return self._create(
-            rendering.ImageFactory,
-            qname = "woost.backoffice_small_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "backoffice_small_thumbnail",
-            effects = [
-                self._create(
-                    rendering.Thumbnail,
-                    width = "32",
-                    height = "32"
-                )
-            ],
-            fallback = self.icon16_image_factory,
             applicable_to_blocks = False
         )
 
@@ -1126,13 +960,4 @@ class SiteInitializer(object):
                 )
             ]
         )
-
-    def enable_extensions(self):
-        # Enable the selected extensions
-        if self.extensions:
-            load_extensions()
-            for extension in Extension.select():
-                ext_name = extension.__class__.__name__[:-len("Extension")].lower()
-                if ext_name in self.extensions:
-                    extension.enabled = True
 

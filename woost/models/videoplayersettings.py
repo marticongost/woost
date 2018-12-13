@@ -13,6 +13,7 @@ from woost.models.file import File
 class VideoPlayerSettings(Item):
 
     instantiable = True
+    admin_show_descriptions = False
     visible_from_root = False
     player_initialization = TypeMapping()
 

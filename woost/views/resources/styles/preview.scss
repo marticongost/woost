@@ -1,0 +1,59 @@
+
+$block-overlay-color: #f1b67f;
+$slot-overlay-color: #f18a7f;
+
+@keyframes updating {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+body {
+    overflow: hidden;
+    user-select: none;
+}
+
+.woost-preview-root {
+    html[data-woost-preview-selectors='true'] & {
+        pointer-events: none;
+    }
+}
+
+@mixin overlay-type($type, $color) {
+
+    &[data-overlay-type='#{$type}'] {
+        outline: 1px dotted $color;
+
+        &.woost-preview-hover {
+            background-color: rgba($color, 0.3);
+        }
+
+        &.woost-preview-selected {
+            outline: 3px solid darken($color, 20);
+        }
+    }
+}
+
+.woost-preview-overlay {
+    position: absolute;
+    cursor: pointer;
+
+    &[data-woost-preview-state='updating'] {
+        animation: updating ease 0.2s both infinite;
+    }
+
+    html[data-woost-preview-selectors='false'] & {
+        display: none;
+    }
+
+    @include overlay-type(block, $block-overlay-color);
+    @include overlay-type(slot, $slot-overlay-color);
+
+    &[data-overlay-type='slot'] {
+        display: none;
+    }
+}
+

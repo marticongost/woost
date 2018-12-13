@@ -5,11 +5,21 @@ u"""
 """
 from cocktail.translations import translations
 from cocktail import schema
+from .settings import add_setting
 from .configuration import Configuration
-from .website import Website
 from .template import Template
 
 translations.load_bundle("woost.models.defaulttemplate")
+
+def get_default_templates():
+    return [
+        member
+        for member in Configuration.iter_members()
+        if isinstance(member, schema.Reference)
+        and member.related_type
+        and issubclass(member.related_type, Template)
+        and getattr(member, "template_owner", None)
+    ]
 
 def with_default_template(template_name, **field_kwargs):
 
@@ -18,20 +28,16 @@ def with_default_template(template_name, **field_kwargs):
     def decorator(cls):
 
         # Define the Configuration and Website fields
-        for config_class in (Configuration, Website):
-            config_class.add_member(
-                schema.Reference(
-                    field_name,
-                    type = Template,
-                    related_end = schema.Reference(),
-                    template_owner = cls,
-                    member_group = "presentation.appearence",
-                    custom_translation_key =
-                        "woost.models.defaulttemplate.field",
-                    **field_kwargs
-                ),
-                append = True
+        add_setting(
+            schema.Reference(
+                field_name,
+                type = Template,
+                template_owner = cls,
+                custom_translation_key =
+                    "woost.models.defaulttemplate.field",
+                **field_kwargs
             )
+        )
 
         # Define the method
         base_get_default_template = cls.get_default_template

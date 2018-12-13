@@ -11,6 +11,16 @@ from .controller import Controller
 
 translations.load_bundle("woost.models.defaultcontroller")
 
+def get_default_controllers():
+    return [
+        member
+        for member in Configuration.iter_members()
+        if isinstance(member, schema.Reference)
+        and member.related_type
+        and issubclass(member.related_type, Controller)
+        and getattr(member, "controller_owner", None)
+    ]
+
 def with_default_controller(controller_name, **field_kwargs):
 
     field_name = "default_%s_controller" % controller_name

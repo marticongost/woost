@@ -1,0 +1,17 @@
+
+[woost.admin.ui.FiltersBar]
+
+    [Entry]
+
+        [applyButton]
+
+            [label]
+            ca: Aplicar
+            es: Aplicar
+            en: Apply
+
+        [removeButton]
+        ca: Treure el filtre
+        es: Quitar el filtro
+        en: Remove the filter
+

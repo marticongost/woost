@@ -1,0 +1,136 @@
+
+@import "woost.admin.ui://styles/common";
+
+$row-indentation: 1.5rem;
+$row-hpadding: 1em;
+$row-vpadding: 0.8em;
+
+:host {
+    padding: 1em 0;
+    user-select: none;
+}
+
+.SlotDisplay {
+
+    .SlotRow {
+        padding: 0.2em;
+
+        .slotHeading {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: $heading-color;
+            padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
+        }
+
+        &[selected] {
+            background: $selection-background;
+
+            .slotHeading {
+                color: $selection-foreground;
+            }
+        }
+
+        &[hover='true'] {
+            background-color: $hl-light-background;
+        }
+
+        &[hover='true'][selected] {
+            background-color: $hl-background;
+
+            .slotHeading {
+                color: $selection-foreground;
+            }
+        }
+    }
+
+    &[depth='0'] {
+
+        & + .SlotDisplay {
+            margin-top: 3em;
+        }
+
+        & > .slotHeading {
+            padding-bottom: 0.2em;
+            border-bottom: 1px dotted lighten($heading-color, 40);
+            margin-bottom: 0.2em;
+        }
+    }
+}
+
+.BlockDisplay {
+
+    .BlockRow {
+        font-size: 1.3em;
+        padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
+        padding-right: $row-hpadding;
+        padding-top: $row-vpadding;
+        padding-bottom: $row-vpadding;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+
+        &[selected] {
+            background: $selection-background;
+
+            .descriptionLabel {
+                color: $selection-foreground;
+            }
+
+            .typeLabel {
+                color: darken($selection-foreground, 15);
+            }
+
+            .icon {
+                --color: lighten($selection-background, 40);
+            }
+        }
+
+        &[hover='true'] {
+            background-color: $hl-light-background;;
+        }
+
+        &[hover='true'][selected] {
+            background-color: $hl-background;
+
+            .descriptionLabel {
+                color: $selection-foreground;
+            }
+
+            .typeLabel {
+                color: lighten($hl-background, 35);
+            }
+
+            .icon {
+                --color: lighten($hl-background, 30);
+            }
+        }
+
+        .icon {
+            flex: 0 0 auto;
+            margin-right: 0.5em;
+            --height: 1.5em;
+            --color: #777;
+        }
+
+        .descriptionLabel {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .typeLabel {
+            display: block;
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 0.1em;
+        }
+    }
+
+    &[disabledBlock='true'] {
+        .descriptionLabel {
+            font-weight: normal;
+            text-decoration: line-through;
+        }
+    }
+}
+

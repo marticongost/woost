@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:mixin
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?class
+    objectDraggedOver(e) {
+    }
+
+    objectDropped(data) {
+        if (this.dataBinding.member instanceof cocktail.schema.Reference) {
+            this.value = data.item;
+            return true;
+        }
+        else {
+            for (let item of this.value) {
+                if (item.id == data.item.id) {
+                    return false;
+                }
+            }
+            this.value = [...this.value, data.item];
+            return true;
+        }
+    }
+    ?>
+
+    <?on dragover
+    if (e.dataTransfer.types.includes("application/x-woost-object")) {
+        this.objectDraggedOver(e);
+        e.preventDefault();
+    }
+    ?>
+
+    <?on drop
+    const jsonData = e.dataTransfer.getData("application/x-woost-object");
+    if (jsonData) {
+        const data = JSON.parse(jsonData);
+        const model = cocktail.schema.getSchemaByName(data.model);
+        if (model.isSchema(this.dataBinding.member.relatedType)) {
+            if (this.objectDropped(data)) {
+                e.preventDefault();
+            }
+        }
+    }
+    ?>
+
+</ui:mixin>
+

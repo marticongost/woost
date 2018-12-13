@@ -24,6 +24,7 @@ class Role(Item):
     possible to grow a site's access policy by means of specialization.
     """
     type_group = "users"
+    admin_show_descriptions = False
 
     members_order = [
         "title",
@@ -31,9 +32,6 @@ class Role(Item):
         "child_roles",
         "users",
         "permissions",
-        "user_views",
-        "default_content_type",
-        "hidden_content_types",
         "access_levels"
     ]
 
@@ -68,28 +66,6 @@ class Role(Item):
         items = "woost.models.Permission",
         bidirectional = True,
         integral = True
-    )
-
-    user_views = schema.Collection(
-        items = "woost.models.UserView",
-        bidirectional = True
-    )
-
-    default_content_type = schema.Reference(
-        class_family = Item
-    )
-
-    hidden_content_types = schema.Collection(
-        items = schema.Reference(
-            class_family = Item
-        ),
-        edit_inline = True,
-        edit_control = display_factory(
-            "woost.views.ContentTypePicker",
-            selection_mode = MULTIPLE_SELECTION,
-            filter_item = lambda content_type:
-                content_type.visible and content_type.visible_from_root
-        )
     )
 
     implicit = schema.Boolean(

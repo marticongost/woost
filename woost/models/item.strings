@@ -21,10 +21,20 @@ en: Generic element
 
     [groups]
 
+        [item]
+        ca: General
+        es: General
+        en: General
+
         [administration]
         ca: Administració
         es: Administración
         en: Administration
+
+        [blocks]
+        ca: Blocs
+        es: Bloques
+        en: Blocks
 
     [members]
 
@@ -42,22 +52,6 @@ en: Generic element
         ca: Identificador global
         es: Identificador global
         en: Global identifier
-
-        [synchronizable]
-        ca: Sincronitzable
-        es: Sincronizable
-        en: Synchronizable
-
-            [explanation]
-            ca:
-                Indica si l'objecte es tindrà en compte a l'hora de
-                sincronitzar les dades de dues còpies del lloc web.
-            es:
-                Indica si el objeto se tendrá en cuenta a la hora de
-                sincronizar los datos de dos copias del sitio web.
-            en:
-                Indicates wether the object will be taken into account when
-                synchronizing data across copies of the site."
 
         [author]
         ca: Autor

@@ -1,3 +1,7 @@
+@init
+PWD_RESET_LINK = """<a href="${confirmation_url}">${confirmation_url}</a>"""
+@end
+
 [woost.initialization]
 
     [website.site_name]
@@ -129,19 +133,19 @@
     ca:
         <p>
             El teu lloc web s'ha creat correctament. Ja pots començar a
-            <a href='/cms'>treballar-hi</a> i substituir aquesta pàgina
+            <a href='/admin'>treballar-hi</a> i substituir aquesta pàgina
             amb els teus propis continguts.
         </p>
     es:
         <p>
             Tu sitio web se ha creado correctamente. Ya puedes empezar
-            a <a href='/cms'>trabajar</a> en él y sustituir esta página
+            a <a href='/admin'>trabajar</a> en él y sustituir esta página
             con tus propios contenidos.
         </p>
     en:
         <p>
             Your web site has been created successfully. You can start
-            <a href='/cms'>working on it</a> and replace this page with
+            <a href='/admin'>working on it</a> and replace this page with
             your own content.
         </p>
 
@@ -285,13 +289,13 @@
         [body]
         ca:
             Obre l'enllaç següent per establir la teva nova contrasenya:<br/>
-            <a href="${confirmation_url}">${confirmation_url}</a>
+            ${PWD_RESET_LINK}
         es:
             Abre el enlace siguiente para establecer tu nueva contraseña:<br/>
-            <a href="${confirmation_url}">${confirmation_url}</a>
+            ${PWD_RESET_LINK}
         en:
             Open the following link to set your new password:<br/>
-            <a href="${confirmation_url}">${confirmation_url}</a>
+            ${PWD_RESET_LINK}
 
     [login_page.title]
     ca: Autenticació d'usuari

@@ -22,7 +22,6 @@ def _hide_self_contained_relations(event):
     if event.anonymous:
         event.source.visible = False
         event.source.versioned = False
-        event.source.synchronizable = False
 
 from woost.models.typegroups import (
     TypeGroup,
@@ -36,14 +35,14 @@ from .slot import Slot
 from .localemember import LocaleMember
 from .configuration import Configuration
 from .website import Website
+from .settings import get_setting, add_setting
 from .websitesession import (
     get_current_website,
     set_current_website
 )
-from .siteinstallation import SiteInstallation
 from .changesets import ChangeSet, Change, changeset_context
+from .extension import extensions_manager
 from .item import Item
-from .userview import UserView
 from .grid import Grid, GridSize
 from .style import Style
 from .publishableobject import (
@@ -58,9 +57,9 @@ from .publishable import (
     UserHasAccessLevelExpression,
     user_has_access_level
 )
-from .defaultcontroller import with_default_controller
-from .defaulttemplate import with_default_template
 from .document import Document
+from .defaulttemplate import with_default_template, get_default_templates
+from .defaultcontroller import with_default_controller, get_default_controllers
 from .theme import Theme
 from .template import Template
 from .controller import Controller
@@ -90,7 +89,6 @@ from .permission import (
     ModifyTranslationPermission,
     DeleteTranslationPermission,
     ReadHistoryPermission,
-    InstallationSyncPermission,
     restricted_modification_context,
     delete_validating,
     PermissionExpression,
@@ -103,24 +101,7 @@ from .file import File
 from .news import News
 from .event import Event
 from .uri import URI
-from .extension import (
-    Extension,
-    extension_translations,
-    load_extensions
-)
-from .trigger import (
-    Trigger,
-    ContentTrigger,
-    CreateTrigger,
-    InsertTrigger,
-    ModifyTrigger,
-    DeleteTrigger
-)
-from .triggerresponse import (
-    TriggerResponse,
-    CustomTriggerResponse,
-    SendEmailTriggerResponse
-)
+from .file import File
 from .emailtemplate import EmailTemplate
 from .feed import Feed
 
@@ -133,11 +114,6 @@ from .caching import CachingPolicy
 
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings
-from .synchronization import (
-    Synchronization,
-    get_manifest,
-    rebuild_manifest
-)
 from . import staticpublication
 
 # Delayed declaration to avoid a reference cycle; Website and File depend on
@@ -150,6 +126,8 @@ with_default_controller("feed")(Feed)
 # Blocks
 from .slot import Slot
 from .block import Block
+from .blockscatalog import BlocksCatalog
+from .blockclone import BlockClone
 from .containerblock import ContainerBlock
 from .blockimagefactoryreference import BlockImageFactoryReference
 from .customblock import CustomBlock

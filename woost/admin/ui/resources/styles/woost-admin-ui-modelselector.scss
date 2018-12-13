@@ -1,0 +1,33 @@
+
+@import "woost.admin.ui://styles/common";
+
+.Entry {
+    display: flex;
+    white-space: nowrap;
+    align-items: center;
+    padding: 0.8em 1.5em;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $hl-light-background;
+    }
+
+    &[selected] {
+        color: $selection-foreground;
+        background-color: $selection-background;
+    }
+
+    &:hover[selected] {
+        background-color: $hl-background;
+    }
+
+    .icon {
+        --height: 1.3em;
+        margin-right: 0.8em;
+    }
+
+    .label {
+        flex: 1 1 auto;
+    }
+}
+

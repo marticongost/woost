@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?py
-from cocktail import schema
 from cocktail.html import Content
+from cocktail.controllers import get_request_root_url
 from woost import app
 from woost.models import Configuration, Publishable, Document
 ?>
@@ -60,9 +60,6 @@ from woost.models import Configuration, Publishable, Document
 
     def rendering_home_page(self):
         return self.publishable.is_home_page()
-
-    def create_view_variants_schema(self):
-        return schema.Schema(name = "woost.views.variants")
     ?>
 
     <?resource woost://styles/baseview.scss.css ?>
@@ -75,6 +72,10 @@ from woost.models import Configuration, Publishable, Document
 
         if app.splash:
             document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
+
+        # Edit mode
+        if app.editing:
+            document.add_class("woost-admin-edit")
 
         # Links
         home = app.website.home
@@ -120,6 +121,12 @@ from woost.models import Configuration, Publishable, Document
 
     <py:ready>
         <?py
+        if app.editing:
+            element.add_resource("woost://styles/preview.scss.css")
+            element.add_resource("cocktail://scripts/uri.js")
+            element.add_resource("woost://scripts/preview.js")
+            element.set_client_variable("woost.preview.origin", unicode(get_request_root_url()).rstrip("/"))
+
         self.set_client_variable("woost.publishable", app.publishable and app.publishable.id)
         self.set_client_variable("woost.navigationPoint", app.navigation_point and app.navigation_point.id)
 
@@ -227,14 +234,6 @@ from woost.models import Configuration, Publishable, Document
             ?>
         </py:binding>
     </py:cocktail.html.GridRulers>
-
-    <py:woost.views.EditPanel py:id="cms_edit_panel">
-        <py:ready>
-            <?py
-            element.view_variants_schema = self.create_view_variants_schema()
-            ?>
-        </py:ready>
-    </py:woost.views.EditPanel>
 
     <div py:id="main_content">
         <py:woost.views.BlockList

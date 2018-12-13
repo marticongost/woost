@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    tabindex="0">
+
+    <ui:using mixin="cocktail.ui.DataDisplay"/>
+
+    <ui:woost.admin.ui.Autocomplete id="autocomplete">
+        <?js
+        element.removeAttribute("tabindex");
+        ?>
+    </ui:woost.admin.ui.Autocomplete>
+
+    <ui:cocktail.ui.ActionList id="actionList">
+        <?js
+        element.classList.add("compact");
+        element.classList.add("without-frame");
+        ?>
+    </ui:cocktail.ui.ActionList>
+
+    <?class
+    clearValue() {
+        this.autocomplete.clearValue();
+    }
+    ?>
+
+    <?on dataBinding:changed
+    this.actionList.actions = Array.from(woost.admin.actions.forContext({
+        view: this,
+        slot: "referenceToolbar",
+        model: newValue.member.relatedType,
+        reference: newValue.member
+    }));
+    ?>
+
+    <?on value:changed
+    this.actionList.actionParameters.selection = newValue ? [newValue] : null;
+    this.actionList.updateEntries();
+    ?>
+
+    <?on dblclick
+    if (this.value) {
+        this.actionList.getAction("edit").invoke({selection: [this.value]});
+    }
+    ?>
+
+    <?js
+    this.linkDisplay(this.autocomplete);
+    ?>
+
+</div>
+

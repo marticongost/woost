@@ -31,6 +31,7 @@ from cocktail.persistence.utils import (
 from woost import app
 from .item import Item
 from .configuration import Configuration
+from .website import Website
 from .permission import ContentPermission
 from .changesets import Change
 from .role import Role
@@ -60,17 +61,10 @@ def remove_broken_type(
         languages = languages
     )
 
-    for role in Role.select():
-        for cls in list(role.hidden_content_types):
-            if (
-                issubclass(cls, Broken)
-                and cls.__module__ + "." + cls.__name__ == full_name
-            ):
-                role.hidden_content_types.remove(cls)
-
-    for permission in ContentPermission.select():
+    for permission in list(ContentPermission.select()):
         content_type = permission.content_type
         if content_type.__module__ + "." + content_type.__name__ == full_name:
+            del permission._content_type
             permission.delete()
 
 def delete_history():
@@ -551,8 +545,7 @@ def get_matching_website(item):
     ):
         return current_website
 
-    config_websites = Configuration.instance.websites
-    for possible_website in config_websites:
+    for possible_website in Website.select():
         if (
             not acceptable_websites
             or possible_website in acceptable_websites
@@ -560,4 +553,16 @@ def get_matching_website(item):
             return possible_website
 
     return None
+
+def get_model_dotted_name(model):
+    name = model.get_qualified_name(include_ns = True)
+    parts = name.split(".")
+    if len(parts) >= 2 and parts[-2] == parts[-1].lower():
+        parts.pop(-2)
+    return ".".join(parts)
+
+def get_model_from_dotted_name(name):
+    for cls in PersistentObject.schema_tree():
+        if get_model_dotted_name(cls) == name:
+            return cls
 

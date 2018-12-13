@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    selectionAxis="horizontal"
+    selectableEntriesSelector=".PartitionEntry">
+
+    <ui:symbol name="ENTRIES_MAP"/>
+    <ui:symbol name="ENTRIES_READY"/>
+    <ui:symbol name="SYNC_SELECTION"/>
+
+    <ui:using mixin="cocktail.ui.DataDisplay"/>
+    <ui:using mixin="cocktail.ui.Selectable"/>
+
+    <ui:property
+        name="partitionCount"
+        type="number"
+        reflected="true"
+        default="empty"/>
+
+    <ui:property
+        name="resultCount"
+        reflected="false">
+        <?on changed
+        this.entriesAvailable().then(() => {
+            if (newValue.partitions) {
+                for (let partitionCount of newValue.partitions) {
+                    const entry = this.getEntry(partitionCount.partition);
+                    entry.count = partitionCount.value;
+                }
+            }
+        });
+        ?>
+    </ui:property>
+
+    <?class
+    get entriesReady() {
+        return this[ENTRIES_READY];
+    }
+
+    entriesAvailable() {
+        if (this[ENTRIES_READY]) {
+            return Promise.resolve(true);
+        }
+        else {
+            return new Promise((accept, reject) => {
+                this.addEventListener(
+                    "entriesReady",
+                    (e) => accept(true),
+                    {once: true}
+                );
+            });
+        }
+    }
+
+    getEntry(value) {
+        return this[ENTRIES_MAP][value];
+    }
+
+    get partitionMethod() {
+        return this.value && this.value.method;
+    }
+
+    clearEntries() {
+        cocktail.ui.empty(this.entries);
+        this[ENTRIES_READY] = false;
+        this[ENTRIES_MAP] = {};
+        this.partitionCount = "empty";
+    }
+
+    addEntries(partitionMethod, values) {
+
+        if (values) {
+            for (let value of values) {
+                this.addEntry({method: partitionMethod, value});
+            }
+        }
+
+        // Reflect the number of partitions for styling purposes
+        const count = this.entries.childNodes.length;
+        if (count == 0) {
+            this.partitionCount = "none";
+        }
+        else if (count == 1) {
+            this.partitionCount = "single-partition";
+        }
+        else {
+            this.partitionCount = "multiple-partitions";
+        }
+    }
+
+    addEntry(value) {
+        const entry = this.createEntry(value);
+        this[ENTRIES_MAP][value.value.value] = entry;
+        this.entries.appendChild(entry);
+    }
+
+    createEntry(value) {
+        const entry = this.constructor.PartitionEntry.create();
+        entry.value = value;
+        return entry;
+    }
+
+    selectionActivated() {
+        this.value = this.selectedElement.value;
+    }
+    ?>
+
+    <?js
+    this[ENTRIES_MAP] = {};
+    this[ENTRIES_READY] = false;
+    this[SYNC_SELECTION] = cocktail.ui.sync();
+    this.dataBinding = {
+        member: new woost.admin.partitioning.PartitionSpecifier()
+    };
+    ?>
+
+    <?on selectionChanged
+    this[SYNC_SELECTION](() => {
+        this.value = this.selectedElement ? this.selectedElement.value : null;
+    });
+    ?>
+
+    <?on value:changed
+    this[SYNC_SELECTION](() => {
+        const oldMethod = oldValue && oldValue.method;
+        const newMethod = newValue && newValue.method;
+        let entriesAvailable;
+
+        // Create entries
+        if (oldMethod != newMethod) {
+            this.clearEntries();
+            if (newMethod) {
+                entriesAvailable = woost.admin.partitioning.getValues(this.value.method.name)
+                    .then((values) => {
+                        this.addEntries(newMethod, values);
+                        this[ENTRIES_READY] = true;
+                        cocktail.ui.trigger(this, "entriesReady");
+                    });
+            }
+            else {
+                return;
+            }
+        }
+        else {
+            entriesAvailable = Promise.resolve(true);
+        }
+
+        // Change the selected entry
+        entriesAvailable.then(() => {
+            this.selectedElement = newValue ? this.getEntry(newValue.value.value) : null;
+        });
+    });
+    ?>
+
+    <div id="entries" role="tablist"/>
+
+    <div ui:component="PartitionEntry" role="tab">
+
+        <ui:property
+            name="value"
+            reflected="false">
+            <?on changed
+            this.label.innerText = newValue ? newValue.value.label : "";
+            ?>
+        </ui:property>
+
+        <ui:property
+            name="count"
+            type="number"
+            reflected="false">
+            <?on changed
+            this.countLabel.innerText = newValue;
+            ?>
+        </ui:property>
+
+        <div id="label"/>
+        <div id="countLabel"/>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,13 @@
+
+[woost.admin.ui.FieldsDropdown]
+
+    [label]
+    ca: Camps
+    es: Campos
+    en: Fields
+
+    [applyButton]
+    ca: Aplicar
+    es: Aplicar
+    en: Apply
+

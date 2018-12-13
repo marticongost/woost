@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?py
-from woost.extensions.audio import AudioExtension
-?>
 
 <div
     xmlns="http://www.w3.org/1999/xhtml"
@@ -14,12 +11,6 @@ from woost.extensions.audio import AudioExtension
     enable_audio_player = True
     ?>
 
-    <py:ready>
-        <?py
-        self._enable_audio_player = self.enable_audio_player and AudioExtension.instance.enabled
-        ?>
-    </py:ready>
-
     <ul py:id="file_list">
         <py:ready>
             <py:new py:element="self.create_entry(file)" py:for="file in self.files"/>
@@ -28,7 +19,7 @@ from woost.extensions.audio import AudioExtension
 
     <li py:def="entry" py:args="file">
         <?py
-        show_audio_player = self._enable_audio_player and file.resource_type == "audio"
+        show_audio_player = self.enable_audio_player and file.resource_type == "audio"
         ?>
 
         <py:woost.extensions.audio.AudioPlayer

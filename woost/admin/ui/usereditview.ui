@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.EditView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:with ui:element="editForm">
+
+        <?js
+        element.awaitFields().then((fields) => {
+
+            const changePasswordField = fields.get("_change_password");
+            const passwordField = fields.get("password");
+
+            changePasswordField.addEventListener("click", (e) => {
+                if (changePasswordField.value) {
+                    passwordField.focusControl();
+                }
+                else {
+                    changePasswordField.focusControl();
+                }
+            });
+        });
+        ?>
+
+        <?on value:changed
+        this.awaitFields().then((fields) => {
+
+            var passwordField = fields.get("password");
+
+            if (newValue && newValue._change_password) {
+                passwordField.style.removeProperty("display");
+            }
+            else {
+                passwordField.style.display = "none";
+            }
+        });
+        ?>
+    </ui:with>
+
+</ui:woost.admin.ui.EditView>
+

@@ -263,6 +263,8 @@ class PublishableObject(object):
         return query
 
     def get_uri(self, **kwargs):
+        if not self.id:
+            return None
         return app.url_mapping.get_url(self, **kwargs)
 
     def translate_file_type(self, language = None):
@@ -430,7 +432,7 @@ def resolve_websites(website, publishable = None):
     website = website or app.website or PublishableObject.any_website
 
     if website is PublishableObject.any_website:
-        websites = set(Configuration.instance.websites)
+        websites = set(Website.select())
     elif isinstance(website, Website):
         websites = {website,}
     else:

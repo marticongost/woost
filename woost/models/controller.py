@@ -13,6 +13,7 @@ from .item import Item
 class Controller(Item):
 
     type_group = "customization"
+    admin_show_descriptions = False
 
     members_order = [
         "title",
@@ -37,7 +38,6 @@ class Controller(Item):
         items = "woost.models.Publishable",
         bidirectional = True,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
-        visible_in_reference_list = False
+        visible = False
     )
 

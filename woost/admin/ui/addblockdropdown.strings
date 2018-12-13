@@ -1,0 +1,20 @@
+
+[woost.admin.ui.AddBlockDropdown]
+
+    [placements]
+
+        [inside]
+        ca: Dins
+        es: Dentro
+        en: Inside
+
+        [before]
+        ca: Davant
+        es: Delante
+        en: Before
+
+        [after]
+        ca: Darrere
+        es: Detrás
+        en: After
+

@@ -16,6 +16,7 @@ class Feed(Publishable):
 
     type_group = "setup"
     instantiable = True
+    admin_show_descriptions = False
 
     groups_order = ["meta", "feed_items"] + Publishable.groups_order
 

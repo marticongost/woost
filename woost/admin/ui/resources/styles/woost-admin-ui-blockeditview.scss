@@ -1,0 +1,23 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: white;
+}
+
+#stackNodeContent {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}
+
+#header {
+    display: none;
+}
+

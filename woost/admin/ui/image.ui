@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<img
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:symbol name="LOAD_IMAGE"/>
+
+    <ui:property
+        name="item"
+        reflected="false">
+        <?on changed
+        this[LOAD_IMAGE]();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="imageFactory"
+        type="string"
+        reflected="true"
+        default="default">
+        <?on changed
+        this[LOAD_IMAGE]();
+        ?>
+    </ui:property>
+
+    <?class
+    [LOAD_IMAGE]() {
+        if (this.item) {
+            let itemId = typeof(this.item) == "object" ? this.item.id : this.item;
+            this.src = `/images/${itemId}/${this.imageFactory}.png`;
+        }
+    }
+    ?>
+
+</img>
+

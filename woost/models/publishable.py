@@ -250,6 +250,7 @@ class Publishable(Item, PublishableObject):
         default_type = set,
         indexed = True,
         edit_control = "woost.views.EnabledTranslationsSelector",
+        ui_form_control = "cocktail.ui.SplitSelector",
         listed_by_default = False,
         member_group = "publication",
         shadows_attribute = True
@@ -261,6 +262,7 @@ class Publishable(Item, PublishableObject):
         bidirectional = True,
         related_key = "specific_content",
         edit_control = "cocktail.html.CheckList",
+        ui_form_control = "cocktail.ui.CheckList",
         member_group = "publication",
         shadows_attribute = True
     )
