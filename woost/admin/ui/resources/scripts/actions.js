@@ -112,7 +112,7 @@ cocktail.declare("woost.admin.actions");
         }
 
         get translationPrefix() {
-            return "woost.admin.ui.actions";
+            return "woost.admin.actions";
         }
 
         get iconURL() {
