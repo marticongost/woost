@@ -4,7 +4,7 @@ HTTP request parameters).
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from .registration import get_method
+from .registration import require_method
 
 PARAMETER_SEPARATOR = "-"
 
@@ -25,7 +25,7 @@ def parse_partition_parameter(parameter_value):
     method_name = parameter_value[:pos]
     value_str = parameter_value[pos + 1:]
 
-    method = get_method(method_name)
+    method = require_method(method_name)
     value = method.parse_value(value_str)
 
     return method, value
