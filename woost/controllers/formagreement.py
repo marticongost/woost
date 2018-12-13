@@ -13,7 +13,33 @@ translations.load_bundle("woost.controllers.formagreement")
 
 default_document = object()
 
-def requires_agreement(form, name = "terms", document = default_document):
+def requires_agreement(target = None, **kwargs):
+
+    # Form subclass
+    if isinstance(target, type):
+
+        def handler(e):
+            add_agreement(e.source, **kwargs)
+
+        target.declared.append(handler)
+        return target
+
+    # Form instance
+    elif target:
+        add_agreement(target, **kwargs)
+        return target
+
+    # No form: return a decorator expecting a subclass of Form
+    else:
+        def decorator(form_class, **further_kwargs):
+            merged_kwargs = kwargs.copy()
+            merged_kwargs.update(further_kwargs)
+            requires_agreement(form_class, **merged_kwargs)
+            return form_class
+
+        return decorator
+
+def add_agreement(form, name = "terms", document = default_document):
 
     if document is default_document:
         document = "%s.%s" % (app.package, name)
