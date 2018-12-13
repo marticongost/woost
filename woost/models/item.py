@@ -45,16 +45,16 @@ schema.Member.affects_cache_expiration = False
 
 class Item(PersistentObject):
     """Base class for all CMS items. Provides basic functionality such as
-    authorship, modification timestamps, versioning and synchronization.
+    authorship, modification timestamps and versioning.
     """
     type_group = "setup"
     instantiable = False
+    admin_show_descriptions = True
 
     members_order = [
         "id",
         "qname",
         "global_id",
-        "synchronizable",
         "author",
         "creation_time",
         "last_update_time",
@@ -134,7 +134,6 @@ class Item(PersistentObject):
         unique = True,
         indexed = True,
         normalized_index = False,
-        synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
         text_search = False,
@@ -144,25 +143,16 @@ class Item(PersistentObject):
 
     def _generate_global_id(self):
 
-        if not app.installation_id:
-            raise ValueError(
-                "No value set for woost.app.installation_id; "
-                "make sure your settings file specifies a unique "
-                "identifier for this installation of the site."
-            )
+        if isinstance(self.id, int):
 
-        self.global_id = "%s-%d" % (app.installation_id, self.id)
+            if not app.installation_id:
+                raise ValueError(
+                    "No value set for woost.app.installation_id; "
+                    "make sure your settings file specifies a unique "
+                    "identifier for this installation of the site."
+                )
 
-    synchronizable = schema.Boolean(
-        required = True,
-        indexed = True,
-        synchronizable = False,
-        default = True,
-        shadows_attribute = True,
-        invalidates_cache = False,
-        listed_by_default = False,
-        member_group = "administration"
-    )
+            self.global_id = "%s-%d" % (app.installation_id, self.id)
 
     # Backoffice customization
     #--------------------------------------------------------------------------
@@ -205,7 +195,6 @@ class Item(PersistentObject):
         required = True,
         versioned = False,
         editable = schema.NOT_EDITABLE,
-        synchronizable = False,
         items = "woost.models.Change",
         bidirectional = True,
         invalidates_cache = False,
@@ -217,7 +206,6 @@ class Item(PersistentObject):
         versioned = False,
         indexed = True,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         listed_by_default = False,
         member_group = "administration"
@@ -227,7 +215,6 @@ class Item(PersistentObject):
         indexed = True,
         versioned = False,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
         member_group = "administration"
@@ -238,7 +225,6 @@ class Item(PersistentObject):
         indexed = True,
         versioned = False,
         editable = schema.READ_ONLY,
-        synchronizable = False,
         invalidates_cache = False,
         affects_last_update_time = False,
         listed_by_default = False,
@@ -273,7 +259,6 @@ class Item(PersistentObject):
             member.versioned = False
             member.editable = schema.NOT_EDITABLE
             member.searchable = False
-            member.synchronizable = False
             member.backoffice_display = "woost.views.TranslationsList"
             member.member_group = "administration"
         PersistentClass._add_member(cls, member)
@@ -472,21 +457,24 @@ class Item(PersistentObject):
         image_factory = None,
         parameters = None,
         include_extension = True,
-        host = None
+        host = None,
+        check_can_render = False
     ):
         image = self.resolve_representative_image(image_factory)
         return image._get_image_uri(
             image_factory = image_factory,
             parameters = parameters,
             include_extension = include_extension,
-            host = host
+            host = host,
+            check_can_render = check_can_render
         )
 
     def _get_image_uri(self,
         image_factory = None,
         parameters = None,
         include_extension = True,
-        host = None
+        host = None,
+        check_can_render = False
     ):
         ext = None
 
@@ -502,6 +490,9 @@ class Item(PersistentObject):
             from woost.models.rendering import ImageFactory
             image_factory = \
                 ImageFactory.require_instance(identifier = image_factory)
+
+        if check_can_render and not image_factory.can_render(self):
+            return None
 
         if include_extension:
             from woost.models.rendering.formats import (
@@ -522,16 +513,26 @@ class Item(PersistentObject):
             if not ext or ext not in formats_by_extension:
                 ext = extensions_by_format[default_format]
 
+        image_id = self.image_id
+        if not image_id:
+            raise ValueError(
+                "Can't generate an image URI for an object without an image ID"
+            )
+
         return app.url_mapping.get_url(
             host = host,
             path = [
                 "images",
-                str(self.id),
+                image_id,
                 (image_factory.identifier or "factory%d" % image_factory.id)
                 + (ext and "." + ext)
             ],
             query = parameters
         )
+
+    @property
+    def image_id(self):
+        return str(self.id) if self.id else None
 
     def resolve_representative_image(self, image_factory = None):
 
@@ -582,7 +583,7 @@ class Item(PersistentObject):
         """Obtains a cache tag that can be used to match all cache entries
         related to this item.
         """
-        return "%s-%d" % (self.__class__.__name__, self.id)
+        return "%s-%s" % (self.__class__.__name__, self.id)
 
     def get_cache_tags(self, language = None, cache_part = None):
         """Obtains the list of cache tags that apply to this item.
@@ -762,7 +763,6 @@ class Item(PersistentObject):
 
 Item.id.versioned = False
 Item.id.editable = schema.READ_ONLY
-Item.id.synchronizable = False
 Item.id.listed_by_default = False
 Item.id.member_group = "administration"
 Item.changes.visible = False

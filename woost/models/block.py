@@ -28,6 +28,7 @@ from .slot import Slot
 class Block(Item):
 
     instantiable = False
+    admin_show_descriptions = False
     visible_from_root = False
     edit_view = "woost.views.BlockFieldsView"
     type_group = "blocks.content"
@@ -67,6 +68,8 @@ class Block(Item):
         "view_class",
         "heading",
         "heading_display",
+        "catalog", # added by BlocksCatalog
+        "clones",
         "per_language_publication",
         "enabled",
         "enabled_translations",
@@ -141,6 +144,14 @@ class Block(Item):
     )
 
     # publication
+    clones = schema.Collection(
+        items = "woost.models.BlockClone",
+        bidirectional = True,
+        related_key = "source_block",
+        integral = True,
+        editable = schema.READ_ONLY,
+        member_group = "publication"
+    )
 
     per_language_publication = schema.Boolean(
         required = True,
@@ -260,7 +271,81 @@ class Block(Item):
             raise ValueError("No view specified for block %s" % self)
 
         view = templates.new(view_class)
+
         self.init_view(view)
+        self.customize_view(view)
+        return view
+
+    def init_view(self, view):
+        view.block = self
+
+        block_proxy = self.get_block_proxy(view)
+
+        if self.catalog:
+            block_proxy["data-woost-source-block"] = self.id
+        else:
+            block_proxy["data-woost-block"] = self.id
+
+        block_proxy.add_class("block")
+
+        if self.element_type:
+            block_proxy.tag = self.element_type
+        elif view.tag == "div":
+            if self.has_heading() and self.heading_display != "off":
+                block_proxy.tag = "section"
+
+        if self.html_attributes:
+            for line in self.html_attributes.split("\n"):
+                try:
+                    pos = line.find("=")
+                    key = line[:pos]
+                    value = line[pos + 1:]
+                except:
+                    pass
+                else:
+                    block_proxy[key.strip()] = value.strip()
+
+        if self.embedded_styles:
+
+            @view.when_document_ready
+            def add_embedded_styles(document):
+                try:
+                    css = self.get_embedded_css()
+                except sass.CompileError, error:
+                    sys.stderr.write(
+                        (
+                            u"Error compiling SASS for block %s:\n"
+                            u"  SASS:\n%s\n"
+                            u"  Exception: %s" % (
+                                repr(self).decode("utf-8"),
+                                sass_code,
+                                error
+                            )
+                        ).encode("utf-8")
+                    )
+                else:
+                    styles = Element("style")
+                    styles["type"] = "text/css"
+                    styles["data-woost-block-styles"] = self.id
+                    styles.append(css)
+                    document.head.append(styles)
+
+        for style in self.styles:
+            block_proxy.add_class(style.class_name)
+
+        if self.qname:
+            block_proxy.add_class(self.qname.replace(".", "-"))
+
+        if self.has_heading():
+            self.add_heading(view)
+
+        self.add_view_dependencies(view)
+
+    def add_view_dependencies(self, view):
+        view.depends_on(self)
+
+    def customize_view(self, view):
+
         self.initializing_view(view = view)
 
         if self.controller:
@@ -284,79 +369,28 @@ class Block(Item):
             del context["block"]
             del context["view"]
 
-        return view
+    def get_embedded_css(self):
 
-    def init_view(self, view):
-        view.block = self
+        sass_code = self.embedded_styles
 
-        block_proxy = self.get_block_proxy(view)
-        block_proxy.set_client_param("blockId", self.id)
-        block_proxy.add_class("block")
+        if sass_code:
+            sass_init = "@import 'theme://';\n"
+            sass_init += self.embedded_styles_initialization or ""
 
-        if self.element_type:
-            block_proxy.tag = self.element_type
-        elif view.tag == "div":
-            if self.has_heading() and self.heading_display != "off":
-                block_proxy.tag = "section"
+            if self.catalog:
+                attrib = "data-woost-source-block"
+            else:
+                attrib = "data-woost-block"
 
-        if self.html_attributes:
-            for line in self.html_attributes.split("\n"):
-                try:
-                    pos = line.find("=")
-                    key = line[:pos]
-                    value = line[pos + 1:]
-                except:
-                    pass
-                else:
-                    block_proxy[key.strip()] = value.strip()
+            sass_code = "%s.block[%s='%s'] {%s}" % (
+                sass_init,
+                attrib,
+                self.id,
+                sass_code
+            )
+            return SASSCompilation().compile(string = sass_code)
 
-        if self.embedded_styles:
-            element_id = block_proxy.require_id()
-
-            @view.when_document_ready
-            def add_embedded_styles(document):
-
-                sass_init = "@import 'theme://';\n"
-                sass_init += self.embedded_styles_initialization or ""
-
-                sass_code = "%s#%s {%s}" % (
-                    sass_init,
-                    element_id,
-                    self.embedded_styles
-                )
-
-                try:
-                    css = SASSCompilation().compile(string = sass_code)
-                except sass.CompileError, error:
-                    sys.stderr.write(
-                        (
-                            u"Error compiling SASS for block %s:\n"
-                            u"  SASS:\n%s\n"
-                            u"  Exception: %s" % (
-                                repr(self).decode("utf-8"),
-                                sass_code,
-                                error
-                            )
-                        ).encode("utf-8")
-                    )
-                else:
-                    styles = Element("style")
-                    styles["type"] = "text/css"
-                    styles.append(css)
-                    document.head.append(styles)
-
-        for style in self.styles:
-            block_proxy.add_class(style.class_name)
-
-        block_proxy.add_class("block%d" % self.id)
-
-        if self.qname:
-            block_proxy.add_class(self.qname.replace(".", "-"))
-
-        if self.has_heading():
-            self.add_heading(view)
-
-        view.depends_on(self)
+        return None
 
     def get_block_proxy(self, view):
         return view
@@ -421,10 +455,6 @@ class Block(Item):
 
         return heading
 
-    def is_common_block(self):
-        from .configuration import Configuration
-        return bool(self.get(Configuration.common_blocks.related_end))
-
     def is_published(self):
 
         # Time based publication window
@@ -443,96 +473,6 @@ class Block(Item):
             return require_language() in self.enabled_translations
         else:
             return self.enabled
-
-    def _included_in_cascade_delete(self, parent, member):
-
-        if isinstance(parent, Block) and self.is_common_block():
-            return False
-
-        return Item._included_in_cascade_delete(self, parent, member)
-
-    def find_publication_slots(self):
-        """Iterates over the different slots of publishable elements that
-        contain the block.
-
-        @return: An iterable sequence of the slots that contain the block. Each
-            slot is represented by a tuple consisting of a L{Publishable} and a
-            L{Member<cocktail.schema.member>}.
-        """
-        visited = set()
-
-        def iter_slots(block):
-
-            for member in block.__class__.iter_members():
-                if (
-                    (block, member) not in visited
-                    and isinstance(member, schema.RelationMember)
-                    and member.related_type
-                ):
-                    value = block.get(member)
-                    if value is not None:
-
-                        # Yield relations to publishable elements
-                        if issubclass(member.related_type, Publishable):
-                            if isinstance(member, schema.Collection):
-                                for publishable in value:
-                                    yield (publishable, member)
-                            else:
-                                yield (value, member)
-
-                        # Recurse into relations to other blocks
-                        elif issubclass(member.related_type, Block):
-
-                            visited.add((block, member))
-
-                            if member.related_end:
-                                visited.add((block, member.related_end))
-
-                            if isinstance(member, schema.Collection):
-                                for child in value:
-                                    for slot in iter_slots(child):
-                                        yield slot
-                            else:
-                                for slot in iter_slots(value):
-                                    yield slot
-
-        return iter_slots(self)
-
-    def find_paths(self):
-        """Iterates over the different sequences of slots that contain the block.
-
-        @return: A list of lists, where each list represents one of the paths
-            that the block descends from. Each entry in a path consists of
-            container, slot pair.
-        @rtype: list of
-            (L{Item<woost.models.item.Item>},
-            L{Slot<woost.models.slot.Slot>}) lists
-        """
-        def visit(block, followed_path):
-
-            paths = []
-
-            for member in block.__class__.iter_members():
-                related_end = getattr(member, "related_end", None)
-                if isinstance(related_end, Slot):
-                    parents = block.get(member)
-                    if parents:
-                        if isinstance(parents, Item):
-                            parents = (parents,)
-                        for parent in parents:
-                            location = (parent, related_end)
-                            if location not in followed_path:
-                                paths.extend(
-                                    visit(parent, [location] + followed_path)
-                                )
-
-            # End of the line
-            if not paths and followed_path:
-                paths.append(followed_path)
-
-            return paths
-
-        return visit(self, [])
 
     @property
     def name_prefix(self):

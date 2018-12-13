@@ -1,0 +1,163 @@
+
+[woost.admin.ui.actions]
+
+    [new]
+    ca: Crear
+    es: Crear
+    en: New
+
+    [edit]
+    ca: Editar
+    es: Editar
+    en: Edit
+
+    [blocks]
+    ca: Editar blocs
+    es: Editar bloques
+    en: Edit blocks
+
+    [open-url]
+    ca: Veure publicat
+    es: Ver publicado
+    en: Open in browser
+
+    [delete]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+
+    [refresh]
+    ca: Actualitzar
+    es: Actualizar
+    en: Refresh
+
+    [excel]
+    ca: Exportar a MS Excel
+    es: Exportar a MS Excel
+    en: Export to MS Excel
+
+    [locales]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+    [select-partitioning-method]
+    ca: Segmentació
+    es: Segmentación
+    en: Partitioning
+
+    [fields]
+    ca: Camps
+    es: Campos
+    en: Fields
+
+    [filters]
+    ca: Filtres
+    es: Filtros
+    en: Filters
+
+    [settings-scope]
+    ca: Àmbit
+    es: Ámbito
+    en: Scope
+
+    [translations]
+    ca: Traduccions
+    es: Traducciones
+    en: Translations
+
+    [add-block]
+    ca: Nou bloc
+    es: Nuevo bloque
+    en: New block
+
+    [toggle-rulers]
+    ca: Guies
+    es: Guías
+    en: Rulers
+
+    [toggle-selectors]
+    ca: Selectors
+    es: Selectores
+    en: Selectors
+
+    [save]
+    ca: Desar
+    es: Guardar
+    en: Save
+
+        [workingNotice]
+        ca: Desant els canvis...
+        es: Guardando los cambios...
+        en: Saving changes...
+
+        [createdNotice]
+        ca: S'ha creat l'objecte
+        es: Se ha creado el objeto
+        en: Object created
+
+        [modifiedNotice]
+        ca: S'han desat els canvis
+        es: Se han guardado los cambios
+        en: Changes saved
+
+        [errorNotice]
+        ca: S'ha produït un error que ha impedit que es guardessin els canvis
+        es: Se ha producido un error que ha impedido que se guarden los cambios
+        en: An error prevented the changes from being saved
+
+    [save-integral-child]
+    ca: Acceptar
+    es: Aceptar
+    en: Accept
+
+        [workingNotice]
+        ca: Validant...
+        es: Validando...
+        en: Validating...
+
+        [errorNotice]
+        ca: S'ha produït un error durant la validació
+        es: Se ha producido un error durante la validación
+        en: An error occurred during data validation
+
+    [accept]
+    ca: Acceptar
+    es: Aceptar
+    en: Accept
+
+    [add]
+    ca: Afegir
+    es: Añadir
+    en: Add
+
+    [remove]
+    ca: Treure
+    es: Quitar
+    en: Remove
+
+    [list]
+    ca: Llistar
+    es: Listar
+    en: List
+
+    [clear]
+    ca: Buidar
+    es: Vaciar
+    en: Clear
+
+    [cancel]
+    ca: Cancel·lar
+    es: Cancelar
+    en: Cancel
+
+    [close]
+    ca: Tancar
+    es: Cerrar
+    en: Close
+
+    [upload]
+    ca: Pujar fitxer
+    es: Subir fichero
+    en: Upload file
+

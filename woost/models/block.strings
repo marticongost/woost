@@ -313,6 +313,16 @@ en: Block
                 <code>&lt;head&gt;</code>. The code will be wrapped in a
                 selector matching this block.
 
+        [catalog]
+        ca: Catàleg
+        es: Catálogo
+        en: Catalog
+
+        [clones]
+        ca: Clons
+        es: Clones
+        en: Clones
+
         [per_language_publication]
         ca: Publicació per idiomes
         es: Publicación por idiomas

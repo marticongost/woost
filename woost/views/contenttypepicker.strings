@@ -1,8 +1,0 @@
-
-[woost.views.ContentTypePicker]
-
-    [empty_label]
-    ca: Cap
-    es: Ninguno
-    en: None
-

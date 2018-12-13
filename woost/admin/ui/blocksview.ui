@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:requires component="cocktail.ui.Lock"/>
+    <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
+    <ui:requires component="woost.admin.ui.BlockEditView"/>
+    <ui:requires component="woost.admin.ui.AddBlockDropdown"/>
+
+    <ui:symbol name="PREVIEW_READY_PROMISE"/>
+    <ui:symbol name="PREVIEW_READY_RESOLVE_PROMISE"/>
+    <ui:symbol name="POST_MESSAGE"/>
+    <ui:symbol name="APPLYING_HOVER_FROM_PREVIEW"/>
+
+    <ui:property
+        name="editingBlock"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <ui:property
+        name="blockEditorNavigationNode"
+        reflected="false">
+        <?on changed
+        if (!oldValue || !newValue || !oldValue.matchesStackNode(newValue)) {
+            const prevEditor = this.blockEditor;
+            if (newValue) {
+                this.blocksTree.selectedElements = [this.blocksTree.getBlockRow(newValue.item.id)];
+                this.blockEditor = woost.admin.ui.BlockEditView.create();
+                this.heading.replaceWith(this.blockEditor.heading);
+                this.navigationActionList.replaceWith(this.blockEditor.navigationActionList);
+
+                // Set the position without waiting for the edit view stylesheets
+                // to kick in; otherwise, the recalculation of the flex heights
+                // for sidePanel causes a visible resizing effect
+                this.blockEditor.style.position = "absolute";
+
+                this.sidePanel.appendChild(this.blockEditor);
+                this.blockEditor.navigationNode = newValue;
+
+                if (prevEditor) {
+                    this.blockEditor.addEventListener(
+                        "animationend",
+                        (e) => this.sidePanel.removeChild(prevEditor),
+                        {once: true}
+                    );
+                }
+
+                this.blockEditor.animationState = "opening";
+
+                // Each time the block edit form changes
+                const form = this.blockEditor.editForm;
+                form.addEventListener("valueChanged", (e) => {
+
+                    // Update the state of the block on the blocks view
+                    woost.models.setValueAtPath(
+                        this.navigationNode.item,
+                        this.blockEditorNavigationNode.objectPath,
+                        e.detail.newValue
+                    );
+
+                    // Update blocks on the preview view
+                    const changedMembers = Array.from(
+                        form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
+                        (change) => change.member.originalMember.fullName
+                    );
+                    instance[POST_MESSAGE]({
+                        type: "updateBlock",
+                        blockData: e.detail.newValue,
+                        editState: instance.getEditState(),
+                        changedMembers
+                    });
+                });
+
+                this.editingBlock = true;
+            }
+            else if (prevEditor) {
+                this.blockEditor = null;
+                prevEditor.heading.replaceWith(this.heading);
+                prevEditor.navigationActionList.replaceWith(this.navigationActionList);
+
+                prevEditor.addEventListener(
+                    "animationend",
+                    (e) => {
+                        this.sidePanel.removeChild(prevEditor);
+                        this.editingBlock = false;
+                    },
+                    {once: true}
+                );
+                prevEditor.animationState = "closing";
+            }
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="previewState"
+        type="string"
+        reflected="true"
+        default="empty">
+        <?on changed
+        if (newValue == "loading") {
+            cocktail.ui.Lock.show({
+                parent: this.previewPanel,
+                message: cocktail.ui.translations[cls.fullName + ".loadingPreview"]
+            });
+        }
+        else if (oldValue == "loading") {
+            cocktail.ui.Lock.clear();
+            this[PREVIEW_READY_RESOLVE_PROMISE]();
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="gridRulers"
+        type="boolean"
+        reflected="true"
+        default="false">
+        <?on changed
+        this[POST_MESSAGE]({
+            type: "rulers",
+            visible: newValue
+        });
+        this.previewActionList.updateEntries();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="selectorsVisible"
+        type="boolean"
+        reflected="true"
+        default="true">
+        <?on changed
+        this[POST_MESSAGE]({
+            type: "selectors",
+            visible: newValue
+        });
+        this.previewActionList.updateEntries();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="availableGridSizes"
+        reflected="false"/>
+
+    <ui:property
+        name="gridSize"
+        type="string"
+        reflected="true">
+        <?on changed
+        let viewportWidth;
+        if (newValue == "auto") {
+            viewportWidth = "100%";
+        }
+        else {
+            let prevSize;
+            const GRID_MARGIN = 50;
+            for (let size of this.availableGridSizes) {
+                if (size.identifier == newValue) {
+                    if (size.minWidth) {
+                        viewportWidth = (size.minWidth + GRID_MARGIN) + "px";
+                    }
+                    else if (prevSize && prevSize.minWidth) {
+                        viewportWidth = (prevSize.minWidth + GRID_MARGIN - 1) + "px";
+                    }
+                    break;
+                }
+                prevSize = size;
+            }
+        }
+        this.previewFrame.style.width = viewportWidth;
+        ?>
+    </ui:property>
+
+    <?class
+    connectedCallback() {
+        super.connectedCallback();
+
+        // Load the current edit state into the preview iframe
+        let url = this.getPreviewURL();
+        if (url) {
+            this.previewState = "loading";
+
+            cocktail.ui.request({
+                url,
+                method: "POST",
+                data: this.getEditState()
+            })
+                .then((xhr) => {
+                    const previewDoc = this.previewFrame.contentDocument;
+                    previewDoc.open();
+                    previewDoc.write(xhr.responseText);
+                    previewDoc.close();
+                });
+        }
+    }
+
+    get editedItem() {
+        return this.navigationNode.item;
+    }
+
+    get editedModel() {
+        return this.navigationNode.model;
+    }
+
+    getEditState() {
+        return this.navigationNode.parent.editForm.getJSONValue();
+    }
+
+    closeNode() {
+        if (this.blockEditor) {
+            this.blockEditor.closeNode();
+        }
+        else {
+            super.closeNode();
+        }
+    }
+
+    getPreviewURL() {
+        return `${woost.admin.url}/preview/page`;
+    }
+
+    [POST_MESSAGE](data) {
+        this[PREVIEW_READY_PROMISE].then(() => {
+            this.previewFrame.contentWindow.postMessage(
+                data,
+                URI().path("").query("").toString()
+            );
+        });
+    }
+    ?>
+
+    <?on navigationNode:changed
+    if (!oldValue) {
+        let selection = [newValue.item];
+
+        this.actionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            node: this.navigationNode,
+            slot: "blocksToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
+
+        this.previewActionList.actionParameters.selection = selection;
+        this.previewActionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            node: this.previewNode,
+            slot: "blocksPreviewToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
+
+        this.navigationActionList.actionParameters.selection = selection;
+        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
+            view: this,
+            node: this.navigationNode,
+            slot: "blocksNavigationToolbar",
+            model: newValue.model,
+            item: newValue.item
+        }));
+        this.blocksTree.item = newValue.item;
+    }
+    ?>
+
+    <?on-window message
+    if (e.origin == woost.admin.origin) {
+        if (e.data.type == "hover") {
+            this[APPLYING_HOVER_FROM_PREVIEW] = true;
+            const target = this.blocksTree.resolveSelectableId(e.data.target);
+            try {
+                this.blocksTree.hoverRow = target && target.row;
+            }
+            finally {
+                this[APPLYING_HOVER_FROM_PREVIEW] = false;
+            }
+        }
+        else if (e.data.type == "click") {
+            const target = this.blocksTree.resolveSelectableId(e.data.target);
+            if (target && target.row) {
+                this.blocksTree.clickSelection(e.data.eventData, target.row);
+                this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+            }
+        }
+        else if (e.data.type == "keydown") {
+            if (e.data.eventData.which == cocktail.ui.keys.ESC) {
+                this.closeNode();
+            }
+            else {
+                this.blocksTree.keyboardSelection(e.data.eventData);
+                this.blocksTree.selectionCursor.scrollIntoViewIfNeeded();
+            }
+        }
+        else if (e.data.type == "setDocumentHeight") {
+            this.previewFrame.style.height = `${e.data.height}px`;
+        }
+        else if (e.data.type == "setAvailableGridSizes") {
+            this.availableGridSizes = e.data.sizes;
+        }
+    }
+    ?>
+
+    <?js
+    this[PREVIEW_READY_PROMISE] = new Promise((resolve, reject) => {
+        this[PREVIEW_READY_RESOLVE_PROMISE] = resolve;
+    });
+    ?>
+
+    <ui:with ui:element="headerContent">
+        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText"/>
+        <ui:cocktail.ui.ActionList id="navigationActionList" buttonStyle="iconAboveText"/>
+    </ui:with>
+
+    <ui:with ui:element="main">
+        <div id="sidePanel">
+            <ui:BlocksTree id="blocksTree">
+
+                <?on selectionChanged
+                const getId = (element) => element.selectableId;
+                instance[POST_MESSAGE]({
+                    type: "selectionChanged",
+                    added: Array.from(e.detail.added, getId),
+                    removed: Array.from(e.detail.removed, getId)
+                });
+
+                // Change the edited block by selecting blocks from the preview
+                // TODO: should probably disable multiple selection or hide the
+                // edit view if a multiple selection is made
+                if (instance.blockEditorNavigationNode) {
+                    const selectedElement = this.selectedElement;
+                    if (selectedElement) {
+                        const uri = URI(instance.navigationNode.url);
+                        const newObjectURI = uri.segment([...uri.segment(), "rel", selectedElement.objectPath]);
+                        cocktail.navigation.push(newObjectURI.toString());
+                    }
+                    else {
+                        cocktail.navigation.push(instance.navigationNode);
+                    }
+                }
+                ?>
+
+                <?on hoverRow:changed
+                if (!instance[APPLYING_HOVER_FROM_PREVIEW]) {
+                    instance[POST_MESSAGE]({
+                        type: "hover",
+                        target: newValue ? newValue.selectableId : null
+                    });
+                }
+                ?>
+
+                <?on newBlock
+                instance[POST_MESSAGE]({
+                    type: "updateSlot",
+                    containerId: e.detail.container.id,
+                    slotName: e.detail.slot.name,
+                    editState: instance.getEditState()
+                });
+
+                if (e.detail.focus) {
+                    const tree = instance.blocksTree;
+                    tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
+                    instance.actionList.getAction("edit").invoke({
+                        selection: tree.selectedValues,
+                        selectionObjectPath: tree.selectedElement.objectPath
+                    });
+                }
+                ?>
+
+            </ui:BlocksTree>
+        </div>
+        <div id="previewPanel">
+
+            <div id="previewContainer">
+                <iframe id="previewFrame">
+                    <?on load
+                    instance[POST_MESSAGE]({
+                        type: "initialize",
+                        baseURL: woost.admin.url + "/preview/"
+                    });
+                    instance.previewState = "loaded";
+                    ?>
+                </iframe>
+            </div>
+
+            <ui:cocktail.ui.ActionList
+                id="previewActionList"
+                buttonStyle="iconBesideText"/>
+
+        </div>
+    </ui:with>
+
+    <ui:woost.admin.ui.BlocksTree ui:component="BlocksTree">
+        <?class
+        selectionActivated() {
+            if (this.selectedElements.size == 1) {
+                this.parentInstance.actionList.getAction("edit").invoke({
+                    selection: this.selectedValues,
+                    selectionObjectPath: this.selectedElement.objectPath
+                });
+            }
+        }
+        ?>
+    </ui:woost.admin.ui.BlocksTree>
+
+    <?js
+    this.actionList.selectable = this.blocksTree;
+    ?>
+
+</ui:woost.admin.ui.StackNode>
+

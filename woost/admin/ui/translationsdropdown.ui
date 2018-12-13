@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:symbol name="SYNCHRONIZE_LOCALES"/>
+    <ui:symbol name="SYNCHRONIZING_LOCALES"/>
+
+    <?on action:changed
+    this.translationsSelector.awaitEntries().then(() => {
+        instance[SYNCHRONIZE_LOCALES](() => {
+            for (let [locale, state] of newValue.view.localeStates) {
+                this.translationsSelector.setLocaleState(locale, state);
+            }
+        });
+    });
+    newValue.view.addEventListener("localeChanged", (e) => {
+        instance[SYNCHRONIZE_LOCALES](() => {
+            instance.translationsSelector.setLocaleState(e.detail.locale, e.detail.newState);
+        });
+    });
+    ?>
+
+    <?class
+    [SYNCHRONIZE_LOCALES](change) {
+        if (!this[SYNCHRONIZING_LOCALES]) {
+            this[SYNCHRONIZING_LOCALES] = true;
+            try {
+                change();
+            }
+            finally {
+                this[SYNCHRONIZING_LOCALES] = false;
+            }
+        }
+    }
+    ?>
+
+    <ui:with ui:element="dropdownPanel" panelAlignment="end">
+
+        <ui:cocktail.ui.TranslationsSelector id="translationsSelector">
+
+            <?on localeChanged
+            instance[SYNCHRONIZE_LOCALES](() => {
+                instance.action.view.setLocaleState(e.detail.locale, e.detail.newState);
+            });
+            ?>
+
+            <?js
+            element.locales = cocktail.ui.locales;
+            ?>
+
+        </ui:cocktail.ui.TranslationsSelector>
+
+    </ui:with>
+
+</ui:cocktail.ui.ActionListDropdown>
+

@@ -1,0 +1,27 @@
+
+#table {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.Heading,
+.Cell {
+
+    &:first-child {
+        padding-left: 1.3rem;
+    }
+
+    &[member='_thumbnail'] {
+        flex: 0 0 5.2em;
+        padding-right: 1.3em;
+    }
+}
+
+.TreeRow[treeFiltersMatch='descendants'] {
+
+    & > .rowContent .rowLabel {
+        color: #999;
+    }
+}
+

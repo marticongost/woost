@@ -49,6 +49,8 @@ class User(Item):
         by the L{hashlib} module.
     """
     type_group = "users"
+    admin_show_descriptions = False
+    admin_edit_view = "woost.admin.ui.UserEditView"
     edit_form = "woost.views.UserForm"
     edit_node_class = \
         "woost.controllers.backoffice.usereditnode.UserEditNode"
@@ -66,7 +68,7 @@ class User(Item):
         "email",
         "password",
         "enabled",
-        "roles",
+        "role",
         "prefered_language",
         "backoffice_language_chain",
         "backoffice_visible_translations"
@@ -79,7 +81,8 @@ class User(Item):
         max = 255,
         indexed = True,
         format = "^.+@.+$",
-        member_group = "user_data"
+        member_group = "user_data",
+        ui_column_width = 20
     )
 
     def _apply_imported_password(obj, value, language = None):
@@ -91,13 +94,13 @@ class User(Item):
         listed_by_default = False,
         searchable = False,
         text_search = False,
-        synchronizable = False,
         min = 8,
         visible_in_detail_view = False,
         edit_control = display_factory(
             "cocktail.html.PasswordBox",
             autocomplete = "off"
         ),
+        ui_form_control = "cocktail.ui.PasswordInput",
         apply_imported_value = _apply_imported_password,
         member_group = "user_data"
     )
@@ -111,8 +114,8 @@ class User(Item):
         member_group = "user_data"
     )
 
-    roles = schema.Collection(
-        items = "woost.models.Role",
+    role = schema.Reference(
+        type = "woost.models.Role",
         bidirectional = True,
         listed_by_default = True,
         member_group = "user_data"
@@ -193,7 +196,7 @@ class User(Item):
 
         The following roles can be yielded:
 
-            * The user's L{explicit roles<roles>} will be yielded if defined
+            * The user's L{explicit role<role>} will be yielded if defined
             * An 'authenticated' role will be yielded if the user is not
               L{anonymous}
             * An 'everybody' role that applies to all users will always be
@@ -204,15 +207,13 @@ class User(Item):
         @return: An iterable sequence of roles that apply to the user.
         @rtype: L{Role}
         """
-        explicit_roles = self.roles
-        if explicit_roles:
+        explicit_role = self.role
+        if explicit_role:
             if recursive:
-                for role in explicit_roles:
-                    for ancestor_role in role.iter_roles():
-                        yield ancestor_role
+                for ancestor_role in explicit_role.iter_roles():
+                    yield ancestor_role
             else:
-                for role in explicit_roles:
-                    yield role
+                yield explicit_role
 
         for role in self.iter_implicit_roles():
             yield role

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:using mixin="cocktail.ui.DataDisplay"/>
+
+    <ui:property
+        name="imageType"
+        type="string"
+        reflected="true"
+        default="none"/>
+
+    <img id="image"/>
+    <ui:cocktail.ui.SVG id="icon"/>
+
+    <?on value:changed
+    this.imageType = "none";
+    this.image.src = "";
+    this.icon.src = "";
+
+    if (newValue) {
+        if (newValue._thumbnail) {
+            this.image.src = newValue._thumbnail;
+            this.imageType = "image";
+        }
+        else if (newValue._class) {
+            let icon;
+
+            if (
+                newValue.mime_type == "image/svg+xml"
+                && newValue._url
+            ) {
+                icon = newValue._url;
+            }
+            else {
+                icon = newValue._class[woost.admin.ui.modelIconURL];
+            }
+
+            if (icon) {
+                this.icon.src = icon;
+                this.imageType = "icon";
+            }
+        }
+    }
+    ?>
+
+</div>
+

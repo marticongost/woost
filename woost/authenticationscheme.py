@@ -117,11 +117,27 @@ class AuthenticationScheme(object):
             params = {self.identifier_field.name: identifier}
             user = User.get_instance(**params)
 
-            if user and user.enabled and user.test_password(password):
+            if user and self.can_login(user) and user.test_password(password):
                 self.set_user_session(user)
                 return user
 
         raise AuthenticationFailedError(identifier)
+
+    def can_login(self, user):
+        """Indicates if the given user is allowed to begin an authenticated
+        session.
+
+        Implementations can override this method to disable log in for users
+        fulfilling specific criteria. If a disabled user attempts to log in,
+        the authentication scheme will raise an `AuthenticationFailedError`
+        exception.
+
+        :param user: The user to validate.
+        :type user: `woost.models.user.User`
+
+        :return: A boolean value indicating if the user is allowed to log in.
+        """
+        return user.enabled
 
     def logout(self):
         """Ends the current user session."""

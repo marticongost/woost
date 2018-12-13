@@ -1,0 +1,13 @@
+
+[woost.admin.ui.Layout]
+
+    [heading]
+    ca: Gestor de continguts
+    es: Gestor de contenidos
+    en: Content Manager
+
+[woost.admin.logging_out]
+ca: Tancant la sessió
+es: Cerrando la sesión
+en: Logging out
+

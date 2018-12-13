@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:requires component="cocktail.ui.schema"/>
+    <ui:requires component="cocktail.ui.collections"/>
+    <ui:requires component="cocktail.ui.DataDisplay"/>
+    <ui:requires component="cocktail.ui.datasources"/>
+    <ui:requires component="cocktail.ui.navigation"/>
+    <ui:requires component="cocktail.ui.Lock"/>
+    <ui:requires component="cocktail.ui.Notice"/>
+    <ui:requires component="woost.admin.ui.Thumbnail"/>
+    <ui:requires component="woost.admin.ui.ItemLink"/>
+    <ui:requires component="woost.admin.ui.ItemCard"/>
+    <ui:requires component="woost.admin.ui.ItemSetSelector"/>
+    <ui:requires component="woost.admin.ui.ItemSelector"/>
+    <ui:requires component="woost.admin.ui.Listing"/>
+    <ui:requires component="woost.admin.ui.RelationSelector"/>
+    <ui:requires component="woost.admin.ui.EditView"/>
+    <ui:requires component="woost.admin.ui.BlocksView"/>
+    <ui:requires component="woost.admin.ui.NewObjectDropdown"/>
+
+    <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
+    <ui:requires-translation-bundle name="woost.admin.ui.partitioning"/>
+
+    <ui:resource href="woost.admin.ui://scripts/views.js"/>
+    <ui:resource href="woost.admin.ui://scripts/partitioning.js"/>
+    <ui:resource href="woost.admin.ui://scripts/editstate.js"/>
+    <ui:resource href="woost.admin.ui://scripts/filters.js"/>
+    <ui:resource href="woost.admin.ui://scripts/models.js"/>
+    <ui:resource href="woost.admin.ui://scripts/nodes.js"/>
+    <ui:resource href="--ADMIN--/schemas" type="text/javascript"/>
+    <ui:resource href="woost.admin.ui://scripts/modelcustomization.js"/>
+    <ui:resource href="woost.admin.ui://scripts/actions.js"/>
+
+    <ui:symbol name="BASE_TITLE"/>
+
+    <ui:property
+        name="section"
+        reflected="false">
+
+        <?on changed
+        if (oldValue) {
+            let previousEntry = this.menuEntries.querySelector(`.MenuEntry[sectionURL='${oldValue.url}']`);
+
+            if (previousEntry) {
+                previousEntry.selected = false;
+                let selectionPath = new Set();
+                if (newValue) {
+                    for (let section = newValue; section; section = section.parent) {
+                        selectionPath.add(section);
+                    }
+                }
+                for (let previousPathEntry = previousEntry; previousPathEntry; previousPathEntry = previousPathEntry.parentEntry) {
+                    previousPathEntry.inSelectionPath = selectionPath.has(previousPathEntry.section);
+                }
+            }
+        }
+
+        if (newValue) {
+            let newEntry = this.menuEntries.querySelector(`.MenuEntry[sectionURL='${newValue.url}']`);
+            if (newEntry) {
+                newEntry.selected = true;
+                for (let newPathEntry = newEntry; newPathEntry; newPathEntry = newPathEntry.parentEntry) {
+                    newPathEntry.inSelectionPath = true;
+                }
+            }
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="menuExpanded"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <?class
+    static main(container) {
+
+        // Reload the page if the session expires
+        cocktail.ui.request.addErrorHandler((request) => {
+
+            if (
+                request.responseType == "json"
+                && request.response
+                && request.response.error
+                && request.response.error.type == "woost.models.user.AuthorizationError"
+                && request.response.error.user.anonymous
+            ) {
+                location.reload();
+            }
+
+            return false;
+        });
+
+        function processSectionTree(parent, section, depth = 0) {
+
+            section.url = (parent ? parent.url : woost.admin.url) + (section.id ? "/" + section.id : "");
+            section.parent = parent;
+            section.root = parent ? parent.root : section;
+            section.depth = depth;
+
+            for (let child of section.children) {
+                processSectionTree(section, child, depth + 1);
+            }
+        }
+
+        woost.models.User.dataSource.load({url: woost.admin.url + "/data/current_user"})
+            .then((user) => {
+                woost.admin.user = user;
+            })
+            .then(() => {
+                woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
+
+                    for (let viewData of admin._views) {
+                        woost.admin.views.addView(viewData);
+                    }
+
+                    for (let partMethodData of admin._partitioning_methods) {
+                        woost.admin.partitioning.addMethod(partMethodData);
+                    }
+
+                    processSectionTree(null, admin._root_section);
+                    woost.admin.data = admin;
+                    cocktail.navigation.prefix = URI(woost.admin.url).path();
+                    cocktail.navigation.tree = cocktail.getVariable(admin._root_section.node);
+                    super.main(container);
+                });
+            });
+    }
+
+    closeMenu() {
+        let expandedEntry = this.menuEntries.querySelector(".MenuEntry[menuExpanded='true']");
+        if (expandedEntry) {
+            expandedEntry.menuExpanded = false;
+        }
+        return expandedEntry;
+    }
+    ?>
+
+    <?on-window click
+    instance.closeMenu();
+    ?>
+
+    <header id="bar">
+        <nav id="menu">
+            <ul id="menuEntries"/>
+        </nav>
+    </header>
+
+    <main id="main">
+        <ui:cocktail.ui.Stack id="stack">
+            <?on stackChanged
+            instance.section = this.stackRoot && this.stackRoot.section;
+            ?>
+        </ui:cocktail.ui.Stack>
+    </main>
+
+    <li ui:component="MenuEntry" tabindex="0">
+
+        <?class
+        getMenuEntryTitle(section) {
+            return section.title;
+        }
+        ?>
+
+        <ui:property
+            name="section"
+            reflected="false"
+            final="true">
+
+            <?on changed
+            let title = this.getMenuEntryTitle(newValue);
+
+            if (newValue.parent.parent) {
+                this.heading.innerHTML = title;
+            }
+            else {
+                this.entryDescription.title = title;
+            }
+
+            this.sectionURL = newValue.url;
+
+            if (newValue.icon) {
+                cocktail.loadSVG(newValue.icon, this.icon);
+            }
+
+            for (let subsection of newValue.children) {
+                let subsectionEntry = woost.admin.ui.Layout.MenuEntry.create();
+                subsectionEntry.section = subsection;
+                subsectionEntry.parentEntry = this;
+                this.subsectionsList.append(subsectionEntry);
+            }
+
+            this.hasSubsections = Boolean(newValue.children.length);
+            ?>
+
+        </ui:property>
+
+        <ui:property
+            name="sectionURL"
+            type="string"
+            reflected="true"
+            final="true"/>
+
+        <ui:property
+            name="hasSubsections"
+            type="boolean"
+            reflected="true"
+            final="true"/>
+
+        <ui:property
+            name="selected"
+            type="boolean"
+            reflected="true"
+            default="false"/>
+
+        <ui:property
+            name="inSelectionPath"
+            type="boolean"
+            reflected="true"
+            default="false"/>
+
+        <ui:property
+            name="menuExpanded"
+            type="boolean"
+            reflected="true"
+            default="false">
+            <?on changed
+            if (this.parentInstance) {
+                this.parentInstance.menuExpanded = newValue;
+            }
+            ?>
+        </ui:property>
+
+        <ui:symbol name="ACTIVATE"/>
+
+        <?on click
+        this[ACTIVATE]();
+        e.stopPropagation();
+        ?>
+
+        <?on keydown
+        if (e.which == cocktail.ui.keys.ENTER) {
+            this[ACTIVATE]();
+            return false;
+        }
+        else if (e.which == cocktail.ui.keys.ESC) {
+            if (this.menuExpanded) {
+                this.parentInstance.closeMenu();
+                return false;
+            }
+        }
+        ?>
+
+        <?class
+        [ACTIVATE]() {
+            if (this.hasSubsections && this.section.depth == 1) {
+                if (this.parentInstance.closeMenu() !== this) {
+                    this.menuExpanded = !this.menuExpanded;
+                }
+            }
+            else if (!this.hasSubsections || this.section.depth != 2) {
+                this.parentInstance.closeMenu();
+                cocktail.navigation.push(this.section.url);
+            }
+        }
+        ?>
+
+        <div id="entryDescription">
+            <span id="moreSign">
+                <?svg woost.admin.ui://images/more.svg ?>
+            </span>
+            <span id="icon"/>
+            <span id="heading"/>
+        </div>
+
+        <ul id="subsectionsList"/>
+    </li>
+
+    <ui:MenuEntry ui:component="UserSessionMenuEntry">
+
+        <?class
+        getMenuEntryTitle() {
+            return woost.admin.user._label;
+        }
+        ?>
+
+    </ui:MenuEntry>
+
+    <?js
+    // Create sections
+    for (let section of woost.admin.data._root_section.children) {
+
+        const entryClass = section.menu_entry_component ?
+            cocktail.getVariable(section.menu_entry_component)
+            : this.constructor.MenuEntry;
+
+        const entry = entryClass.create();
+        entry.section = section;
+        this.menuEntries.appendChild(entry);
+    }
+    ?>
+
+</div>
+

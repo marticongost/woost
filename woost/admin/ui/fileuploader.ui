@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:using mixin="cocktail.ui.DataDisplay"/>
+
+    <ui:property
+        name="uploadState"
+        type="string"
+        reflected="true"
+        default="idle"/>
+
+    <ui:property
+        name="empty"
+        type="boolean"
+        reflected="true"
+        default="true"/>
+
+    <?on dataBinding:changed
+    const file = this.dataBinding.parent && this.dataBinding.parent.value;
+    const fileName = file && file.file_name;
+
+    if (fileName) {
+        this.fileNameLabel.innerText = fileName;
+        this.fileSizeLabel.innerText = file._size_label;
+        this.empty = false;
+    }
+    else {
+        this.fileNameLabel.innerText = "";
+        this.fileSizeLabel.innerText = "";
+        this.empty = true;
+    }
+    ?>
+
+    <div id="uploadInfo">
+        <div id="fileNameLabel"/>
+        <div id="fileSizeLabel"/>
+    </div>
+
+    <ui:cocktail.ui.ActionList id="actionList">
+        <?js
+        class UploadFileAction extends woost.admin.actions.Action {
+
+            invoke() {
+                instance.fileInput.click();
+            }
+        }
+
+        element.classList.add("compact");
+        element.classList.add("without-frame");
+        element.actions = [
+            new UploadFileAction("upload")
+        ];
+        ?>
+    </ui:cocktail.ui.ActionList>
+
+    <ui:cocktail.ui.ProgressBar id="progressBar"/>
+
+    <input
+        id="fileInput"
+        type="file">
+        <?on change
+        instance.uploadState = "uploading";
+
+        cocktail.ui.request({
+            url: "/async_upload",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/octet-stream",
+                "X-File-Name": this.files[0].name
+            },
+            data: this.files[0],
+            progressBar: instance.progressBar,
+            responseType: "json"
+        })
+            .then((xhr) => {
+                instance.value = xhr.response.id;
+                instance.fileNameLabel.innerText = xhr.response.name;
+                instance.fileSizeLabel.innerText = xhr.response.size_desc;
+                instance.empty = false;
+            })
+            .finally(() => {
+                instance.uploadState = "idle";
+            });
+        ?>
+    </input>
+
+</div>
+

@@ -9,6 +9,7 @@ from pkg_resources import resource_filename
 from cocktail.modeling import GenericMethod, camel_to_underscore
 from cocktail.caching import Cache
 from cocktail.controllers import context, folder_publisher, Cached
+from cocktail.controllers.asyncupload import AsyncUploader
 from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
 
@@ -151,7 +152,11 @@ http://woost.info
                 um.Sequence([
                     um.Optional(um.WebsiteInHostname()),
                     um.Optional(um.LocaleInPath()),
-                    um.Optional(
+                    um.Conditional(
+                        (
+                            lambda publishable, **kwargs:
+                            publishable is not None
+                        ),
                         um.OneOf([
                             um.Home(),
                             um.HierarchyInPath(),
@@ -170,8 +175,14 @@ http://woost.info
 
     url_mapping = property(_get_url_mapping, _set_url_mapping)
 
+    # Asynchronous file uploads
+    async_uploader = AsyncUploader()
+    async_uploader.session_prefix = "woost.async_upload."
+
+    # Tracebacks
     traceback_link_style = "disabled"
 
+    # Context
     def clear_context(self):
         for prop in self._contextual_properties:
             setattr(self, prop.attr, None)
@@ -180,7 +191,7 @@ http://woost.info
         from woost.controllers.cmsresourcescontroller import CMSResourcesController
         resource_repositories.define(
             repository_name,
-            "/resources/" + repository_name.replace(".", "/"),
+            "/resources/" + repository_name,
             repository_path
         )
         setattr(
@@ -210,6 +221,8 @@ class ContextualProperty(object):
                     setattr(Application, cls.attr, prop)
                     Application._contextual_properties.append(prop)
 
+    default = None
+
     def __get__(self, instance, cls = None):
         if instance is None:
             return self
@@ -220,7 +233,7 @@ class ContextualProperty(object):
         self.set(instance, value)
 
     def get(self, app):
-        return getattr(app._thread_data, self.attr, None)
+        return getattr(app._thread_data, self.attr, self.default)
 
     def set(self, app, value):
         setattr(app._thread_data, self.attr, value)
@@ -339,6 +352,22 @@ class ThemeProperty(ContextualProperty):
     def set(self, app, value):
         ContextualProperty.set(self, app, value)
         set_theme(value and value.identifier or None)
+
+
+class EditingProperty(ContextualProperty):
+    """Indicates wether the active publishable is being served in the context
+    of an edit session.
+
+    This can be used by controllers and templates to temporarily change the
+    state for the publishable to reflect the current edit session, or to
+    toggle the visibility of inline editing aids.
+
+    "Context" is typically an HTTP request, but the property can also be
+    used outside a web request/response cycle.
+
+    .. type:: bool
+    """
+    default = False
 
 
 @GenericMethod

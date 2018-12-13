@@ -1,0 +1,20 @@
+
+@import "woost.admin.ui://styles/common";
+
+:host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='exposed']) {
+
+    #label {
+        color: #545047;
+        font-size: 1.1em;
+        max-width: 14em;
+    }
+
+    #typeLabel {
+        color: #6b5e3f;
+    }
+
+    #icon {
+        color: #bdb59e;
+    }
+}
+

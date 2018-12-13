@@ -15,7 +15,7 @@ from cocktail.controllers import (
     redirect
 )
 from woost import app
-from woost.models import Item, RenderPermission
+from woost.models import Item, File, RenderPermission
 from woost.models.rendering import (
     require_rendering,
     ImageFactory,
@@ -34,8 +34,22 @@ class ImagesController(BaseCMSController):
 
     def __call__(self, id, processing, *args, **kwargs):
 
-        # Get the requested element
-        item = resolve_object_ref(Item, id)
+        # Get the requested element; either an object in the database or an
+        # upload that hasn't been comitted yet
+        item = None
+
+        UPLOAD_PREFIX = "upload-"
+        if id.startswith(UPLOAD_PREFIX):
+            upload_id = id[len(UPLOAD_PREFIX):]
+            upload = app.async_uploader.get(upload_id)
+            if upload:
+                item = File()
+                item._v_upload_id = upload_id
+                item.file_name = upload.name
+                item.file_size = upload.size
+                item.mime_type = upload.type
+        else:
+            item = resolve_object_ref(Item, id)
 
         # Make sure the selected element exists
         if item is None:

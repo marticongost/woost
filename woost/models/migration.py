@@ -4,7 +4,7 @@ u"""Defines migrations to the database schema for woost.
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.events import when
-from cocktail.persistence import MigrationStep
+from cocktail.persistence import MigrationStep, migration_step
 from cocktail.persistence.migration import migration_steps, migration_step
 from cocktail.persistence.utils import remove_broken_type, is_broken
 from warnings import warn
@@ -1408,6 +1408,371 @@ def set_robots_should_index_setting(e):
 
 #------------------------------------------------------------------------------
 
+step = MigrationStep("Remove installation synchronization")
+
+@when(step.executing)
+def remove_synchronization(e):
+
+    from ZODB.broken import Broken
+    from cocktail.persistence import datastore
+    from cocktail.persistence.utils import is_broken
+    from woost.models import (
+        Item,
+        Role,
+        Permission,
+        ContentPermission,
+        MemberPermission
+    )
+
+    r = datastore.root
+
+    # Delete the object manifest
+    try:
+        del r["woost.manifest"]
+    except KeyError:
+        pass
+
+    # Delete the SiteInstallation model
+    ids = r.get("woost.models.siteinstallation.SiteInstallation-keys")
+    if ids:
+        for id in ids:
+            Item.keys.remove(id)
+            Item.index.remove(id)
+
+    for key in list(r):
+        if key.startswith("woost.models.siteinstallation."):
+            del r[key]
+
+    for perm in ContentPermission.select():
+        if issubclass(perm.content_type, Broken):
+            perm.delete()
+
+    for perm in MemberPermission.select():
+        if perm.matching_members:
+            for member_name in perm.matching_members:
+                if member_name.startswith("woost.models.siteinstallation."):
+                    perm.delete()
+
+    # Delete the synchronizable member
+    try:
+        del r["woost.models.Item.synchronizable"]
+    except KeyError:
+        pass
+
+    for item in Item.select():
+        try:
+            del item._synchronizable
+        except AttributeError:
+            pass
+
+    # Delete the InstallationSyncPermission model
+    ids = r.get("woost.models.permission.InstallationSyncPermission-keys")
+    if ids:
+        for id in ids:
+            Item.keys.remove(id)
+            Item.index.remove(id)
+            Permission.keys.remove(id)
+
+        for role in Role.select():
+            role.permissions = [
+                p
+                for p in role.permissions
+                if not is_broken(p)
+            ]
+
+    for key in list(r):
+        if key.startswith(
+            "woost.models.permission.InstallationSyncPermission"
+        ):
+            del r[key]
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_file_deletion_trigger")
+
+@when(step.executing)
+def remove_file_deletion_trigger(e):
+    from woost.models import Trigger
+    trigger = Trigger.get_instance(qname = "woost.file_deletion_trigger")
+    if trigger:
+        trigger.delete()
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.add_site_identifiers")
+
+@when(step.executing)
+def add_site_identifiers(e):
+
+    from woost.models import Website
+
+    for n, website in enumerate(Website.select()):
+
+        if website.hosts:
+            parts = website.hosts[0].split(".")
+            if parts[0] == "www":
+                parts.pop(0)
+
+            # Pop TLDs; very rough, but including the full list of TLDs would
+            # be overkill
+            if len(parts) >= 2:
+                parts.pop(-1)
+
+            identifier = "-".join(parts)
+        else:
+            identifier = "website%d" % n
+
+        website.identifier = identifier
+        print identifier
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_image_factories")
+
+@when(step.executing)
+def remove_configuration_image_factories(e):
+
+    from woost.models import Configuration, MemberPermission
+    from woost.models.rendering import ImageFactory
+
+    key = "woost.models.configuration.Configuration.image_factories"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._image_factories
+
+    for img_factory in ImageFactory.select():
+        try:
+            del img_factory._Configuration_image_factories
+        except AttributeError:
+            pass
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_renderers")
+
+@when(step.executing)
+def remove_configuration_renderers(e):
+
+    from woost.models import Configuration, MemberPermission
+    from woost.models.rendering import Renderer
+
+    key = "woost.models.configuration.Configuration.renderers"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._renderers
+
+    for renderer in Renderer.select():
+        try:
+            del renderer._Configuration_renderers
+        except AttributeError:
+            pass
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_video_player_settings")
+
+@when(step.executing)
+def remove_configuration_video_player_settings(e):
+
+    from woost.models import Configuration, VideoPlayerSettings, MemberPermission
+
+    key = "woost.models.configuration.Configuration.video_player_settings"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._video_player_settings
+
+    for vid_player_settings in VideoPlayerSettings.select():
+        del vid_player_settings._Configuration_video_player_settings
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.remove_configuration_websites")
+
+@when(step.executing)
+def remove_configuration_websites(e):
+
+    from woost.models import Configuration, Website, MemberPermission
+
+    key = "woost.models.configuration.Configuration.websites"
+    for perm in MemberPermission.select():
+        if perm.matching_members and key in perm.matching_members:
+            perm.matching_members.remove(key)
+
+    del Configuration.instance._websites
+
+    for website in Website.select():
+        try:
+            del website._Configuration_websites
+        except AttributeError:
+            pass
+
+#------------------------------------------------------------------------------
+
+step = MigrationStep("woost.create_block_catalogs")
+
+@when(step.executing)
+def create_block_catalogs(e):
+
+    from cocktail import schema
+    from cocktail.translations import translations
+    from woost.models import (
+        Item,
+        Slot,
+        Configuration,
+        Website,
+        Block,
+        BlocksCatalog,
+        BlockClone
+    )
+
+    config = Configuration.instance
+
+    def T(**values):
+        return schema.TranslatedValues(
+            **dict(
+                (lang, v)
+                for lang, v in values.iteritems()
+                if lang in config.languages
+            )
+        )
+
+    catalog_blocks = set()
+    catalog_slot_keys = set()
+
+    def create_catalogs(
+        source,
+        qname_prefix,
+        old_slots = (),
+        title_suffix = ""
+    ):
+        catalog_defs = list(old_slots)
+
+        for member in source.__class__.iter_members():
+
+            if isinstance(member, Slot):
+                catalog_defs.append((
+                    member.name,
+                    {
+                        "title": schema.TranslatedValues(
+                            **dict(
+                                (
+                                    language,
+                                    translations(member, language = language)
+                                    + title_suffix
+                                )
+                                for language in config.languages
+                            )
+                        )
+                    }
+                ))
+
+        for slot_name, catalog_kwargs in catalog_defs:
+
+            catalog = BlocksCatalog.new(**catalog_kwargs)
+
+            if not catalog.qname:
+                qname = qname_prefix + "." + slot_name
+                if qname.endswith("_blocks"):
+                    qname = qname[:-len("_blocks")]
+                catalog.qname = qname
+
+            blocks = getattr(source, "_" + slot_name, None)
+            if blocks:
+                catalog.blocks = list(blocks)
+
+            catalog_slot_keys.add("_%s_%s" % (source.__class__.__name__, slot_name))
+
+            for block in blocks:
+                catalog_blocks.add(block)
+
+    footer_def = (
+        "footer_blocks", {
+            "title": T(
+                ca = u"Peu de pàgina",
+                es = u"Pie de página",
+                en = u"Footer"
+            )
+        }
+    )
+
+    create_catalogs(config, "woost.block_catalogs", [
+        ("common_blocks", {
+            "title": T(
+                ca = u"Blocs comuns",
+                es = u"Bloques comunes",
+                en = u"Common blocks"
+            )
+        }),
+        footer_def
+    ])
+
+    for website in Website.select():
+        create_catalogs(
+            website,
+            website.identifier + ".block_catalogs",
+            (footer_def,) if getattr(website, "_footer_blocks", None) else (),
+            title_suffix = u" - " + translations(website)
+        )
+
+    for block in catalog_blocks:
+        for member in block.__class__.iter_members():
+            related_end = getattr(member, "related_end", None)
+            if (
+                related_end
+                and isinstance(related_end, Slot)
+                and related_end.schema not in (
+                    Configuration,
+                    Website,
+                    BlocksCatalog
+                )
+            ):
+                referrals = getattr(block, "_" + member.name, None)
+                if referrals is not None:
+                    delattr(block, "_" + member.name)
+                    for referrer in referrals:
+                        clone = BlockClone.new()
+                        clone.source_block = block
+                        blocks = referrer.get(related_end)
+                        index = blocks.index(block)
+                        blocks._items[index] = clone
+
+    # Slot related ends are now a single reference
+    slot_keys = []
+
+    for model in Item.schema_tree():
+        if issubclass(model, (Configuration, Website, BlocksCatalog)):
+            continue
+        for member in model.iter_members(recursive = False):
+            if isinstance(member, Slot):
+                slot_keys.append("_" + member.related_end.name)
+
+    for block in Block.select():
+        for slot_key in slot_keys:
+            value = getattr(block, slot_key, None)
+            if value is not None and not isinstance(value, Item):
+                if len(value) == 1:
+                    setattr(block, slot_key, value[0])
+                elif len(value) == 0:
+                    setattr(block, slot_key, None)
+                else:
+                    raise ValueError("%s.%s contains too many blocks" % (
+                        block,
+                        slot_key
+                    ))
+        for slot_key in catalog_slot_keys:
+            try:
+                delattr(block, slot_key)
+            except AttributeError:
+                pass
+
+#------------------------------------------------------------------------------
+
 step = MigrationStep("Assign default controllers")
 
 @when(step.executing)
@@ -1510,6 +1875,152 @@ def assign_default_controllers(e):
 #------------------------------------------------------------------------------
 
 @migration_step
+def remove_role_hidden_content_types(e):
+
+    from woost.models import Role
+
+    for role in Role.select():
+        try:
+            del role._hidden_content_types
+        except AttributeError:
+            pass
+
+@migration_step
+def remove_role_default_content_type(e):
+
+    from woost.models import Role
+
+    for role in Role.select():
+        try:
+            del role._default_content_type
+        except AttributeError:
+            pass
+
+@migration_step
+def remove_user_views(e):
+
+    from woost.models import Item, Role
+    from woost.models.utils import remove_broken_type
+
+    for role in Role.select():
+        try:
+            del role._user_views
+        except AttributeError:
+            pass
+
+    remove_broken_type(
+        "woost.models.userview.UserView",
+        existing_bases = (Item,)
+    )
+
+@migration_step
+def convert_user_roles_collection_to_single_reference(e):
+
+    from woost.models import User
+
+    for user in User.select():
+        try:
+            roles = user._roles
+        except AttributeError:
+            continue
+        else:
+            del user._roles
+            if roles:
+                assert len(roles) == 1, \
+                    "Users should have a single role; %r has %r" \
+                    % (user, roles)
+                user._role = roles[0]
+            else:
+                user._role = None
+
+@migration_step
+def remove_extension_models(e):
+
+    from woost.models import Item
+    from woost.models.utils import remove_broken_type
+
+    remove_broken_type(
+        "woost.models.extension.Extension",
+        existing_bases = (Item,)
+    )
+
+    for ext in [
+        "woost.extensions.shop.ShopExtension",
+        "woost.extensions.countries.CountriesExtension",
+        "woost.extensions.payments.PaymentsExtension",
+        "woost.extensions.comments.CommentsExtension",
+        "woost.extensions.recaptcha.ReCaptchaExtension",
+        "woost.extensions.staticsite.StaticSiteExtension",
+        "woost.extensions.sitemap.SitemapExtension",
+        "woost.extensions.pdf.PDFExtension",
+        "woost.extensions.vimeo.VimeoExtension",
+        "woost.extensions.signup.SignUpExtension",
+        "woost.extensions.googlesearch.GoogleSearchExtension",
+        "woost.extensions.googleanalytics.GoogleAnalyticsExtension",
+        "woost.extensions.googletagmanager.GoogleTagManagerExtension",
+        "woost.extensions.campaignmonitor.CampaignMonitorExtension",
+        "woost.extensions.mailer.MailerExtension",
+        "woost.extensions.usermodels.UserModelsExtension",
+        "woost.extensions.locations.LocationsExtension",
+        "woost.extensions.webconsole.WebConsoleExtension",
+        "woost.extensions.blocks.BlocksExtension",
+        "woost.extensions.opengraph.OpenGraphExtension",
+        "woost.extensions.ecommerce.ECommerceExtension",
+        "woost.extensions.facebookpublication.FacebookPublicationExtension",
+        "woost.extensions.shorturls.ShortURLsExtension",
+        "woost.extensions.twitterpublication.TwitterPublicationExtension",
+        "woost.extensions.textfile.TextFileExtension",
+        "woost.extensions.audio.AudioExtension",
+        "woost.extensions.issuu.IssuuExtension",
+        "woost.extensions.campaign3.CampaignMonitor3Extension",
+        "woost.extensions.youtube.YouTubeExtension",
+        "woost.extensions.tv3alacarta.TV3ALaCartaExtension",
+        "woost.extensions.externalfiles.ExternalFilesExtension",
+        "woost.extensions.restrictedaccess.RestrictedAccessExtension",
+        "woost.extensions.annotations.AnnotationsExtension",
+        "woost.extensions.notices.NoticesExtension",
+        "woost.extensions.variables.VariablesExtension",
+        "woost.extensions.surveys.SurveysExtension",
+        "woost.extensions.newsletters.NewslettersExtension",
+        "woost.extensions.forms.FormsExtension",
+        "woost.extensions.translationworkflow.TranslationWorkflowExtension",
+        "woost.extensions.identity.IdentityExtension",
+        "woost.extensions.attributes.AttributesExtension",
+        "woost.extensions.staticpub.StaticPubExtension",
+        "woost.extensions.nocaptcha.NoCaptchaExtension"
+    ]:
+        remove_broken_type(ext)
+
+@migration_step
+def remove_triggers(e):
+
+    from woost.models import Item
+    from woost.models.utils import remove_broken_type
+
+    for name in (
+        "Trigger",
+        "ContentTrigger",
+        "CreateTrigger",
+        "InsertTrigger",
+        "ModifyTrigger",
+        "DeleteTrigger"
+    ):
+        remove_broken_type(
+            "woost.models.trigger." + name,
+            existing_bases = (Item,)
+        )
+
+    for name in (
+        "TriggerResponse",
+        "CustomTriggerResponse",
+        "SendEmailTriggerResponse"
+    ):
+        remove_broken_type(
+            "woost.models.triggerresponse." + name,
+            existing_bases = (Item,)
+        )
+
+@migration_step
 def add_listing_pagination_method(e):
 
     from woost.models import Listing
@@ -1517,4 +2028,3 @@ def add_listing_pagination_method(e):
     for listing in Listing.select():
         listing.pagination_method = "pager" if listing._paginated else None
         del listing._paginated
-

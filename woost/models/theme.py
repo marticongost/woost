@@ -13,6 +13,7 @@ from .grid import Grid
 class Theme(Item):
 
     type_group = "customization"
+    admin_show_descriptions = False
 
     members_order = [
         "title",

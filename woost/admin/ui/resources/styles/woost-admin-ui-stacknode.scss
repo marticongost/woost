@@ -1,0 +1,76 @@
+
+@import "woost.admin.ui://styles/common";
+
+$covered-heading-padding-top: 0.6em;
+
+#stackDescendants {
+    top: 4em;
+}
+
+#header {
+    font-size: 1em;
+}
+
+#headingWrapper {
+    display: flex;
+    align-items: center;
+}
+
+#headingElement {
+    flex: 1 1;
+    display: flex;
+    margin: 0;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.Heading {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+}
+
+.Heading .icon {
+    margin-right: 0.8em;
+    display: flex;
+    --height: 1.8em;
+    align-items: center;
+    justify-content: center;
+    color: rgba(#111, 0.4);
+
+    &:not([src]) {
+        display: none;
+    }
+}
+
+.Heading .label {
+    margin: 0;
+    font-size: 1.7em;
+    font-weight: bold;
+    max-width: 24em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#headerContent {
+    $toolbar-separation: 2em;
+    align-items: center;
+
+    flex: 1 1 auto;
+
+    & > * {
+        font-size: 1.4em;
+        color: $panel-action-color;
+
+        &:not(:first-child) {
+            margin-left: $toolbar-separation;
+        }
+    }
+
+    .cocktail-ui-ActionList {
+        align-self: stretch;
+    }
+}
+

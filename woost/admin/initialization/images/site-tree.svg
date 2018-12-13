@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 621 524" x="0px" y="0px" id="svg2" version="1.1" docname="tree.svg" width="621" height="524">
+  <metadata id="metadata10">
+    <rdf:RDF>
+      <cc:Work about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs8"></defs>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" pageopacity="0" pageshadow="2" window-width="1920" window-height="1016" id="namedview6" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" zoom="0.3812601" cx="-66.883475" cy="272.36864" window-x="0" window-y="27" window-maximized="1" current-layer="svg2"></sodipodi:namedview>
+  <path d="m 596,349 -42,0 0,-57 c 0,-27.6 -22.4,-50 -50,-50 l -173,0 0,-67 42,0 c 13.8,0 25,-11.2 25,-25 L 398,25 C 398,11.2 386.8,0 373,0 L 248,0 c -13.8,0 -25,11.2 -25,25 l 0,125 c 0,13.8 11.2,25 25,25 l 43,0 0,67 -173,0 c -27.6,0 -50,22.4 -50,50 L 67.8,349 25,349 C 11.2,349 0,360.2 0,374 l 0,125 c 0,13.8 11.2,25 25,25 l 125,0 c 13.8,0 25,-11.2 25,-25 l 0,-125 c 0,-13.8 -11.2,-25 -25,-25 l -42.2,0 0.2,-57 c 0,-5.5 4.5,-10 10,-10 l 173,0 0,67 -43,0 c -13.8,0 -25,11.2 -25,25 l 0,125 c 0,13.8 11.2,25 25,25 l 125,0 c 13.8,0 25,-11.2 25,-25 l 0,-125 c 0,-13.8 -11.2,-25 -25,-25 l -42,0 0,-67 173,0 c 5.5,0 10,4.5 10,10 l 0,57 -43,0 c -13.8,0 -25,11.2 -25,25 l 0,125 c 0,13.8 11.2,25 25,25 l 125,0 c 13.8,0 25,-11.2 25,-25 l 0,-125 c 0,-13.8 -11.2,-25 -25,-25 z" id="path4" connector-curvature="0"></path>
+</svg>

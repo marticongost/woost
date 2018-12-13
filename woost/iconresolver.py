@@ -45,6 +45,7 @@ class IconResolver(object):
     """
     icon_format = "png"
     _icon_extension = None
+    scalable_icon_extension = "svg"
     icon_repositories = []
     file_resolvers = None
     name_resolution_cache = None
@@ -88,8 +89,9 @@ class IconResolver(object):
         @param item: The item or content type to obtain the icon for.
         @type item: L{Item<woost.models.Item>} instance or class
 
-        @param size: The size of the icon to look for, in pixels.
-        @type size: int
+        @param size: A size identifier. Can be an integer (a number of pixels)
+            or an arbitrary string identifier (ie. "scalable").
+        @type size: str or int
 
         @return: The path to the best matching icon, or None if no matching
             icon is found.
@@ -126,8 +128,13 @@ class IconResolver(object):
         size, file_names = key
 
         repositories = self.icon_repositories
-        size_str = "%dx%d" % (size, size)
-        icon_ext = "." + self.icon_extension
+
+        if isinstance(size, int):
+            size_str = "%dx%d" % (size, size)
+            icon_ext = "." + self.icon_extension
+        else:
+            size_str = size
+            icon_ext = "." + self.scalable_icon_extension
 
         for repo_path, repo_url in repositories:
             for file_name in file_names:

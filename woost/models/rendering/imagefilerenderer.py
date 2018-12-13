@@ -6,6 +6,7 @@ u"""
 import os
 from cocktail import schema
 from cocktail.controllers.imageupload import get_image_size
+from woost import app
 from woost.models.file import File
 from woost.models.rendering.renderer import Renderer
 from woost.models.rendering.formats import formats_by_mime_type
@@ -40,7 +41,7 @@ class ImageFileRenderer(Renderer):
 
     def validate_size(self, file):
         try:
-            width, height = get_image_size(file.file_path)
+            width, height = get_image_size(self.get_file_path(file))
         except IOError:
             return False
         else:
@@ -49,5 +50,11 @@ class ImageFileRenderer(Renderer):
                 or (width <= max_size[1] and height <= max_size[0])
 
     def render(self, item, **parameters):
-        return item.file_path
+        return self.get_file_path(item)
+
+    def get_file_path(self, item):
+        if item._v_upload_id:
+            return app.async_uploader.get_temp_path(item._v_upload_id)
+        else:
+            return item.file_path
 

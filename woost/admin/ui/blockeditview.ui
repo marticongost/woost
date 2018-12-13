@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.EditView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    hasActionList="false"
+    animationType="fade">
+
+    <ui:requires component="woost.admin.ui.BlockEditViewHeading"/>
+
+    <?class
+    getActionListContext() {
+        const context = super.getActionListContext();
+        context.insideBlockEditPanel = true;
+        return context;
+    }
+    ?>
+
+    <ui:with ui:element="editForm.tabs">
+        <ui:resource href="woost.admin.ui://styles/woost-admin-ui-blockeditview--editform--tabs.scss.css"/>
+    </ui:with>
+
+</ui:woost.admin.ui.EditView>
+

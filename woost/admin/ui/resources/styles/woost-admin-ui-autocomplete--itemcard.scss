@@ -1,0 +1,37 @@
+
+:host {
+    width: 30em;
+    height: 3.8em;
+}
+
+#label {
+    display: none;
+}
+
+#info {
+    padding-right: 1em;
+}
+
+#input {
+    font-size: 0.9em;
+    border: none;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+
+    :host-context(.woost-admin-ui-Autocomplete[searchState='match']) & {
+        font-weight: bold;
+    }
+
+    &:focus {
+        cursor: text;
+        outline: none;
+
+        :host-context(.woost-admin-ui-Autocomplete:not([searchState='match'])) & {
+            background-color: #f5f5f5;
+        }
+    }
+}
+
