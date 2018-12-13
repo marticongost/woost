@@ -100,7 +100,15 @@ class PartitionByMember(PartitioningMethod):
 
     @overrides(PartitioningMethod._translate_value)
     def _translate_value(self, value):
-        return self.__member.translate_value(value)
+        return (
+            translations(
+                self.__member,
+                suffix =
+                    ".values.%s.admin.partition"
+                    % self._serialize_value(value)
+            )
+            or self.__member.translate_value(value)
+        )
 
     @overrides(PartitioningMethod._parse_value)
     def _parse_value(self, value):
