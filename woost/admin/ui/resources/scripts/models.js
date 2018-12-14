@@ -187,6 +187,50 @@ cocktail.declare("woost.admin.ui");
         }
     }
 
+    woost.models.transaction = function (transaction) {
+        return cocktail.ui.request({
+            url: woost.admin.url + "/data/transaction",
+            method: "POST",
+            data: {
+                modify: transaction.modify
+            },
+            responseType: "json"
+        })
+            .then((xhr) => {
+
+                const errors = xhr.response.errors;
+                for (let key in errors) {
+                    throw new woost.models.TransactionError(errors);
+                }
+
+                const invalidation = transaction.invalidation || transaction.invalidation === undefined;
+                const objects = xhr.response.modified;
+
+                for (let id in objects) {
+                    const newState = cocktail.schema.objectFromJSONValue(objects[id]);
+                    objects[id] = newState;
+
+                    if (invalidation) {
+                        cocktail.ui.objectModified(
+                            newState._class,
+                            id,
+                            null,
+                            newState
+                        );
+                    }
+                }
+
+                return objects;
+            });
+    }
+
+    woost.models.TransactionError = class TransactionError {
+
+        constructor(objectErrors) {
+            this.objectErrors = objectErrors;
+        }
+    }
+
     woost.models.ValidationError = class ValidationError {
 
         constructor(state, errors) {

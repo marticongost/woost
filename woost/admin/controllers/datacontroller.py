@@ -8,6 +8,7 @@ from cocktail.controllers import HTTPMethodController
 from .listingcontroller import ListingController
 from .editcontroller import EditController
 from .deletecontroller import DeleteController
+from .transactioncontroller import TransactionController
 from .defaultscontroller import DefaultsController
 from .settingsscopescontroller import SettingsScopesController
 from .currentusercontroller import CurrentUserController
@@ -24,6 +25,7 @@ class DataController(HTTPMethodController):
     POST = EditController
     DELETE = DeleteController
 
+    transaction = TransactionController
     views = ViewsController
     partitions = PartitionsController
     defaults = DefaultsController
