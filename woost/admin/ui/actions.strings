@@ -56,6 +56,11 @@
     es: Idiomas
     en: Languages
 
+    [select-partitioning-method]
+    ca: Particions
+    es: Particiones
+    en: Partitioning
+
     [fields]
     ca: Camps
     es: Campos
@@ -170,4 +175,5 @@
     ca: Pujar fitxer
     es: Subir fichero
     en: Upload file
+
 
