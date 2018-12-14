@@ -39,6 +39,7 @@ class Import(object):
     deleted_translations = None
     user = None
     permission_check = True
+    verbose_permission_checks = False
     import_primary_keys = False
 
     def __init__(
@@ -49,7 +50,9 @@ class Import(object):
         deleted_translations = None,
         user = None,
         import_primary_keys = False,
-        dry_run = False
+        dry_run = False,
+        permission_check = None,
+        verbose_permission_checks = None
     ):
         self.__temp_objects = {}
         self.__allowed_translations_cache = defaultdict(set)
@@ -61,6 +64,12 @@ class Import(object):
         self.import_primary_keys = import_primary_keys
         self.dry_run = dry_run
         self.after_commit_callbacks = []
+
+        if permission_check is not None:
+            self.permission_check = permission_check
+
+        if verbose_permission_checks is not None:
+            self.verbose_permission_checks = verbose_permission_checks
 
         if obj:
             self.obj = obj
@@ -100,7 +109,8 @@ class Import(object):
             ModifyPermission
                 if obj.is_inserted
                 else CreatePermission,
-            target = obj
+            target = obj,
+            verbose = self.verbose_permission_checks
         )
 
     def check_permissions_before_importing_data(self, obj):
@@ -118,12 +128,14 @@ class Import(object):
             if language in self.obj.translations:
                 self.user.require_permission(
                     ModifyTranslationPermission,
-                    language = language
+                    language = language,
+                    verbose = self.verbose_permission_checks
                 )
             else:
                 self.user.require_permission(
                     CreateTranslationPermission,
-                    language = language
+                    language = language,
+                    verbose = self.verbose_permission_checks
                 )
                 self.new_translations[obj].add(language)
 
@@ -133,11 +145,13 @@ class Import(object):
         if member not in self.__checked_members:
             self.user.require_permission(
                 ReadMemberPermission,
-                member = member
+                member = member,
+                verbose = self.verbose_permission_checks
             )
             self.user.require_permission(
                 ModifyMemberPermission,
-                member = member
+                member = member,
+                verbose = self.verbose_permission_checks
             )
             self.__checked_members.add(member)
 
@@ -291,7 +305,8 @@ class Import(object):
         elif self.permission_check and self.user:
             self.user.require_permission(
                 ReadPermission,
-                target = item
+                target = item,
+                verbose = self.verbose_permission_checks
             )
 
         if read_child_data:
@@ -309,7 +324,8 @@ class Import(object):
                     if self.permission_check:
                         self.user.require_permission(
                             DeleteTranslationPermission,
-                            language = language
+                            language = language,
+                            verbose = self.verbose_permission_checks
                         )
                     del obj.translations[language]
                     self.deleted_translations[obj].add(language)
