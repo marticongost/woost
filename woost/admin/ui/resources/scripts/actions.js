@@ -5,6 +5,30 @@ cocktail.declare("woost.admin.actions");
     const actionMap = {};
     const actionList = [];
 
+    woost.admin.actions.attempt = function (promise, options = null) {
+
+        if (options && options.lock) {
+            cocktail.ui.Lock.show(options.lock);
+        }
+
+        return promise
+            .then((newState) => {
+                if (options && options.successNotice) {
+                    cocktail.ui.Notice.show(options.successNotice);
+                }
+            })
+            .catch((e) => {
+                if (options && options.errorNotice) {
+                    cocktail.ui.Notice.show(options.errorNotice);
+                }
+            })
+            .finally(() => {
+                if (options && options.lock) {
+                    cocktail.ui.Lock.clear();
+                }
+            });
+    }
+
     woost.admin.actions.forContext = function* (context = null) {
         for (let actionRegistration of actionList) {
             if (actionRegistration.matchesContext(context)) {
@@ -117,6 +141,63 @@ cocktail.declare("woost.admin.actions");
 
         get iconURL() {
             return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/${this.id}.svg`)
+        }
+
+        attempt(promise, options = null) {
+
+            if (!options) {
+                options = {};
+            }
+
+            // Default lock UI
+            if (options.lock === undefined) {
+                options.lock = {};
+            }
+
+            if (options.lock.icon === undefined) {
+                options.lock.icon = this.iconURL;
+            }
+
+            if (options.lock.message === undefined) {
+                options.lock.message = (
+                    cocktail.ui.translations[this.translationKey + ".lock"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultLock"]
+                );
+            }
+
+            // Default success notice
+            if (options.successNotice === undefined) {
+                options.successNotice = {};
+            }
+
+            if (options.successNotice.category === undefined) {
+                options.successNotice.category = "success";
+            }
+
+            if (options.successNotice.summary === undefined) {
+                options.successNotice.summary = (
+                    cocktail.ui.translations[this.translationKey + ".successNotice"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultSuccessNotice"]
+                );
+            }
+
+            // Default error notice
+            if (options.errorNotice === undefined) {
+                options.errorNotice = {};
+            }
+
+            if (options.errorNotice.category === undefined) {
+                options.errorNotice.category = "error";
+            }
+
+            if (options.errorNotice.summary === undefined) {
+                options.errorNotice.summary = (
+                    cocktail.ui.translations[this.translationKey + ".errorNotice"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultErrorNotice"]
+                );
+            }
+
+            return woost.admin.actions.attempt(promise, options);
         }
     }
 }
