@@ -11,6 +11,9 @@ WEBSITE_PREFIX = "website-"
 
 def resolve_object_ref(id):
 
+    if isinstance(id, int):
+        return Item.require_instance(id)
+
     if id == "config":
         return Configuration.instance
 
