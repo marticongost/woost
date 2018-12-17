@@ -13,7 +13,7 @@ from cocktail.persistence import datastore
 from cocktail.controllers import Controller, request_property
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
-from woost.models import Item, ReadPermission
+from woost.models import Item, ReadPermission, changeset_context
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
 from woost.admin.dataimport import Import
@@ -62,8 +62,9 @@ class EditController(Controller):
             while True:
 
                 # Import data
-                imp = self._import_object(obj, data)
-                obj.insert()
+                with changeset_context(app.user):
+                    imp = self._import_object(obj, data)
+                    obj.insert()
 
                 # Validate errors
                 errors = self._export_errors(obj, action)
