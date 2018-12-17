@@ -13,6 +13,7 @@ from cocktail.persistence import datastore
 from cocktail.controllers import Controller
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
+from woost.models import changeset_context
 from woost.admin.dataexport import Export
 from woost.admin.dataimport import Import
 from .utils import resolve_object_ref
@@ -47,16 +48,17 @@ class TransactionController(Controller):
 
             # Import data
             # TODO: support "insert" and "delete" keys
-            modify_states = data.get("modify")
-            if modify_states:
-                for state in modify_states:
-                    id = state["id"]
-                    obj = resolve_object_ref(id)
-                    modified_objects.append(obj)
-                    imports.append(self._import_object(obj, state))
-                    obj_errors = self._export_errors(obj)
-                    if obj_errors:
-                        errors[id] = obj_errors
+            with changeset_context(app.user):
+                modify_states = data.get("modify")
+                if modify_states:
+                    for state in modify_states:
+                        id = state["id"]
+                        obj = resolve_object_ref(id)
+                        modified_objects.append(obj)
+                        imports.append(self._import_object(obj, state))
+                        obj_errors = self._export_errors(obj)
+                        if obj_errors:
+                            errors[id] = obj_errors
 
             if errors:
                 response_data = {"transaction": data, "errors": errors}
