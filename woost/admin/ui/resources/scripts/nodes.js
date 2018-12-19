@@ -741,7 +741,7 @@ woost.admin.nodes.FileEditNode = class FileEditNode extends woost.admin.nodes.Ed
     }
 }
 
-woost.admin.nodes.UserEditNode = class FileEditNode extends woost.admin.nodes.EditNode {
+woost.admin.nodes.UserEditNode = class UserEditNode extends woost.admin.nodes.EditNode {
 
     createEditSchema() {
 
