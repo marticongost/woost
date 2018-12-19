@@ -8,6 +8,8 @@ from .dataexport import (
     object_field
 )
 from .treeexport import TreeExport
+from . import changeset
+from . import change
 from . import item
 from . import user
 from . import publishable
