@@ -18,7 +18,14 @@ cocktail.declare("woost.admin.actions");
                 }
             })
             .catch((e) => {
-                if (options && options.errorNotice) {
+                if (
+                    options
+                    && options.errorNotice
+                    && (
+                        !options.showErrorNotice
+                        || options.showErrorNotice(e)
+                    )
+                ) {
                     cocktail.ui.Notice.show(options.errorNotice);
                 }
             })
@@ -759,11 +766,6 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
     invoke(context) {
 
-        cocktail.ui.Lock.show({
-            icon: this.iconURL,
-            message: cocktail.ui.translations[this.translationKey + ".workingNotice"]
-        });
-
         const form = this.view.editForm;
 
         let serializationParameters = {
@@ -775,35 +777,29 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
         const state = form.getJSONValue(serializationParameters);
         const id = this.item.id
-        state.id = id;
-        state._new = this.item._new;
+        const isNew = this.item._new;
 
-        this.model.save(state, this.editingIntegralChild)
-            .then((newState) => {
-                if (state._new) {
+        state.id = id;
+        state._new = isNew;
+
+        const transaction = woost.models.transaction({
+            objects: [state],
+            dry_run: this.editingIntegralChild
+        })
+            .then((response) => {
+
+                // New object
+                if (isNew) {
+                    const newState = response.changes.created[id];
+                    newState._new = this.editingIntegralChild;
 
                     if (!newState.id) {
                         newState.id = id;
                     }
 
-                    if (!this.editingIntegralChild) {
-                        cocktail.ui.objectCreated(this.model, newState);
-                    }
-
-                    const cleanup = () => {
-                        cocktail.ui.Lock.clear();
-                        if (!this.editingIntegralChild) {
-                            form.errors = [];
-                            cocktail.ui.Notice.show({
-                                summary: cocktail.ui.translations[this.translationKey + ".createdNotice"],
-                                category: "success"
-                            });
-                        }
-                    }
-
                     if (this.editingIntegralChild) {
+                        console.log(newState);
                         woost.admin.actions.addToParent([newState]);
-                        cleanup();
                     }
                     else {
                         const newNode = cocktail.ui.root.stack.stackTop;
@@ -825,44 +821,39 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
                         woost.admin.actions.addToParent([newState], null, false);
                         woost.admin.ui.redirectionAfterInsertion = editURL;
-                        cocktail.navigation.replace(editURL).then(cleanup);
+                        cocktail.navigation.replace(editURL);
                     }
                 }
+                // Existing object
                 else {
+                    const newState = response.changes.modified[id];
                     form.value = newState;
-                    if (this.editingIntegralChild) {
-                        woost.admin.actions.addToParent([newState]);
-                    }
-                    else {
-                        cocktail.ui.objectModified(
-                            this.model,
-                            this.item.id,
-                            state,
-                            newState
-                        );
-                    }
-                    cocktail.ui.Lock.clear();
-                    if (!this.editingIntegralChild) {
-                        form.errors = [];
-                        cocktail.ui.Notice.show({
-                            summary: cocktail.ui.translations[this.translationKey + ".modifiedNotice"],
-                            category: "success"
-                        });
-                    }
+                    form.errors = [];
                 }
             })
             .catch((e) => {
-                cocktail.ui.Lock.clear();
                 if (e instanceof woost.models.ValidationError) {
-                    form.errors = e.errors;
+                    form.errors = e.errors[id] || [];
                 }
-                else {
-                    cocktail.ui.Notice.show({
-                        summary: cocktail.ui.translations[this.translationKey + ".errorNotice"],
-                        category: "error"
-                    });
-                }
+                throw e;
             });
+
+        const options = {};
+        options.showErrorNotice = (e) => !(e instanceof woost.models.ValidationError);
+
+        if (this.editingIntegralChild) {
+            options.successNotice = null;
+        }
+        else {
+            options.successNotice = {
+                summary: cocktail.ui.translations[
+                    this.translationKey
+                    + (this.item._new ? ".createdNotice" : "modifiedNotice")
+                ]
+            };
+        }
+
+        return this.attempt(transaction, options);
     }
 }
 
@@ -922,8 +913,15 @@ woost.admin.actions.addToParent = function (selection, sourceNode = null, redire
 
     sourceNode = sourceNode || cocktail.navigation.node;
     let node = sourceNode.parent;
-    while (!node.editForm) {
+    while (node && !node.editForm) {
         node = node.parent;
+    }
+
+    if (!node) {
+        if (redirect) {
+            woost.admin.actions.up(sourceNode);
+        }
+        return false;
     }
 
     const parentForm = node.editForm;
@@ -970,6 +968,7 @@ woost.admin.actions.addToParent = function (selection, sourceNode = null, redire
     if (redirect) {
         woost.admin.actions.up(sourceNode);
     }
+    return true;
 }
 
 woost.admin.actions.up = function (sourceNode) {

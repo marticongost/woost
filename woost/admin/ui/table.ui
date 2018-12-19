@@ -68,7 +68,7 @@
 
         if (listing.relation) {
             let owner = listing.relationOwner;
-            if (owner && owner.id) {
+            if (owner && !owner._new) {
                 options.parameters.relation = `${owner.id}-${listing.relation.name}`;
             }
             else {

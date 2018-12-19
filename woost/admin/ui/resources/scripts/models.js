@@ -130,7 +130,7 @@ cocktail.declare("woost.admin.ui");
             if (dataSource === undefined && this.name) {
                 dataSource = new woost.models.ModelDataSource(
                     this.originalMember,
-                    {url: woost.admin.url + "/data/"}
+                    {url: woost.admin.url + "/data/listing/"}
                 );
                 this[DATA_SOURCE] = dataSource;
             }
@@ -146,7 +146,6 @@ cocktail.declare("woost.admin.ui");
                 .then((obj) => {
                     obj._new = true;
                     obj._deleted_translations = [];
-                    obj.id = "_" + (++temporaryId);
                     return obj;
                 });
         }
@@ -159,82 +158,65 @@ cocktail.declare("woost.admin.ui");
             })
                 .then((xhr) => cocktail.schema.objectFromJSONValue(xhr.response));
         }
-
-        save(obj, validateOnly = false) {
-
-            let parameters;
-
-            if (validateOnly) {
-                parameters = {action: "validate"};
-            }
-
-            const hasTemporaryId = obj.id && String(obj.id).charAt(0) == "_";
-            const isNew = obj._new || hasTemporaryId;
-
-            return cocktail.ui.request({
-                url: woost.admin.url + "/data/" + (isNew ? this.name : obj.id),
-                method: isNew ? "PUT" : "POST",
-                parameters,
-                data: obj,
-                responseType: "json"
-            })
-                .then((xhr) => {
-                    if (xhr.response.errors.length) {
-                        throw new woost.models.ValidationError(obj, xhr.response.errors);
-                    }
-                    return cocktail.schema.objectFromJSONValue(xhr.response.state);
-                });
-        }
     }
 
-    woost.models.transaction = function (transaction) {
+    woost.models.transaction = function (transaction, parameters = null) {
         return cocktail.ui.request({
             url: woost.admin.url + "/data/transaction",
             method: "POST",
-            data: {
-                modify: transaction.modify
-            },
+            data: transaction,
             responseType: "json"
         })
             .then((xhr) => {
-
                 const errors = xhr.response.errors;
-                for (let key in errors) {
-                    throw new woost.models.TransactionError(errors);
+                if (errors) {
+                    throw new woost.models.ValidationError(errors);
                 }
-
-                const invalidation = transaction.invalidation || transaction.invalidation === undefined;
-                const objects = xhr.response.modified;
-
-                for (let id in objects) {
-                    const newState = cocktail.schema.objectFromJSONValue(objects[id]);
-                    objects[id] = newState;
-
-                    if (invalidation) {
-                        cocktail.ui.objectModified(
-                            newState._class,
-                            id,
-                            null,
-                            newState
-                        );
-                    }
-                }
-
-                return objects;
+                const invalidation = !parameters || parameters.invalidation === undefined || parameters.invalidation;
+                const response = cocktail.ui.copyValue(xhr.response);
+                const changes = woost.models.processChanges(response.changes, invalidation);
+                return response;
             });
     }
 
-    woost.models.TransactionError = class TransactionError {
+    woost.models.processChanges = function (changes, invalidation = true) {
 
-        constructor(objectErrors) {
-            this.objectErrors = objectErrors;
+        // Issue invalidations for new objects
+        for (let id of Object.keys(changes.created)) {
+            const obj = cocktail.schema.objectFromJSONValue(changes.created[id]);
+            changes.created[id] = obj;
+
+            if (invalidation) {
+                cocktail.ui.objectCreated(obj._class, obj);
+            }
         }
+
+        // Issue invalidations for modified objects
+        for (let id of Object.keys(changes.modified)) {
+            const obj = cocktail.schema.objectFromJSONValue(changes.modified[id]);
+            changes.modified[id] = obj;
+
+            if (invalidation) {
+                cocktail.ui.objectModified(obj._class, id, null, obj);
+            }
+        }
+
+        // Issue invalidations for deleted objects
+        for (let id of Object.keys(changes.deleted)) {
+            const obj = cocktail.schema.objectFromJSONValue(changes.deleted[id]);
+            changes.deleted[id] = obj;
+
+            if (invalidation) {
+                cocktail.ui.objectDeleted(obj._class, id);
+            }
+        }
+
+        return changes;
     }
 
     woost.models.ValidationError = class ValidationError {
 
-        constructor(state, errors) {
-            this.state = state;
+        constructor(errors) {
             this.errors = errors;
         }
     }
