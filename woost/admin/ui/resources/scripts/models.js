@@ -185,30 +185,22 @@ cocktail.declare("woost.admin.ui");
         for (let id of Object.keys(changes.created)) {
             const obj = cocktail.schema.objectFromJSONValue(changes.created[id]);
             changes.created[id] = obj;
-
-            if (invalidation) {
-                cocktail.ui.objectCreated(obj._class, obj);
-            }
         }
 
         // Issue invalidations for modified objects
         for (let id of Object.keys(changes.modified)) {
             const obj = cocktail.schema.objectFromJSONValue(changes.modified[id]);
             changes.modified[id] = obj;
-
-            if (invalidation) {
-                cocktail.ui.objectModified(obj._class, id, null, obj);
-            }
         }
 
         // Issue invalidations for deleted objects
         for (let id of Object.keys(changes.deleted)) {
             const obj = cocktail.schema.objectFromJSONValue(changes.deleted[id]);
             changes.deleted[id] = obj;
+        }
 
-            if (invalidation) {
-                cocktail.ui.objectDeleted(obj._class, id);
-            }
+        if (invalidation) {
+            cocktail.ui.invalidation(changes);
         }
 
         return changes;
