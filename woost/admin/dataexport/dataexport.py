@@ -35,6 +35,7 @@ class Export(object):
     member_fields = ChainMap()
 
     model = None
+    base_collection = None
     partition = None
     filters = None
     apply_filters = True
@@ -146,6 +147,7 @@ class Export(object):
             root = self.model.select()
 
         root.verbose = self.verbose
+        root.base_collection = self.base_collection
         root.add_filter(PermissionExpression(app.user, ReadPermission))
 
         if self.apply_filters:
