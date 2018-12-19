@@ -6,6 +6,7 @@ u"""
 import cherrypy
 from cocktail.persistence import datastore, InstanceNotFoundError
 from woost.models import Item, Configuration, Website
+from woost.models.utils import get_model_from_dotted_name
 
 WEBSITE_PREFIX = "website-"
 
@@ -38,4 +39,17 @@ def resolve_object_ref(id):
         return Item.require_instance(id)
     except InstanceNotFoundError:
         raise cherrypy.HTTPError(404, "Can't find an object with id %s" % id)
+
+def get_model_from_state(state):
+
+    try:
+        model_name = state["_class"]
+    except KeyError:
+        raise cherrypy.HTTPError(400, "Missing a _class field")
+
+    model = get_model_from_dotted_name(model_name)
+    if not model:
+        raise cherrypy.HTTPError(400, "Unknown model: " + model_name)
+
+    return model
 
