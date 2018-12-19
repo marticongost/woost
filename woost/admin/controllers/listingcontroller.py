@@ -34,6 +34,7 @@ class ListingController(Controller):
         "site_tree": SiteTreeExport,
         "admin": AdminExport
     }
+    default_order = "-last_update_time"
     max_page_size = 10000
 
     @no_csrf_token_injection
@@ -109,6 +110,7 @@ class ListingController(Controller):
             self.export.relation = self.relation
             self.export.partition = self.partition
             self.export.filters = filter_expressions
+            self.export.order = self.order
             self.export.range = self.range
             results, count = self.export.get_results()
 
@@ -230,6 +232,16 @@ class ListingController(Controller):
             raise ValueError("Missing export class")
 
         return export_class(languages = self.locales)
+
+    @request_property
+    def order(self):
+        order = cherrypy.request.params.get("order", self.default_order)
+
+        if order:
+            if not self.model.get_member(order.lstrip("-")):
+                raise cherrypy.HTTPError(400, "Invalid order criteria")
+
+        return order
 
     @request_property
     def range(self):
