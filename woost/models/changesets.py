@@ -86,7 +86,9 @@ class ChangeSet(PersistentObject):
 
     changes = schema.Mapping(
         searchable = False,
-        get_item_key = lambda change: change.target and change.target.id
+        get_item_key = lambda change: change.target and change.target.id,
+        keys = schema.Integer(required = True),
+        values = schema.Reference(type = "woost.models.Change")
     )
 
     author = schema.Reference(
