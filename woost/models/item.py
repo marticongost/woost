@@ -443,6 +443,7 @@ class Item(PersistentObject):
     # Authorship
     #--------------------------------------------------------------------------
     author = schema.Reference(
+        versioned = False,
         indexed = True,
         editable = schema.READ_ONLY,
         type = "woost.models.User",
