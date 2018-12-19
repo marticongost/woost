@@ -170,15 +170,18 @@ cocktail.declare("woost.admin.actions");
                 options.successNotice = {};
             }
 
-            if (options.successNotice.category === undefined) {
-                options.successNotice.category = "success";
-            }
+            if (options.successNotice) {
 
-            if (options.successNotice.summary === undefined) {
-                options.successNotice.summary = (
-                    cocktail.ui.translations[this.translationKey + ".successNotice"]
-                    || cocktail.ui.translations["woost.admin.actions.defaultSuccessNotice"]
-                );
+                if (options.successNotice.category === undefined) {
+                    options.successNotice.category = "success";
+                }
+
+                if (options.successNotice.summary === undefined) {
+                    options.successNotice.summary = (
+                        cocktail.ui.translations[this.translationKey + ".successNotice"]
+                        || cocktail.ui.translations["woost.admin.actions.defaultSuccessNotice"]
+                    );
+                }
             }
 
             // Default error notice
@@ -186,15 +189,18 @@ cocktail.declare("woost.admin.actions");
                 options.errorNotice = {};
             }
 
-            if (options.errorNotice.category === undefined) {
-                options.errorNotice.category = "error";
-            }
+            if (options.errorNotice) {
 
-            if (options.errorNotice.summary === undefined) {
-                options.errorNotice.summary = (
-                    cocktail.ui.translations[this.translationKey + ".errorNotice"]
-                    || cocktail.ui.translations["woost.admin.actions.defaultErrorNotice"]
-                );
+                if (options.errorNotice.category === undefined) {
+                    options.errorNotice.category = "error";
+                }
+
+                if (options.errorNotice.summary === undefined) {
+                    options.errorNotice.summary = (
+                        cocktail.ui.translations[this.translationKey + ".errorNotice"]
+                        || cocktail.ui.translations["woost.admin.actions.defaultErrorNotice"]
+                    );
+                }
             }
 
             return woost.admin.actions.attempt(promise, options);
