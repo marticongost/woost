@@ -54,6 +54,7 @@ of its features include:\n"
     install_requires = [
         "simplejson",
         "enum34",
+        "chainmap",
         "libsass",
         "mako==1.*",
         "cocktail==1.13b1"

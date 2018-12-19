@@ -7,6 +7,7 @@ import json
 from datetime import date, time, datetime
 from decimal import Decimal
 from collections import Sequence, Set, Mapping
+from chainmap import ChainMap
 from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
 from cocktail.typemapping import ChainTypeMapping
 from cocktail import schema
@@ -22,6 +23,7 @@ from woost.models.rendering import ImageFactory
 from woost.models.utils import any_translation, get_model_dotted_name
 
 excluded_members = set()
+auto = object()
 
 
 Export = None
@@ -29,7 +31,8 @@ Export = None
 class Export(object):
 
     model_exporters = ChainTypeMapping()
-    ref_exporters = ChainTypeMapping()
+    member_expansion = ChainMap()
+    member_fields = ChainMap()
 
     model = None
     partition = None
@@ -38,6 +41,7 @@ class Export(object):
     relation = None
     range = None
     order = None
+    children_export = None
     verbose = False
 
     @classmethod
@@ -57,6 +61,9 @@ class Export(object):
                 for base in bases:
                     if issubclass(base, Export):
                         cls.model_exporters = base.model_exporters.new_child()
+                        cls.member_expansion = \
+                            base.member_expansion.new_child()
+                        cls.member_fields = base.member_fields.new_child()
                         break
 
     def __init__(
@@ -64,8 +71,11 @@ class Export(object):
         _parent = None,
         languages = None,
         model_exporters = None,
+        member_expansion = None,
+        member_fields = None,
         excluded_members = excluded_members,
-        thumbnail_factory = "admin_thumbnail"
+        thumbnail_factory = "admin_thumbnail",
+        children_export = None
     ):
         self.__model_fields = {}
         self.__languages = set(languages or Configuration.instance.languages)
@@ -73,6 +83,14 @@ class Export(object):
         self.model_exporters = self.model_exporters.new_child()
         if model_exporters is not None:
             self.model_exporters.update(model_exporters)
+
+        self.member_expansion = self.member_expansion.new_child()
+        if member_expansion:
+            self.member_expansion.update(member_expansion)
+
+        self.member_fields = self.member_fields.new_child()
+        if member_fields:
+            self.member_fields.update(member_fields)
 
         if _parent:
             self.__member_permissions = _parent.__member_permissions
@@ -87,6 +105,7 @@ class Export(object):
             )
 
         self.thumbnail_factory = thumbnail_factory
+        self.children_export = children_export
 
     def get_fields(self, model, ref = False):
         try:
@@ -151,7 +170,11 @@ class Export(object):
         return values
 
     def get_items_export(self, member, value):
-        return self
+        return self.children_export or self
+
+    def get_mapping_exports(self, member, value):
+        export = self.children_export or self
+        return (export, export)
 
     def export_object_list(self, value, path = (), ref = False):
         return [
@@ -159,8 +182,14 @@ class Export(object):
             for item in value
         ]
 
-    def export_member(self, obj, member, language = None, path = ()):
-
+    def export_member(
+        self,
+        obj,
+        member,
+        language = None,
+        path = (),
+        value = auto
+    ):
         if language is None and member.translated:
             return dict(
                 (
@@ -172,7 +201,9 @@ class Export(object):
             )
 
         path += (member,)
-        value = self.get_member_value(obj, member, language, path)
+
+        if value is auto:
+            value = self.get_member_value(obj, member, language, path)
 
         if value is not None:
             if isinstance(member, schema.Reference):
@@ -181,6 +212,28 @@ class Export(object):
                         return self.export_object(value, path)
                     else:
                         return self.export_object(value, path, ref = True)
+            elif isinstance(member, schema.Mapping):
+                keys_export, values_export = \
+                    self.get_mapping_exports(member, value)
+                keys = member.keys
+                values = member.values
+                return dict(
+                    (
+                        keys_export.export_member(
+                            obj,
+                            keys,
+                            path = path,
+                            value = k
+                        ),
+                        values_export.export_member(
+                            obj,
+                            values,
+                            path = path,
+                            value = v
+                        )
+                    )
+                    for k, v in value.iteritems()
+                )
             elif (
                 isinstance(member, schema.Collection)
                 and isinstance(member.items, schema.Reference)
@@ -237,7 +290,7 @@ class Export(object):
             raise ValueError("Can't export %s to JSON" % repr(value))
 
     def should_expand(self, obj, member, value, path = ()):
-        return member.integral
+        return self.member_expansion.get(member, member.integral)
 
     def should_include_member(self, member):
         return (
@@ -249,6 +302,14 @@ class Export(object):
             )
             and self._has_member_permission(member)
         )
+
+    def iter_member_fields(self, member, ref):
+        member_fields = self.member_fields.get(member)
+        if member_fields:
+            for field in member_fields(self, member, ref):
+                yield field
+        else:
+            yield object_field(self, member)
 
     def _has_member_permission(self, member):
         try:
@@ -277,5 +338,6 @@ def object_fields(exporter, model, ref = False):
     else:
         for member in model.iter_members():
             if exporter.should_include_member(member):
-                yield object_field(exporter, member)
+                for field in exporter.iter_member_fields(member, ref):
+                    yield field
 
