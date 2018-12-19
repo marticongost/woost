@@ -79,12 +79,108 @@
         return options;
     }
 
-    invalidation(change) {
-        if (change.type == "create") {
-            this.reload();
+    async invalidation(changes) {
+
+        // TODO: invalidation of hierarchical tables
+        // TODO: invalidation animations (collapse removed rows, pulse new / modified rows)
+
+        // Remove the rows representing deleted objects
+        for (let [id, object] of changes.deleted) {
+            const row = this.getRowById(id);
+            if (row) {
+                row.parentNode.removeChild(row);
+            }
         }
-        else {
-            super.invalidation(change);
+
+        // Update the rows representing modified objects
+        for (let [id, object] of changes.modified) {
+            const row = this.getRowById(id);
+            if (row) {
+                row.value = object;
+            }
+        }
+
+        // Create a map to index all created/modified objects
+        const stateIndex = {};
+        for (let objectMap of [changes.created, changes.modified]) {
+            for (let [id, object] of objectMap) {
+                stateIndex[id] = object;
+            }
+        }
+
+        // Query the server to determine which rows should be added,
+        // repositioned or removed
+        const options = this.getDataSourceOptions(this.page);
+        options.url += "/ids";
+
+        const data = await this.value.load(options);
+        const newListingContents = data.objects;
+        this.resultCount = data.count;
+
+        // Identify objects that should be in the new listing state, but
+        // have no preexisting row and haven't been created or modified
+        // in this invalidation (example use case: top up the current page
+        // up to the pagination size after rows are deleted)
+        const missing = [];
+        for (let id of newListingContents) {
+            if (!this.getRowById(id) && !stateIndex[id]) {
+                missing.append(id);
+            }
+        }
+
+        // Load missing state
+        if (missing.length) {
+
+            const options = this.getDataSourceOptions(this.page);
+            if (!options.parameters) {
+                options.parameters = {};
+            }
+            options.parameters.subset = missing.join(" ");
+
+            const missingData = await this.value.load(options);
+
+            for (let object of missingData.results) {
+                stateIndex[object.id] = object;
+            }
+        }
+
+        // Iterate over the new row values for the listing
+        let currentRow = this.body.firstChild;
+
+        for (let id of newListingContents) {
+
+            // Preexisting row at the correct spot; do nothing
+            if (currentRow && id == currentRow.getAttribute("value")) {
+                currentRow = currentRow.nextSibling;
+            }
+            // Mismatch
+            else {
+                const object = stateIndex[id];
+                let row = this.getRowById(id);
+
+                // Reposition an existing row
+                if (row) {
+                    if (currentRow) {
+                        currentRow.insertAdjacentElement("beforebegin", row);
+                    }
+                    else {
+                        this.body.appendChild(row);
+                    }
+                }
+                // Create a new row
+                else if (object) {
+                    this.addRow(object, currentRow ? {before: currentRow} : null);
+                }
+            }
+        }
+
+        // Strip remaining rows: they exist no longer in the listing (they don't
+        // match the active filters, partition or search string, or have fallen
+        // below the current pagination window
+        while (currentRow) {
+            const nextRow = currentRow.nextSibling;
+            this.body.removeChild(currentRow);
+            currentRow = nextRow;
         }
     }
     ?>
