@@ -88,29 +88,11 @@ class ListingController(Controller):
 
         # Returning a list of objects
         else:
-            filter_expressions = []
-
-            if self.search:
-                filter_expressions.append(
-                    Self.search(
-                        self.search,
-                        match_mode = "prefix",
-                        languages =
-                            self.locales
-                            or [None] + list(Configuration.instance.languages)
-                    )
-                )
-
-            for filter in self.filters:
-                expr = filter.filter_expression()
-                if expr is not None:
-                    filter_expressions.append(expr)
-
             self.export.model = self.model
             self.export.base_collection = self.subset
             self.export.relation = self.relation
             self.export.partition = self.partition
-            self.export.filters = filter_expressions
+            self.export.filters = self.filter_expressions
             self.export.order = self.order
             self.export.range = self.range
             results, count = self.export.get_results()
@@ -118,16 +100,10 @@ class ListingController(Controller):
             cherrypy.response.headers["Content-Type"] = \
                 "application/json; charset=utf-8"
 
-            if self.partition:
-                count_obj = self._export_count(count[0][1])
-                count_obj["partitions"] = [
-                    self._export_count(part_count, part_value)
-                    for part_value, part_count in count
-                ]
-            else:
-                count_obj = self._export_count(count)
-
-            html = [u'{"count": %s, "records": [\n' % json.dumps(count_obj)]
+            html = [
+                u'{"count": %s, "records": [\n'
+                % json.dumps(self._get_count_object(count))
+            ]
             glue = u""
 
             for record in results:
@@ -139,6 +115,39 @@ class ListingController(Controller):
             return u"".join(html)
 
     @cherrypy.expose
+    def ids(self, **kwargs):
+
+        # TODO: hierarchical results [[A1, [A1_1, [A1_2, [A1_2_1, A1_2_2]]]], A2]
+        cherrypy.response.headers["Content-Type"] = "application/json"
+
+        if self.instance:
+            raise cherrypy.HTTPError(
+                400,
+                "Can't specify a specific instance when using the "
+                "'invalidation' method"
+            )
+
+        self.export.model = self.model
+        self.export.base_collection = self.subset
+        self.export.relation = self.relation
+        self.export.partition = self.partition
+        self.export.filters = self.filter_expressions
+        self.export.order = self.order
+        self.export.range = self.range
+
+        listing_range = self.range
+        if listing_range:
+            listing_range = (0, listing_range[1])
+        self.export.range = listing_range
+
+        query, count = self.export.resolve_results()
+
+        return u'{"count": %s, "objects": [%s]}\n' % (
+            json.dumps(self._get_count_object(count)),
+            ", ".join(str(id) for id in query.execute())
+        )
+
+    @cherrypy.expose
     def contains(self, **kwargs):
 
         cherrypy.response.headers["Content-Type"] = "application/json"
@@ -148,22 +157,7 @@ class ListingController(Controller):
             raise cherrypy.HTTPError(400, "No instance specified")
 
         query = self.model.select()
-
-        if self.search:
-            query.add_filter(
-                Self.search(
-                    self.search,
-                    match_mode = "prefix",
-                    languages =
-                        self.locales
-                        or [None] + list(Configuration.instance.languages)
-                )
-            )
-
-        for filter in self.filters:
-            expr = filter.filter_expression()
-            if expr is not None:
-                query.add_filter(expr)
+        query.filters = self.filter_expressions
 
         if self.partition:
             part_method, part_value = self.partition
@@ -326,6 +320,29 @@ class ListingController(Controller):
         return filters
 
     @request_property
+    def filter_expressions(self):
+
+        filter_expressions = []
+
+        if self.search:
+            filter_expressions.append(
+                Self.search(
+                    self.search,
+                    match_mode = "prefix",
+                    languages =
+                        self.locales
+                        or [None] + list(Configuration.instance.languages)
+                )
+            )
+
+        for filter in self.filters:
+            expr = filter.filter_expression()
+            if expr is not None:
+                filter_expressions.append(expr)
+
+        return filter_expressions
+
+    @request_property
     def relation(self):
 
         relation = cherrypy.request.params.get("relation")
@@ -389,6 +406,19 @@ class ListingController(Controller):
             errors = "ignore"
         )
         return filter if filter_class.validate(filter) else None
+
+    def _get_count_object(self, count):
+
+        if self.partition:
+            count_obj = self._export_count(count[0][1])
+            count_obj["partitions"] = [
+                self._export_count(part_count, part_value)
+                for part_value, part_count in count
+            ]
+        else:
+            count_obj = self._export_count(count)
+
+        return count_obj
 
     def _export_count(self, count, partition_value = undefined):
 
