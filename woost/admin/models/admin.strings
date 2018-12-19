@@ -21,6 +21,25 @@ en: Administration panel
         es: Idioma por defecto
         en: Default language
 
+        [python_package]
+        ca: Paquet Python
+        es: Paquete Python
+        en: Python package
+
+            [explanation]
+            ca:
+                El nom qualificat d'un paquet Python on es defineixen les
+                personalitzacions i configuració necessària per a aquest
+                panell d'administració.
+            es:
+                El mombre cualificado de un paquete Python donde se definen
+                las personalizaciones y configuración necesaria para este
+                panel de administración.
+            en:
+                The fully qualified name of a Python package defining the
+                necessary customization and settings for this administration
+                interface.
+
         [root_section]
         ca: Arbre de seccions
         es: Árbol de secciones

@@ -4,6 +4,7 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.schema import TranslatedValues as T
+from woost import app
 from woost.models import Item, Controller, AccessLevel
 from woost.models.rendering import ImageFactory, Thumbnail
 from woost.admin.models import Admin
@@ -50,6 +51,7 @@ def create_admin():
             en = u"Control panel"
         ),
         default_language = "en",
+        python_package = app.package + ".admin" if app.package else None,
         root_section = "woost.admin.sections.rootsection.RootSection"
     )
 

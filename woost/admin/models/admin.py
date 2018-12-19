@@ -22,6 +22,7 @@ class Admin(Publishable):
     members_order = [
         "title",
         "default_language",
+        "python_package",
         "root_section",
         "main_ui_component",
         "ui_components"
@@ -44,6 +45,8 @@ class Admin(Publishable):
     default_language = LocaleMember(
         required = True
     )
+
+    python_package = schema.String()
 
     root_section = schema.String(
         required = True,

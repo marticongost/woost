@@ -9,6 +9,7 @@ from cocktail.translations import (
     translate_locale
 )
 from cocktail.events import event_handler
+from cocktail.pkgutils import import_module
 from cocktail import schema
 from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
@@ -38,10 +39,15 @@ class AdminController(PublishableController):
 
     @event_handler
     def handle_traversed(cls, e):
+
         set_language(
             app.user.prefered_language
             or app.publishable.default_language
         )
+
+        pkg = app.publishable.python_package
+        if pkg:
+            import_module(pkg)
 
     def __call__(self, *args, **kwargs):
 
