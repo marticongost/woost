@@ -107,6 +107,7 @@ class ListingController(Controller):
                     filter_expressions.append(expr)
 
             self.export.model = self.model
+            self.export.base_collection = self.subset
             self.export.relation = self.relation
             self.export.partition = self.partition
             self.export.filters = filter_expressions
@@ -199,6 +200,14 @@ class ListingController(Controller):
             return resolve_object_ref(id)
 
         return None
+
+    @request_property
+    def subset(self):
+        subset = cherrypy.request.params.get("subset")
+        if subset:
+            return [resolve_object_ref(id) for id in subset.split()]
+        else:
+            return None
 
     @request_property
     def locales(self):
