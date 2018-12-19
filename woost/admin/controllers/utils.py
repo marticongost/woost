@@ -11,24 +11,31 @@ WEBSITE_PREFIX = "website-"
 
 def resolve_object_ref(id):
 
-    if isinstance(id, int):
-        return Item.require_instance(id)
+    if isinstance(id, basestring):
 
-    if id == "config":
-        return Configuration.instance
+        if id == "config":
+            return Configuration.instance
 
-    if id.startswith(WEBSITE_PREFIX):
-        identifier = id[len(WEBSITE_PREFIX):]
+        if id.startswith(WEBSITE_PREFIX):
+            identifier = id[len(WEBSITE_PREFIX):]
+            try:
+                return Website.require_instance(identifier = identifier)
+            except InstanceNotFoundError:
+                raise cherrypy.HTTPError(
+                    404,
+                    "Invalid website identifier: " + identifier
+                )
+
         try:
-            return Website.require_instance(identifier = identifier)
-        except InstanceNotFoundError:
+            id = int(id)
+        except ValueError:
             raise cherrypy.HTTPError(
-                404,
-                "Invalid website identifier: " + identifier
+                400,
+                "Invalid id %r, expected an integer" % id
             )
 
     try:
-        return Item.require_instance(int(id))
-    except (ValueError, InstanceNotFoundError):
-        raise cherrypy.HTTPError(404, "Invalid object id: " + id)
+        return Item.require_instance(id)
+    except InstanceNotFoundError:
+        raise cherrypy.HTTPError(404, "Can't find an object with id %s" % id)
 
