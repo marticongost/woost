@@ -40,7 +40,6 @@ class Import(object):
     user = None
     permission_check = True
     verbose_permission_checks = False
-    import_primary_keys = False
 
     def __init__(
         self,
@@ -49,19 +48,17 @@ class Import(object):
         model = None,
         deleted_translations = None,
         user = None,
-        import_primary_keys = False,
         dry_run = False,
         permission_check = None,
         verbose_permission_checks = None
     ):
-        self.__temp_objects = {}
+        self.__object_map = {}
         self.__allowed_translations_cache = defaultdict(set)
         self.__checked_members = set()
         self.data = data
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
         self.user = user
-        self.import_primary_keys = import_primary_keys
         self.dry_run = dry_run
         self.after_commit_callbacks = []
 
@@ -78,14 +75,7 @@ class Import(object):
             self.obj = self.produce_object(data, model or Item)
 
     def get_instance(self, id, cls = Item):
-
-        if isinstance(id, basestring):
-            if id.startswith("_"):
-                return self.__temp_objects.get(id)
-            else:
-                id = int(id)
-
-        return cls.get_instance(id)
+        return self.__object_map.get(id) or cls.get_instance(id)
 
     def after_commit(self, callback, *args, **kwargs):
         self.after_commit_callbacks.append((callback, args, kwargs))
@@ -296,8 +286,7 @@ class Import(object):
                     )
 
                 item = model()
-                if isinstance(id, basestring) and id.startswith("_"):
-                    self.__temp_objects[id] = item
+                self.__object_map[id] = item
 
                 if not self.dry_run:
                     item.insert()

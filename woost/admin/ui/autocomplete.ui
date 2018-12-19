@@ -17,7 +17,7 @@
         let parameters = super.getDataSourceParameters(searchText);
         let relation;
         let owner = this.dataBinding.object;
-        if (owner && owner.id) {
+        if (owner && !owner._new) {
             relation = `${owner.id}-${this.dataBinding.member.originalMember.name}`;
         }
         else {

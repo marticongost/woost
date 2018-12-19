@@ -18,23 +18,30 @@ def import_item(self, imp, data):
 
 @should_import_member.implementation_for(Item)
 def should_import_item_member(self, imp, data, member):
-    return (
-        member.visible
-        and (
-            member.editable == schema.EDITABLE
-            or (
-                imp.import_primary_keys
-                and member.primary
-                and not obj.is_inserted
-            )
-            or isinstance(member, Slot)
+
+    if member is Item.global_id and not data.get("global_id"):
+        return False
+
+    if member.primary and not self.is_inserted:
+        return True
+
+    if not member.visible:
+        return False
+
+    if member.editable != schema.EDITABLE:
+        return False
+
+    if isinstance(member, Slot):
+        return False
+
+    if not (
+        imp.user
+        and imp.user.has_permission(
+            ModifyMemberPermission,
+            member = member
         )
-        and (
-            imp.user is None
-            or imp.user.has_permission(
-                ModifyMemberPermission,
-                member = member
-            )
-        )
-    )
+    ):
+        return False
+
+    return True
 

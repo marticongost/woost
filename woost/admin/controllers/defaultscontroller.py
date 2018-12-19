@@ -13,7 +13,7 @@ from woost.models import (
     CreatePermission,
     CreateTranslationPermission
 )
-from woost.models.utils import get_model_dotted_name
+from woost.models.utils import get_model_from_dotted_name
 from woost.admin.dataexport import Export
 
 
@@ -24,10 +24,11 @@ class DefaultsController(Controller):
         if not model_name:
             raise cherrypy.HTTPError(400, "No model specified")
 
-        model = self._resolve_model(model_name)
+        model = get_model_from_dotted_name(model_name)
         locales = self._resolve_locales(locales)
         app.user.require_permission(CreatePermission, target = model)
         obj = model()
+        obj.require_id()
 
         for locale in locales:
             app.user.require_permission(
@@ -43,14 +44,6 @@ class DefaultsController(Controller):
         export.languages = locales
         state = export.export_object(obj)
         return json.dumps(state)
-
-    def _resolve_model(self, model_name):
-
-        for cls in PersistentObject.schema_tree():
-            if get_model_dotted_name(cls) == model_name:
-                return cls
-
-        raise cherrypy.HTTPError(404, "Unknown model")
 
     def _resolve_locales(self, locales):
 
