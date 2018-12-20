@@ -712,7 +712,14 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
         }
 
         getMemberEditMode(member) {
-            return woost.models.getMemberEditMode(member);
+            let mode = woost.models.getMemberEditMode(member);
+            if (
+                mode == cocktail.ui.EDITABLE
+                && !woost.models.hasPermission(this.model, "modify")
+            ) {
+                mode = cocktail.ui.READ_ONLY;
+            }
+            return mode;
         }
 
         initData() {
