@@ -23,10 +23,23 @@ cocktail.declare("woost.admin.ui");
     woost.admin.partitioningMethods = Symbol("woost.admin.partitioningMethods");
 
     woost.models.hasPermission = function (target, permission) {
+
+        let permissions;
+
         if (target instanceof cocktail.schema.Member) {
             target = target.originalMember;
+            permissions = target[woost.models.permissions];
         }
-        const permissions = target[woost.models.permissions];
+        // Assumption: since ListingController filters all objects without read
+        // permission, assume all model instances accessible client side are
+        // readable
+        else if (permission == "read") {
+            return true;
+        }
+        else {
+            permissions = target._perm;
+        }
+
         return permissions && permissions[permission] || false;
     }
 
