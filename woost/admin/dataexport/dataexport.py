@@ -17,6 +17,7 @@ from woost.models import (
     Configuration,
     ReadPermission,
     ReadMemberPermission,
+    ModifyPermission,
     PermissionExpression
 )
 from woost.models.rendering import ImageFactory
@@ -43,6 +44,7 @@ class Export(object):
     range = None
     order = None
     children_export = None
+    exported_permissions = {"modify": ModifyPermission}
     verbose = False
 
     @classmethod
@@ -329,6 +331,27 @@ def object_field(exporter, member):
     val = exporter.export_member
     return (lambda obj, path: (key, val(obj, member, path = path)))
 
+def make_permissions_field(exporter):
+
+    def permissions_field(obj, path):
+        user = app.user
+        return (
+            "_perm",
+            dict(
+                (
+                    key,
+                    user.has_permission(
+                        permission_class,
+                        target = obj
+                    )
+                )
+                for key, permission_class
+                in exporter.exported_permissions.iteritems()
+            )
+        )
+
+    return permissions_field
+
 @Export.fields_for(PersistentObject)
 def object_fields(exporter, model, ref = False):
 
@@ -342,4 +365,7 @@ def object_fields(exporter, model, ref = False):
             if exporter.should_include_member(member):
                 for field in exporter.iter_member_fields(member, ref):
                     yield field
+
+    if exporter.exported_permissions:
+        yield make_permissions_field(exporter)
 
