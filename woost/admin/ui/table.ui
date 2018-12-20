@@ -124,7 +124,7 @@
         const missing = [];
         for (let id of newListingContents) {
             if (!this.getRowById(id) && !stateIndex[id]) {
-                missing.append(id);
+                missing.push(id);
             }
         }
 
