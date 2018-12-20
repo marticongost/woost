@@ -140,7 +140,7 @@
 
             const missingData = await this.value.load(options);
 
-            for (let object of missingData.results) {
+            for (let object of missingData.records) {
                 stateIndex[object.id] = object;
             }
         }
