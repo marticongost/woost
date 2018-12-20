@@ -255,16 +255,36 @@ cocktail.declare("woost.admin.actions");
             return Object.freeze(this[MATCHING_MODELS]);
         }
 
+        set matchingModels(value) {
+            const models = new Set();
+            cocktail.sets.update(models, value);
+            this[MATCHING_MODELS] = models;
+        }
+
         addMatchingModel(model) {
             this[MATCHING_MODELS].add(model);
+        }
+
+        removeMatchingModel(model) {
+            return this[MATCHING_MODELS].remove(model);
         }
 
         get matchingSlots() {
             return Object.freeze(this[MATCHING_SLOTS]);
         }
 
+        set matchingSlots(value) {
+            const slots = new Set();
+            cocktail.sets.update(slots, value);
+            this[MATCHING_SLOTS] = slots;
+        }
+
         addMatchingSlot(slot) {
             this[MATCHING_SLOTS].add(slot);
+        }
+
+        removeMatchingSlot(slot) {
+            return this[MATCHING_SLOTS].remove(slot);
         }
 
         matchesContext(context) {
