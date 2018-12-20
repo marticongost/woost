@@ -134,9 +134,18 @@
 
             // Default action
             newValue.addEventListener("selectionActivated", (e) => {
-                this.defaultActionList.getAction(this.defaultAction).invoke({
-                    selection: this.selectable.selectedValues
-                });
+                if (this.defaultAction) {
+                    const context = {
+                        selection: this.selectable.selectedValues
+                    };
+                    for (let actionName of this.defaultAction.split(" ")) {
+                        const action = this.defaultActionList.getAction(actionName);
+                        if (action && action.getState(context) == "visible") {
+                            action.invoke(context);
+                            break;
+                        }
+                    }
+                }
             });
 
             // Pressing the Up key at the top of the selectable goes back to the search box
