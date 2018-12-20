@@ -699,6 +699,13 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
                 }
             }
 
+            if (this.item._new) {
+                if (!memberParameters.global_id) {
+                    memberParameters.global_id = {};
+                }
+                memberParameters.global_id.required = false;
+            }
+
             return {
                 name: this.model.name + ".woost.admin.editSchema",
                 [cocktail.schema.MEMBERS]: members,
