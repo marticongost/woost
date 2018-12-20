@@ -135,6 +135,7 @@
             if (!options.parameters) {
                 options.parameters = {};
             }
+            options.requiresPOST = true;
             options.parameters.subset = missing.join(" ");
 
             const missingData = await this.value.load(options);
