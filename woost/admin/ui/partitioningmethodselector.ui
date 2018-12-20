@@ -22,14 +22,10 @@
         (view, selector) => { selector.value = view.partition ? view.partition.method : null; },
         async (selector, view) => {
             if (selector.value) {
-                await cocktail.ui.request({
-                    url: `${woost.admin.url}/data/partitions/${selector.value.name}`,
-                    responseType: "json"
-                })
-                    .then((xhr) => {
-                        const partitions = xhr.response;
-                        view.partition = {method: selector.value, value: partitions[0]};
-                    });
+                const method = selector.value;
+                if (!view.partition || view.partition.method !== method) {
+                    view.partition = await woost.admin.partitioning.getDefaultPartition(method);
+                }
             }
             else {
                 view.partition = null;
