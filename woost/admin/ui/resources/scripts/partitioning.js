@@ -42,6 +42,11 @@ cocktail.declare("woost.admin.partitioning");
             .then((xhr) => xhr.response);
     }
 
+    woost.admin.partitioning.getDefaultPartition = async function (method) {
+        const partitions = await woost.admin.partitioning.getValues(method);
+        return {method, value: partitions[0]};
+    }
+
     woost.admin.partitioning.PartitioningMethodReference = class PartitioningMethodReference extends cocktail.schema.Member {
 
         translateValue(value, params = null) {
