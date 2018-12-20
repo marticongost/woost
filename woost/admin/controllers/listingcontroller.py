@@ -133,14 +133,11 @@ class ListingController(Controller):
         self.export.partition = self.partition
         self.export.filters = self.filter_expressions
         self.export.order = self.order
-        self.export.range = self.range
-
-        listing_range = self.range
-        if listing_range:
-            listing_range = (0, listing_range[1])
-        self.export.range = listing_range
 
         query, count = self.export.resolve_results()
+
+        if self.range:
+            query.range = (0, self.range[1])
 
         return u'{"count": %s, "objects": [%s]}\n' % (
             json.dumps(self._get_count_object(count)),
