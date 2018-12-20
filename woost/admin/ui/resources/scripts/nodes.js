@@ -405,6 +405,10 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return [];
         }
 
+        get defaultPartitioningMethod() {
+            return null;
+        }
+
         defineQueryParameters() {
             return [
                 new woost.admin.views.ViewReference({
@@ -467,6 +471,11 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                     // Partitioning methods
                     const partition = this.queryParameters.partition;
                     partition.availableMethods = this.availablePartitioningMethods;
+
+                    const defaultMethod = this.defaultPartitioningMethod;
+                    if (defaultMethod) {
+                        partition.defaultValue = () => woost.admin.partitioning.getDefaultPartition(defaultMethod);
+                    }
                 }
             }
         }
@@ -542,10 +551,18 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
     }
 
     get availablePartitioningMethods() {
-        return woost.admin.partitioning.resolve(
+        return woost.admin.partitioning.resolveSets(
             this.view && this.view.partitioning_methods,
             this.section.partitioning_methods,
             this.listedModel[woost.admin.partitioning.methods]
+        );
+    }
+
+    get defaultPartitioningMethod() {
+        return woost.admin.partitioning.resolveMethod(
+            this.view && this.view.default_partitioning_method,
+            this.section.default_partitioning_method,
+            this.listedModel[woost.admin.partitioning.defaultMethod]
         );
     }
 
@@ -797,10 +814,18 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
     }
 
     get availablePartitioningMethods() {
-        return woost.admin.partitioning.resolve(
+        return woost.admin.partitioning.resolveSets(
             this.view && this.view.partitioningMethods,
             this.relation[woost.admin.partitioning.methods],
             this.listedModel[woost.admin.partitioning.methods]
+        );
+    }
+
+    get defaultPartitioningMethod() {
+        return woost.admin.partitioning.resolveMethod(
+            this.view && this.view.default_partitioning_method,
+            this.relation[woost.admin.partitioning.defaultMethod],
+            this.listedModel[woost.admin.partitioning.defaultMethod]
         );
     }
 

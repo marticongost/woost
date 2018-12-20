@@ -10,6 +10,7 @@ from cocktail import schema
 from cocktail.persistence import PersistentClass
 
 _methods = {}
+_default_methods = {}
 _registered_methods = defaultdict(OrderedSet)
 
 def get_method(name):
@@ -45,7 +46,7 @@ def require_method(name):
 
     return method
 
-def register_method(method, target):
+def register_method(method, target, default = False):
     """Declares a new partitioning method on the given model.
 
     :param method: The method to declare.
@@ -55,8 +56,14 @@ def register_method(method, target):
     :type target:
         `cocktail.persistence.PersistentClass`
         or `cocktail.schema.RelationMember`
+
+    :param default: If set to True, the method will be used as the
+        `default partitioning method <set_default_method>` for the target.
+    :type default: bool
     """
     _registered_methods[target].append(method)
+    if default:
+        set_default_method(target, method)
 
 def methods(target = None):
     """Obtains a list of all declared partitioning methods.
@@ -117,6 +124,37 @@ def available_methods(target = None):
     for method in methods(target):
         if method.is_available():
             yield method
+
+def get_default_method(target):
+    """Resolves the default partitioning method for the given target.
+
+    :param target: The target to examine.
+    :type target:
+        `~cocktail.persistence.PersistentClass`
+        or `cocktail.schema.RelationMember`
+
+    :return: The partitioning method that should be applied by default to
+        listings for the target, or None if the full unpartitioned listing
+        should be used by default.
+    :rtype: `PartitioningMethod`
+    """
+    return _default_methods.get(target)
+
+def set_default_method(target, method):
+    """Sets the partitioning method that should be used by default by the given
+    target.
+
+    :param target: The target to examine.
+    :type target:
+        `~cocktail.persistence.PersistentClass`
+        or `cocktail.schema.RelationMember`
+
+    :param method: The partitioning method that should be applied by default to
+        listings for the target, or None if the full unpartitioned listing
+        should be used by default.
+    :type method: `PartitioningMethod`
+    """
+    _default_methods[target] = method
 
 
 class UnavailableMethodError(Exception):

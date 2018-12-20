@@ -157,6 +157,13 @@ class SchemaExport(MemberExport):
             ])
         )
 
+        default_part_method = partitioning.get_default_method(member)
+        if default_part_method:
+            yield (
+                "[woost.admin.partitioning.defaultMethod]",
+                dumps(default_part_method.name)
+            )
+
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):
             for member in members:

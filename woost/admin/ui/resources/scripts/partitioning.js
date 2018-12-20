@@ -14,8 +14,9 @@ cocktail.declare("woost.admin.partitioning");
     const PARAMETER_SEPARATOR = "-";
 
     woost.admin.partitioning.methods = Symbol("woost.admin.partitioning.methods");
+    woost.admin.partitioning.defaultMethod = Symbol("woost.admin.partitioning.defaultMethod");
 
-    woost.admin.partitioning.resolve = function (...methodSets) {
+    woost.admin.partitioning.resolveSets = function (...methodSets) {
         for (let methodSet of methodSets) {
             if (methodSet && methodSet.length) {
                 return methodSet.map(
@@ -23,6 +24,20 @@ cocktail.declare("woost.admin.partitioning");
                 );
             }
         }
+    }
+
+    woost.admin.partitioning.resolveMethod = function (...methods) {
+
+        for (let method of methods) {
+            if (method) {
+                if (typeof(method) == "string") {
+                    method = woost.admin.partitioning.getMethod(method);
+                }
+                return method;
+            }
+        }
+
+        return null;
     }
 
     woost.admin.partitioning.addMethod = function (method) {
