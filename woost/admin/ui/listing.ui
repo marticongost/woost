@@ -134,10 +134,8 @@
 
             // Default action
             newValue.addEventListener("selectionActivated", (e) => {
-                if (this.defaultAction) {
-                    const context = {
-                        selection: this.selectable.selectedValues
-                    };
+                if (this.defaultAction && this.defaultActionList) {
+                    const context = this.defaultActionList.getActionContext();
                     for (let actionName of this.defaultAction.split(" ")) {
                         const action = this.defaultActionList.getAction(actionName);
                         if (action && action.getState(context) == "visible") {
