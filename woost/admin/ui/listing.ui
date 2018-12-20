@@ -119,7 +119,7 @@
         reflected="true">
         <?on changed
         if (!this[NAVIGATING] && oldValue !== undefined) {
-            cocktail.navigation.changeQuery({partition: newValue || undefined});
+            cocktail.navigation.changeQuery({partition: newValue || ""});
         }
         ?>
     </ui:property>

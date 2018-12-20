@@ -9,7 +9,9 @@ from .registration import (
     require_method,
     register_method,
     methods,
-    available_methods
+    available_methods,
+    get_default_method,
+    set_default_method
 )
 from .serialization import (
     parse_partition_parameter,

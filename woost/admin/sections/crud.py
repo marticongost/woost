@@ -16,6 +16,7 @@ class CRUD(Section):
     model = None
     views = None
     partitioning_methods = None
+    default_partitioning_method = None
 
     @property
     def icon_uri(self):
@@ -36,5 +37,6 @@ class CRUD(Section):
         data["model"] = get_model_dotted_name(self.model)
         data["views"] = self.views
         data["partitioning_methods"] = self.partitioning_methods
+        data["default_partitioning_method"] = self.default_partitioning_method
         return data
 
