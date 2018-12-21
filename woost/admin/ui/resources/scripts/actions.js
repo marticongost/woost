@@ -623,6 +623,52 @@ woost.admin.actions.RefreshAction = class RefreshAction extends woost.admin.acti
     }
 }
 
+woost.admin.actions.ClearCacheAction = class ClearCacheAction extends woost.admin.actions.Action {
+
+    getState(context) {
+
+        if (context.selection.length) {
+            let canModifySome = false;
+            for (let obj of context.selection) {
+                if (woost.models.hasPermission(obj, "modify")) {
+                    canModifySome = true;
+                    break;
+                }
+            }
+            if (!canModifySome) {
+                return "disabled";
+            }
+        }
+
+        return super.getState(context);
+    }
+
+    invoke(context) {
+
+        let dataSource;
+        let options = null;
+
+        if (context.selectable) {
+            options = context.selectable.getDataSourceOptions();
+            dataSource = context.selectable.value;
+            options.parameters.subset = Array.from(context.selection, (item) => item.id).join(" ");
+        }
+        else {
+            dataSource = context.selection[0]._class.originalMember.dataSource;
+            options = {parameters: {id: context.selection[0].id}};
+        }
+
+        const requestParameters = dataSource.getRequestParameters(options);
+        requestParameters.url += "/clear_cache";
+        requestParameters.method = "POST";
+        delete requestParameters.parameters.page;
+        delete requestParameters.parameters.page_size;
+        delete requestParameters.parameters.locales;
+        delete requestParameters.parameters.members;
+        this.attempt(cocktail.ui.request(requestParameters));
+    }
+}
+
 woost.admin.actions.ExcelAction = class ExcelAction extends woost.admin.actions.Action {
 }
 
@@ -1116,6 +1162,12 @@ woost.admin.actions.DeleteAction.register({
 woost.admin.actions.RefreshAction.register({
     id: "refresh",
     slots: ["listingToolbar", "relationSelectorToolbar"],
+    parameters: {position: "extra"}
+});
+
+woost.admin.actions.ClearCacheAction.register({
+    id: "clear-cache",
+    slots: ["listingToolbar", "contextMenu", "editToolbar"],
     parameters: {position: "extra"}
 });
 

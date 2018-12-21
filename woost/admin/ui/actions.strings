@@ -46,6 +46,11 @@
     es: Actualizar
     en: Refresh
 
+    [clear-cache]
+    ca: Netejar el cache
+    es: Limpiar la cache
+    en: Clear cache
+
     [excel]
     ca: Exportar a MS Excel
     es: Exportar a MS Excel
