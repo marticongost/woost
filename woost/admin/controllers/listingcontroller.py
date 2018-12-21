@@ -10,7 +10,13 @@ from cocktail.schema.expressions import Self
 from cocktail.controllers import Controller, get_parameter, request_property
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
 from woost import app
-from woost.models import Item, ReadPermission, Configuration
+from woost.models import (
+    Item,
+    ReadPermission,
+    ModifyPermission,
+    PermissionExpression,
+    Configuration
+)
 from woost.models.utils import (
     get_model_dotted_name,
     get_model_from_dotted_name
@@ -163,6 +169,60 @@ class ListingController(Controller):
                 query.add_filter(expr)
 
         return json.dumps(instance in query)
+
+    @cherrypy.expose
+    @no_csrf_token_injection
+    def clear_cache(self, **kwargs):
+
+        scope = set()
+
+        if (
+            not self.instance
+            and not self.subset
+            and not self.partition
+            and not self.filter_expressions
+        ):
+            if app.user.has_permission(ModifyPermission, target = self.model):
+                scope.update(
+                    cls.full_name
+                    for cls in self.model.ascend_inheritance(
+                        include_self = True
+                    )
+                )
+        elif self.instance:
+            if app.user.has_permission(
+                ModifyPermission,
+                target = self.instance
+            ):
+                scope.update(self.instance.get_cache_invalidation_scope())
+        else:
+            if self.relation:
+                member, owner = self.relation
+                query = member.select_constraint_instances(parent = owner)
+            else:
+                query = self.model.select()
+
+            query.base_collection = self.subset
+            query.add_filter(PermissionExpression(app.user, ReadPermission))
+            query.add_filter(PermissionExpression(app.user, ModifyPermission))
+
+            for expr in self.filter_expressions:
+                query.add_filter(expr)
+
+            if self.partition:
+                part_method, part_value = self.partition
+                expr = part_method.get_expression(part_value)
+                if expr is not None:
+                    query.add_filter(expr)
+
+            for obj in query:
+                scope.update(obj.get_cache_invalidation_scope())
+
+        if scope:
+            app.cache.clear(scope)
+
+        cherrypy.response.headers["Content-Type"] = "application/json"
+        return json.dumps(list(scope))
 
     @request_property
     def model(self):
