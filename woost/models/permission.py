@@ -59,6 +59,8 @@ class Permission(Item):
 class ContentPermission(Permission):
     """Base class for permissions restricted to a subset of a content type."""
 
+    instantiable = False
+
     members_order = [
         "content_type",
         "content_expression",
@@ -185,6 +187,8 @@ class RenderPermission(ContentPermission):
 class TranslationPermission(Permission):
     """Base class for permissions that restrict operations on languages."""
 
+    instantiable = False
+
     matching_languages = schema.Collection(
         edit_control = "cocktail.html.SplitSelector",
         items = LocaleMember()
@@ -253,6 +257,8 @@ def _translate_member_permission_matching_members(
 
 class MemberPermission(Permission):
     """Base class for permissions that restrict operations on members."""
+
+    instantiable = False
 
     matching_members = schema.Collection(
         default_type = set,
