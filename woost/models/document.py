@@ -18,7 +18,7 @@ from .metatags import MetaTags
 
 class Document(Publishable):
 
-    instantiable = True
+    instantiable = False
     type_group = "document"
     admin_show_descriptions = False
     default_per_language_publication = True
