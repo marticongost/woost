@@ -161,6 +161,18 @@ class Export(object):
 
         return root
 
+    def select_partition_objects(self):
+
+        query = self.select_objects()
+
+        if self.partition:
+            part_method, part_value = self.partition
+            expr = part_method.get_expression(part_value)
+            if expr is not None:
+                query.add_filter(expr)
+
+        return query
+
     def export_object(self, obj, path = (), ref = False):
 
         path += (obj,)
