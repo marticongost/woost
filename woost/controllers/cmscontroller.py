@@ -419,13 +419,19 @@ class CMSController(BaseCMSController):
 
         # Honor the Accept header
         accept_header = cherrypy.request.headers.get("Accept")
+
         if accept_header:
-            accepted_content_types = []
-            for content_type_spec in accept_header.split(","):
+            accepted_content_types = accept_header.split(",")
+            preferred_content_type = None
+            for content_type_spec in accepted_content_types:
                 content_type = content_type_spec.split(";")[0].strip()
-                response_type = controller._error_response_types.get(content_type)
-                if response_type:
-                    break
+                if content_type == "*/*":
+                    preferred_content_type = None
+                elif not preferred_content_type:
+                    preferred_content_type = \
+                        controller._error_response_types.get(content_type)
+
+            response_type = preferred_content_type
 
         # Otherwise, base the response type on the current response
         # Content-Type
@@ -436,7 +442,7 @@ class CMSController(BaseCMSController):
                 content_type = content_type[:pos]
 
             response_type = controller._error_response_types.get(
-                accepted_content_type
+                content_type
             )
 
         status = cherrypy.response.status
@@ -468,6 +474,9 @@ class CMSController(BaseCMSController):
             response.status = status
 
         if body:
+            if isinstance(body, unicode):
+                body = body.encode("utf-8")
+
             event.handled = True
             response.body = body
 
