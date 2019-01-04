@@ -3,6 +3,7 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from cocktail import schema
 from cocktail.translations import translations
 from cocktail.html import templates
 from woost.models import Extension, extension_translations
@@ -30,8 +31,9 @@ class FormsExtension(Extension):
 
     def _load(self):
 
+        from woost.extensions.forms.formblock import FormBlock
+
         from woost.extensions.forms import (
-            formblock,
             formagreement,
             fields,
             typegroups,
@@ -45,6 +47,20 @@ class FormsExtension(Extension):
             import ExportFormDataController
 
         BackOfficeController.export_form_data = ExportFormDataController
+
+        # Add an option to add a NoCaptcha field to forms, only if the
+        # NoCaptcha extension is enabled
+        from woost.extensions.nocaptcha import NoCaptchaExtension
+        if NoCaptchaExtension.instance.enabled:
+            FormBlock.add_member(
+                schema.Boolean(
+                    "requires_captcha",
+                    required = True,
+                    default = False,
+                    member_group = "form",
+                    after_member = "agreements"
+                )
+            )
 
     def _install(self):
         self.create_default_email_notification()

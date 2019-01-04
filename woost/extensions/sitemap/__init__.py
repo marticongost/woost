@@ -47,6 +47,7 @@ class SitemapExtension(Extension):
         from woost.models import (
             Publishable,
             Document,
+            Configuration,
             Controller,
             extension_translations
         )

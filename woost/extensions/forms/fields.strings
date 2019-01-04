@@ -564,6 +564,16 @@ def field_property(member, *properties):
                     <strong>it is strongly suggested</strong> to require an
                     access level.
 
+    [IBANField]
+    ca: Camp de IBAN
+    es: Campo de IBAN
+    en: IBAN field
+
+        [plural]
+        ca: Camps de IBAN
+        es: Campos de IBAN
+        en: IBAN fields
+
     [FileTypeNotAcceptedError.instance(error)]
     ca: El fitxer ${error.member_desc()} no pertany a cap dels tipus admesos
     es: El fichero ${error.member_desc()} no pertenece a ninguno de los tipos admitidos
