@@ -7,6 +7,7 @@ from cStringIO import StringIO
 import mimetypes
 import cherrypy
 from cocktail.translations import translations
+from cocktail.stringutils import normalize
 from cocktail import schema
 from cocktail.schema.io import export_msexcel
 from cocktail.controllers import request_property, get_parameter
@@ -33,8 +34,9 @@ class ExportFormDataController(BaseBackOfficeController):
         cherrypy.response.headers['Content-Type'] = \
             mimetypes.types_map.get(".xls")
 
+        file_name = normalize(translations(form)).replace(" ", "-")
         cherrypy.response.headers["Content-Disposition"] = \
-            'attachment; filename="%s.xls"' % translations(form)
+            'attachment; filename="%s.xls"' % file_name
 
         buffer = StringIO()
         export_msexcel(
