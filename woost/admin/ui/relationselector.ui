@@ -25,6 +25,10 @@
     this.navigationActionList.actions = this.getNavigationActions();
     ?>
 
+    <?on selectable:changed
+    this.navigationActionList.selectable = newValue;
+    ?>
+
     <ui:with ui:element="headerContent">
 
         <ui:cocktail.ui.ActionList
