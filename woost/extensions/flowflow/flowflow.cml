@@ -15,7 +15,10 @@ from cocktail.urls import URL
 
     <py:ready>
         <?py
-        url = URL(self.flow_flow_url).merge_query(id = str(self.stream_id))
+        url = URL(self.flow_flow_url).merge_query(
+            id = str(self.stream_id),
+            lang = get_language()
+        )
         response = requests.get(url)
         element.append(response.text)
         ?>
