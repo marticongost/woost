@@ -1,0 +1,14 @@
+
+[woost.extensions.flowflow.flowflowblock.FlowFlowBlock]
+*: FlowFlow
+
+    [plural]
+    *: FlowFlow
+
+    [members]
+
+        [stream_id]
+        ca: ID del stream
+        es: ID del stream
+        en: Stream ID
+

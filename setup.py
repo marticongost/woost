@@ -113,7 +113,8 @@ of its features include:\n"
             "identity = woost.extensions.identity:IdentityExtension",
             "attributes = woost.extensions.attributes:AttributesExtension",
             "staticpub = woost.extensions.staticpub:StaticPubExtension",
-            "nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension"
+            "nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension",
+            "flowflow = woost.extensions.flowflow:FlowFlowExtension"
         ]
     },
     # Woost can't yet access view resources (images, style sheets, client

@@ -1,0 +1,10 @@
+
+[woost.models.configuration.Configuration]
+
+    [members]
+
+        [flow_flow_url]
+        ca: Adreça Flow Flow
+        es: Dirección Flow Flow
+        en: Flow Flow address
+
