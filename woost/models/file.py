@@ -9,11 +9,13 @@ u"""
 from warnings import warn
 import os
 import hashlib
+from zipfile import ZipFile
 from weakref import WeakKeyDictionary
 from mimetypes import guess_type
 from shutil import copy, copyfileobj
 import urllib2
 from tempfile import mkdtemp
+from shutil import rmtree
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
 from cocktail import schema
@@ -171,6 +173,44 @@ class File(Publishable):
         else:
             with open(upload_path, "wb") as upload:
                 copyfileobj(source, upload)
+
+    @classmethod
+    def import_zip_contents(cls, zip_file, **new_file_options):
+        """Create instances of this class to represent each of the files
+        contained within the given ZIP file.
+
+        Note that calling the method on a subclass of `File` will create
+        objects of that class.
+
+        :param zip_file: The ZIP file to import. Can be given as a filesystem
+            path pointing to a ZIP file, an open file-like object or an
+            instance of `zipfile.ZipFile`.
+        :type zip_file: str, file like or `zipfile.ZipFile`
+
+        :param new_file_options: Keyword arguments to be forwarded to the
+            `File.import_file` method.
+
+        :return: A list containing all the `File` objects created by the
+            method.
+        :rtype: [File]
+        """
+        files = []
+
+        if not isinstance(zip_file, ZipFile):
+            zip_file = ZipFile(zip_file, "r")
+
+        temp_dir = mkdtemp()
+        try:
+            zip_file.extractall(temp_dir)
+            for file_name in zip_file.namelist():
+                new_file = cls.new()
+                path = os.path.join(temp_dir, file_name)
+                new_file.import_file(path, **new_file_options)
+                files.append(new_file)
+        finally:
+            rmtree(temp_dir)
+
+        return files
 
     @classmethod
     def from_path(
