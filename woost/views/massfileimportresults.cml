@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.controllers import get_request_url
+?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://styles/massfileimportresults.scss.css ?>
+
+    <?py-class
+    results = None
+    ?>
+
+    <py:with py:element="self.body">
+
+        <div py:id="files_imported_notice">
+            ${view_translations("files_imported_notice")}
+        </div>
+
+        <py:woost.views.ContentList
+            py:id="results_list"
+            py:items="@{self.results}"/>
+
+        <a
+            py:id="upload_another_file_link"
+            href="${get_request_url()}">
+            ${view_translations("upload_another_file_link")}
+        </a>
+
+    </py:with>
+
+</py:woost.views.BackOfficeLayout>
+
