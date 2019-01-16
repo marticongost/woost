@@ -894,6 +894,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     const newState = response.changes.modified[id];
                     form.value = newState;
                     form.errors = [];
+                    woost.admin.actions.addToParent([newState], null, this.editingIntegralChild);
                 }
             })
             .catch((e) => {
