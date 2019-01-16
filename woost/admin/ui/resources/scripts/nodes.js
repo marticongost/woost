@@ -120,6 +120,25 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                     .then((item) => {
                         const itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
+
+                            // Relate the item to its parent
+                            for (let node of this.towardsRoot()) {
+                                if (node instanceof woost.admin.nodes.RelationNode) {
+                                    const lastStep = node.objectPath[node.objectPath.length - 1];
+                                    const parentRel = lastStep.member.relatedEnd;
+                                    if (parentRel) {
+                                        const parentObj = lastStep.item;
+                                        if (parentRel instanceof cocktail.schema.Reference) {
+                                            item[parentRel.name] = parentObj;
+                                        }
+                                        else {
+                                            item[parentRel.name].push(parentObj);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
