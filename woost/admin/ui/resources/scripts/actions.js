@@ -864,7 +864,6 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     }
 
                     if (this.editingIntegralChild) {
-                        console.log(newState);
                         woost.admin.actions.addToParent([newState]);
                     }
                     else {
