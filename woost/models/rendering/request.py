@@ -196,10 +196,15 @@ def require_rendering(
             else:
                 copy(image, image_cache_file)
         else:
-            if format == 'JPEG' and image.mode not in ('RGB', 'RGBA'):
-                image = image.convert('RGBA')
-            elif format == 'PNG' and image.mode == "CMYK":
-                image = image.convert('RGBA')
+            if format == "JPEG":
+                if image.mode != "RGB":
+                    image = image.convert("RGB")
+            elif format == "PNG":
+                if image.mode == "CMYK":
+                    image = image.convert("RGBA")
+            elif format == "GIF":
+                if image.mode in ("RGB", "RGBA", "CMYK"):
+                    image = image.convert("P")
 
             # Obtain save options from the ImageFactory.options_code member
             # (users can supply a dictionary of options that will be forwarded
