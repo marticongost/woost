@@ -550,16 +550,15 @@ class Frame(ImageEffect):
         vertical_offset = self.edge_width + vertical_padding
         horizontal_padding = ImageSize.resolve_size(self.horizontal_padding, width)
         horizontal_offset = self.edge_width + horizontal_padding
+        canvas_width = width + horizontal_offset * 2
+        canvas_height = height + vertical_offset * 2
 
-        canvas = Image.new("RGBA", (
-            width + horizontal_offset * 2,
-            height + vertical_offset * 2
-        ))
+        canvas = Image.new("RGBA", (canvas_width, canvas_height))
 
         # Paint the border
         edge = self.edge_width
         if edge:
-            canvas.paste(edge_color, None)
+            canvas.paste(edge_color, (0, 0, canvas_width, canvas_height))
 
         # Paint the padding color
         canvas.paste(
