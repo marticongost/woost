@@ -28,6 +28,7 @@ en: User
         es: Correo electrónico
         en: E-mail address
         pt: Email
+        de: E-Mail addresse
 
         [password]
         ca: Contrasenya
