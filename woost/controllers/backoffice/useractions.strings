@@ -48,6 +48,11 @@ def describe_selection_error_limit(error, min_label, max_label, singular, plural
         es: u
         en: u
 
+    [mass_file_import]
+    ca: Importar fitxers
+    es: Importar ficheros
+    en: Import files
+
     [delete]
     ca: Eliminar
     es: Eliminar
