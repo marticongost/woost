@@ -120,6 +120,25 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                     .then((item) => {
                         const itemNodeClass = this.getItemNodeClass(model, item);
                         if (itemNodeClass) {
+
+                            // Relate the item to its parent
+                            for (let node of this.towardsRoot()) {
+                                if (node instanceof woost.admin.nodes.RelationNode) {
+                                    const lastStep = node.objectPath[node.objectPath.length - 1];
+                                    const parentRel = lastStep.member.relatedEnd;
+                                    if (parentRel) {
+                                        const parentObj = lastStep.item;
+                                        if (parentRel instanceof cocktail.schema.Reference) {
+                                            item[parentRel.name] = parentObj;
+                                        }
+                                        else {
+                                            item[parentRel.name].push(parentObj);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
@@ -689,9 +708,27 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
             const members = [];
             const memberParameters = {}
 
+            // Find all parent relations for the current edit context
+            let parentRelation;
+            for (let node of this.towardsRoot()) {
+                if (node instanceof woost.admin.nodes.RelationNode) {
+                    parentRelation = node.objectPath[node.objectPath.length - 1].member;
+                    if (!parentRelation.integral) {
+                        parentRelation = null;
+                    }
+                    break;
+                }
+            }
+
             for (let member of this.model.orderedMembers()) {
-                const editMode = this.getMemberEditMode(member);
+                let editMode = this.getMemberEditMode(member);
                 if (editMode !== cocktail.ui.NOT_EDITABLE) {
+
+                    // Make the related end of the parent relation read only
+                    if (parentRelation && member.relatedEnd === parentRelation) {
+                        editMode = cocktail.ui.READ_ONLY;
+                    }
+
                     members.push(member);
                     memberParameters[member.name] = {
                         [cocktail.ui.editable]: editMode

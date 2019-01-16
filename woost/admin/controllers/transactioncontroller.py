@@ -9,7 +9,8 @@ from ZODB.POSException import ConflictError
 from cocktail.events import monitor_thread_events
 from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
-from cocktail.schema.exceptions import ValidationError
+from cocktail import schema
+from cocktail.schema.exceptions import ValidationError, ValueRequiredError
 from cocktail.persistence import datastore
 from cocktail.controllers import Controller
 from cocktail.controllers.csrfprotection import no_csrf_token_injection
@@ -209,7 +210,16 @@ class TransactionController(Controller):
         return [
             self._export_error(error)
             for error in obj.__class__.get_errors(obj)
+            if not self._should_ignore_error(error)
         ]
+
+    def _should_ignore_error(self, error):
+        return (
+            isinstance(error, ValueRequiredError)
+            and isinstance(error.member, schema.Reference)
+            and error.member.related_end
+            and error.member.related_end.integral
+        )
 
     def _export_error(self, error):
 
