@@ -34,3 +34,6 @@ class CollectionExport(MemberExport):
         if isinstance(member.related_type, PersistentClass):
             yield export_view_names(member)
 
+        if member.related_end and member.related_end.visible:
+            yield "relatedKey", dumps(member.related_end.name)
+
