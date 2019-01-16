@@ -1249,7 +1249,7 @@ class EditBlocksAction(UserAction):
 class AddBlockAction(UserAction):
     min = None
     max = None
-    ignore_selection = True
+    ignores_selection = True
     included = frozenset(["blocks_slot_toolbar"])
     block_positioning = "append"
     show_as_primary_action = "always"
