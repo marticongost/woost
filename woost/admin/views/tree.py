@@ -37,6 +37,7 @@ class Tree(View):
         class DefaultTreeExport(TreeExport):
 
             children_collection = collection
+            fixed_order = True
 
             # Provide a default order for the root entries. We use a property
             # to prevent import cycles when resolving related_end.

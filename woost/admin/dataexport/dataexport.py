@@ -43,6 +43,7 @@ class Export(object):
     relation = None
     range = None
     order = None
+    fixed_order = False
     children_export = None
     exported_permissions = {"modify": ModifyPermission}
     verbose = False

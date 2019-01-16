@@ -551,7 +551,8 @@ class CMSController(BaseCMSController):
         """
         error_data = {
             "type": get_full_name(error.__class__),
-            "label": translations(error)
+            "label": translations(error),
+            "message": unicode(error)
         }
         error_document = {"error": error_data}
 
