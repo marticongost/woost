@@ -129,12 +129,10 @@ class User(Item):
         from woost.models.configuration import Configuration
         return Configuration.backoffice_language.enumeration
 
-    prefered_language = schema.String(
+    prefered_language = LocaleMember(
         required = True,
         default = schema.DynamicDefault(_backoffice_language_default),
         enumeration = _backoffice_language_enumeration,
-        translate_value = lambda value, language = None, **kwargs:
-            "" if value is None else translate_locale(value, language, **kwargs),
         text_search = False,
         listed_by_default = False,
         member_group = "language_preferences"
