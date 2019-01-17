@@ -1249,7 +1249,7 @@ class EditBlocksAction(UserAction):
 class AddBlockAction(UserAction):
     min = None
     max = None
-    ignore_selection = True
+    ignores_selection = True
     included = frozenset(["blocks_slot_toolbar"])
     block_positioning = "append"
     show_as_primary_action = "always"
@@ -1490,6 +1490,18 @@ class ShareBlockAction(UserAction):
         datastore.commit()
         focus_block(selection[0])
 
+
+class MassFileImportAction(UserAction):
+    content_type = File
+    show_as_primary_action = "on_content_type"
+    included = frozenset(["toolbar"])
+    ignores_selection = True
+
+    @request_property
+    def icon_uri(self):
+        return "/resources/woost/images/diff.png"
+
+
 # Action registration
 #------------------------------------------------------------------------------
 NewAction("new").register()
@@ -1527,6 +1539,7 @@ CancelAction("cancel").register()
 SaveAction("save").register()
 PreviewAction("preview").register()
 SelectAction("select").register()
+MassFileImportAction("mass_file_import").register()
 
 # Translation
 #------------------------------------------------------------------------------
