@@ -30,9 +30,15 @@ def add_setting(
         member.custom_translation_key = "woost.models.settings." + member.name
     member.listed_by_default = False
 
+    inherit_from_config = Configuration in scopes
+
     for scope in scopes:
         scope_member = member.copy()
         scope_member.detach_from_source_member()
+
+        if scope is Website and inherit_from_config:
+            scope_member.default = None
+            scope_member.required = False
 
         if (
             related_end
