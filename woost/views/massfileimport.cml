@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.BackOfficeLayout
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://styles/massfileimport.scss.css ?>
+    <?resource woost://scripts/massfileimport.js ?>
+
+    <?py-class
+    forms = None
+    ?>
+
+    <py:with py:element="self.body">
+
+        <py:cocktail.html.ErrorBox
+            py:id="mass_import_error_box"
+            py:errors="@{self.forms['mass_import_form'].errors}"/>
+
+        <py:cocktail.html.Form
+            py:id="mass_import_form"
+            py:form="@{self.forms['mass_import_form']}"
+            method="POST"/>
+    </py:with>
+
+</py:woost.views.BackOfficeLayout>
+

@@ -1,0 +1,14 @@
+
+[woost.views.MassFileImportResults]
+
+    [files_imported_notice]
+    ca: <p>S'han importat els següents fitxers:</p>
+    es: <p>Se han importado los siguientes ficheros:</p>
+    en: <p>The following files have been imported:</p>
+
+    [upload_another_file_link]
+    ca: Importar un altre ZIP
+    es: Importar otro ZIP
+    en: Import another ZIP
+
+

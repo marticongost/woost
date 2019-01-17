@@ -1,0 +1,95 @@
+
+[woost.controllers.backoffice.massfileimportcontroller]
+
+    [MassFileImportController]
+
+        [MassImportForm]
+
+            [members]
+
+                [title_scheme]
+                ca: Títols pels fitxers importats
+                es: Títulos para los archivos importados
+                en: Titles for files imported
+
+                    [values]
+
+                        [no_title]
+                        ca: Sense títol
+                        es: Sin título
+                        en: No title
+
+                        [from_file]
+                        ca: Copiar el nom del fitxer importat
+                        es: Copiar el nombre del fichero importado
+                        en: Copy the name of the imported file
+
+                        [series]
+                        ca: Sèrie numerada
+                        es: Serie numerada
+                        en: Numeric series
+
+                [language_for_titles]
+                ca: Idioma pels títols
+                es: Idioma para los títulos
+                en: Language for titles
+
+                    [explanation]
+                    ca:
+                        Si s'estableix, els fitxers generats utilitzaran el nom del
+                        fitxer importat per determinar el seu títol en l'idioma indicat.
+                    es:
+                        Si se establece, los ficheros generados utilizarán el nombre
+                        de fichero importado para determinar su título en el idioma
+                        indicado.
+                    en:
+                        If set, the generated files will use the name of the imported
+                        file to establish their title in the indicated language.
+
+                [normalize_case]
+                ca: Normalitzar majúscules / minúscules
+                es: Normalizar mayúsculas y minúsculas
+                en: Normalize character case
+
+                    [explanation]
+                    ca:
+                        Si s'estableixen els títols dels fitxers, marcar aquesta opció
+                        s'assegura que tots els fitxers facin un ús consistent de les
+                        majúscules i minúscules.
+                    es:
+                        Si se establecen los títulos de los ficheros, marcar esta opción
+                        se asegura que todos los ficheros hagan un uso consistente de las
+                        mayúsculas y minúsculas.
+                    en:
+                        If file titles are set, selecting this option will make sure that
+                        they use upper and lower case letters consistently.
+
+                [normalize_separators]
+                ca: Normalitzar separadors
+                es: Normalizar separadores
+                en: Normalize separators
+
+                    [explanation]
+                    ca:
+                        Si s'estableixen els títols dels fitxers, marcar aquesta opció
+                        substitueix tot tipus de caràcters separadors (punts, guions,
+                        etc.) per un sol espai.
+                    es:
+                        Si se establecen los títulos de los ficheros, marcar esta opción
+                        sustituye todo tipo de caracteres de separación (puntos, guiones,
+                        etc.) por un solo espacio.
+                    en:
+                        If file titles are set, selecting this option will replace all kinds
+                        of separator characters (dots, dashes, etc.) with single spaces.
+
+                [series_title]
+                ca: Títol personalitzar per la sèrie
+                es: Título personalizado para la serie
+                en: Custom title for the series
+
+                [upload]
+                ca: Fitxer ZIP
+                es: Fichero ZIP
+                en: ZIP file
+
+

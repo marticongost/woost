@@ -30,6 +30,8 @@ from woost.controllers.backoffice.dragandropcontroller \
     import DragAndDropController
 from woost.controllers.backoffice.sitesynccontroller \
     import SiteSyncController
+from woost.controllers.backoffice.massfileimportcontroller \
+    import MassFileImportController
 
 
 class BackOfficeController(BaseBackOfficeController):
@@ -49,6 +51,7 @@ class BackOfficeController(BaseBackOfficeController):
     drop = DragAndDropController
     blocks = EditBlocksController
     drop_block = DropBlockController
+    mass_file_import = MassFileImportController
 
     def submit(self):
         redirect(
