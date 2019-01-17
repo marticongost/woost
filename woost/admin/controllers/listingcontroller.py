@@ -99,7 +99,10 @@ class ListingController(Controller):
             self.export.relation = self.relation
             self.export.partition = self.partition
             self.export.filters = self.filter_expressions
-            self.export.order = self.order
+
+            if not self.export.fixed_order:
+                self.export.order = self.order
+
             self.export.range = self.range
             results, count = self.export.get_results()
 
