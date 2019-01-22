@@ -25,11 +25,20 @@ cocktail.declare("woost.admin.views");
     }
 
     woost.admin.views.addView = function (view) {
+
         if (view.model && typeof(view.model) == "string") {
             view.model = cocktail.schema.getSchemaByName(view.model);
         }
+
         view.dataURL = woost.admin.url + "/data/views/" + view.name;
         view.ui_component = cocktail.getVariable(view.ui_component);
+
+        if (view.tree_relations) {
+            view.tree_relations = view.tree_relations.map(
+                (rel) => cocktail.schema.resolveMember(rel)
+            );
+        }
+
         viewMap[view.name] = view;
     }
 

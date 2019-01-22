@@ -11,7 +11,8 @@ from .dataexport import Export, object_fields
 class TreeExport(Export):
 
     apply_filters = False
-    children_collection = None
+    tree_relations = None
+    fixed_order = True
 
     def __init__(self, *args, **kwargs):
         Export.__init__(self, *args, **kwargs)
@@ -30,9 +31,10 @@ class TreeExport(Export):
             if self.get_node_match(obj) == "self":
                 count += 1
 
-            children = getattr(obj, self.children_collection.name, None)
-            if children:
-                count += self.count_matching_nodes(children)
+            for rel in self.tree_relations:
+                children = getattr(obj, rel.name, None)
+                if children:
+                    count += self.count_matching_nodes(children)
 
         return count
 
@@ -53,7 +55,7 @@ class TreeExport(Export):
         return objects
 
     def get_tree_roots(self):
-        return self.children_collection.related_end.equal(None)
+        return self.tree_relations[0].related_end.equal(None)
 
     def get_node_match(self, obj):
 
@@ -67,12 +69,13 @@ class TreeExport(Export):
                 if not filter.eval(obj):
                     match = "none"
 
-                    children = getattr(obj, self.children_collection.name, None)
-                    if children:
-                        for child in children:
-                            if self.get_node_match(child) != "none":
-                                match = "descendants"
-                                break
+                    for rel in self.tree_relations:
+                        children = getattr(obj, rel.name, None)
+                        if children:
+                            for child in children:
+                                if self.get_node_match(child) != "none":
+                                    match = "descendants"
+                                    break
                     break
             else:
                 match = "self"
@@ -82,12 +85,12 @@ class TreeExport(Export):
 
     def should_expand(self, obj, member, value, path = ()):
         return (
-            member is self.children_collection
+            member in self.tree_relations
             or Export.should_expand(self, obj, member, value, path)
         )
 
     def get_member_value(self, obj, member, language = None, path = ()):
-        if member is self.children_collection:
+        if member in self.tree_relations:
             return [
                 item
                 for item in obj.get(member)
@@ -108,7 +111,7 @@ def tree_node_fields(exporter, model, ref = False):
         lambda obj, path:
         ("_match", exporter.get_node_match(obj))
         if len(path) == 1
-        or (len(path) > 1 and path[-2] is exporter.children_collection)
+        or (len(path) > 1 and path[-2] in exporter.tree_relations)
         else None
     )
 

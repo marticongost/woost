@@ -10,7 +10,7 @@ from .tree import Tree
 
 site_tree = Tree(
     "site_tree",
-    children_collection = Document.children,
+    tree_relations = [Document.children],
     export_class = SiteTreeExport
 )
 
