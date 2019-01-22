@@ -392,12 +392,13 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                         }
                     }({
                         name: "_thumbnail",
+                        [woost.models.permissions]: {read: true},
                         [cocktail.ui.display]: () => woost.admin.ui.Thumbnail
                     })
                 );
             }
 
-            if (model[woost.admin.ui.showDescriptions] && !this.view.children_collection) {
+            if (model[woost.admin.ui.showDescriptions] && !this.view.tree_relations) {
                 extraMembers.push(
                     new class ElementColumn extends cocktail.schema.String {
 
@@ -409,7 +410,10 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                             return [];
                         }
 
-                    }({name: "_label"})
+                    }({
+                        name: "_label",
+                        [woost.models.permissions]: {read: true}
+                    })
                 );
             }
 
