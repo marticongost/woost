@@ -5,6 +5,7 @@ u"""
 """
 from cocktail.ui import components
 from woost import app
+from woost.models import Item
 from woost.models.utils import get_model_dotted_name
 from woost.admin.views import require_view, available_views
 from .section import Section
@@ -13,7 +14,7 @@ from .section import Section
 class CRUD(Section):
 
     node = "woost.admin.nodes.CRUD"
-    model = None
+    model = Item
     views = None
     partitioning_methods = None
     default_partitioning_method = None
