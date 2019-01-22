@@ -74,7 +74,7 @@ class Tree(View):
                 if tree_roots:
                     return tree_roots()
                 else:
-                    TreeExport.get_tree_roots(self)
+                    return TreeExport.get_tree_roots(self)
 
             # Provide a default order for the root entries. We use a property
             # to prevent import cycles when resolving related_end.

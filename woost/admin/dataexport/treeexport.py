@@ -55,7 +55,9 @@ class TreeExport(Export):
         return objects
 
     def get_tree_roots(self):
-        return self.tree_relations[0].related_end.equal(None)
+        return self.tree_relations[0].related_type.select(
+            self.tree_relations[0].related_end.equal(None)
+        )
 
     def get_node_match(self, obj):
 
