@@ -385,7 +385,15 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
         }
 
         modelIsEligible(model) {
-            return model.instantiable && woost.models.hasPermission(model, "create");
+            return (
+                model.instantiable
+                && woost.models.hasPermission(model, "create")
+                && !(
+                    this.view.navigationNode
+                    && this.view.navigationNode.instantiableModels
+                    && !this.view.navigationNode.instantiableModels.includes(model)
+                )
+            );
         }
 
         createEntry() {
