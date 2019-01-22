@@ -187,7 +187,7 @@
     ?>
 
     <?on listingReset
-    this.treeChildrenCollection = this.listing.view.children_collection;
+    this.treeRelations = this.listing.view.tree_relations;
     this.reset();
     ?>
 
