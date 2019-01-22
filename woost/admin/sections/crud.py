@@ -16,6 +16,7 @@ class CRUD(Section):
     node = "woost.admin.nodes.CRUD"
     model = Item
     views = None
+    instantiable_models = None
     partitioning_methods = None
     default_partitioning_method = None
 
@@ -34,10 +35,20 @@ class CRUD(Section):
                 yield components.resolve(view.ui_component)
 
     def export_data(self):
+
         data = Section.export_data(self)
+
         data["model"] = get_model_dotted_name(self.model)
         data["views"] = self.views
+
+        if self.instantiable_models:
+            data["instantiable_models"] = [
+                get_model_dotted_name(model)
+                for model in (self.instantiable_models)
+            ]
+
         data["partitioning_methods"] = self.partitioning_methods
         data["default_partitioning_method"] = self.default_partitioning_method
+
         return data
 

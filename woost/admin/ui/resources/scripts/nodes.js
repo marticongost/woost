@@ -588,6 +588,13 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
     static createSectionClass(section) {
         let cls = super.createSectionClass(section);
         cls.model = cocktail.schema.getSchemaByName(section.model);
+
+        if (section.instantiable_models) {
+            cls.prototype.instantiableModels = section.instantiable_models.map(
+                (model) => cocktail.schema.resolveSchema(model)
+            );
+        }
+
         return cls;
     }
 }
