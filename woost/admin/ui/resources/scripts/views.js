@@ -26,8 +26,8 @@ cocktail.declare("woost.admin.views");
 
     woost.admin.views.addView = function (view) {
 
-        if (view.model && typeof(view.model) == "string") {
-            view.model = cocktail.schema.getSchemaByName(view.model);
+        if (view.model) {
+            view.model = cocktail.schema.resolveSchema(view.model);
         }
 
         view.dataURL = woost.admin.url + "/data/views/" + view.name;
