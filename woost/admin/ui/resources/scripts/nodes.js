@@ -195,7 +195,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
         }
 
         if (key == "config" || key.startsWith("website-")) {
-            return woost.models.Item.getInstance(key)
+            return woost.models.Item.getInstance(key);
         }
         else {
             const id = Number(key);
