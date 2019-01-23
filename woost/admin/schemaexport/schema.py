@@ -31,6 +31,7 @@ schema.Schema.ui_member_class = "cocktail.schema.Schema"
 schema.SchemaObject.admin_show_descriptions = False
 schema.SchemaObject.admin_show_thumbnails = False
 schema.SchemaObject.admin_edit_view = None
+schema.SchemaObject.admin_item_card = None
 
 
 @exports_member(schema.Schema)
@@ -143,6 +144,12 @@ class SchemaExport(MemberExport):
 
         if issubclass(member, Block):
             yield (u"views", dumps(member.views))
+
+        if member.admin_item_card:
+            yield (
+                u"[woost.admin.ui.itemCard]",
+                u"() => %s" % member.admin_item_card
+            )
 
         yield (u"[woost.admin.views.views]", dumps([
             view.name
