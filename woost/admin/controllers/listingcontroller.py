@@ -24,6 +24,7 @@ from woost.models.utils import (
 from woost.admin.dataexport import Export
 from woost.admin.dataexport.sitetreeexport import SiteTreeExport
 from woost.admin.dataexport.adminexport import AdminExport
+from woost.admin.path import get_path
 from woost.admin.partitioning import parse_partition_parameter
 from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
@@ -90,6 +91,15 @@ class ListingController(Controller):
                 "application/json; charset=utf-8"
 
             object_data = self.export.export_object(self.instance)
+
+            # Export the object path, if it defines one
+            obj_path = get_path(self.instance)
+            if obj_path is not None:
+                object_data["_path"] = self.export.export_object_list(
+                    obj_path,
+                    ref = True
+                )
+
             return json.dumps(object_data)
 
         # Returning a list of objects

@@ -26,6 +26,12 @@
         default="true"/>
 
     <ui:property
+        name="hasPath"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <ui:property
         name="autohide"
         type="boolean"
         reflected="true"
@@ -78,6 +84,8 @@
         this.label.innerHTML = "";
         this.typeLabel.innerHTML = "";
         this.imageType = this.autohide ? "none" : "icon";
+        this.pathList.value = null;
+        this.hasPath = false;
     }
     else {
         this.empty = false;
@@ -101,6 +109,9 @@
 
         this.label.innerHTML = this.getLabelText();
         this.typeLabel.innerHTML = this.describeType();
+        console.log(newValue._path);
+        this.pathList.value = newValue._path;
+        this.hasPath = Boolean(newValue._path) && newValue._path.length;
     }
     ?>
 
@@ -128,7 +139,15 @@
 
     <div id="info">
         <div id="label"/>
-        <div id="typeLabel"/>
+        <div id="details">
+            <div id="typeLabel"/>
+            <div id="pathInfo">
+                <span id="pathPreposition">
+                    <ui:translation/>
+                </span>
+                <ui:woost.admin.ui.Path id="pathList"/>
+            </div>
+        </div>
     </div>
 </div>
 
