@@ -17,7 +17,7 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 }
 
-@keyframes fadeTypeLabel {
+@keyframes fadeDetails {
     from {
         opacity: 1;
     }
@@ -212,10 +212,28 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 }
 
+#details {
+    display: flex;
+    align-items: baseline;
+    color: rgba(black, 0.55);
+    font-size: 0.9em;
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
+        animation: $stacknode-animation-duration fadeDetails;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
+        animation: $stacknode-animation-duration reverse fadeDetails;
+    }
+
+    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+        display: none;
+    }
+}
+
 #typeLabel {
     margin-top: 0.2em;
-    font-size: 0.9em;
-    color: rgba(black, 0.55);
+    white-space: nowrap;
 
     :host-context([mixedContentTypes='false']) & {
         display: none;
@@ -228,17 +246,26 @@ $icon-height: $card-height - $icon-padding * 2;
     :host(:hover):host-context(.cocktail-ui-selected) & {
         color: rgba(white, 0.8);
     }
+}
 
-    :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
+#pathInfo {
+    display: flex;
+    align-items: baseline;
+
+    :host([hasPath='false']) & {
         display: none;
     }
+}
 
-    :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
-        animation: $stacknode-animation-duration fadeTypeLabel;
+#pathPreposition {
+    &:before {
+        content: '\00a0';
+        :host-context([mixedContentTypes='false']) & {
+            display: none;
+        }
     }
-
-    :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
-        animation: $stacknode-animation-duration reverse fadeTypeLabel;
+    &:after {
+        content: '\00a0';
     }
 }
 

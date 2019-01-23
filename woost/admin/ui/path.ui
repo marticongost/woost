@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.List
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?js
+    this.dataBinding = {
+        member: new cocktail.schema.Collection({
+            items: new cocktail.schema.Reference({
+                type: woost.models.Item
+            })
+        })
+    };
+    ?>
+
+</ui:cocktail.ui.List>
+

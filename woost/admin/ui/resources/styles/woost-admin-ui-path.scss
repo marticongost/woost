@@ -1,0 +1,19 @@
+
+#list {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+
+    li {
+        white-space: nowrap;
+
+        & + li {
+            margin-top: 0;
+
+            &:before {
+                content: '\00a0>\00a0';
+            }
+        }
+    }
+}
+
