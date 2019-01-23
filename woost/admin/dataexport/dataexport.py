@@ -369,7 +369,10 @@ def make_permissions_field(exporter):
 def object_fields(exporter, model, ref = False):
 
     yield (lambda obj, path: ("_class", get_model_dotted_name(obj.__class__)))
-    yield (lambda obj, path: ("_label", any_translation(obj)))
+    yield (lambda obj, path: (
+        "_label",
+        any_translation(obj, referrer = path[-3] if path and len(path) >= 3 else None)
+    ))
 
     if ref:
         yield (lambda obj, path: ("id", obj.id))
