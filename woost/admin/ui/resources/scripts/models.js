@@ -72,6 +72,17 @@ cocktail.declare("woost.admin.ui");
         return cocktail.ui.EDITABLE;
     }
 
+    woost.admin.ui.itemCard = Symbol.for("woost.admin.ui.itemCard");
+
+    woost.admin.ui.getItemCardClass = function (model) {
+        for (let m of model.ascendInheritance()) {
+            const itemCardClass = m[woost.admin.ui.itemCard];
+            if (itemCardClass) {
+                return itemCardClass();
+            }
+        }
+    }
+
     woost.admin.ui.formControls = cocktail.ui.formControls.extend("woost.admin.ui.formControl");
     cocktail.schema.Collection[woost.admin.ui.formControl] = (dataBinding) => {
         if (dataBinding.member.items instanceof cocktail.schema.Reference) {

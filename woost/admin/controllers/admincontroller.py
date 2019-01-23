@@ -28,6 +28,7 @@ class AdminController(PublishableController):
 
     ui_component_properties = [
         "admin_edit_view",
+        "admin_item_card",
         "ui_display",
         "ui_inert_display",
         "ui_form_control",

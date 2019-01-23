@@ -686,7 +686,7 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
                 return super.createHeading();
             }
             else {
-                let heading = woost.admin.ui.ItemCard.create();
+                let heading = woost.admin.ui.getItemCardClass(this.item._class).create();
                 heading.interactive = false;
                 heading.dataBinding = {
                     member: new cocktail.schema.Reference({type: this.model}),
