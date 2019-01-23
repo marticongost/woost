@@ -93,7 +93,6 @@ $icon-height: $card-height - $icon-padding * 2;
         display: none;
     }
 
-    :host([showThumbnails='true'][imageType='icon']) &,
     :host([showThumbnails='true'][imageType='thumbnail']) & {
         flex-basis: $image-width;
     }
