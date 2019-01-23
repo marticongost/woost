@@ -496,6 +496,46 @@ class Block(Item):
                     slot_content = container.get(related_end)
                     slot_content[slot_content.index(self)] = replacement
 
+    def get_block_location(self):
+        """Gets the owner and slot for this block.
+
+        :return: The owner and slot for this block, or None if it is not
+            inserted.
+        :rtype: (`woost.models.Item`, `woost.models.Slot`) or None
+        """
+        for member in self.__class__.iter_members():
+            related_end = getattr(member, "related_end", None)
+            if isinstance(related_end, Slot):
+                owner = self.get(member)
+                if owner:
+                    return owner, related_end
+
+        return None
+
+    def get_block_path(self):
+        """Obtains the complete sequence of owners and slots representing the
+        placement of this block.
+
+        :return: A list of owner, slot tuples.
+        :rtype: list
+        """
+        path = []
+        block = self
+
+        while True:
+            location = block.get_block_location()
+            if location:
+                path.append(location)
+                owner = location[0]
+                if isinstance(owner, Block):
+                    block = owner
+                else:
+                    break
+            else:
+                break
+
+        return path
+
 
 def setup_translation_of_default_values_for_block_type(block_type):
 
