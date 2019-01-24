@@ -297,6 +297,7 @@ class View(object):
     controller = ListingController
     model = None
     export_class = Export
+    allows_partitioning = True
     partitioning_methods = None
     default_partitioning_method = None
 
@@ -359,6 +360,7 @@ class View(object):
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
             "ui_component": self.ui_component,
+            "allows_partitioning": self.allows_partitioning,
             "partitioning_methods": self.partitioning_methods,
             "default_partitioning_method": self.default_partitioning_method
         }

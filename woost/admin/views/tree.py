@@ -14,6 +14,7 @@ class Tree(View):
     """A view for hierarchical data."""
 
     tree_relations = None
+    allows_partitioning = False
 
     def __init__(
         self,
