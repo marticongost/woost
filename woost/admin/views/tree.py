@@ -15,6 +15,7 @@ class Tree(View):
 
     tree_relations = None
     allows_partitioning = False
+    count_enabled = False
 
     def __init__(
         self,

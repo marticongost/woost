@@ -109,6 +109,7 @@ class ListingController(Controller):
             self.export.relation = self.relation
             self.export.partition = self.partition
             self.export.filters = self.filter_expressions
+            self.export.count_enabled = self.count_enabled
 
             if not self.export.fixed_order:
                 self.export.order = self.order
@@ -152,6 +153,7 @@ class ListingController(Controller):
         self.export.partition = self.partition
         self.export.filters = self.filter_expressions
         self.export.order = self.order
+        self.export.count_enabled = self.count_enabled
 
         query, count = self.export.resolve_results()
 
@@ -477,6 +479,12 @@ class ListingController(Controller):
         )
         return filter if filter_class.validate(filter) else None
 
+    @property
+    def count_enabled(self):
+        if self.view:
+            return self.view.count_enabled
+        return True
+
     def _get_count_object(self, count):
 
         if self.partition:
@@ -491,6 +499,9 @@ class ListingController(Controller):
         return count_obj
 
     def _export_count(self, count, partition_value = undefined):
+
+        if not self.count_enabled:
+            return None
 
         count_obj = {
             "value": count,

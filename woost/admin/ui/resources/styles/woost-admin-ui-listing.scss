@@ -41,9 +41,14 @@
     margin-right: 1em;
     min-width: 6em;
     text-align: center;
+    transition: all 0.4s ease;
 
-    :host([empty='true']) & {
-        visibility: hidden;
+    :host([empty='true']),
+    :host([countEnabled='false']) & {
+        min-width: 0;
+        width: 0;
+        overflow: hidden;
+        opacity: 0;
     }
 }
 
