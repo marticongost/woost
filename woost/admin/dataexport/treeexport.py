@@ -117,3 +117,15 @@ def tree_node_fields(exporter, model, ref = False):
         else None
     )
 
+    # Indicate which tree nodes don't match the required type on trees of mixed
+    # types
+    if exporter.relation and len(exporter.tree_relations) > 1:
+        related_type = exporter.relation[0].related_type
+        if related_type:
+            yield (
+                lambda obj, path:
+                    ("_matches_type", isinstance(obj, related_type))
+                    if len(path) == 1 or path[-2] in exporter.tree_relations
+                    else None
+            )
+

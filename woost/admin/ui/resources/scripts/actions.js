@@ -1072,8 +1072,25 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
     }
 
+    getState(context) {
+
+        const filteredSelection = this.filterSelection(context.selection);
+        if (!filteredSelection.length) {
+            return "disabled";
+        }
+
+        return super.getState(context);
+    }
+
+    filterSelection(items) {
+        return items.filter((item) => item._matches_type || item._matches_type === undefined);
+    }
+
     invoke(context) {
-        woost.admin.actions.addToParent(context.selection, this.node);
+        woost.admin.actions.addToParent(
+            this.filterSelection(context.selection),
+            this.node
+        );
     }
 }
 
