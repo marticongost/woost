@@ -1083,7 +1083,12 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
     }
 
     filterSelection(items) {
-        return items.filter((item) => item._matches_type || item._matches_type === undefined);
+        return items.filter((item) =>
+            item._match === undefined
+            || item._match == "M"
+            || item._match == "F"
+            || item._match == "F+"
+        );
     }
 
     invoke(context) {
