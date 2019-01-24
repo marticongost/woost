@@ -139,6 +139,45 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
                                 }
                             }
 
+                            // Set its parent based on the listing selection
+                            // (ie. selecting a single page and clicking 'New' will automatically
+                            // set the 'parent' for the page).
+                            let stackNode = cocktail.ui.root.stack.stackTop;
+                            while (stackNode) {
+                                if (stackNode.selectable) {
+                                    const selection = stackNode.selectable.selectedValues;
+                                    if (selection.length == 1) {
+                                        const relations = stackNode.selectable.treeRelations;
+                                        if (relations) {
+                                            for (let rel of relations) {
+                                                if (
+                                                    rel.relatedEnd
+                                                    && selection[0]._class.isSchema(rel.relatedEnd.relatedType)
+                                                    && model.isSchema(rel.relatedType)
+                                                ) {
+                                                    const key = rel.relatedEnd.name;
+                                                    if (rel.relatedEnd instanceof cocktail.schema.Reference) {
+                                                        item[key] = selection[0];
+                                                    }
+                                                    else {
+                                                        let items = item[key];
+                                                        if (!items) {
+                                                            items = [selection[0]];
+                                                        }
+                                                        else {
+                                                            items.push(selection[0]);
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                stackNode = stackNode.stackParent;
+                            }
+
                             const itemNode = this.createChild(itemNodeClass);
                             itemNode.model = model;
                             itemNode.item = item;
