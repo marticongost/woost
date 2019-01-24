@@ -8,6 +8,7 @@
     paging="infiniteScroll">
 
     <ui:using mixin="woost.admin.ui.ObjectSource"/>
+    <ui:symbol name="SET_AUTOEXPAND"/>
 
     <ui:property
         name="listing"
@@ -184,9 +185,30 @@
             currentRow = nextRow;
         }
     }
+
+    [SET_AUTOEXPAND]() {
+
+        if (this.listing.search) {
+            this.autoExpand = true;
+            return;
+        }
+
+        if (this.searchSchema && this.searchValues) {
+            for (let member of this.searchSchema.members()) {
+                let value = this.searchValues[member.name];
+                if (value !== null && value !== undefined && value !== "") {
+                    this.autoExpand = true;
+                    return;
+                }
+            }
+        }
+
+        this.autoExpand = false;
+    }
     ?>
 
     <?on listingReset
+    this[SET_AUTOEXPAND]();
     this.treeRelations = this.listing.view.tree_relations;
     this.reset();
     ?>
