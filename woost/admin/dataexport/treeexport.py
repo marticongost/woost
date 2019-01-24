@@ -13,10 +13,8 @@ class TreeExport(Export):
     apply_filters = False
     tree_relations = None
     fixed_order = True
-
-    def __init__(self, *args, **kwargs):
-        Export.__init__(self, *args, **kwargs)
-        self.__filter_match_cache = {}
+    __filtered = False
+    __filter_match_cache = None
 
     def resolve_results(self):
         root_objects = self.select_objects()
@@ -40,6 +38,12 @@ class TreeExport(Export):
 
     def select_objects(self):
 
+        self.__filter_match_cache = {}
+
+        for expr in self.iter_filter_expressions():
+            self.__filtered = True
+            break
+
         objects = Export.select_objects(self)
 
         tree_roots = self.get_tree_roots()
@@ -61,14 +65,14 @@ class TreeExport(Export):
 
     def get_node_match(self, obj):
 
-        if not self.filters:
+        if not self.__filtered:
             return "self"
 
         try:
             return self.__filter_match_cache[obj]
         except KeyError:
-            for filter in self.filters:
-                if not filter.eval(obj):
+            for expr in self.iter_filter_expressions():
+                if not expr.eval(obj):
                     match = "none"
 
                     for rel in self.tree_relations:
