@@ -44,6 +44,7 @@ class Export(object):
     range = None
     order = None
     fixed_order = False
+    count_enabled = True
     children_export = None
     exported_permissions = {"modify": ModifyPermission}
     verbose = False
@@ -138,8 +139,10 @@ class Export(object):
         if self.partition:
             part_method, part_value = self.partition
             return part_method.partition_query(query, part_value)
-        else:
+        elif self.count_enabled:
             return query, len(query)
+        else:
+            return query, None
 
     def select_objects(self):
 

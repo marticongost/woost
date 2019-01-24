@@ -299,6 +299,7 @@ class View(object):
     export_class = Export
     allows_partitioning = True
     partitioning_methods = None
+    count_enabled = True
     default_partitioning_method = None
 
     def __init__(
@@ -362,6 +363,7 @@ class View(object):
             "ui_component": self.ui_component,
             "allows_partitioning": self.allows_partitioning,
             "partitioning_methods": self.partitioning_methods,
+            "count_enabled": self.count_enabled,
             "default_partitioning_method": self.default_partitioning_method
         }
 
