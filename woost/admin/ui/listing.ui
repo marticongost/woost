@@ -108,7 +108,21 @@
         reflected="true">
         <?on changed
         if (!this[NAVIGATING] && oldValue !== undefined) {
-            cocktail.navigation.changeQuery({view: newValue || undefined});
+            const params = {view: newValue || undefined};
+            if (
+                newValue && (
+                    !newValue.allows_partitioning
+                    || (
+                        this.partition
+                        && newValue.partitioning_methods
+                        && newValue.partitioning_methods.length
+                        && !newValue.partitioning_methods.includes(this.partition.method.name)
+                    )
+                )
+            ) {
+                params["partition"] = undefined;
+            }
+            cocktail.navigation.changeQuery(params);
         }
         ?>
     </ui:property>
