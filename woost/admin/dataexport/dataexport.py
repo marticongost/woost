@@ -144,21 +144,27 @@ class Export(object):
         else:
             return query, None
 
-    def select_objects(self):
+    def iter_filter_expressions(self):
+
+        for expr in self.filters:
+            yield expr
 
         if self.relation:
             member, owner = self.relation
-            root = member.select_constraint_instances(parent = owner)
-        else:
-            root = self.model.select()
+            for expr in member.get_constraint_filters(owner):
+                yield expr
+
+    def select_objects(self):
+
+        root = self.model.select()
 
         root.verbose = self.verbose
         root.base_collection = self.base_collection
         root.add_filter(PermissionExpression(app.user, ReadPermission))
 
         if self.apply_filters:
-            for filter in self.filters:
-                root.add_filter(filter)
+            for expr in self.iter_filter_expressions():
+                root.add_filter(expr)
 
         if self.order:
             root.order = self.order
