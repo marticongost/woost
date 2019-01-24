@@ -109,7 +109,6 @@
 
         this.label.innerHTML = this.getLabelText();
         this.typeLabel.innerHTML = this.describeType();
-        console.log(newValue._path);
         this.pathList.value = newValue._path;
         this.hasPath = Boolean(newValue._path) && newValue._path.length;
     }
