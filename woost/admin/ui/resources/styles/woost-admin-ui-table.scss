@@ -18,7 +18,8 @@
     }
 }
 
-.TreeRow[treeFiltersMatch='descendants'] {
+.TreeRow[treeFiltersMatch='N+'],
+.TreeRow[treeFiltersMatch='F+'] {
 
     & > .rowContent .rowLabel {
         color: #666;

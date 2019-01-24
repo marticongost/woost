@@ -146,13 +146,21 @@ class Export(object):
 
     def iter_filter_expressions(self):
 
-        for expr in self.filters:
+        for expr in self.hard_filter_expressions():
             yield expr
 
+        for expr in self.soft_filter_expressions():
+            yield expr
+
+    def hard_filter_expressions(self):
         if self.relation:
             member, owner = self.relation
             for expr in member.get_constraint_filters(owner):
                 yield expr
+
+    def soft_filter_expressions(self):
+        for expr in self.filters:
+            yield expr
 
     def select_objects(self):
 

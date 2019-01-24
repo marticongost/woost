@@ -3,9 +3,16 @@ u"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail.schema.expressions import Expression, CustomExpression
+from cocktail.schema.expressions import (
+    Expression,
+    CustomExpression,
+    IsInstanceExpression,
+    Self
+)
 from cocktail.persistence import PersistentObject
 from .dataexport import Export, object_fields
+
+VISIBLE = ("M", "N+", "F+")
 
 
 class TreeExport(Export):
@@ -16,25 +23,15 @@ class TreeExport(Export):
     __filtered = False
     __filter_match_cache = None
 
-    def resolve_results(self):
-        root_objects = self.select_objects()
-        count = self.count_matching_nodes(root_objects)
-        return root_objects, count
+    def hard_filter_expressions(self):
 
-    def count_matching_nodes(self, objects):
+        for expr in Export.hard_filter_expressions(self):
+            yield expr
 
-        count = 0
-
-        for obj in objects:
-            if self.get_node_match(obj) == "self":
-                count += 1
-
-            for rel in self.tree_relations:
-                children = getattr(obj, rel.name, None)
-                if children:
-                    count += self.count_matching_nodes(children)
-
-        return count
+        if self.relation and len(self.tree_relations) > 1:
+            related_type = self.relation[0].related_type
+            if related_type:
+                yield IsInstanceExpression(Self, related_type)
 
     def select_objects(self):
 
@@ -53,7 +50,7 @@ class TreeExport(Export):
             objects.base_collection = tree_roots
 
         objects.add_filter(
-            CustomExpression(lambda obj: self.get_node_match(obj) != "none")
+            CustomExpression(lambda obj: self.get_node_match(obj) in VISIBLE)
         )
 
         return objects
@@ -64,27 +61,60 @@ class TreeExport(Export):
         )
 
     def get_node_match(self, obj):
+        """
+        :return: The match mode for the given object. One of the following:
 
+            - "N": No match.
+                The node doesn't match the listing's hard filters, and none
+                of its descendants matches all filters.
+
+            - "N+": No match, with descendants.
+                The node doesn't match the listing's hard filters, but at least
+                one of its descendants matches all filters.
+
+            - "F": Filtered.
+                The node matches the listing's hard filters, but it doesn't
+                match the soft filters; no descendant of the node matches both
+                hard and soft filters either.
+
+            - "N+": Filtered, with descendants.
+                The node matches the listing's hard filters, but it doesn't
+                match the soft filters; one or more of its descendants matches
+                both hard and soft filters.
+
+            - "M": Match
+                The node matches the listing's hard and soft filters.
+
+        :rtype: str
+        """
         if not self.__filtered:
-            return "self"
+            return "M"
 
         try:
             return self.__filter_match_cache[obj]
         except KeyError:
-            for expr in self.iter_filter_expressions():
-                if not expr.eval(obj):
-                    match = "none"
 
-                    for rel in self.tree_relations:
-                        children = getattr(obj, rel.name, None)
-                        if children:
-                            for child in children:
-                                if self.get_node_match(child) != "none":
-                                    match = "descendants"
-                                    break
+            match = "M"
+
+            for expr in self.hard_filter_expressions():
+                if not expr.eval(obj):
+                    match = "N"
                     break
             else:
-                match = "self"
+                for expr in self.soft_filter_expressions():
+                    if not expr.eval(obj):
+                        match = "F"
+                        break
+
+            if match != "M":
+                for rel in self.tree_relations:
+                    children = getattr(obj, rel.name, None)
+                    if children:
+                        for child in children:
+                            if self.get_node_match(child) in VISIBLE:
+                                match += "+"
+                                break
+                        break
 
             self.__filter_match_cache[obj] = match
             return match
@@ -100,7 +130,7 @@ class TreeExport(Export):
             return [
                 item
                 for item in obj.get(member)
-                if self.get_node_match(item) != "none"
+                if self.get_node_match(item) in VISIBLE
             ]
         else:
             return Export.get_member_value(self, obj, member, language, path)
@@ -120,16 +150,4 @@ def tree_node_fields(exporter, model, ref = False):
         or (len(path) > 1 and path[-2] in exporter.tree_relations)
         else None
     )
-
-    # Indicate which tree nodes don't match the required type on trees of mixed
-    # types
-    if exporter.relation and len(exporter.tree_relations) > 1:
-        related_type = exporter.relation[0].related_type
-        if related_type:
-            yield (
-                lambda obj, path:
-                    ("_matches_type", isinstance(obj, related_type))
-                    if len(path) == 1 or path[-2] in exporter.tree_relations
-                    else None
-            )
 
