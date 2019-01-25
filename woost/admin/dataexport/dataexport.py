@@ -166,6 +166,7 @@ class Export(object):
 
         root = self.model.select()
 
+        root.description = "woost.admin.dataexport.Export root"
         root.verbose = self.verbose
         root.base_collection = self.base_collection
         root.add_filter(PermissionExpression(app.user, ReadPermission))
