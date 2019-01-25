@@ -152,8 +152,10 @@ class ListingController(Controller):
         self.export.relation = self.relation
         self.export.partition = self.partition
         self.export.filters = self.filter_expressions
-        self.export.order = self.order
         self.export.count_enabled = self.count_enabled
+
+        if not self.export.fixed_order:
+            self.export.order = self.order
 
         query, count = self.export.resolve_results()
 
