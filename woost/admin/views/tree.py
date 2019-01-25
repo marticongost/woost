@@ -74,7 +74,7 @@ class Tree(View):
 
             def get_tree_roots(self):
                 if tree_roots:
-                    return tree_roots()
+                    return tree_roots(self)
                 else:
                     return TreeExport.get_tree_roots(self)
 
