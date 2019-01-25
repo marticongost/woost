@@ -21,7 +21,7 @@
 .TreeRow[treeFiltersMatch='N+'],
 .TreeRow[treeFiltersMatch='F+'] {
 
-    & > .rowContent .rowLabel {
+    &:not(.cocktail-ui-selected) > .rowContent .rowLabel {
         color: #666;
     }
 }
