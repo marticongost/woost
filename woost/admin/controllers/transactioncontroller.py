@@ -210,12 +210,13 @@ class TransactionController(Controller):
         return [
             self._export_error(error)
             for error in obj.__class__.get_errors(obj)
-            if not self._should_ignore_error(error)
+            if not self._should_ignore_error(error, dry_run)
         ]
 
-    def _should_ignore_error(self, error):
+    def _should_ignore_error(self, error, dry_run):
         return (
-            isinstance(error, ValueRequiredError)
+            dry_run
+            and isinstance(error, ValueRequiredError)
             and isinstance(error.member, schema.Reference)
             and error.member.related_end
             and error.member.related_end.integral
