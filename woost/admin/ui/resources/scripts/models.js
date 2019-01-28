@@ -95,6 +95,7 @@ cocktail.declare("woost.admin.ui");
     cocktail.schema.Reference[woost.admin.ui.formControl] = () => woost.admin.ui.ItemSelector;
 
     woost.admin.ui.itemSetSelectorDisplays = cocktail.ui.inertDisplays.extend("woost.admin.ui.itemSetSelectorDisplay");
+    woost.admin.ui.detailedDisplays = cocktail.ui.displays.extend("woost.admin.ui.detailedDisplay");
 
     woost.models.Reference = class Reference extends cocktail.schema.Reference {
 

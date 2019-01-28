@@ -17,6 +17,10 @@ woost.models.Item[cocktail.ui.display] = () => woost.admin.ui.ItemLink;
 
 woost.models.Item[woost.admin.ui.itemCard] = () => woost.admin.ui.ItemCard;
 
+woost.models.Item[woost.admin.ui.detailedDisplay] =
+    (dataBinding, parameters) =>
+        woost.admin.ui.getItemCardClass(dataBinding.value._class);
+
 woost.models.Item[cocktail.ui.inertDisplay] =
     (dataBinding, parameters) =>
         woost.admin.ui.getItemCardClass(dataBinding.value._class)
