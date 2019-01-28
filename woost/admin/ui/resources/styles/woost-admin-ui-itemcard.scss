@@ -2,7 +2,7 @@
 @import "woost.admin.ui://styles/common";
 
 $card-height: 3.5em;
-$image-separation: 1em;
+$image-separation: 0.4em;
 $image-compact-separation: 0.6em;
 $image-width: 5.2em;
 $icon-padding: 0.5em;
@@ -30,7 +30,7 @@ $icon-height: $card-height - $icon-padding * 2;
     from {
         flex-basis: 5.2em;
         opacity: 1;
-        margin-right: 1em;
+        margin-right: $image-separation;
     }
     to {
         flex-basis: 0;
