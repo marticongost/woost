@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.Items
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    ui:requires_shadow_dom="false">
+
+    <?class
+    createDefaultDataBinding() {
+        return {
+            member: new cocktail.schema.Collection({
+                items: new cocktail.schema.Reference({
+                    type: woost.models.Item
+                })
+            })
+        };
+    }
+    ?>
+
+    <?js
+    this.itemsDisplayFactory = woost.admin.ui.detailedDisplays;
+    ?>
+
+    <ui:cocktail.ui.Items.Entry ui:component="Entry"/>
+
+</ui:cocktail.ui.Items>
+
