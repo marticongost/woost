@@ -41,3 +41,9 @@ $panel-heading-color: lighten(desaturate($panel-action-color, 15), 10);
     }
 }
 
+@mixin stack-node-with-padding {
+    #main {
+        padding: 0.8rem 1.3rem;
+    }
+}
+
