@@ -47,3 +47,8 @@ $panel-heading-color: lighten(desaturate($panel-action-color, 15), 10);
     }
 }
 
+@mixin regular-text {
+    color: #333;
+    font-size: 1rem;
+}
+
