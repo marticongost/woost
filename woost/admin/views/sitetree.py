@@ -10,9 +10,9 @@ from .tree import Tree
 site_tree = Tree(
     "site_tree",
     tree_relations = [Document.children],
-    tree_roots = lambda: [
+    tree_roots = lambda exporter: [
         website.home
-        for website in Website.select()
+        for website in Website.select(order = "site_name")
         if website.home
     ]
 )
