@@ -122,7 +122,7 @@ class TransactionController(Controller):
             if e.source in created:
                 created.remove(e.source)
             else:
-                deleted.add(e)
+                deleted.add(e.source)
 
         with monitor_thread_events(
             (Item.instantiated, record_created),
