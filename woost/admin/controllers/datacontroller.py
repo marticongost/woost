@@ -11,6 +11,7 @@ from .defaultscontroller import DefaultsController
 from .settingsscopescontroller import SettingsScopesController
 from .currentusercontroller import CurrentUserController
 from .viewscontroller import ViewsController
+from .deletepreviewcontroller import DeletePreviewController
 from .partitionscontroller import PartitionsController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
@@ -22,6 +23,7 @@ class DataController(Controller):
     views = ViewsController
     partitions = PartitionsController
     defaults = DefaultsController
+    delete_preview = DeletePreviewController
     settings_scopes = SettingsScopesController
     current_user = CurrentUserController
 

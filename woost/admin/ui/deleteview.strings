@@ -1,0 +1,18 @@
+
+[woost.admin.ui.DeleteView]
+
+    [title]
+    ca: Eliminar objectes
+    es: Eliminar objetos
+    en: Delete objects
+
+    [deleteNotice]
+    ca: S'eliminaran els següents objectes:
+    es: Se eliminarán los siguientes objetos:
+    en: The following objects will be deleted:
+
+        [blocked]
+        ca: Els objectes que es ressalten a continuació no permeten que s'eliminin els objectes seleccionats:
+        es: Los objetos que se destacan a continuación no permiten que se puedan eliminar los objetos seleccionados:
+        en: The objects highlighted below prevent the selected objects from being deleted:
+

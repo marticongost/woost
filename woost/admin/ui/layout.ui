@@ -19,6 +19,7 @@
     <ui:requires component="woost.admin.ui.Listing"/>
     <ui:requires component="woost.admin.ui.RelationSelector"/>
     <ui:requires component="woost.admin.ui.EditView"/>
+    <ui:requires component="woost.admin.ui.DeleteView"/>
     <ui:requires component="woost.admin.ui.BlocksView"/>
     <ui:requires component="woost.admin.ui.NewObjectDropdown"/>
 

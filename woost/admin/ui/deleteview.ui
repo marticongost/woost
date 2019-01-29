@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?class
+    getToolbarActions() {
+        return Array.from(woost.admin.actions.forContext(this.getToolbarContext()));
+    }
+
+    getToolbarContext() {
+        return {
+            slot: "deleteToolbar",
+            view: this,
+            node: this.navigationNode
+        };
+    }
+    ?>
+
+    <?on navigationNode:changed
+    if (newValue) {
+        this.deletePreview.deleteSummary = newValue.deleteSummary;
+        newValue.deleteSummary.then((deleteSummary) => {
+            let key = this.deleteNotice.innerHTML = `${cls.fullName}.deleteNotice`;
+            if (deleteSummary.blocked) {
+                key += ".blocked";
+            }
+            this.deleteNotice.innerHTML = cocktail.ui.translations[key];
+            this.actionList.actionParameters.itemsToDelete = newValue.itemsToDelete;
+            this.actionList.actionParameters.deleteSummary = deleteSummary;
+            this.actionList.updateEntries();
+        });
+    }
+    ?>
+
+    <?class
+    get deleteSummary() {
+        return this.navigationNode.deleteSummary;
+    }
+    ?>
+
+    <ui:with ui:element="headerContent">
+        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText">
+            <?js
+            element.actions = this.getToolbarActions();
+            ?>
+        </ui:cocktail.ui.ActionList>
+    </ui:with>
+
+    <ui:with ui:element="main">
+        <p id="deleteNotice"/>
+        <ui:woost.admin.ui.DeletePreview id="deletePreview"/>
+    </ui:with>
+
+</ui:woost.admin.ui.StackNode>
+

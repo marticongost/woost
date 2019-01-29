@@ -9,6 +9,7 @@
     <ui:requires component="woost.admin.ui.FileUploader"/>
 
     <ui:symbol name="LOCALE_STATES"/>
+    <ui:symbol name="EDITED_OBJECT_DELETED"/>
 
     <ui:property
         name="hasActionList"
@@ -31,6 +32,12 @@
     </ui:property>
 
     <?class
+    invalidation(changes) {
+        if (changes.deleted.has(String(this.editedItem.id))) {
+            woost.admin.actions.up();
+        }
+    }
+
     getActionListContext() {
         return {
             view: this,
@@ -49,6 +56,14 @@
     ?>
 
     <?on navigationNode:changed
+    if (oldValue && oldValue.item) {
+        this.stopObserving(oldValue.item._class.originalMember.invalidation);
+    }
+
+    if (newValue && newValue.item) {
+        this.observe(newValue.item._class.originalMember.invalidation);
+    }
+
     if (!oldValue) {
         let selection = [newValue.item];
         let localeStates = this[LOCALE_STATES];

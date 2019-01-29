@@ -327,6 +327,7 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
             let sectionClass = baseSectionClass.createSectionClass(section);
             map[section.id] = sectionClass;
         }
+
         return map;
     }
 
@@ -915,6 +916,36 @@ woost.admin.nodes.UserEditNode = class UserEditNode extends woost.admin.nodes.Ed
         );
 
         return schema;
+    }
+}
+
+woost.admin.nodes.DeleteNode = class DeleteNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
+
+    get title() {
+        return cocktail.ui.translations["woost.admin.ui.DeleteView.title"];
+    }
+
+    get component() {
+        return woost.admin.ui.DeleteView;
+    }
+
+    defineParameters() {
+        return [
+            new cocktail.schema.Collection({
+                name: "itemsToDelete",
+                items: new cocktail.schema.Reference({
+                    type: woost.models.Item
+                }),
+                stringSeparator: ","
+            })
+        ];
+    }
+
+    applyParameter(param, value) {
+        super.applyParameter(param, value);
+        if (param.name == "itemsToDelete") {
+            this.deleteSummary = woost.models.getDeleteSummary(value);
+        }
     }
 }
 

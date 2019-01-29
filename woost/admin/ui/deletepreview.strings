@@ -1,0 +1,10 @@
+
+[woost.admin.ui.DeletePreview]
+
+    [MemberDeleteInfo]
+
+        [blockNotice]
+        ca: Els següents elements impedeixen que es pugui eliminar aquest element:
+        es: Los siguientes elementos impiden que se pueda eliminar este elemento:
+        en: The following objects prevent this object from being deleted:
+

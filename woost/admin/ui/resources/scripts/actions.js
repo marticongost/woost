@@ -622,6 +622,34 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
 
         return super.getState(context);
     }
+
+    invoke(context) {
+        const idList = context.selection.map((obj) => obj.id).join(",");
+        cocktail.navigation.extendPath("delete", idList);
+    }
+}
+
+woost.admin.actions.ConfirmDeleteAction = class ConfirmDeleteAction extends woost.admin.actions.Action {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`)
+    }
+
+    getState(context) {
+        if (!context.deleteSummary || context.deleteSummary.blocked) {
+            return "disabled";
+        }
+        return super.getState(context);
+    }
+
+    invoke(context) {
+        this.attempt(
+            woost.models.transaction({
+                "delete": context.itemsToDelete.map((obj) => obj.id)
+            })
+        )
+            .then(() => { woost.admin.actions.up() });
+    }
 }
 
 woost.admin.actions.RefreshAction = class RefreshAction extends woost.admin.actions.Action {
@@ -820,18 +848,6 @@ woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.ad
     }
 }
 
-woost.admin.actions.CancelAction = class CancelAction extends woost.admin.actions.Action {
-
-    getState(context) {
-        return context.pendingChanges ? super.getState(context) : "hidden";
-    }
-
-    invoke() {
-        let parentURL = cocktail.ui.root.stack.stackTop.stackParent.navigationNode.url;
-        cocktail.navigation.push(parentURL);
-    }
-}
-
 woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.actions.Action {
 
     get editingIntegralChild() {
@@ -981,8 +997,21 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
 
 woost.admin.actions.CancelAction = class CancelAction extends woost.admin.actions.CloseAction {
 
+    constructor(id, parameters = null, context = null) {
+        super(id, parameters, context);
+        this.requiresPendingChanges = parameters && parameters.requiresPendingChanges || false;
+    }
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.cancel`;
+    }
+
     getState(context) {
-        if (!this.editingBlocks) {
+        if (this.requiresPendingChanges && !context.pendingChanges) {
             return "hidden";
         }
         return super.getState(context);
@@ -1268,8 +1297,21 @@ woost.admin.actions.SaveIntegralChildAction.register({
 });
 
 woost.admin.actions.CancelAction.register({
+    id: "cancel-edit",
+    slots: ["editNavigationToolbar", "blocksNavigationToolbar"],
+    parameters: {
+        requiresPendingChanges: true
+    }
+});
+
+woost.admin.actions.ConfirmDeleteAction.register({
+    id: "confirm-delete",
+    slots: ["deleteToolbar"]
+});
+
+woost.admin.actions.CancelAction.register({
     id: "cancel",
-    slots: ["editNavigationToolbar", "blocksNavigationToolbar"]
+    slots: ["deleteToolbar"]
 });
 
 woost.admin.actions.AcceptSelectionAction.register({
