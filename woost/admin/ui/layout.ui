@@ -23,6 +23,7 @@
     <ui:requires component="woost.admin.ui.NewObjectDropdown"/>
 
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
+    <ui:requires-translation-bundle name="woost.admin.ui.nodes"/>
     <ui:requires-translation-bundle name="woost.admin.ui.partitioning"/>
 
     <ui:resource href="woost.admin.ui://scripts/views.js"/>
