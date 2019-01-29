@@ -106,7 +106,13 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
         return true;
     }
 
-    resolveChild(path) {
+    async resolveChild(path) {
+
+        // Resolve static routes first
+        const regularChild = await super.resolveChild(path);
+        if (regularChild) {
+            return regularChild;
+        }
 
         // Create a new object
         if (this.canEditNewObjects) {
@@ -253,6 +259,12 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
         }
         return itemNodeClass;
     }
+
+    static get children() {
+        return {
+            "delete": woost.admin.nodes.DeleteNode
+        };
+    }
 }
 
 woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
@@ -295,7 +307,9 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
     }
 
     static get children() {
-        let map = {};
+
+        let map = Object.assign({}, super.children);
+
         for (let section of this.section.children) {
             let baseSectionClass = cocktail.getVariable(section.node);
             let sectionClass = baseSectionClass.createSectionClass(section);
@@ -707,10 +721,14 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
     woost.admin.nodes.EditNode = class EditNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
 
         static get children() {
-            return {
-                rel: woost.admin.nodes.RelationNode,
-                blocks: woost.admin.nodes.BlocksNode
-            };
+            return Object.assign(
+                {},
+                super.children,
+                {
+                    "rel": woost.admin.nodes.RelationNode,
+                    "blocks": woost.admin.nodes.BlocksNode
+                }
+            );
         }
 
         get iconURL() {
