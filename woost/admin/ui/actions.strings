@@ -41,6 +41,21 @@
     es: Eliminar
     en: Delete
 
+    [confirm-delete]
+    ca: Confirmar eliminació
+    es: Confirmar eliminación
+    en: Confirm delete
+
+        [lock]
+        ca: Eliminant els objectes seleccionats...
+        es: Eliminando los objetos seleccionados...
+        en: Deleting the selected objects...
+
+        [successNotice]
+        ca: S'han eliminat els objectes seleccionats
+        es: Se han eliminado los objetos seleccionados
+        en: The selected objects have been deleted
+
     [refresh]
     ca: Actualitzar
     es: Actualizar

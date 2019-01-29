@@ -1,0 +1,39 @@
+
+@import "woost.admin.ui://styles/common";
+
+.woost-admin-ui-DeletePreview-MemberDeleteInfo {
+    margin-top: 1rem;
+    margin-left: 2.8rem;
+}
+
+.memberLabel {
+    font-weight: bold;
+
+    &:empty {
+        display: none;
+    }
+
+    &:after {
+        content: ':';
+    }
+}
+
+.woost-admin-ui-ItemCard {
+    display: inline-flex;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+.cocktail-ui-Items-Entry {
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+.BlockIcon {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    --height: 1.5em;
+    color: $error-color;
+}
+

@@ -1,0 +1,13 @@
+
+@import "woost.admin.ui://styles/common";
+
+@include stack-node-with-padding;
+
+#actionList {
+    margin-left: auto;
+}
+
+#deleteNotice {
+    @include regular-text;
+}
+

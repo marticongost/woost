@@ -255,5 +255,50 @@ cocktail.declare("woost.admin.ui");
             value[lastStep.member.name][lastStep.index] = newPathValue;
         }
     }
+
+    woost.models.getDeleteSummary = function (objectsToDelete) {
+        return cocktail.ui.request({
+            url: woost.admin.url + "/data/delete_preview",
+            responseType: "json",
+            parameters: {
+                id_list: objectsToDelete.map((item) => item.id)
+            }
+        })
+            .then((xhr) => {
+                const summary = xhr.response;
+
+                function processObjects(objects) {
+                    const processed = [];
+
+                    for (let obj of objects) {
+                        obj = cocktail.schema.objectFromJSONValue(obj);
+
+                        const block = new Map();
+                        for (let key in obj._block_delete) {
+                            block.set(
+                                obj._class.getMember(key) || null,
+                                cocktail.schema.objectsFromJSONValue(obj._block_delete[key])
+                            );
+                        }
+                        obj._block_delete = block;
+
+                        const cascade = new Map();
+                        for (let key in obj._cascade_delete) {
+                            cascade.set(
+                                obj._class.getMember(key) || null,
+                                obj._cascade_delete[key] = processObjects(obj._cascade_delete[key])
+                            );
+                        }
+                        obj._cascade_delete = cascade;
+
+                        processed.push(obj);
+                    }
+
+                    return processed;
+                }
+                summary.root = processObjects(summary.root);
+                return summary;
+            });
+    }
 }
 

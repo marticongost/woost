@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:property
+        name="state"
+        type="string"
+        default="idle"
+        reflected="true"/>
+
+    <ui:property
+        name="deleteSummary"
+        reflected="false">
+        <?on changed
+        if (newValue) {
+            this.state = "loading";
+            newValue
+                .then((deleteSummary) => {
+                    this.rootDeletedItemsList.value = deleteSummary.root;
+                })
+                .finally(() => this.state = "idle");
+        }
+        else {
+            this.state = "idle";
+        }
+        ?>
+    </ui:property>
+
+    <?class
+    clear() {
+        this.rootDeletedItemsList.value = [];
+    }
+    ?>
+
+    <ui:DeleteList id="rootDeletedItemsList"/>
+
+    <ui:cocktail.ui.SVG
+        ui:component="BlockIcon"
+        src="woost.admin.ui://images/stop.svg"/>
+
+    <ui:woost.admin.ui.DetailedItems ui:component="DeleteList">
+
+        <ui:property
+            name="action"
+            type="string"
+            reflected="true"/>
+
+        <?class
+        createEntry(item) {
+            const entry = super.createEntry(item);
+            if (this.action == "block") {
+                entry.blockIcon = woost.admin.ui.DeletePreview.BlockIcon.create();
+                entry.appendChild(entry.blockIcon);
+            }
+            return entry;
+        }
+        ?>
+
+        <ui:woost.admin.ui.DetailedItems.Entry ui:component="Entry">
+
+            <?on value:changed
+            if (newValue) {
+                const model = newValue._class;
+                for (let action of ["block", "cascade"]) {
+                    const perMemberInfo = newValue[`_${action}_delete`];
+                    if (perMemberInfo) {
+                        for (let [member, items] of perMemberInfo) {
+                            const display = woost.admin.ui.DeletePreview.MemberDeleteInfo.create();
+                            display.deleteInfo = {action, member, items};
+                            this.appendChild(display);
+                        }
+                    }
+                }
+            }
+            ?>
+
+        </ui:woost.admin.ui.DetailedItems.Entry>
+
+    </ui:woost.admin.ui.DetailedItems>
+
+    <div ui:component="MemberDeleteInfo">
+
+        <ui:property
+            name="action"
+            type="string"
+            reflected="true"/>
+
+        <ui:property
+            name="deleteInfo"
+            reflected="false">
+            <?on changed
+            if (newValue) {
+                this.memberLabel.innerHTML = newValue.member ? newValue.member.translate() : "";
+                this.action = newValue.action;
+                this.itemsList.action = newValue.action;
+                this.itemsList.value = newValue.items;
+            }
+            ?>
+        </ui:property>
+
+        <div id="memberLabel"/>
+        <ui:woost.admin.ui.DeletePreview.DeleteList id="itemsList"/>
+    </div>
+
+</div>
+
