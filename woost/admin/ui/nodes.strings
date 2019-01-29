@@ -1,0 +1,8 @@
+
+[woost.admin.nodes]
+
+    [navigationError]
+    ca: No es pot resoldre l'adreça indicada
+    es: No se puede resolver la dirección indicada
+    en: Couldn't resolve the requested address
+

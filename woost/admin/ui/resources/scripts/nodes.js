@@ -4,6 +4,18 @@ cocktail.declare("woost.admin.nodes");
 woost.admin.nodes.itemNodeClass = Symbol.for("woost.admin.nodes.itemNodeClass");
 woost.admin.ui.editView = Symbol.for("woost.admin.ui.editView");
 
+// Show navigation errors to the user
+{
+    const baseErrorHandler = cocktail.navigation.handleError;
+    cocktail.navigation.handleError = function handleError(error) {
+        cocktail.ui.Notice.show({
+            category: "error",
+            summary: error.label || cocktail.ui.translations["woost.admin.nodes.navigationError"]
+        });
+        baseErrorHandler.call(this, error);
+    }
+};
+
 woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackNode {
 
     static createSectionClass(section) {
