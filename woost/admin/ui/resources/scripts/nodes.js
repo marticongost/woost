@@ -911,7 +911,8 @@ woost.admin.nodes.UserEditNode = class UserEditNode extends woost.admin.nodes.Ed
         schema.addMember(
             new cocktail.schema.Boolean({
                 name: "_change_password",
-                [cocktail.ui.group]: "user_data"
+                [cocktail.ui.group]: "user_data",
+                [woost.models.permissions]: schema.getMember("password")[woost.models.permissions]
             })
         );
 
