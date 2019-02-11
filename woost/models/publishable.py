@@ -338,7 +338,14 @@ class Publishable(Item, PublishableObject):
             else:
                 publishable.websites = set()
 
-        elif member.name == "mime_type":
+        elif (
+            member.name == "mime_type"
+            and not getattr(
+                publishable.__class__,
+                "default_resource_type",
+                None
+            )
+        ):
             if event.value is None:
                 publishable.resource_type = None
             else:
