@@ -31,9 +31,6 @@ def should_import_item_member(self, imp, data, member):
     if member.editable != schema.EDITABLE:
         return False
 
-    if isinstance(member, Slot):
-        return False
-
     if not (
         imp.user
         and imp.user.has_permission(

@@ -55,7 +55,6 @@ class BasePreviewController(HTTPMethodController):
         data = json.load(cherrypy.request.body)
         return self.data_import(
             data,
-            import_primary_keys = True,
             dry_run = True
         )
 

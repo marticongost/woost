@@ -230,6 +230,12 @@
         tabbed="true"
         defaultGroup="item">
 
+        <?class
+        shouldAddField(member) {
+            return super.shouldAddField(member) && !member[woost.admin.ui.hiddenInEditView];
+        }
+        ?>
+
         <?on value:changed
         woost.admin.editState.set(newValue);
         ?>

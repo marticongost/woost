@@ -54,6 +54,13 @@
                 const form = this.blockEditor.editForm;
                 form.addEventListener("valueChanged", (e) => {
 
+                    // Update the state of the block on the parent edit form
+                    woost.models.setValueAtPath(
+                        woost.admin.editState.get(this.navigationNode.item),
+                        this.blockEditorNavigationNode.objectPath,
+                        e.detail.newValue
+                    );
+
                     // Update the state of the block on the blocks view
                     woost.models.setValueAtPath(
                         this.navigationNode.item,
