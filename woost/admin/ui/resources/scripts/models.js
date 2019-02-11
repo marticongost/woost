@@ -19,6 +19,7 @@ cocktail.declare("woost.admin.ui");
     woost.admin.ui.modelIconURL = Symbol.for("woost.admin.ui.modelIconURL");
     woost.admin.ui.showDescriptions = Symbol.for("woost.admin.ui.showDescriptions");
     woost.admin.ui.showThumbnails = Symbol.for("woost.admin.ui.showThumbnails");
+    woost.admin.ui.hiddenInEditView = Symbol.for("woost.admin.ui.hiddenInEditView");
 
     woost.admin.partitioningMethods = Symbol("woost.admin.partitioningMethods");
 
@@ -117,6 +118,8 @@ cocktail.declare("woost.admin.ui");
             super(parameters);
         }
     }
+
+    woost.models.Slot.prototype[woost.admin.ui.hiddenInEditView] = true;
 
     woost.models.ModelDataSource = class ModelDataSource extends cocktail.ui.HTTPDataSource {
 

@@ -32,7 +32,6 @@ class Slot(schema.Collection):
         kwargs.setdefault("cascade_cache_invalidation", "always")
         kwargs.setdefault("listable", False)
         kwargs.setdefault("searchable", False)
-        kwargs.setdefault("editable", schema.NOT_EDITABLE)
         schema.Collection.__init__(self, *args, **kwargs)
 
     @event_handler
