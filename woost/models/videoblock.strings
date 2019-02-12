@@ -1,0 +1,23 @@
+
+[woost.models.videoblock.VideoBlock]
+ca: Vídeo
+es: Video
+en: Video
+
+    [plural]
+    ca: Vídeos
+    es: Vídeos
+    en: Videos
+
+    [members]
+
+        [video]
+        ca: Vídeo
+        es: Video
+        en: Video
+
+        [player_settings]
+        ca: Opcions de reproductor de vídeo
+        es: Opciones de reproductor de video
+        en: Video player settings
+

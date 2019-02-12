@@ -1,0 +1,86 @@
+
+[woost.extensions.locations]
+
+    [LocationsExtension]
+    ca: Localitats
+    es: Localidades
+    en: Locations
+
+        [plural]
+        ca: Localitats
+        es: Localidad
+        en: Locations
+
+        [members]
+
+            [service_uri]
+            ca: URL del repositori de dades
+            es: URL del repositorio de datos
+            en: URL of the data repository
+
+            [update_frequency]
+            ca: Freqüència d'actualització
+            es: Frecuencia de actualización
+            en: Update frequency
+
+                [explanation]
+                ca:
+                    El nombre de dies entre actualitzacions de la llista de localitats.
+                    Deixar en blanc per desactivar les actualitzacions.
+                es:
+                    El número de días entre actualizaciones de la lista de localidades.
+                    Dejar en blanco para desactivar las actualizaciones.
+                en:
+                    Number of days between updates to the list of locations.
+                    Leave blank to disable updates.
+
+            [updated_location_types]
+            ca: Tipus de localització a obtenir
+            es: Tipos de localización a obtener
+            en: Location types included in updates
+
+            [updated_subset]
+            ca: Subconjunt de localitats a actualitzar
+            es: Subconjunto de localidades a actualizar
+            en: Subset of locations included in updates
+
+                [explanation]
+                ca:
+                    Llistat de codis qualificats de localitat (per exemple,
+                    EU-ES-CT, EU-ES-CV per seleccionar Catalunya i la
+                    Comunitat Valenciana).
+                es:
+                    Listado de códigos cualificados de localidad (por ejemplo,
+                    EU-ES-CT, EU-ES-CV para seleccionar Cataluña y la Comunidad
+                    Valenciana).
+                en:
+                    List of qualified location codes (ie. EU-ES-CT, EU-ES-CV to
+                    select Catalonia and the Valencian Country).
+
+    [location_types]
+
+        [continent]
+        ca: Continent
+        es: Continente
+        en: Continent
+
+        [country]
+        ca: País
+        es: País
+        en: Country
+
+        [autonomous_community]
+        ca: Comunitat autònoma
+        es: Comunidad autónoma
+        en: Autonomous community
+
+        [province]
+        ca: Província
+        es: Provincia
+        en: Province
+
+        [town]
+        ca: Població
+        es: Población
+        en: Town
+

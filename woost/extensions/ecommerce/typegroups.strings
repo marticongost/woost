@@ -1,0 +1,13 @@
+
+[woost.type_groups]
+
+    [ecommerce]
+    ca: Comerç online
+    es: Comercio online
+    en: E-commerce
+
+    [blocks.ecommerce]
+    ca: Comerç online
+    es: Comercio online
+    en: E-commerce
+

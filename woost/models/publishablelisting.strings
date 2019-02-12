@@ -1,0 +1,84 @@
+
+[woost.models.publishablelisting.PublishableListing]
+ca: Llistat d'elements publicables
+es: Listado de elementos publicables
+en: Publishable elements listing
+
+    [plural]
+    ca: Llistats d'elements publicables
+    es: Listados de elementos publicables
+    en: Publishable elements listings
+
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
+    [members]
+
+        [publishables]
+        ca: Elements publicables
+        es: Elementos publicables
+        en: Publishable elements
+
+        [item_accessibility]
+        ca: Control d'estat dels elements
+        es: Control de estado de los elementos
+        en: Item accessibility check
+
+            [values]
+
+                [accessible]
+                ca: Elements publicats i amb drets de lectura
+                es: Elementos publicados y con derechos de lectura
+                en: Published items with read privileges
+
+                [published]
+                ca: Elements publicats, tinguin o no drets de lectura
+                es: Elementos publicados, tengan o no derechos de lectura
+                en: Published items, regardless of read privileges
+
+                [any]
+                ca: Qualsevol element
+                es: Cualquier elemento
+                en: Any item
+
+        [listing_order]
+        ca: Ordenació
+        es: Ordenación
+        en: Order
+
+            [values]
+
+                [arbitrary]
+                ca: Arbitrària
+                es: Arbitraria
+                en: Arbitrary
+
+                [-last_update_time]
+                ca: Última modificació
+                es: Última modificación
+                en: Last update
+
+        [links_open_in_new_window]
+        ca: Obrir els enllaços a una nova finestra
+        es: Abrir los enlaces en una ventana nueva
+        en: Open links in a new window
+
+        [links_force_download]
+        ca: Forçar descàrrega
+        es: Forzar descarga
+        en: Force download
+
+        [paginated]
+        ca: Paginar els resultats
+        es: Paginar los resultados
+        en: Paginate results
+
+        [page_size]
+        ca: Mida del llistat
+        es: Tamaño del listado
+        en: Listing size
+

@@ -1,0 +1,107 @@
+[woost.models.tweetbutton.TweetButton]
+ca: Botó de Twitter
+es: Botón de Twitter
+en: Twitter button
+
+    [plural]
+    ca: Botons de Twitter
+    es: Botones de Twitter
+    en: Twitter buttons
+
+    [groups]
+
+        [tweet]
+        ca: Tuit
+        es: Tuit
+        en: Tweet
+
+        [appearence]
+        ca: Aparença
+        es: Apariencia
+        en: Appearence
+
+    [members]
+
+        [tw_target]
+        ca: Element a compartir
+        es: Elemento a compartir
+        en: Element to tweet
+
+            [explanation]
+            ca:
+                Deixar en blanc per compartir la pàgina on s'ubiqui el botó
+            es:
+                Dejar en blanco para compartir la página donde se ubique el
+                botón
+            en:
+                Leave blank to tweet the same page where the button resides
+
+        [tw_via]
+        ca: Via
+        es: Via
+        en: Via
+
+            [explanation]
+            ca: Nom d'usuari al que s'atribuirà el tuit
+            es: Nombre de usuario al que se atribuirá el tuit
+            en: Screen name of the user to attribute the Tweet to
+
+        [tw_related]
+        ca: Comptes relacionats
+        es: Cuentas relacionadas
+        en: Related accounts
+
+        [tw_hashtags]
+        ca: Hashtags
+        es: Hashtags
+        en: Hashtag
+
+        [tw_dnt]
+        ca: Deshabilitar el seguiment de Twitter
+        es: Deshabilitar el seguimiento de Twitter
+        en: Opt out of Twitter tailoring
+
+        [tw_text]
+        ca: Text per defecte
+        es: Texto por defecto
+        en: Default text for the Tweet
+
+        [tw_size]
+        ca: Mida del botó
+        es: Tamaño del botón
+        en: Button size
+
+            [explanation]
+
+                [medium]
+                ca: Mitjana
+                es: Mediana
+                en: Medium
+
+                [big]
+                ca: Gran
+                es: Grande
+                en: Big
+
+        [tw_count]
+        ca: Recompte
+        es: Recuento
+        en: Count
+
+            [none]
+            ca: Invisible
+            es: Invisible
+            en: None
+
+            [values]
+
+                [horizontal]
+                ca: Horitzontal
+                es: Horizontal
+                en: Horizontal
+
+                [vertical]
+                ca: Vertical
+                es: Vertical
+                en: Vertical
+

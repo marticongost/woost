@@ -1,0 +1,11 @@
+
+[woost.extensions.audio.AudioExtension]
+ca: Àudio
+es: Audio
+en: Audio
+
+    [plural]
+    ca: Àudio
+    es: Audio
+    en: Audio
+

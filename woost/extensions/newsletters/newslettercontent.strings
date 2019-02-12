@@ -1,0 +1,62 @@
+
+[woost.extensions.newsletters.newslettercontent.NewsletterContent]
+ca: Contingut
+es: Contenido
+en: Content
+
+    [plural]
+    ca: Continguts
+    es: Contenidos
+    en: Content
+
+    [members]
+
+        [text]
+        ca: Text
+        es: Texto
+        en: Text
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+
+        [image_alignment]
+        ca: Alineament
+        es: Alineamiento
+        en: Alignment
+
+            [values]
+
+                [image_left]
+                ca: Imatge a l'esquerra
+                es: Imagen a la izquierda
+                en: Image left
+
+                [image_right]
+                ca: Imatge a la dreta
+                es: Imagen a la derecha
+                en: Image right
+
+                [image_top]
+                ca: Imatge a dalt
+                es: Imagen arriba
+                en: Image top
+
+        [image_factory]
+        ca: Processat d'imatge
+        es: Procesado de imagen
+        en: Image processing
+
+        [link]
+        ca: Enllaç
+        es: Enlace
+        en: Link
+
+[woost.models.block.Block.view_class.values]
+
+    [woost.extensions.newsletters.NewsletterContentView]
+    ca: Estàndard
+    es: Estándar
+    en: Standard
+

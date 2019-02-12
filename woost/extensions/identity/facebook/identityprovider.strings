@@ -1,0 +1,56 @@
+
+[woost.extensions.identity.facebook.identityprovider.FacebookIdentityProvider]
+ca: Servei d'autenticació de Facebook
+es: Servicio de autenticación de Facebook
+en: Facebook authentication service
+
+    [plural]
+    ca: Serveis d'autenticació de Facebook
+    es: Servicios de autenticación de Facebook
+    en: Facebook authentication services
+
+    [members]
+
+        [client_id]
+        ca: Identificador de client
+        es: Identificador de cliente
+        en: Client id
+
+            [explanation]
+            ca:
+                Un identificador únic de l'aplicació de Facebook que s'utilitzarà
+                per gestionar l'autenticació. S'obté des del panell de
+                configuració de l'aplicació de Facebook.
+            es:
+                Un identificador único de la aplicación de Facebook que se
+                utilizará para gestionar la autenticación. Se obtiene desde el
+                panel de configuración de la aplicación de Facebook.
+            en:
+                The unique identifier of the application that is to be used to
+                mediate the authentication process. Obtained from the Facebook
+                application configuration panel.
+
+        [client_secret]
+        ca: Secret de client
+        es: Secreto de cliente
+        en: Client secret
+
+            [explanation]
+            ca:
+                La contrasenya de l'aplicació de Facebook que s'utilitzarà
+                per gestionar l'autenticació. S'obté des del panell de
+                configuració de l'aplicació de Facebook.
+            es:
+                La contraseña de la aplicación de Facebook que se
+                utilizará para gestionar la autenticación. Se obtiene desde el
+                panel de configuración de la aplicación de Facebook.
+            en:
+                The password for the application that is to be used to
+                mediate the authentication process. Obtained from the Facebook
+                application configuration panel.
+
+        [scope]
+        ca: Privilegis a sol·licitar
+        es: Privilegios a solicitar
+        en: Requested scope
+

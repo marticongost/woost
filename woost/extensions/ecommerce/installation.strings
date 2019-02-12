@@ -1,0 +1,161 @@
+
+[woost.extensions.ecommerce]
+
+    [catalog_page.title]
+    ca: Botiga
+    es: Tienda
+    en: Shop
+    fr: Boutique
+
+    [catalog_controller.title]
+    ca: Controlador de catàleg de productes
+    es: Controlador de catálogo de productos
+    en: Product catalog controller
+    fr: Controleur de catalogue de produits
+
+    [catalog_template.title]
+    ca: Plantilla de catàleg de productes
+    es: Plantilla de catálogo de productos
+    en: Product catalog template
+    fr: Modèle de catalogue de produits
+
+    [basket_page.title]
+    ca: Cistella de la compra
+    es: Cesta de la compra
+    en: Shopping basket
+    fr: Panier
+
+    [basket_block.heading]
+    ca: Cistella de la compra
+    es: Cesta de la compra
+    en: Shopping basket
+    fr: Panier
+
+    [basket_controller.title]
+    ca: Controlador per la cistella de la compra
+    es: Controlador para la Cesta de la compra
+    en: Shopping basket controller
+    fr: Controleur de panier
+
+    [basket_template.title]
+    ca: Plantilla per cistella de la compra
+    es: Plantilla para cesta de la compra
+    en: Shopping basket template
+    fr: Modèle de panier
+
+    [checkout_page.title]
+    ca: Dades de la comanda
+    es: Datos del pedido
+    en: Checkout
+    fr: Détails de la commande
+    pt: Dados do pedido
+
+    [checkout_block.heading]
+    ca: Dades de la comanda
+    es: Datos del pedido
+    en: Checkout
+    fr: Détails de la commande
+    pt: Dados do pedido
+
+    [checkout_controller.title]
+    ca: Controlador de recollida de dades de comanda de la botiga
+    es: Controlador de recogida de datos de pedido de la tienda
+    en: Shop checkout controller
+    fr: Controleur de prise de détails de la commande
+
+    [checkout_template.title]
+    ca: Plantilla de recollida de dades de comanda de la botiga
+    es: Plantilla de recojida de datos de pedido de la tienda
+    en: Shop checkout template
+    fr: Modèle de prise de détails de la commande
+
+    [summary_page.title]
+    ca: Sumari de la comanda
+    es: Sumario del pedido
+    en: Order summary
+    fr: Resumé de la commande
+    pt: Resumo do pedido
+
+    [summary_block.heading]
+    ca: Sumari de la comanda
+    es: Sumario del pedido
+    en: Order summary
+    fr: Resumé de la commande
+    pt: Resumo do pedido
+
+    [summary_controller.title]
+    ca: Controlador de sumari de comanda de la botiga
+    es: Controlador de sumario de pedido de la tienda
+    en: Shop order summary controller
+    fr: Controleur de resumé de la commande
+
+    [summary_template.title]
+    ca: Plantilla de sumari de comanda de la botiga
+    es: Plantilla de sumario de pedido de la tienda
+    en: Shop order summary template
+    fr: Modèle de resumé de commande
+
+    [success_page.title]
+    ca: Comanda completada
+    es: Pedido completado
+    en: Order completed
+    fr: Commande terminée
+
+    [success_page.body]
+    ca: La teva comanda s'ha processat correctament.
+    es: Tu pedido se ha procesado correctamente.
+    en: Your order has been completed successfully.
+    fr: Votre commande a été traitée avec succès.
+
+    [failure_page.title]
+    ca: Comanda cancel·lada
+    es: Pedido cancelado
+    en: Order cancelled
+    fr: Commande annulée
+    pt: Pedido cancelado
+
+    [failure_page.body]
+    ca: La teva comanda ha estat cancel·lada.
+    es: Tu pedido ha sido cancelado.
+    en: Your order has been cancelled.
+    fr: Votre commande a été annulée.
+    pt: O seu pedido foi cancelado.
+
+    [product_controller.title]
+    ca: Controlador de detall de producte
+    es: Controlador de detalle de producto
+    en: Shop product detail controller
+    fr: Contrôleur de détail du produit
+
+    [ecommerceorder_completed_trigger.title]
+    ca: Enviar resum de la comanda
+    es: Enviar resumen del pedido
+    en: Send order summary
+    fr: Envoyer résumé de la commande
+
+    [ecommerceorder_completed_emailtemplate.title]
+    ca: Resum de la comanda
+    es: Resumen del pedido
+    en: Order summary
+    fr: Résumé de la commande
+
+    [incoming_order.trigger.title]
+    ca: Enviar resum de la comanda
+    es: Enviar resumen del pedido
+    en: Send order summary
+
+    [incoming_order.email_template.title]
+    ca: Notificació de nova comanda
+    es: Notificación de nuevo pedido
+    en: New shop order notification
+
+    [incoming_order.edit_link]
+    ca: Obrir la comanda
+    es: Abrir el pedido
+    en: Edit the order
+
+    [ecommerce_basket_thumbnail.edit_link.title]
+    ca: Miniatura dels productes al carro de la compra
+    es: Miniatura de los productos en el carro de la compra
+    en: Thumbnail for products inside the shopping basket
+

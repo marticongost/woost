@@ -1,0 +1,67 @@
+
+[woost.models.user.User]
+ca: Usuari
+es: Usuario
+en: User
+
+    [plural]
+    ca: Usuaris
+    es: Usuarios
+    en: Users
+
+    [groups]
+
+        [user_data]
+        ca: Dades de l'usuari
+        es: Datos del usuario
+        en: User data
+
+        [language_preferences]
+        ca: Preferències d'idioma
+        es: Preferencias de idioma
+        en: Language preferences
+
+    [members]
+
+        [email]
+        ca: Correu electrònic
+        es: Correo electrónico
+        en: E-mail address
+        pt: Email
+
+        [password]
+        ca: Contrasenya
+        es: Contraseña
+        en: Password
+        pt: Palavra-passe
+
+        [prefered_language]
+        ca: Idioma del gestor de continguts
+        es: Idioma del gestor de contenidos
+        en: Back office language
+
+        [backoffice_language_chain]
+        ca: Idiomes a utilitzar en descriure el contingut
+        es: Idiomas a utilizar al describir el contenido
+        en: Languages to use when describing content
+
+        [backoffice_visible_translations]
+        ca: Idiomes sempre visibles en editar
+        es: Idiomas siempre visibles al editar
+        en: Always-on translations
+
+        [authored_items]
+        ca: Contingut creat per l'usuari
+        es: Contingut creado por el usuario
+        en: Content created by the user
+
+        [roles]
+        ca: Rols
+        es: Roles
+        en: Roles
+
+        [enabled]
+        ca: Activat
+        es: Activado
+        en: Enabled
+

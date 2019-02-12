@@ -1,0 +1,16 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [services.nocaptcha]
+        @reuse "woost.models.configuration.Configuration.groups.services.nocaptcha"
+
+    [members]
+
+        [nocaptcha_public_key]
+        @reuse "woost.models.configuration.Configuration.members.nocaptcha_public_key"
+
+        [nocaptcha_private_key]
+        @reuse "woost.models.configuration.Configuration.members.nocaptcha_private_key"
+

@@ -1,0 +1,23 @@
+
+[woost.views.ItemSelector]
+
+    [select]
+    ca: Llistat
+    es: Listado
+    en: Listing
+
+    [new]
+    ca: Nou
+    es: Nuevo
+    en: New
+
+    [edit]
+    ca: Editar
+    es: Editar
+    en: Edit
+
+    [delete]
+    ca: Eliminar
+    es: Eliminar
+    en: Delete
+

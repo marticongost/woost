@@ -1,0 +1,8 @@
+
+[woost.views.ObjectDiff]
+
+    [no_differences]
+    ca: L'element no té cap canvi.
+    es: El elemento no tiene ningún cambio.
+    en: The item has no changes.
+

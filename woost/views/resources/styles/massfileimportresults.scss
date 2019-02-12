@@ -1,0 +1,15 @@
+
+@import "theme://";
+
+.MassFileImportResults {
+
+    .results_list {
+        @include clear-list-styles;
+        margin-bottom: 20px;
+
+        li + li {
+            margin-top: 10px;
+        }
+    }
+}
+

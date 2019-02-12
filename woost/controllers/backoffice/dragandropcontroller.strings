@@ -1,0 +1,22 @@
+
+@init
+from cocktail import schema
+@end
+
+[woost.controllers.backoffice.dragandropcontroller]
+
+    [drop_notification(dragged_object, target_object, target_member)]
+    @switch isinstance(target_member, schema.Reference)
+
+        [set]
+        @case True
+        ca: S'ha establert t{dragged_object} com a t{target_member} ${ca_possessive(translations(target_object))}
+        es: Se ha establecido t{dragged_object} como t{target_member} de t{target_object}
+        en: t{dragged_object} set as t{target_object} of t{target_member}
+
+        [add]
+        @case False
+        ca: S'ha afegit t{dragged_object} a t{target_member} ${ca_possessive(translations(target_object))}
+        es: Se ha añadido t{dragged_object} a t{target_member} de t{target_object}
+        en: t{dragged_object} added to the t{target_member} of t{target_object}
+

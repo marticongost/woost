@@ -1,0 +1,18 @@
+
+[woost.extensions.newsletters.newsletter.Newsletter]
+ca: Butlletí de notícies
+es: Boletín de noticias
+en: Newsletter
+
+    [plural]
+    ca: Butlletins de notícies
+    es: Boletines de noticias
+    en: Newsletters
+
+    [members]
+
+        [blocks]
+        ca: Blocs
+        es: Bloques
+        en: Blocks
+

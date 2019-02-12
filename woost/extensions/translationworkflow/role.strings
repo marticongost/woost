@@ -1,0 +1,25 @@
+
+[woost.models.role.Role]
+
+    [members]
+
+        [translation_workflow_relevant_states]
+        ca: Estats rellevants del circuït de traducció
+        es: Estados relevantes del circuito de traducción
+        en: Translation workflow relevant states
+
+        [translation_workflow_default_state]
+        ca: Estat per defecte del circuït de traducció
+        es: Estado por defecto del circuito de traducción
+        en: Translation workflow default state
+
+        [translation_workflow_default_transition]
+        ca: Transició per defecte del circuït de traducció
+        es: Transición por defecto del circuito de traducción
+        en: Translation workflow default transition
+
+        [translation_workflow_default_transition_condition]
+        ca: Condició per la transició per defecte del circuït de traducció
+        es: Condición para la transición por defecto del circuito de traducción
+        en: Condition for the translation workflow default transition
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:cocktail.html.RadioSelector
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    empty_option_displayed = True
+
+    def get_item_label(self, item):
+        if item is None:
+            return RadioSelector.get_item_label(self, None)
+        else:
+            return translations(self.member, suffix = ".values.current_page")
+    ?>
+
+</py:cocktail.html.RadioSelector>
+

@@ -1,0 +1,117 @@
+
+[woost.models.facebooklikebutton.FacebookLikeButton]
+ca: Botó de "M'agrada" de Facebook
+es: Botón de "Me gusta" de Facebook
+en: Facebook Like button
+
+    [plural]
+    ca: Botons de "M'agrada" de Facebook
+    es: Botones de "Me gusta" de Facebook
+    en: Facebook Like buttons
+
+    [groups]
+
+        [appearence]
+        ca: Aparença
+        es: Apariencia
+        en: Appearence
+
+    [members]
+
+        [fb_href]
+        ca: Recurs
+        es: Recurso
+        en: Resource
+
+            [explanation]
+            ca:
+                La pàgina a recomanar. Deixar en blanc per seleccionar la
+                pàgina on es trobi el botó.
+            es:
+                La página a recomendar. Dejar en blanco para seleccionar la
+                página donde se ubique el botón.
+            en:
+                The resource to like. Leave blank to assume the page that
+                contains the button.
+
+        [fb_send]
+        ca: Mostrar el botó d'enviar
+        es: Mostrar el botón de enviar
+        en: Show the Send button
+
+        [fb_layout]
+        ca: Disposició
+        es: Disposición
+        en: Layout
+
+            [values]
+
+                [standard]
+                ca: Estàndard
+                es: Estándar
+                en: Standard
+
+                [button_count]
+                ca: Recompte
+                es: Recuento
+                en: Button count
+
+                [box_count]
+                ca: Recompte en caixa vertical
+                es: Recuento con caja vertical
+                en: Box count
+
+        [fb_show_faces]
+        ca: Mostrar cares
+        es: Mostrar caras
+        en: Show faces
+
+        [fb_width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [fb_action]
+        ca: Verb
+        es: Verbo
+        en: Verb
+
+            [values]
+
+                [like]
+                ca: M'agrada
+                es: Me gusta
+                en: Like
+
+                [recommend]
+                ca: Recomanar
+                es: Recomendar
+                en: Recommend
+
+        [fb_font]
+        ca: Font
+        es: Fuente
+        en: Font
+
+        [fb_colorscheme]
+        ca: Esquema de colors
+        es: Esquema de colores
+        en: Colorscheme
+
+            [values]
+
+                [light]
+                ca: Clar
+                es: Claro
+                en: Light
+
+                [dark]
+                ca: Fosc
+                es: Oscuro
+                en: Dark
+
+        [fb_ref]
+        ca: Codi de seguiment
+        es: Código de seguimiento
+        en: Referral tracking label
+

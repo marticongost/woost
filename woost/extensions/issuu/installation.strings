@@ -1,0 +1,8 @@
+
+[woost.extensions.issuu]
+
+    [issuu_document_controller.title]
+    ca: Controlador de document Issuu
+    es: Controlador de documento Issuu
+    en: Issuu document controller
+

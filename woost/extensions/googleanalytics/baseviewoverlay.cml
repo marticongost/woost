@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost import app
+from woost.extensions.googleanalytics.readreportspermission import ReadReportsPermission
+from woost.extensions.googleanalytics.view import View
+?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.BaseView">
+
+    <?py
+    self.add_resource("woost://scripts/googleanalytics.js")
+
+    @self.when_document_ready
+    def add_ga_page_metadata(document):
+        document.ga_event_source = self.publishable
+    ?>
+
+    <py:woost.extensions.googleanalytics.PageReport py:id="ga_page_report">
+        <py:binding>
+            <?py
+            if not app.user.has_permission(ReadReportsPermission) or not View.select():
+                element.visible = False
+            ?>
+        </py:binding>
+    </py:woost.extensions.googleanalytics.PageReport>
+
+</py:overlay>
+

@@ -1,0 +1,61 @@
+
+@init
+from woost.models.permission import content_permission_translation_factory
+
+translations.define(
+    "woost.extensions.translationworkflow.transitionpermission."
+    "TranslationWorkflowTransitionPermission.instance",
+    ca = content_permission_translation_factory(
+        "ca",
+        lambda permission, subject, **kwargs:
+            u"aplicar " + (
+                join(
+                    translations(transition)
+                    for transition in permission.transitions
+                )
+                if permission.transitions else u"canvis d'estat"
+            )
+            + u" sobre peticions de traducció per " + subject
+    ),
+    es = content_permission_translation_factory(
+        "es",
+        lambda permission, subject, **kwargs:
+            u"aplicar " + (
+                join(
+                    translations(transition)
+                    for transition in permission.transitions
+                )
+                if permission.transitions else u"cambios de estado"
+            )
+            + u" sobre peticiones de traducción para " + subject
+    ),
+    en = content_permission_translation_factory(
+        "en",
+        lambda permission, subject, **kwargs:
+            u"apply " + (
+                join(
+                    translations(transition)
+                    for transition in permission.transitions
+                )
+                if permission.transitions else u"state changes"
+            )
+            + u" to translation requests for " + subject
+    )
+)
+@end
+
+[woost.extensions.translationworkflow.transitionpermission.TranslationWorkflowTransitionPermission]
+ca: Permís de transició del circuït de traduccions
+es: Permiso de transición del circuito de traducciones
+en: Translation workflow transition permission
+
+    [plural]
+    ca: Permisos de transició del circuït de traduccions
+    es: Permisos de transición del circuito de traducciones
+    en: Translation workflow transition permissions
+
+    [transitions]
+    ca: Transicions
+    es: Transiciones
+    en: Transitions
+

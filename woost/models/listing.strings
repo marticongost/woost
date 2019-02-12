@@ -1,0 +1,95 @@
+
+[woost.models.listing.Listing]
+ca: Llistat
+es: Listado
+en: Listing
+
+    [plural]
+    ca: Llistats
+    es: Listados
+    en: Listings
+
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
+        [pagination]
+        ca: Paginació
+        es: Paginación
+        en: Pagination
+
+    [members]
+
+        [subset]
+        ca: Subconjunt
+        es: Subconjunto
+        en: Subset
+
+            [explanation]
+            ca:
+                Permet seleccionar les entrades específiques que haurien
+                d'aparèixer al llistat. Si es deixa en blanc el llistat
+                s'omplirà automàticament seguint els seus criteris
+                de filtrat, ordenació i paginació.
+            es:
+                Permite seleccionar las entradas específicas que deberían
+                aparecer en el listado. Si se deja en blanco el listado
+                se llenará automáticamente siguiendo sus criterios de
+                filtrado, ordenación y paginación.
+            en:
+                Select the specific entries that should be included in the
+                listing. Leave blank to fill the listing automatically,
+                according to its filtering, sorting and pagination rules.
+
+        [item_accessibility]
+        ca: Control d'estat dels elements
+        es: Control de estado de los elementos
+        en: Item accessibility check
+
+            [values]
+
+                [accessible]
+                ca: Elements publicats i amb drets de lectura
+                es: Elementos publicados y con derechos de lectura
+                en: Published items with read privileges
+
+                [published]
+                ca: Elements publicats, tinguin o no drets de lectura
+                es: Elementos publicados, tengan o no derechos de lectura
+                en: Published items, regardless of read privileges
+
+                [any]
+                ca: Qualsevol element
+                es: Cualquier elemento
+                en: Any item
+
+        [pagination_method]
+        ca: Tipus de paginació
+        es: Tipo de paginación
+        en: Pagination method
+
+            [none]
+            ca: Sense paginació
+            es: Sin paginación
+            en: No pagination
+
+            [values]
+
+                [pager]
+                ca: Controls de paginació
+                es: Controles de paginación
+                en: Pagination controls
+
+                [infinite_scroll]
+                ca: Scroll infinit
+                es: Scroll infinito
+                en: Infinite scroll
+
+        [page_size]
+        ca: Entrades per pàgina
+        es: Entradas por página
+        en: Entries per page
+

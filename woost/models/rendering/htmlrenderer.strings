@@ -1,0 +1,28 @@
+
+[woost.models.rendering.htmlrenderer.HTMLRenderer]
+ca: Pintador de documents HTML
+es: Pintador de documentos HTML
+en: HTML renderer
+
+    [plural]
+    ca: Pintadors de documents HTML
+    es: Pintadores de documentos HTML
+    en: HTML renderers
+
+    [members]
+
+        [window_width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [window_height]
+        ca: Alçada
+        es: Alto
+        en: Height
+
+        [external_urls_only]
+        ca: Només URLs externes
+        es: Sólo URLs externals
+        en: External URLs only
+

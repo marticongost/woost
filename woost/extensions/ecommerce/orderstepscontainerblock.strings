@@ -1,0 +1,42 @@
+
+[woost.extensions.ecommerce.orderstepscontainerblock.OrderStepsContainerBlock]
+ca: Passos de la compra
+es: Pasos de la compra
+en: Order steps
+fr: Étapes à suivre pour l'achat
+
+    [plural]
+    ca: Passos de la compra
+    es: Pasos de la compra
+    en: Order steps
+    fr: Étapes à suivre pour l'achat
+
+    [members]
+
+        [list_type]
+        ca: Tipus de llista
+        es: Tipo de lista
+        en: List type
+
+            [values]
+
+                [div]
+                ca: Element genèric (div)
+                es: Elemento genérico (div)
+                en: Generic element (div)
+
+                [ul]
+                ca: Llista
+                es: Lista
+                en: List
+
+                [ol]
+                ca: Llista ordenada
+                es: Lista ordenada
+                en: Ordered list
+
+                [dl]
+                ca: Llista de definició
+                es: Lista de definición
+                en: Definition list
+

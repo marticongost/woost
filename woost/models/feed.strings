@@ -1,0 +1,68 @@
+
+[woost.models.feed.Feed]
+ca: Canal de sindicació
+es: Canal de sindicación
+en: Syndication feed
+
+    [plural]
+    ca: Canals de sindicació
+    es: Canales de sindicación
+    en: Syndication feeds
+
+    [members]
+
+        [feed_items]
+        ca: Elements llistats
+        es: Elementos listados
+        en: Listed elements
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [ttl]
+        ca: Temps d'expiració (TTL)
+        es: Tiempo de expiración (TTL)
+        en: TTL
+
+        [image]
+        ca: Imatge
+        es: Imagen
+        en: Image
+
+        [description]
+        ca: Descripció
+        es: Descripción
+        en: Description
+
+        [limit]
+        ca: Límit d'elements publicats
+        es: Límite de elementos publicados
+        en: Published items limit
+
+        [query_parameters]
+        ca: Elements publicats
+        es: Elementos publicados
+        en: Published items
+
+        [item_title_expression]
+        ca: Expressió pel títol dels elements
+        es: Expresión para el título de los elementos
+        en: Item title expression
+
+        [item_link_expression]
+        ca: Expressió per l'enllaç dels elements
+        es: Expresión para el enlace de los elementos
+        en: Item link expression
+
+        [item_publication_date_expression]
+        ca: Expressió per la data de publicació dels elements
+        es: Expresión para la fecha de publicación de los elementos
+        en: Item publication date expression
+
+        [item_description_expression]
+        ca: Expressió per la descripció dels elements
+        es: Expresión para la descripción de los elementos
+        en: Item description expression
+

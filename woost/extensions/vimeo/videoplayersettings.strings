@@ -1,0 +1,42 @@
+
+[woost.models.videoplayersettings.VideoPlayerSettings]
+
+    [groups]
+
+        [vimeo]
+        ca: Vimeo
+        es: Vimeo
+        en: Vimeo
+
+    [members]
+
+        [vimeo_loop]
+        ca: Reproduïr continuament
+        es: Reproducir continuamente
+        en: Loop
+
+        [vimeo_allow_fullscreen]
+        ca: Permetre pantalla completa
+        es: Permitir pantalla completa
+        en: Allow fullscreen
+
+        [vimeo_title]
+        ca: Mostrar el títol del vídeo
+        es: Mostrar el título del video
+        en: Show the video's title
+
+        [vimeo_byline]
+        ca: Mostrar informació de l'autor
+        es: Mostrar información del autor
+        en: Show the video's byline
+
+        [vimeo_portrait]
+        ca: Mostrar imatge de l'autor
+        es: Mostrar imagen del autor
+        en: Show the author's portrait
+
+        [vimeo_color]
+        ca: Color del reproductor
+        es: Color del reproductor
+        en: Player color
+

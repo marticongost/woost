@@ -1,0 +1,16 @@
+
+[woost.views.LoginForm]
+
+    [forgot_password_link]
+    ca: He oblidat la contrasenya
+    es: He olvidado la contraseña
+    en: I forgot my password
+    pt: Esqueceu a sua chave de acesso?
+    fr: J'ai oublié le mot de passe
+
+    [submit_button]
+    ca: Entrar
+    es: Entrar
+    en: Enter
+    fr: Entrer
+

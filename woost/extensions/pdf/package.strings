@@ -1,0 +1,18 @@
+
+[woost.extensions.pdf.PDFExtension]
+ca: Exportació de documents PDF
+es: Exportación de documentos PDF
+en: PDF rendering
+
+    [plural]
+    ca: Exportació de documents PDF
+    es: Exportación de documentos PDF
+    en: PDF rendering
+
+    [members]
+
+        [command]
+        ca: Comanda
+        es: Comando
+        en: Command
+

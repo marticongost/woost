@@ -1,0 +1,73 @@
+
+[woost.extensions.identity.google.identityprovider.GoogleIdentityProvider]
+ca: Servei d'autenticació de Google
+es: Servicio de autenticación de Google
+en: Google authentication service
+
+    [plural]
+    ca: Serveis d'autenticació de Google
+    es: Servicios de autenticación de Google
+    en: Google authentication services
+
+    [members]
+
+        [client_id]
+        ca: Identificador de client
+        es: Identificador de cliente
+        en: Client id
+
+            [explanation]
+            ca:
+                Un identificador únic de l'aplicació de Google que s'utilitzarà
+                per gestionar l'autenticació. S'obté a la consola de
+                desenvolupament de Google.
+            es:
+                Un identificador único de la aplicación de Google que se
+                utilizará para gestionar la autenticación. Se obtiene desde la
+                consola de desarrollo de Google.
+            en:
+                The unique identifier of the application that is to be used to
+                mediate the authentication process. Obtained from the Google
+                development console.
+
+        [client_secret]
+        ca: Secret de client
+        es: Secreto de cliente
+        en: Client secret
+
+            [explanation]
+            ca:
+                La contrasenya de l'aplicació de Google que s'utilitzarà per
+                gestionar l'autenticació. S'obté a la consola de
+                desenvolupament de Google.
+            es:
+                La contraseña de la aplicación de Google que se utilizará para
+                gestionar la autenticación. Se obtiene desde la consola de
+                desarrollo de Google.
+            en:
+                The password for the application that is to be used to mediate
+                the authentication process. Obtained from the Google development
+                console.
+
+        [scope]
+        ca: Privilegis a sol·licitar
+        es: Privilegios a solicitar
+        en: Requested scope
+
+        [access_type]
+        ca: Tipus d'accés
+        es: Tipo de acceso
+        en: Access type
+
+            [values]
+
+                [online]
+                ca: En línia
+                es: En línea
+                en: Online
+
+                [offline]
+                ca: Fora de línia
+                es: Fuera de línea
+                en: Offline
+

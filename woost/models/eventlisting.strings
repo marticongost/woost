@@ -1,0 +1,52 @@
+
+[woost.models.eventlisting.EventListing]
+ca: Llistat d'esdeveniments
+es: Listado de eventos
+en: Event listing
+
+    [plural]
+    ca: Llistats d'events
+    es: Listados de eventos
+    en: Event listings
+
+    [groups]
+
+        [listing]
+        ca: Llistat
+        es: Listado
+        en: Listing
+
+    [members]
+
+        [include_expired]
+        ca: Incloure esdeveniments passats
+        es: Incluir eventos pasados
+        en: Include expired events
+
+        [listing_order]
+        ca: Ordenació
+        es: Ordenación
+        en: Order
+
+            [values]
+
+                [event_start]
+                ca: Data d'inici, ascendent
+                es: Fecha de inicio, ascendente
+                en: Event start, ascending
+
+                [-event_start]
+                ca: Data d'inici, descendent
+                es: Fecha de inicio, descendente
+                en: Event start, descending
+
+        [paginated]
+        ca: Paginar els resultats
+        es: Paginar los resultados
+        en: Paginate results
+
+        [page_size]
+        ca: Mida del llistat
+        es: Tamaño del listado
+        en: Listing size
+

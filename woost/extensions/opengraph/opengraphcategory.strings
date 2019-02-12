@@ -1,0 +1,28 @@
+
+[woost.extensions.opengraph.opengraphcategory.OpenGraphCategory]
+ca: Categoria d'objecte OpenGraph
+es: Categoría de objeto OpenGraph
+en: OpenGraph object category
+
+    [plural]
+    ca: Categories d'objecte OpenGraph
+    es: Categorías de objeto OpenGraph
+    en: OpenGraph object categories
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [code]
+        ca: Codi
+        es: Code
+        en: Código
+
+        [types]
+        ca: Tipus
+        es: Tipos
+        en: Types
+

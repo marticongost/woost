@@ -1,0 +1,37 @@
+
+[woost.models.htmlblock.HTMLBlock]
+ca: HTML
+es: HTML
+en: HTML
+
+    [plural]
+    ca: HTML
+    es: HTML
+    en: HTML
+
+    [members]
+
+        [html]
+        ca: HTML
+        es: HTML
+        en: HTML
+
+        [translated_html]
+        ca: HTML per idioma
+        es: HTML por idioma
+        en: Per language HTML
+
+            [explanation]
+            ca:
+                Utilitzar només si cal diferenciar l'HTML produït en un
+                idioma  concret. Pels idiomes en que es deixi buit,
+                s'utilitzarà el valor del camp <em>HTML</em>.
+            es:
+                Utilizar únicamente si es necesario distinguir el HTML
+                producido  en un idioma concreto. En aquellos idiomas en que se
+                deje vacío se utilizará el valor del campo <em>HTML</em>.
+            en:
+                Use only to differentiate the HTML produced for specific
+                languages. In languages where it is left blank, the content of
+                the <em>HTML</em> field will be used instead.
+

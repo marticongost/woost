@@ -1,0 +1,43 @@
+
+@init
+from cocktail.stringutils import decapitalize
+
+def translate_level_roles(access_level):
+    return join([
+        decapitalize(translations(role))
+        for role in access_level.roles_with_access
+    ])
+@end
+
+[woost.models.accesslevel.AccessLevel]
+ca: Nivell d'accés
+es: Nivel de acceso
+en: Acces level
+
+    [plural]
+    ca: Nivells d'accés
+    es: Niveles de acceso
+    en: Access levels
+
+    [default_instance_translation(access_level)]
+    ca: Només per a ${translate_level_roles(access_level)}
+    es: Solo para ${translate_level_roles(access_level)}
+    en: Only for ${translate_level_roles(access_level)}
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [roles_with_access]
+        ca: Rols amb accés
+        es: Roles con acceso
+        en: Roles with access
+
+        [restricted_content]
+        ca: Contingut restringit
+        es: Contenido restringido
+        en: Restricted content
+

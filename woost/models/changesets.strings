@@ -1,0 +1,97 @@
+
+[woost.models.changesets.ChangeSet]
+ca: Revisió
+es: Revisión
+en: Revision
+
+    [plural]
+    ca: Revisions
+    es: Revisiones
+    en: Revisions
+
+    [members]
+
+        [id]
+        ca: ID
+        es: ID
+        en: ID
+
+        [author]
+        ca: Autor
+        es: Autor
+        en: Author
+
+        [date]
+        ca: Data
+        es: Fecha
+        en: Date
+
+        [changes]
+        ca: Canvis
+        es: Cambios
+        en: Changes
+
+[woost.models.changesets.Change]
+ca: Canvi
+es: Cambio
+en: Change
+
+    [plural]
+    ca: Canvis
+    es: Cambios
+    en: Changes
+
+    [members]
+
+        [id]
+        ca: ID
+        es: ID
+        en: ID
+
+        [changeset]
+        ca: Revisió
+        es: Revisión
+        en: Revision
+
+        [action]
+        ca: Acció
+        es: Acción
+        en: Action
+
+            [values]
+
+                [create]
+                ca: Creat
+                es: Creado
+                en: Created
+
+                [modify]
+                ca: Modificat
+                es: Modificado
+                en: Modified
+
+                [delete]
+                ca: Eliminat
+                es: Eliminado
+                en: Deleted
+
+        [target]
+        ca: Element afectat
+        es: Elemento afectado
+        en: Affected item
+
+        [changed_members]
+        ca: Membres modificats
+        es: Miembros modificados
+        en: Modified members
+
+        [item_state]
+        ca: Estat
+        es: Estado
+        en: State
+
+        [is_explicit_change]
+        ca: Canvi iniciat per l'usuari
+        es: Cambio iniciado por el usuario
+        en: Change initiated by the user
+

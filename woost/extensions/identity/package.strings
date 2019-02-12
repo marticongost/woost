@@ -1,0 +1,11 @@
+
+[woost.extensions.identity.IdentityExtension]
+ca: Identitat
+es: Identidad
+en: Identity
+
+    [plural]
+    ca: Identitat
+    es: Identidad
+    en: Identity
+

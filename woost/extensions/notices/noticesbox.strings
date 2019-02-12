@@ -1,0 +1,8 @@
+
+[woost.extensions.notices.NoticesBox]
+
+    [close_notice_button]
+    ca: Ocultar aquest missatge
+    es: Ocultar este mensaje
+    en: Hide this message
+

@@ -1,0 +1,13 @@
+
+[woost.controllers.backoffice.renderpreviewcontroller]
+
+    [validation_error]
+    ca:
+        Algun camp del formulari no té un format correcte. No es pot realitzar
+        la vista prèvia.
+    es:
+        Algún campo del formulario no tiene un formato correcto. No se puede
+        realizar la vista previa.
+    en:
+        Some form field has no correct format. Impossible to render preview.
+

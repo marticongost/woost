@@ -1,0 +1,12 @@
+
+[woost.extensions.signup.signupcontroller]
+
+    [SignUpController.SignUpForm]
+
+        [members]
+
+            [password_confirmation]
+            ca: Confirma la contrasenya
+            es: Confirma la contraseña
+            en: Confirm your password
+

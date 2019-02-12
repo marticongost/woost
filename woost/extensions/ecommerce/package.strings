@@ -1,0 +1,11 @@
+
+[woost.extensions.ecommerce.ECommerceExtension]
+ca: Comerç online
+es: Comercio online
+en: E-commerce
+
+    [plural]
+    ca: Comerç online
+    es: Comercio online
+    en: E-commerce
+

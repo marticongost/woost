@@ -1,0 +1,33 @@
+
+[woost.views.ContentTable]
+
+    [sorting_header]
+    ca: Ordenació
+    es: Ordenación
+    en: Order
+
+    [grouping_header]
+    ca: Agrupació
+    es: Agrupación
+    en: Grouping
+
+    [search_header]
+    ca: Filtres
+    es: Filtros
+    en: Filters
+
+    [sort_ascending]
+    ca: Ordre ascendent
+    es: Orden ascendente
+    en: Ascending order
+
+    [sort_descending]
+    ca: Ordre descendent
+    es: Orden descendente
+    en: Descending order
+
+    [add_column_filter]
+    ca: Afegir un filtre
+    es: Añadir un filtro
+    en: Add a filter
+

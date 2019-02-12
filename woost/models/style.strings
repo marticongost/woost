@@ -1,0 +1,141 @@
+
+[woost.models.style.Style]
+ca: Estil
+es: Estilo
+en: Style
+
+    [plural]
+    ca: Estils
+    es: Estilos
+    en: Styles
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [custom_class_name]
+        ca: Classe CSS
+        es: Clase CSS
+        en: CSS class
+
+            [explanation]
+            ca:
+                Permet especificar el nom de la classe CSS resultant. Si no
+                s'indica, el sistema decidirà el nom seguint un patró
+                incremental.
+            es:
+                Permite especificar el nombre de la clase CSS resultante. Si
+                no se indica, el sistema decidirá el nombre siguiendo un patrón
+                incremental.
+            en:
+                Specifies the name of the resulting CSS class. If no name is
+                given, the system will choose a name following an incremental
+                pattern.
+
+        [html_tag]
+        ca: Etiqueta HTML
+        es: Etiqueta HTML
+        en: HTML tag
+
+            [explanation]
+            ca:
+                L'etiqueta HTML que s'utilitzarà pel contingut al que
+                s'apliqui aquest estil des de l'editor de text.
+            es:
+                La etiqueta HTML que se utilizará para el contenido al que se
+                aplique este estilo desde el editor de texto.
+            en:
+                The HTML tag that will be used for content that this style is
+                applied to using the rich text editor.
+
+        [editor_keyboard_shortcut]
+        ca: Drecera de teclat
+        es: Atajo de teclado
+        en: Keyboard shortcut
+
+        [applicable_to_text]
+        ca: Aplicable al text
+        es: Aplicable al texto
+        en: Applies to text
+
+        [applicable_to_blocks]
+        ca: Aplicable a blocs
+        es: Aplicable a bloques
+        en: Applicable to blocks
+
+        [applicable_to_documents]
+        ca: Aplicable a documents
+        es: Aplicable a documentos
+        en: Applicable to documents
+
+        [declarations_initialization]
+        ca: Inicialització dels estils
+        es: Inicialización de los estilos
+        en: Style initialization
+
+            [explanation]
+            ca:
+                Un fragment de codi SCSS que precedirà els estils afegits pels
+                camps <em>estils</em> i <em>estils per l'administració</em>.
+                Útil per importar fulls d'estil i fer declaracions fora de
+                l'àmbit de l'estil. Es combina amb els camps <em>inicialització
+                d'estils comú</em> de la configuració i els llocs web.
+            es:
+                Un fragmento de código SCSS que precederá los estilos añadidos
+                por los campos <em>estilos</em> y <em>estilos para el
+                administrador</em>. Útil para importar hojas de estilo y hacer
+                declaraciones fuera del ámbito del estilo. Se combina con los
+                campos <em>inicialización de estilos común</em> de la
+                configuración y los sitios web.
+            en:
+                A fragment of SCSS code that will precede the styles added by
+                the <em>styles</em> and <em>admin styles</em> fields. Useful to
+                import style sheets or to make declarations outside the scope of
+                the style. Will be combined with the <em>common styles
+                initialization</em> fields specified by the configuration and
+                websites.
+
+        [declarations]
+        ca: Estils
+        es: Estilos
+        en: Styles
+
+            [explanation]
+            ca:
+                Codi SCSS que s'aplicarà als elements vinculats a aquest estil.
+                S'embolcalla automàticament amb el selector adequat.
+            es:
+                Código SCSS que se aplicará a los elementos vinculados con este
+                estilo. Se envuelve automáticamente con el selector adecuado.
+            en:
+                SCSS code that will be applied to elements linked to this style.
+                The code is automatically wrapped in the appropiate selector.
+
+        [admin_declarations]
+        ca: Estils per l'administració
+        es: Estilos para el administrador
+        en: Admin styles
+
+            [explanation]
+            ca:
+                Com el camp <em>estils</em>, però només s'aplica dins de la
+                interfície d'administració. Això és útil per fer més llegibles
+                estils que quedarien fora de lloc dins de l'editor de text; per
+                exemple, donar un altre color a text que al frontal hagi de ser
+                blanc.
+            es:
+                Como el campo <em>estilos</em>, pero solo se aplica dentro de
+                la interfaz de administración. Esto es útil para hacer más
+                legibles estilos que quedarían fuera de sitio dentro del
+                editor de texto; por ejemplo, dar otro color a texto que en el
+                frontal tenga que ser blanco.
+            en:
+                Like the <em>styles</em> field, but will be only applied within
+                the administration interface. This is useful to subdue styles
+                that would look out of place on the text editor; for example,
+                to change the color of text that should be white on the
+                frontend.
+

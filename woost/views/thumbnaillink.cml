@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:woost.views.Link
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    tabindex="-1">
+
+    <?py-class
+    item = None
+    links_open_in_new_window = False
+    thumbnail_factory = "image_gallery_thumbnail"
+
+    def _get_item(self):
+        return self.value
+
+    def _set_item(self, item):
+        self.value = item
+
+    item = property(_get_item, _set_item)
+
+    def _get_links_force_download(self):
+        return self.force_download
+
+    def _set_links_force_download(self, value):
+        self.force_download = value
+
+    links_force_download = property(_get_links_force_download, _set_links_force_download)
+    ?>
+
+    <?resource woost://scripts/thumbnaillink.js ?>
+
+    <?py
+    self.set_client_param("publishableActivationSelector", ".ThumbnailLink")
+    ?>
+
+    <py:ready>
+        <?py
+        if self.item is not None:
+            self.depends_on(self.item)
+            if self.links_open_in_new_window:
+                element["target"] = "_blank"
+        ?>
+    </py:ready>
+
+    <py:woost.views.Image
+        py:id="thumbnail"
+        py:image="@{self.item}"
+        py:image_factory="@{self.thumbnail_factory}"
+        py:accessible_check="${False}"/>
+
+</py:woost.views.Link>
+

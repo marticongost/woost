@@ -1,0 +1,23 @@
+
+[woost.extensions.audio.audiodecoder.AudioDecoder]
+ca: Decodificador d'àudio
+es: Decodificador de audio
+en: Audio decoder
+
+    [plural]
+    ca: Decodificadors d'àudio
+    es: Decodificadores de audio
+    en: Audio decoders
+
+    [members]
+
+        [mime_type]
+        ca: Tipus MIME
+        es: Tipo MIME
+        en: MIME type
+
+        [command]
+        ca: Comanda
+        es: Comando
+        en: Command
+

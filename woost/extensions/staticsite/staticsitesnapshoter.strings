@@ -1,0 +1,55 @@
+
+[woost.extensions.staticsite.staticsitesnapshoter]
+
+    [StaticSiteSnapShoter]
+    ca: Exportador de contingut estàtic
+    es: Exportador de contenido estático
+    en: Static content exporter
+
+        [plural]
+        ca: Exportadors de contingut estàtic
+        es: Exportadores de contenido estático
+        en: Static content exporters
+
+        [members]
+
+            [setup_expression]
+            ca: Preparació
+            es: Preparación
+            en: Setup
+
+            [postprocessing_expression]
+            ca: Postprocessat
+            es: Postprocesado
+            en: Postprocessing
+
+
+    [WgetSnapShoter]
+    ca: Exportador Wget
+    es: Exportador Wget
+    en: Wget exporter
+
+        [plural]
+        ca: Exportadors Wget
+        es: Exportadores Wget
+        en: Wget exporters
+
+        [members]
+
+            [file_names_mode]
+            ca: Mode dels noms de fitxers
+            es: Modo de los nombres de ficheros
+            en: File names mode
+
+                [values]
+
+                    [unix]
+                    ca: Unix
+                    es: Unix
+                    en: Unix
+
+                    [windows]
+                    ca: Windows
+                    es: Windows
+                    en: Windows
+

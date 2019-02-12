@@ -1,0 +1,72 @@
+
+[woost.extensions.sitemap.sitemap.SiteMap]
+ca: Mapa web
+es: Mapa web
+en: Site map
+
+    [plural]
+    ca: Mapes web
+    es: Mapas web
+    en: Site maps
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [included_locales]
+        ca: Idiomes a incloure
+        es: Idiomas a incluir
+        en: Included locales
+
+            [explanation]
+            ca:
+                Els idiomes que s'inclouran al mapa web generat. Deixar en
+                blanc per incloure tots els idiomes.
+            es:
+                Los idiomas que se incluirán en el mapa web generado. Dejar
+                en blanco para incluir todos los idiomas.
+            en:
+                The languages that will be included in the generated site map.
+                Leave blank to include all languages.
+
+        [content_expression]
+        ca: Contingut a incloure
+        es: Contenido a incluir
+        en: Included content
+
+            [explanation]
+            ca:
+                Una expressió Python que determina el contingut a incloure al
+                mapa web generat. Deixar en blanc per exportar tot el
+                contingut.
+            es:
+                Una expresión Python que determina el contenido a incluir en
+                el mapa web generado. Dejar en blanco para exportar todo el
+                contenido.
+            en:
+                A Python code block that selects the content to include in the
+                generated site map. Leave blank to include all the content.
+
+        [entries_expression]
+        ca: URLs a incloure
+        es: URLs a incluir
+        en: Included URLs
+
+            [explanation]
+            ca:
+                Una expressió Python que produeix les entrades del fitxer
+                corresponents a cada element publicable inclòs. Deixar en
+                blanc per produïr les entrades per defecte.
+            es:
+                Una expresión Python que produce las entradas del fichero
+                correspondientes a cada uno de los elementos publicables
+                incluídos. Dejar en blanco para producir las entradas por
+                defecto.
+            en:
+                A Python code block that produces the entries in the file
+                for each of the included publishable elements. Leave blank
+                to produce the default entries.
+

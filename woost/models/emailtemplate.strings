@@ -1,0 +1,162 @@
+
+[woost.models.emailtemplate.EmailTemplate]
+ca: Plantilla de correu electrònic
+es: Plantilla de correo electrónico
+en: E-mail template
+
+    [plural]
+    ca: Plantilles de correu electrònic
+    es: Plantillas de correo electrónico
+    en: E-mail templates
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [mime_type]
+        ca: Tipus MIME
+        es: Tipo MIME
+        en: MIME type
+
+        [sender]
+        ca: Remitent
+        es: Remitente
+        en: Sender
+
+        [receivers]
+        ca: Destinataris
+        es: Destinatarios
+        en: Receivers
+
+        [bcc]
+        ca: Còpia oculta
+        es: Copia oculta
+        en: Blind carbon copy
+
+        [template_engine]
+        ca: Motor de pintat
+        es: Motor de pintado
+        en: Rendering engine
+
+        [subject]
+        ca: Assumpte
+        es: Asunto
+        en: Subject
+
+        [body]
+        ca: Cos del missatge
+        es: Cuerpo del mensaje
+        en: Message body
+
+        [initialization_code]
+        ca: Codi d'inicialització
+        es: Código de inicialización
+        en: Initialization code
+
+            [explanation]
+            ca:
+                Un bloc de codi Python que permet modificar el context que
+                es facilita a la resta de camps durant la construcció del
+                missatge (útil per definir variables complexes i valors comuns
+                a diferents camps o traduccions).
+            es:
+                Un bloque de código Python que permite modificar el contexto
+                que se facilita al resto de campos durante la construcción del
+                mensaje (útil para definir variables complejas o valores
+                comunes a distintos campos o traducciones).
+            en:
+                A block of Python code that makes it possible to modify the
+                context supplid to the other fields when the message is
+                constructed (useful in order to more comfortably define complex
+                variables or values that must be shared across fields or
+                translations).
+
+        [language_expression]
+        ca: Idioma del missatge
+        es: Idioma del mensaje
+        en: Message language
+
+            [explanation]
+            ca:
+                Deixar en blanc per enviar el missatge en l'idioma actiu al
+                moment de l'enviament. Si es vol forçar l'idioma en que
+                s'hauria d'enviar el missatge es pot especificar una expressió
+                Python que produeixi el codi ISO de l'idioma desitjat. Cal
+                tenir present que aquesta expressió s'evalua abans que el camp
+                <em>codi d'inicialització</em>.
+            es:
+                Dejar en blanco para enviar el mensaje en el idioma que esté
+                activo en el momento. Si se quiere forzar el idioma en que se
+                debería enviar el mensaje se puede especificar una expresión
+                Python que produzca el código ISO del idioma deseado. Hay que
+                tener presente que esta expresión se evalua antes que el campo
+                <em>código de inicialización</em>.
+            en:
+                Leave it blank to send the message in the presently active
+                language. A Python expression can be used to produce the ISO
+                code of the desired language. Note that this expression will be
+                evaluated before the <em>initialization code</em> field.
+
+        [condition]
+        ca: Condició
+        es: Condición
+        en: Condition
+
+            [explanation]
+            ca:
+                <p>
+                    Un bloc de codi Python que permet decidir si el missatge
+                    s'hauria d'enviar o no, en funció dels paràmetres rebuts.
+                    Deixar en blanc per fer que el missatge s'enviï sempre.
+                </p>
+                <details>
+                    <summary>Detalls</summary>
+                    <p>
+                        El bloc hauria de definir una variable booleana
+                        <em>should_send</em> per decidir si el missatge
+                        s'enviarà o no. Es tindrà accés a tots els paràmetres
+                        passats a l'enviament; tanmateix, cal tenir en compte
+                        que el bloc s'avalua abans que el camp
+                        <em>codi d'inicialització</em>.
+                    </p>
+                </details>
+            es:
+                <p>
+                    Un bloque de código Python que permite decidir si el
+                    mensaje debería enviarse o no, en función de los parámetros
+                    recibidos. Dejar en blanco para que el mensaje se envíe
+                    siempre.
+                </p>
+                <details>
+                    <summary>Detalles</summary>
+                    <p>
+                        El bloque debería definir una variable booleana
+                        <em>should_send</em> para decidir si el mensaje se
+                        enviará o no. Se podrá acceder a todos los parámetros
+                        pasados durante el envío; sin embargo, es necesario
+                        tener en cuenta que el bloque se evaluará antes que
+                        el campo <em>código de inicialización</em>.
+                    </p>
+                </details>
+            en:
+                <p>
+                    A block of Python code that decides wether to send the
+                    message or not, based on the received parameters. Leave
+                    blank if there is no situation where the message should
+                    not be sent.
+                </p>
+                <details>
+                    <summary>Details</summary>
+                    <p>
+                        The block should define a boolean <em>should_send</em>
+                        variable, to indicate if the message should be sent or
+                        not. All parameters given to the e-mail template will
+                        be accessible; bear in mind that this field is
+                        evaluated before executing the contents of the
+                        <em>initialization code</em> field.
+                    </p>
+                </details>
+

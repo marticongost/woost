@@ -1,0 +1,23 @@
+
+[woost.extensions.shorturls.bitlyurlshortener.BitlyURLShortener]
+ca: Compte de bit.ly
+es: Cuenta de bit.ly
+en: bit.ly account
+
+    [plural]
+    ca: Comptes de bit.ly
+    es: Cuentas de bit.ly
+    en: bit.ly accounts
+
+    [members]
+
+        [login]
+        ca: Identificador del compte
+        es: Identificador de la cuenta
+        en: Login
+
+        [api_key]
+        ca: Clau de l'API
+        es: Clave de la API
+        en: API account
+

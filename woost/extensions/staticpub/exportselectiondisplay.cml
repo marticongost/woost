@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost.views.uigeneration import backoffice_display
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <py:cocktail.html.HiddenInput py:id="hidden_input"/>
+
+    <?py
+    element.data_binding_delegate = self.hidden_input
+    ?>
+
+    <ul py:id="entries">
+        <py:ready>
+            <?py
+            if self.value:
+                for item in self.value:
+                    element.append(self.create_entry(item))
+            else:
+                element.visible = False
+            ?>
+        </py:ready>
+    </ul>
+
+    <li py:def="entry" py:args="item">
+        <?py
+        display = backoffice_display.create_object_display(item)
+        element.append(display)
+        ?>
+    </li>
+
+    <div py:id="empty_label">
+        <py:ready>
+            <?py
+            if self.value:
+                element.visible = False
+            else:
+                element.append(translations(self.member, suffix = ".none"))
+            ?>
+        </py:ready>
+    </div>
+
+</div>
+

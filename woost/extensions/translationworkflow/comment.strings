@@ -1,0 +1,23 @@
+
+[woost.extensions.translationworkflow.comment.TranslationWorkflowComment]
+ca: Comentari de petició de traducció
+es: Comentario de petición de traducción
+en: Translation request comment
+
+    [plural]
+    ca: Comentaris de petició de traducció
+    es: Comentarios de petición de traducción
+    en: Translation request comments
+
+    [members]
+
+        [request]
+        ca: Petició
+        es: Petición
+        en: Request
+
+        [text]
+        ca: Text
+        es: Texto
+        en: Text
+

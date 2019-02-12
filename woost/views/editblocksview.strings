@@ -1,0 +1,33 @@
+
+[woost.views.EditBlocksView]
+
+    [languages_dropdown]
+    ca: Idiomes
+    es: Idiomas
+    en: Languages
+
+        [shortcut]
+        ca: i
+        es: i
+        en: l
+
+        [apply_button]
+        ca: Aplicar
+        es: Aplicar
+        en: Apply
+
+    [new_blocks_panel.panel_header]
+    ca: Bloc nou
+    es: Bloque nuevo
+    en: New block
+
+    [common_blocks_panel.panel_header]
+    ca: Blocs comuns
+    es: Bloques comunes
+    en: Common blocks
+
+    [dialog_close_button]
+    ca: Cancel·lar
+    es: Cancelar
+    en: Cancel
+

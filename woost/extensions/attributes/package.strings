@@ -1,0 +1,11 @@
+
+[woost.extensions.attributes.AttributesExtension]
+ca: Atributs
+es: Atributos
+en: Attributes
+
+    [plural]
+    ca: Atributs
+    es: Atributos
+    en: Attributes
+

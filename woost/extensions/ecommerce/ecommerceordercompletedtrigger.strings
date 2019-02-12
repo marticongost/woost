@@ -1,0 +1,13 @@
+
+[woost.extensions.ecommerce.ecommerceordercompletedtrigger.ECommerceOrderCompletedTrigger]
+ca: Disparador de comanda completada
+es: Disparador de pedido completado
+en: Order completed trigger
+fr: Order completed trigger
+
+    [plural]
+    ca: Disparadors de comanda completada
+    es: Disparadores de pedido completado
+    en: Order completed triggers
+	fr: Order completed trigger
+

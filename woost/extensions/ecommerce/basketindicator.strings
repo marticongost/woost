@@ -1,0 +1,8 @@
+
+[woost.extensions.ecommerce.BasketIndicator(count)]
+ca: ${plural2(count, u"<strong>1</strong> producte", u"<strong>%d</strong> productes")} a la cistella
+es: ${plural2(count, u"<strong>1</strong> producto", u"<strong>%d</strong> productos")} en la cesta
+en: ${plural2(count, u"<strong>1</strong> product", u"<strong>%d</strong> products")} in the shopping basket
+fr: ${plural2(count, u"<strong>1</strong> produit", u"<strong>%d</strong> produits")} au panier
+pt: ${plural2(count, u"<strong>1</strong> produto", u"<strong>%d</strong> produtos")} no cesta
+

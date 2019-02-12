@@ -1,0 +1,23 @@
+
+[woost.extensions.textfile.textfile.TextFile]
+ca: Fitxer de text
+es: Fichero de texto
+en: Text file
+
+    [plural]
+    ca: Fitxers de text
+    es: Ficheros de texto
+    en: Text files
+
+    [members]
+
+        [title]
+        ca: Títol
+        es: Título
+        en: Title
+
+        [content]
+        ca: Contingut
+        es: Contenido
+        en: Content
+

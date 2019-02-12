@@ -1,0 +1,10 @@
+
+[woost.models.user.User]
+
+    [members]
+
+        [facebook_user_id]
+        ca: Id de Facebook
+        es: Id de Facebook
+        en: Facebook ID
+

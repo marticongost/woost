@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from woost import app
+?>
+
+<address
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?py-class
+    website = None
+    ?>
+
+    <?py
+    element.add_class("vcard")
+    ?>
+
+    <py:ready>
+        <?py
+        if self.website is None:
+            self.website = app.website
+        ?>
+    </py:ready>
+
+    <py:woost.views.Image
+        py:id="vcard_logo"
+        py:image="@{self.website.logo}"
+        style="display:none">
+        <?py
+        element.add_class("logo")
+        ?>
+    </py:woost.views.Image>
+
+    <a
+        py:id="organization_label"
+        href="@{self.website.organization_url or self.website.home.get_uri()}"
+        py:visible="@{self.website.organization_name}">
+        <?py
+        element.add_class("fn")
+        element.add_class("org")
+        element.add_class("url")
+        ?>
+        @{self.website.organization_name}
+    </a>
+
+    <div
+        py:id="vcard_address"
+        py:collapsible="${True}">
+        <?py
+        element.add_class("adr")
+        ?>
+
+        <span
+            py:id="address_label"
+            py:visible="@{self.website.address}">
+            <?py
+            element.add_class("street-address")
+            ?>
+            @{self.website.address}
+        </span>
+
+        <span
+            py:id="postal_code_label"
+            py:visible="@{self.website.postal_code}">
+            <?py
+            element.add_class("postal-code")
+            ?>
+            @{self.website.postal_code}
+        </span>
+
+        <span
+            py:id="town_label"
+            py:visible="@{self.website.town}">
+            <?py
+            element.add_class("locality")
+            ?>
+            @{self.website.town}
+        </span>
+
+        <span
+            py:id="region_label"
+            py:visible="@{self.website.region}">
+            <?py
+            element.add_class("region")
+            ?>
+            @{self.website.region}
+            <py:ready>
+                <?py
+                if self.website.town == self.website.region:
+                    element.set_style("display", "none")
+                ?>
+            </py:ready>
+        </span>
+
+        <span
+            py:id="country_label"
+            py:visible="@{self.website.country}">
+            <?py
+            element.add_class("country-name")
+            ?>
+            @{self.website.country}
+        </span>
+    </div>
+
+    <span
+        py:id="phone_label"
+        py:visible="@{self.website.phone_number}">
+        <?py
+        element.add_class("tel")
+        ?>
+        <span py:local_id="abbr">${translations("woost.views.VCard.phone_number")}</span>
+        <span py:local_id="value">@{self.website.phone_number}</span>
+    </span>
+
+    <span
+        py:id="fax_label"
+        py:visible="@{self.website.fax_number}">
+        <?py
+        element.add_class("tel")
+        ?>
+        <span py:local_id="type">Fax</span>
+        <span py:local_id="value">@{self.website.fax_number}</span>
+    </span>
+
+    <a
+        py:id="email_label"
+        href="mailto:@{self.website.email or ''}"
+        py:visible="@{self.website.email}">
+        <?py
+        element.add_class("email")
+        ?>
+        @{self.website.email}
+    </a>
+
+</address>
+

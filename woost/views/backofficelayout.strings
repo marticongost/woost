@@ -1,0 +1,22 @@
+[woost.views.BackOfficeLayout]
+
+    [logout_button]
+    ca: Sortir
+    es: Salir
+    en: Log out
+
+    [drop]
+    ca: Inserir a dins
+    es: Insertar dentro
+    en: Insert inside
+
+    [drop_before]
+    ca: Inserir davant
+    es: Insertar en frente
+    en: Insert before
+
+    [drop_after]
+    ca: Inserir darrere
+    es: Insertar detrás
+    en: Insert after
+

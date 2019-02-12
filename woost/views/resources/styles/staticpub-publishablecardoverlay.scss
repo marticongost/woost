@@ -1,0 +1,26 @@
+
+.PublishableCard {
+
+    .static_pub_remark {
+        font-size: 13px;
+        margin-top: 8px;
+
+        summary {
+            cursor: pointer;
+        }
+
+        .language_list {
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    }
+}
+
+.BackOfficeItemView .page_title > .PublishableCard > .item_content > .item_info > .static_pub_remark .language_list {
+    width: 300px;
+}
+

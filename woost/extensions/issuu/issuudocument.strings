@@ -1,0 +1,52 @@
+
+[woost.extensions.issuu.issuudocument]
+
+    [IssuuDocument]
+    ca: Document Issuu
+    es: Documento Issuu
+    en: Issuu document
+
+        [plural]
+        ca: Documents Issuu
+        es: Documentos Issuu
+        en: Issuu documents
+
+        [groups]
+
+            [content]
+            ca: Contingut
+            es: Contingut
+            en: Contingut
+
+        [members]
+
+            [title]
+            ca: Títol
+            es: Título
+            en: Title
+
+            [issuu_document_url]
+            ca: URL document Issuu
+            es: URL documento Issuu
+            en: Issuu document URL
+
+            [thumbnail_page]
+            ca: Pàgina de la miniatura
+            es: Página de la miniatura
+            en: Thumbnail page
+
+            [issuu_document_id]
+            ca: ID document Issuu
+            es: ID documento Issuu
+            en: Issuu document ID
+
+            [issuu_config_id]
+            ca: ID configuració Issuu
+            es: ID configuración Issuu
+            en: Issuu config ID
+
+    [IssuuSearchAPIError.instance(error)]
+    ca: Error consulta a la Search API: <pre>${error.response}</pre>
+    es: Error consulta a la Search API: <pre>${error.response}</pre>
+    en: Issuu search API error: <pre>${error.response}</pre>
+

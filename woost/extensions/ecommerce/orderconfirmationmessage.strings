@@ -1,0 +1,43 @@
+[woost.extensions.ecommerce.OrderConfirmationMessage]
+
+    [product_subtotal_cell]
+    ca: Subtotal
+    es: Subtotal
+    en: Subtotal
+	fr: Subtotal
+
+    [product_footer_cell]
+    ca: Total
+    es: Total
+    en: Total
+	fr: Total
+
+    [introduction]
+    ca:
+        Gràcies per la teva compra! Hem rebut la teva comanda
+        correctament, i te la farem arribar amb la major brevetat possible.
+        A continuació pots veure els productes que has comprat i les dades
+        personals i d'enviament que has facilitat. Et recomanem que
+        conservis o imprimeixis aquest correu, com a comprovant de la
+        compra i per facilitar-ne qualsevol possible gestió.
+    es:
+        Gracias por tu compra! Hemos recibido tu pedido correctamente, y
+        te lo enviaremos en breve. A continuación te recordamos los
+        productos que has comprado y los datos personales y de envío que
+        nos has facilitado. Te recomendamos que conserves este correo, como
+        comprovante de la compra y para facilitar cualquier possible
+        gestión.
+    en:
+        Thank you for your purchase! We have received your order, and will
+        ship it to you as soon as possible. This message contains a summary
+        of the items you purchased, and of your personal and shipping
+        information. We recommend you keep or print this message, to use as
+        a purchase receipt.
+	fr:
+        Merci pour votre achat! Nous avons reçu votre commande
+        correctement, et nous alons l'envoyer le plus tôt possible.
+        Ci-dessous vous pouvez voir les produits que vous avez acheté et
+        les données personnelles que vous nous avez fourni. Nous
+        recommandons conserver ou imprimer cet email comme preuve de
+        l'achat et pour faciliter toute gestion.
+

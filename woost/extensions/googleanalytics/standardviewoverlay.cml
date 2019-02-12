@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<py:overlay
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates"
+    py:class="woost.views.StandardView">
+
+    <py:with
+        py:element="self.home_link"
+        py:ga_event_category="home_link"
+        py:ga_event_label="home_link"
+        py:ga_event_action="click"/>
+
+    <py:with py:element="self.menu" py:ga_event_label="main_menu"/>
+    <py:with py:element="self.small_screen_navigation" py:ga_event_label="small_screen_menu"/>
+
+</py:overlay>
+

@@ -1,0 +1,13 @@
+
+[woost.models.website.Website]
+
+    [groups]
+
+        [services.google_tag_manager]
+        @reuse "woost.models.configuration.Configuration.groups.services.google_tag_manager"
+
+    [members]
+
+        [google_tag_manager_account]
+        @reuse "woost.models.configuration.Configuration.members.google_tag_manager_account"
+

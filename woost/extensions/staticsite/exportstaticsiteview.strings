@@ -1,0 +1,39 @@
+[woost.extensions.staticsite.ExportStaticSiteView]
+
+    [export_info]
+    ca: S'exportaran els següents elements:
+    es: Se exportarán los siguientes elementos:
+    en: The following items will be exported:
+
+    [export_done]
+    ca: Exportació completada
+    es: Exportación completada
+    en: Content exported
+
+    [submit_button]
+    ca: Exportar
+    es: Exportar
+    en: Export
+
+    [status]
+
+        [ignored]
+        ca: Ignorat (no exportable)
+        es: Ignorado (no exportable)
+        en: Ignored (not exportable))
+
+        [not_modified]
+        ca: Ignorat (no modificat)
+        es: Ignorado (no modificado)
+        en: Ignored (not modified)
+
+        [exported]
+        ca: Exportat
+        es: Exportado
+        en: Exported
+
+        [failed]
+        ca: Fallit
+        es: Fallido
+        en: Failed
+

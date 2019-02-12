@@ -1,0 +1,33 @@
+
+[woost.extensions.translationworkflow.translationagency.TranslationAgency]
+ca: Agència de traducció
+es: Agencia de traducción
+en: Translation agency
+
+    [plural]
+    ca: Agències de traducció
+    es: Agencias de traducción
+    en: Translation agencies
+
+    [members]
+
+        [title]
+        ca: Nom
+        es: Nombre
+        en: Name
+
+        [managers]
+        ca: Gestors
+        es: Gestores
+        en: Managers
+
+        [translators]
+        ca: Traductors
+        es: Traductores
+        en: Translators
+
+        [translation_proficiencies]
+        ca: Traduccions que pot realitzar
+        es: Traducciones que puede realizar
+        en: Translations it can perform
+

@@ -1,0 +1,33 @@
+
+[woost.extensions.issuu.issuublock.IssuuBlock]
+ca: Document Issuu
+es: Documento Issuu
+en: Issuu document
+
+    [plural]
+    ca: Documents Issuu
+    es: Documentos Issuu
+    en: Issuu documents
+
+    [members]
+
+        [issuu_document]
+        ca: Document Issuu
+        es: Documento Issuu
+        en: Issuu document
+
+        [title]
+        ca: Controlador de document Issuu
+        es: Controlador de documento Issuu
+        en: Issuu document controller
+
+        [width]
+        ca: Amplada
+        es: Ancho
+        en: Width
+
+        [height]
+        ca: Alçada
+        es: Alto
+        en: Height
+

@@ -1,0 +1,33 @@
+
+[woost.models.menublock.MenuBlock]
+ca: Menú
+es: Menú
+en: Menu
+
+    [plural]
+    ca: Menús
+    es: Menús
+    en: Menus
+
+    [members]
+
+        [root]
+        ca: Arrel
+        es: Raiz
+        en: Root
+
+        [root_visible]
+        ca: Arrel visible
+        es: Raiz visible
+        en: Root visible
+
+        [max_depth]
+        ca: Profunditat màxima
+        es: Profundidad máxima
+        en: Maximum depth
+
+        [expanded]
+        ca: Expandit
+        es: Expandido
+        en: Expanded
+

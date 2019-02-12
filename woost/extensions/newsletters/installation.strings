@@ -1,0 +1,30 @@
+
+[woost.extensions.newsletters]
+
+    [newsletter_controller.title]
+    ca: Controlador de butlletins
+    es: Controlador de boletines
+    en: Newsletter controller
+
+    [newsletter_template.title]
+    ca: Plantilla de butlletí
+    es: Plantilla de boletín
+    en: Newsletter template
+
+    [image_factories]
+
+        [third.title]
+        ca: Butlletí - 33%
+        es: Boletín - 33%
+        en: Newsletter - 33%
+
+        [half.title]
+        ca: Butlletí - 50%
+        es: Boletín - 50%
+        en: Newsletter - 50%
+
+        [full.title]
+        ca: Butlletí - 100%
+        es: Boletín - 100%
+        en: Newsletter - 100%
+

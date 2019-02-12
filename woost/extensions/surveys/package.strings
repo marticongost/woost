@@ -1,0 +1,11 @@
+
+[woost.extensions.surveys.SurveysExtension]
+ca: Enquestes
+es: Encuestas
+en: Surveys
+
+    [plural]
+    ca: Enquestes
+    es: Encuestas
+    en: Surveys
+
