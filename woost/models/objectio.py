@@ -493,6 +493,52 @@ class ObjectExporter(object):
         """
         self._set_mode(args, ExportMode.ignore)
 
+    def export_only(self, model, exported_members):
+        """Export only the given members of a model, ignore all others."""
+
+        exported_members = set(
+            (
+                model.get_member(member)
+                if isinstance(member, basestring)
+                else member
+            )
+            for member in exported_members
+        )
+
+        for member in model.iter_members():
+
+            if member is Item.id or member is Item.global_id:
+                continue
+
+            if member in exported_members:
+                mode = ExportMode.export
+            else:
+                mode = ExportMode.ignore
+            self.set_member_export_mode(member, mode)
+
+    def expand_only(self, model, expanded_members):
+        """Expand only the given members of a model, ignore all others."""
+
+        expanded_members = set(
+            (
+                model.get_member(member)
+                if isinstance(member, basestring)
+                else member
+            )
+            for member in expanded_members
+        )
+
+        for member in model.iter_members():
+
+            if member is Item.id or member is Item.global_id:
+                continue
+
+            if member in expanded_members:
+                mode = ExportMode.expand
+            else:
+                mode = ExportMode.ignore
+            self.set_member_export_mode(member, mode)
+
     def _set_mode(self, lst, mode):
         for obj in lst:
             if isinstance(obj, schema.SchemaClass):
