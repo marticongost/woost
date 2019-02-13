@@ -125,7 +125,7 @@ from woost.models import Configuration, Publishable, Document
             element.add_resource("woost://styles/preview.scss.css")
             element.add_resource("cocktail://scripts/uri.js")
             element.add_resource("woost://scripts/preview.js")
-            element.set_client_variable("woost.preview.origin", unicode(get_request_root_url()).rstrip("/"))
+            element.set_client_variable("woost.preview.origin", str(get_request_root_url()).rstrip("/"))
 
         self.set_client_variable("woost.publishable", app.publishable and app.publishable.id)
         self.set_client_variable("woost.navigationPoint", app.navigation_point and app.navigation_point.id)

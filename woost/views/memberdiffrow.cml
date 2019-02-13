@@ -44,7 +44,7 @@ from woost.views.htmldiff import html_diff
             <py:ready>
                 <?py
                 if self.diff_language:
-                    element.append(u"(%s)" % translate_locale(self.diff_language))
+                    element.append("(%s)" % translate_locale(self.diff_language))
                 else:
                     element.visible = False
                 ?>
