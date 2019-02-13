@@ -600,7 +600,6 @@ class SiteInitializer(object):
             "File",
             "URI",
             "Styles",
-            "Feed",
             "FirstChildRedirection",
             "Login",
             "PasswordChange",
@@ -631,11 +630,6 @@ class SiteInitializer(object):
         self.configuration.default_uri_controller = (
             Controller.require_instance(
                 qname = "woost.uri_controller"
-            )
-        )
-        self.configuration.default_uri_controller = (
-            Controller.require_instance(
-                qname = "woost.feed_controller"
             )
         )
 

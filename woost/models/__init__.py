@@ -103,7 +103,6 @@ from .event import Event
 from .uri import URI
 from .file import File
 from .emailtemplate import EmailTemplate
-from .feed import Feed
 
 from .userfilter import (
     IsPublishedFilter,
@@ -121,7 +120,6 @@ from . import staticpublication
 with_default_controller("publishable")(Publishable)
 with_default_controller("file")(File)
 with_default_controller("uri")(URI)
-with_default_controller("feed")(Feed)
 
 # Blocks
 from .slot import Slot

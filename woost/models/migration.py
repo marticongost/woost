@@ -1784,7 +1784,6 @@ def assign_default_controllers(e):
         Publishable,
         File,
         URI,
-        Feed
     )
 
     config = Configuration.instance
@@ -1811,10 +1810,6 @@ def assign_default_controllers(e):
         URI: (
             "uri",
             "woost.controllers.uricontroller.URIController"
-        ),
-        Feed: (
-            "feed",
-            "woost.controllers.feedcontroller.FeedController"
         )
     }
 
