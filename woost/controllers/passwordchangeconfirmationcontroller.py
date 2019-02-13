@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Defines the `PasswordChangeConfirmationController` class.
+"""Defines the `PasswordChangeConfirmationController` class.
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """

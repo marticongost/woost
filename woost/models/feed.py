@@ -33,7 +33,7 @@ class Feed(Publishable):
         "item_description_expression"
     ]
 
-    default_mime_type = u"application/rss+xml"
+    default_mime_type = "application/rss+xml"
 
     edit_controller = \
         "woost.controllers.backoffice.feedfieldscontroller." \

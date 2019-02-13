@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -26,7 +26,7 @@ class BlockList(Element):
         Element._ready(self)
 
         if self.container is not None and self.slot is not None:
-            if isinstance(self.slot, basestring):
+            if isinstance(self.slot, str):
                 slot = self.container.__class__.get_member(self.slot)
             else:
                 slot = self.slot

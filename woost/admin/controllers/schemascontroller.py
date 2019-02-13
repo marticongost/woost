@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -92,7 +92,7 @@ class SchemasController(Cached, Controller):
                         filter_dfn.template.javascript_class
                     )
                 )
-                for filter_id, filter_dfn in filter_dfns.iteritems()
+                for filter_id, filter_dfn in filter_dfns.items()
             )
             yield "\n};\n"
 

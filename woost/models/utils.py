@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -98,7 +98,7 @@ def iter_text(objects = None):
         for member in obj.__class__.iter_members():
             if isinstance(member, schema.String):
                 if member.translated:
-                    languages = obj.translations.keys()
+                    languages = list(obj.translations.keys())
                 else:
                     languages = (None,)
 
@@ -109,7 +109,7 @@ def iter_text(objects = None):
 
 def grep(expr, objects = None):
 
-    if isinstance(expr, basestring):
+    if isinstance(expr, str):
         expr = re.compile(expr)
 
     for obj, member, language, value in iter_text(objects):
@@ -120,14 +120,14 @@ def grep(expr, objects = None):
 def hl(expr, objects = None):
 
     for obj, member, language, value, matches in grep(expr, objects):
-        print styled("-" * 100, style = "bold")
-        print styled(repr(obj), style = "bold"),
-        print styled(member.name, "slate_blue"),
+        print(styled("-" * 100, style = "bold"))
+        print(styled(repr(obj), style = "bold"), end=' ')
+        print(styled(member.name, "slate_blue"), end=' ')
 
         if language:
-            print styled(language, "pink")
+            print(styled(language, "pink"))
         else:
-            print
+            print()
 
         hl_value = value
         offset = 0
@@ -143,11 +143,11 @@ def hl(expr, objects = None):
             )
             offset += len(hl_chunk) - len(original_chunk)
 
-        print hl_value
+        print(hl_value)
 
 def replace(expr, replacement, objects = None, mode = "apply"):
 
-    if isinstance(expr, basestring):
+    if isinstance(expr, str):
         expr = re.compile(expr)
 
     if mode == "apply":
@@ -170,14 +170,14 @@ def replace(expr, replacement, objects = None, mode = "apply"):
             continue
 
         if show:
-            print styled("-" * 100, style = "bold")
-            print styled(translations(obj), style = "bold"),
-            print styled(member.name, "slate_blue"),
+            print(styled("-" * 100, style = "bold"))
+            print(styled(translations(obj), style = "bold"), end=' ')
+            print(styled(member.name, "slate_blue"), end=' ')
 
             if language:
-                print styled(language, "pink")
+                print(styled(language, "pink"))
             else:
-                print
+                print()
 
             diff = SequenceMatcher(a = value, b = modified_value)
             chunks = []
@@ -195,12 +195,12 @@ def replace(expr, replacement, objects = None, mode = "apply"):
                     if op in ("replace", "insert"):
                         chunks.append(styled(new_chunk, "white", "green"))
 
-            print "".join(chunks)
+            print("".join(chunks))
 
         if apply is None:
             answer = None
             while answer not in list("yn"):
-                answer = raw_input("Replace (y/n)? ")
+                answer = input("Replace (y/n)? ")
             if answer == "n":
                 continue
         elif not apply:
@@ -249,10 +249,10 @@ def search(
     )
 
     for result in query:
-        print styled(result, "slate_blue")
+        print(styled(result, "slate_blue"))
         highlights = highlighter.highlight(result)
         if highlights:
-            print highlights
+            print(highlights)
 
 def any_translation(obj, language_chain = None, **kwargs):
 
@@ -292,7 +292,7 @@ def rebase_id(base_id, verbose = False):
 
     # Remove all static publication links
     if verbose:
-        print "Removing static publication links"
+        print("Removing static publication links")
 
     for file in File.select():
         staticpublication.remove_links(file)
@@ -305,7 +305,7 @@ def rebase_id(base_id, verbose = False):
         if root_model.indexed:
 
             if verbose:
-                print "Rebasing", root_model.__name__
+                print("Rebasing", root_model.__name__)
 
             # Rebuild the object map
             pairs = list(root_model.index.items())
@@ -314,13 +314,13 @@ def rebase_id(base_id, verbose = False):
                 id_map[old_id] = new_id = incremental_id()
                 obj._id = new_id
                 if verbose:
-                    print "\t", old_id, ">", new_id
+                    print("\t", old_id, ">", new_id)
                 root_model.index.add(new_id, obj)
 
             # Rebuild the .keys set for all models
             for model in root_model.schema_tree():
                 if verbose:
-                    print "\t", "Rebuilding .keys for", model.__name__
+                    print("\t", "Rebuilding .keys for", model.__name__)
                 keys = list(model.keys)
                 model.keys.clear()
                 for old_id in keys:
@@ -337,7 +337,7 @@ def rebase_id(base_id, verbose = False):
             )
 
     if verbose:
-        print "Committing transaction"
+        print("Committing transaction")
 
     datastore.commit()
 
@@ -357,12 +357,12 @@ def rebase_id(base_id, verbose = False):
         old_path = os.path.join(upload_path, str(old_upload_id))
         new_path = os.path.join(upload_path, str(new_upload_id))
         if verbose:
-            print "Moving upload %s to %s" % (old_path, new_path)
+            print("Moving upload %s to %s" % (old_path, new_path))
         shutil.move(old_path, new_path)
 
     # Recreate static publication links
     if verbose:
-        print "Creating static publication links"
+        print("Creating static publication links")
 
     for file in File.select():
         staticpublication.create_links(file)
@@ -443,7 +443,7 @@ def show_translation_coverage(
                     line = styled(line, **style)
                     break
 
-        print line
+        print(line)
 
 def export_json(
     obj,
@@ -454,7 +454,7 @@ def export_json(
     kwargs.setdefault("verbose", True)
 
     exporter = exporter or objectio.ObjectExporter()
-    for key, value in kwargs.iteritems():
+    for key, value in kwargs.items():
         setattr(exporter, key, value)
 
     if json_encoder_settings is None:
@@ -485,7 +485,7 @@ def import_json(json, importer = None, **kwargs):
     kwargs.setdefault("verbose", True)
 
     importer = importer or objectio.ObjectImporter()
-    for key, value in kwargs.iteritems():
+    for key, value in kwargs.items():
         setattr(importer, key, value)
 
     importer.loads(json)

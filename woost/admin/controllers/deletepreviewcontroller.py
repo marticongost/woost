@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -26,7 +26,7 @@ class DeletePreviewController(Controller):
         root = []
         data = {"root": root}
 
-        if isinstance(id_list, basestring):
+        if isinstance(id_list, str):
             id_list = [id_list]
 
         for id in id_list:
@@ -51,7 +51,7 @@ class DeletePreviewController(Controller):
                 member.name,
                 x.export_object_list(values, ref = True)
             )
-            for member, values in node["blocking"].iteritems()
+            for member, values in node["blocking"].items()
         )
         data["_cascade_delete"] = dict(
             (
@@ -61,7 +61,7 @@ class DeletePreviewController(Controller):
                     for subnode in subnodes
                 ]
             )
-            for member, subnodes in node["cascade"].iteritems()
+            for member, subnodes in node["cascade"].items()
         )
         return data
 

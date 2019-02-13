@@ -1,18 +1,18 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 from warnings import warn
 from collections import Sequence, Mapping, Set, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
-from itertools import izip_longest
+from itertools import zip_longest
 import sys
 import base64
 import json
@@ -93,7 +93,7 @@ def get_object_ref(obj):
 @GenericClassMethod
 def resolve_object_ref(cls, ref):
 
-    for key, value in ref.iteritems():
+    for key, value in ref.items():
         if value is not None and value != "" and not key.startswith("@"):
             member = cls.get_member(key)
             if (
@@ -111,7 +111,7 @@ def resolve_object_ref(cls, ref):
 def create_object_from_ref(cls, ref):
     obj = cls()
 
-    for key, value in ref.iteritems():
+    for key, value in ref.items():
         if not key.startswith("@"):
             member = obj.__class__.get_member(key)
             if (
@@ -176,7 +176,7 @@ class ObjectExporter(object):
 
         if self.verbose and message and visible:
             if self.verbose:
-                print " " * self._depth * 2 + message
+                print(" " * self._depth * 2 + message)
 
             self._depth += 1
             try:
@@ -191,16 +191,16 @@ class ObjectExporter(object):
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
 
-        if isinstance(dest, basestring):
+        if isinstance(dest, str):
             with open(dest, "w") as file:
-                json.dump(self.__exported_data.values(), file, **options)
+                json.dump(list(self.__exported_data.values()), file, **options)
         else:
-            json.dump(self.__exported_data.values(), dest, **options)
+            json.dump(list(self.__exported_data.values()), dest, **options)
 
     def dumps(self, **kwargs):
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
-        return json.dumps(self.__exported_data.values(), **options)
+        return json.dumps(list(self.__exported_data.values()), **options)
 
     def add_all(self, objects):
         for obj in objects:
@@ -308,11 +308,11 @@ class ObjectExporter(object):
                         )
                     )
                     for index, (item, item_member) in enumerate(
-                        izip_longest(value, node.member.items)
+                        zip_longest(value, node.member.items)
                     )
                 ]
             elif (
-                not isinstance(value, basestring)
+                not isinstance(value, str)
                 and not isinstance(value, (Mapping, DictWrapper))
                 and isinstance(
                     value,
@@ -366,7 +366,7 @@ class ObjectExporter(object):
 
             elif isinstance(value, DictWrapper):
                 items = {}
-                for k, v in value.iteritems():
+                for k, v in value.items():
                     v_node = ExportNode(
                         self,
                         v,
@@ -499,7 +499,7 @@ class ObjectExporter(object):
         exported_members = set(
             (
                 model.get_member(member)
-                if isinstance(member, basestring)
+                if isinstance(member, str)
                 else member
             )
             for member in exported_members
@@ -522,7 +522,7 @@ class ObjectExporter(object):
         expanded_members = set(
             (
                 model.get_member(member)
-                if isinstance(member, basestring)
+                if isinstance(member, str)
                 else member
             )
             for member in expanded_members
@@ -745,7 +745,7 @@ class ObjectImporter(object):
 
     def load(self, file, encoding = "utf-8"):
 
-        if isinstance(file, basestring):
+        if isinstance(file, str):
             with open(file, "r") as file:
                 string = file.read()
         else:
@@ -763,7 +763,7 @@ class ObjectImporter(object):
 
         # Make a first pass to pregenerate all new objects
         if self.verbose:
-            print "Resolving or creating %d objects" % len(object_list)
+            print("Resolving or creating %d objects" % len(object_list))
             bar = ProgressBar(len(object_list))
             bar.update()
 
@@ -787,7 +787,7 @@ class ObjectImporter(object):
 
         # And a second pass to load object state
         if self.verbose:
-            print "Importing object state"
+            print("Importing object state")
             bar = ProgressBar(len(objects))
             bar.update()
 
@@ -804,24 +804,24 @@ class ObjectImporter(object):
 
     def print_missing_references_report(self):
         if self.missing_references:
-            print "\nThe following references couldn't be resolved:\n"
+            print("\nThe following references couldn't be resolved:\n")
             for ref, count in self.missing_references.most_common():
-                print "  %s (%d)" % (ref, count)
+                print("  %s (%d)" % (ref, count))
 
     def print_missing_members_report(self):
         if self.missing_members:
-            print "\nThe following members aren't defined:"
-            for cls, keys in self.missing_members.iteritems():
-                print "\n  %s:" % cls.__name__
+            print("\nThe following members aren't defined:")
+            for cls, keys in self.missing_members.items():
+                print("\n  %s:" % cls.__name__)
                 for key, count in keys.most_common():
-                    print "  -%s (%d)" % (key, count)
-            print
+                    print("  -%s (%d)" % (key, count))
+            print()
 
     def import_object_data(self, obj, data):
-        for key, value in data.iteritems():
+        for key, value in data.items():
             try:
                 self.import_object_key(obj, key, value)
-            except Exception, e:
+            except Exception as e:
                 if self.verbose:
                     sys.stderr.write(
                         styled(
@@ -837,7 +837,7 @@ class ObjectImporter(object):
                 raise
 
     def import_object_key(self, obj, key, value):
-        if isinstance(key, unicode):
+        if isinstance(key, str):
             key = str(key)
 
         if key.startswith("@"):
@@ -873,7 +873,7 @@ class ObjectImporter(object):
             return
 
         if member.translated:
-            for lang, lang_value in value.iteritems():
+            for lang, lang_value in value.items():
                 if (
                     self.language_subset is None
                     or lang in self.language_subset
@@ -924,7 +924,7 @@ class ObjectImporter(object):
         if value is None:
             return None
         elif (
-            not isinstance(value, basestring)
+            not isinstance(value, str)
             and isinstance(value, (
                 Sequence,
                 Set,
@@ -940,7 +940,7 @@ class ObjectImporter(object):
                         item_member,
                         item
                     )
-                    for item, item_member in izip_longest(value, member.items)
+                    for item, item_member in zip_longest(value, member.items)
                 )
             else:
                 sequence_type = member.default_type
@@ -964,7 +964,7 @@ class ObjectImporter(object):
                     self.import_object_value(obj, member.keys, k),
                     self.import_object_value(obj, member.values, v)
                 )
-                for k, v in value.iteritems()
+                for k, v in value.items()
             )
         elif isinstance(member, schema.Reference):
             if member.class_family:
@@ -1082,7 +1082,7 @@ class ObjectImporter(object):
         )
         parser.add_argument(
             "--unknown-members",
-            choices = UnknownMemberPolicy.__members__.keys()
+            choices = list(UnknownMemberPolicy.__members__.keys())
         )
         return parser
 
@@ -1116,7 +1116,7 @@ def _store_file_contents_after_commit(successful):
 
     if file_contents is not None:
 
-        for id, data in file_contents.iteritems():
+        for id, data in file_contents.items():
             file = File.get_instance(id)
             if file is None:
                 continue

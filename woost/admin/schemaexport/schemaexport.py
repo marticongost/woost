@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -66,18 +66,18 @@ class MemberExport(object):
     def get_declaration(self, member, nested = False):
         writer = SourceCodeWriter()
         self.write_declaration(member, writer, nested = nested)
-        return unicode(writer)
+        return str(writer)
 
     def write_declaration(self, member, writer, nested = False):
 
-        opening = self.get_instantiation(member, nested) + u"("
-        closure = u")"
+        opening = self.get_instantiation(member, nested) + "("
+        closure = ")"
 
         props = list(self.get_properties(member, nested))
 
         if props:
-            opening += u"{"
-            closure = u"}" + closure
+            opening += "{"
+            closure = "}" + closure
 
             with writer.indented_block(opening, closure):
                 for prop, is_last in iter_last(props):
@@ -85,13 +85,13 @@ class MemberExport(object):
                         prop(writer, is_last)
                     else:
                         writer.write(
-                            (u"%s: %s" + (u"" if is_last else u",")) % prop
+                            ("%s: %s" + ("" if is_last else ",")) % prop
                         )
         else:
             writer.write(opening, closure)
 
     def get_instantiation(self, member, nested):
-        return u"new " + self.get_class(member)
+        return "new " + self.get_class(member)
 
     def get_class(self, member):
         return member.ui_member_class
@@ -99,98 +99,98 @@ class MemberExport(object):
     def get_properties(self, member, nested):
 
         if member.name:
-            yield u"name", dumps(self.get_member_name(member))
+            yield "name", dumps(self.get_member_name(member))
 
         if member.required:
-            yield u"required", self._dump_constraint(member.required)
+            yield "required", self._dump_constraint(member.required)
 
         if member.descriptive:
-            yield u"descriptive", dumps(member.descriptive)
+            yield "descriptive", dumps(member.descriptive)
 
         if member.primary:
-            yield u"primary", dumps(member.primary)
+            yield "primary", dumps(member.primary)
 
         if member.unique:
-            yield u"unique", dumps(member.unique)
+            yield "unique", dumps(member.unique)
 
         if member.translated:
-            yield u"translated", dumps(member.translated)
+            yield "translated", dumps(member.translated)
 
         if (
             member.enumeration
             and not callable(member.enumeration)
             and not isinstance(member.enumeration, Expression)
         ):
-            yield u"enumeration", self._dump_enumeration(member.enumeration)
+            yield "enumeration", self._dump_enumeration(member.enumeration)
 
         if (
             member.translatable_enumeration
             != member.__class__.translatable_enumeration
         ):
             yield (
-                u"translatableEnumeration",
+                "translatableEnumeration",
                 dumps(member.translatable_enumeration)
             )
 
         if member.member_group:
-            yield u"[cocktail.ui.group]", dumps(member.member_group)
+            yield "[cocktail.ui.group]", dumps(member.member_group)
 
         if member.editable == schema.NOT_EDITABLE:
-            yield u"[cocktail.ui.editable]", "cocktail.ui.NOT_EDITABLE"
+            yield "[cocktail.ui.editable]", "cocktail.ui.NOT_EDITABLE"
         elif member.editable == schema.READ_ONLY:
-            yield u"[cocktail.ui.editable]", "cocktail.ui.READ_ONLY"
+            yield "[cocktail.ui.editable]", "cocktail.ui.READ_ONLY"
 
         if member.ui_display:
             yield (
-                u"[cocktail.ui.display]",
+                "[cocktail.ui.display]",
                 self.export_display(member.ui_display)
             )
 
         if member.ui_inert_display:
             yield (
-                u"[cocktail.ui.inertDisplay]",
+                "[cocktail.ui.inertDisplay]",
                 self.export_display(member.ui_inert_display)
             )
 
         if member.ui_form_control:
             yield (
-                u"[woost.admin.ui.formControl]",
+                "[woost.admin.ui.formControl]",
                 self.export_display(member.ui_form_control)
             )
 
         if member.ui_read_only_form_control:
             yield (
-                u"[cocktail.ui.readOnlyFormControl]",
+                "[cocktail.ui.readOnlyFormControl]",
                 self.export_display(member.ui_read_only_form_control)
             )
 
         if member.ui_item_set_selector_display:
             yield (
-                u"[cocktail.ui.itemSetSelectorDisplay]",
+                "[cocktail.ui.itemSetSelectorDisplay]",
                 self.export_display(member.ui_item_set_selector_display)
             )
 
         if member.ui_collection_editor_control:
             yield (
-                u"[cocktail.ui.collectionEditorControl]",
+                "[cocktail.ui.collectionEditorControl]",
                 self.export_display(member.ui_collection_editor_control)
             )
 
         if member.ui_autocomplete_display:
             yield (
-                u"[cocktail.ui.autocompleteDisplay]",
+                "[cocktail.ui.autocompleteDisplay]",
                 self.export_display(member.ui_autocomplete_display)
             )
 
         if not member.listed_by_default:
             yield (
-                u"[cocktail.ui.listedByDefault]",
+                "[cocktail.ui.listedByDefault]",
                 "false"
             )
 
         if member.ui_column_width:
             yield (
-                u"[cocktail.ui.columnWidth]",
+                "[cocktail.ui.columnWidth]",
                 dumps(member.ui_column_width)
             )
 
@@ -198,15 +198,15 @@ class MemberExport(object):
             permissions = self.get_permissions(member)
             if permissions:
                 yield (
-                    u"[woost.models.permissions]",
+                    "[woost.models.permissions]",
                     dumps(permissions)
                 )
 
         if member.admin_custom_filters:
             yield (
-                u"[woost.admin.filters.customFilters]",
-                u"{%s}" % u", ".join(
-                    u"%s: %s" % (
+                "[woost.admin.filters.customFilters]",
+                "{%s}" % ", ".join(
+                    "%s: %s" % (
                         dumps(filter_class.filter_id),
                         self.get_member_name(filter_class)
                     )
@@ -215,7 +215,7 @@ class MemberExport(object):
             )
 
         if getattr(member, "is_setting", False):
-            yield (u"[woost.models.isSetting]", "true")
+            yield ("[woost.models.isSetting]", "true")
 
     def export_display(self, display):
         if isinstance(display, tuple):
@@ -243,7 +243,7 @@ class MemberExport(object):
         if member.name:
             return dict(
                 (perm_id, check(member))
-                for perm_id, check in self.permissions.iteritems()
+                for perm_id, check in self.permissions.items()
             )
         else:
             return None

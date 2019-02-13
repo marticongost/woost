@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -160,7 +160,7 @@ class User(Item):
 
         if cls.encryption_method:
 
-            if isinstance(data, unicode):
+            if isinstance(data, str):
                 data = data.encode("utf-8")
 
             data = cls.encryption_method(data).hexdigest()
@@ -287,11 +287,11 @@ class User(Item):
 
         if verbose:
             role = None
-            print permission_check_style(translations(permission_type))
-            print permission_param_style("user", translations(self))
+            print(permission_check_style(translations(permission_type)))
+            print(permission_param_style("user", translations(self)))
 
-            for key, value in context.iteritems():
-                print permission_param_style(key, _describe(value))
+            for key, value in context.items():
+                print(permission_param_style(key, _describe(value)))
 
         permissions = self.iter_permissions(permission_type)
 
@@ -301,15 +301,15 @@ class User(Item):
                 new_role = permission.role
                 if new_role is not role:
                     role = new_role
-                    print role_style(_describe(role))
+                    print(role_style(_describe(role)))
 
-                print permission_style(_describe(permission))
+                print(permission_style(_describe(permission)))
 
             if permission.match(verbose = verbose, user = self, **context):
 
                 if permission.authorized:
                     if verbose:
-                        print authorized_style("authorized")
+                        print(authorized_style("authorized"))
                     return True
                 else:
                     break

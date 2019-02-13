@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -251,7 +251,7 @@ class Item(PersistentObject):
     @classmethod
     def _create_translation_schema(cls, members):
         members["versioned"] = False
-        PersistentObject._create_translation_schema.im_func(cls, members)
+        PersistentObject._create_translation_schema.__func__(cls, members)
 
     @classmethod
     def _add_member(cls, member):
@@ -275,7 +275,7 @@ class Item(PersistentObject):
         # Store the item state for the revision
         state = PersistentMapping()
 
-        for key, member in self.__class__.members().iteritems():
+        for key, member in self.__class__.members().items():
 
             if not member.versioned:
                 continue
@@ -283,7 +283,7 @@ class Item(PersistentObject):
             if member.translated:
                 value = dict(
                     (language, translation.get(key))
-                    for language, translation in self.translations.iteritems()
+                    for language, translation in self.translations.items()
                 )
             else:
                 value = copy_mutable_containers(self.get(key))
@@ -482,7 +482,7 @@ class Item(PersistentObject):
         if not image_factory:
             image_factory = "default"
 
-        if isinstance(image_factory, basestring):
+        if isinstance(image_factory, str):
             pos = image_factory.rfind(".")
             if pos != -1:
                 ext = image_factory[pos + 1:]

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -12,7 +12,7 @@ WEBSITE_PREFIX = "website-"
 
 def resolve_object_ref(id):
 
-    if isinstance(id, basestring):
+    if isinstance(id, str):
 
         if id == "config":
             return Configuration.instance

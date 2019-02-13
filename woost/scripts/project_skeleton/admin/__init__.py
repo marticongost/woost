@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Site specific admin customization.
+"""Site specific admin customization.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """

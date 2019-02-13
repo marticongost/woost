@@ -134,7 +134,7 @@ class Notification(object):
         if filter:
             matching = []
 
-            if isinstance(filter, basestring):
+            if isinstance(filter, str):
                 match = lambda notification: notification.category == filter
             elif (
                 isinstance(filter, type) and issubclass(filter, Notification)

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -132,7 +132,7 @@ class ChangeSet(PersistentObject):
     @classmethod
     def extract_searchable_text(cls, extractor):
         PersistentObject.extract_searchable_text(extractor)
-        for change in extractor.current.value.changes.itervalues():
+        for change in extractor.current.value.changes.values():
             extractor.extract(change.__class__, change)
 
     @classgetter
@@ -262,7 +262,7 @@ class ChangeSetHasChangeExpression(schema.expressions.Expression):
         self.include_implicit = include_implicit
 
     def op(self, changeset, action):
-        for change in changeset.changes.itervalues():
+        for change in changeset.changes.values():
             if (
                 # Filter by target
                 (
@@ -328,14 +328,14 @@ def _translate_change_ca(action, target):
         if not target_desc:
             return ""
 
-        target_desc = u"<em>" + target_desc + u"</em>"
+        target_desc = "<em>" + target_desc + "</em>"
 
     if action == "edit":
-        action_desc = u"Edició"
+        action_desc = "Edició"
     elif action == "create":
-        action_desc = u"Creació"
+        action_desc = "Creació"
     elif action == "delete":
-        action_desc = u"Eliminació"
+        action_desc = "Eliminació"
     else:
         return ""
 
@@ -351,18 +351,18 @@ def _translate_change_es(action, target):
         if not target_desc:
             return ""
 
-        target_desc = u"<em>" + target_desc + u"</em>"
+        target_desc = "<em>" + target_desc + "</em>"
 
     if action == "edit":
-        action_desc = u"Edición"
+        action_desc = "Edición"
     elif action == "create":
-        action_desc = u"Creación"
+        action_desc = "Creación"
     elif action == "delete":
-        action_desc = u"Eliminación"
+        action_desc = "Eliminación"
     else:
         return ""
 
-    return action_desc + u" de " + target_desc
+    return action_desc + " de " + target_desc
 
 def _translate_change_en(action, target):
 
@@ -374,18 +374,18 @@ def _translate_change_en(action, target):
         if not target_desc:
             return ""
 
-        target_desc = u"<em>" + target_desc + u"</em>"
+        target_desc = "<em>" + target_desc + "</em>"
 
     if action == "edit":
-        action_desc = u"modified"
+        action_desc = "modified"
     elif action == "create":
-        action_desc = u"created"
+        action_desc = "created"
     elif action == "delete":
-        action_desc = u"deleted"
+        action_desc = "deleted"
     else:
         return ""
 
-    return target_desc + u" " + action_desc
+    return target_desc + " " + action_desc
 
 translations.define("woost.models.changesets.Change.instance",
     ca = lambda change, **kwargs:

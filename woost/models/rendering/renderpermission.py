@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -24,7 +24,7 @@ class RenderPermission(ContentPermission):
     def match(self, target, image_factory, verbose = False):
 
         if self.factories and image_factory not in self.factories:
-            print permission_doesnt_match_style("factory doesn't match")
+            print(permission_doesnt_match_style("factory doesn't match"))
             return False
 
         return ContentPermission.match(self, target, verbose)

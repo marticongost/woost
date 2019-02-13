@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -44,7 +44,7 @@ def add_agreement(form, name = "terms", document = default_document):
     if document is default_document:
         document = "%s.%s" % (app.package, name)
 
-    if isinstance(document, basestring):
+    if isinstance(document, str):
         document = Publishable.require_instance(qname = document)
 
     member = FormAgreement(

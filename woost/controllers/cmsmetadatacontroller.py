@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -44,13 +44,13 @@ class CMSMetadataController(Controller):
                 return dumps(data)
             elif format == "javascript":
                 cherrypy.response.headers["Content-Type"] = "text/javascript"
-                javascript = [u"cocktail.declare('woost.metadata');"]
-                for key, value in data.iteritems():
+                javascript = ["cocktail.declare('woost.metadata');"]
+                for key, value in data.items():
                     javascript.append(
-                        u"woost.metadata.%s = %s;"
+                        "woost.metadata.%s = %s;"
                         % (key, dumps(value))
                     )
-                return u"\n".join(javascript)
+                return "\n".join(javascript)
             else:
                 raise ValueError(
                     "The 'format' parameter should be one of 'json' or "

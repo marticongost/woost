@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -40,7 +40,7 @@ class ImageSize(schema.String):
     @classmethod
     def resolve_size(cls, value, size):
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             if value.endswith("%"):
                 value = float(value.rstrip("%")) / 100
             elif "." in value:
@@ -94,7 +94,7 @@ class VerticalAlignment(schema.String):
 
 def resolve_color(value):
 
-    if isinstance(value, basestring):
+    if isinstance(value, str):
 
         value = value.lstrip("#")
 
@@ -741,8 +741,8 @@ class Fade(ImageEffect):
         edge_opacity = self.edge_opacity
         opacity_delta = self.inner_opacity - edge_opacity
 
-        for x in xrange(w):
-            for y in xrange(h):
+        for x in range(w):
+            for y in range(h):
 
                 if x < lw:
                     hor_opacity = float(x) / lw

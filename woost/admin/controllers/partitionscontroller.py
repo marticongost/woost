@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -29,7 +29,7 @@ class PartitionsController(Controller):
         else:
             data = [
                 self.export_partition(part_method, value)
-                for value in part_method.values()
+                for value in list(part_method.values())
             ]
 
         return json.dumps(data)

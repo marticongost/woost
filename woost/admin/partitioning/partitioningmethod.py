@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -10,7 +10,7 @@ from .registration import _methods
 ALL_RESULTS = object()
 
 
-class PartitioningMethod(object):
+class PartitioningMethod(object, metaclass=ABCMeta):
     """A specific partitioning method for an object listing.
 
     This is an abstract base class. Most partitioning will be based on a single
@@ -29,7 +29,6 @@ class PartitioningMethod(object):
         A boolean indicating whether the method is enabled or not. Disabled
         methods are not shown on the admin interface.
     """
-    __metaclass__ = ABCMeta
 
     enabled = True
     include_all_results_partition = True
@@ -245,7 +244,7 @@ class PartitioningMethod(object):
         selected_partition_query = None
         result_counts = []
 
-        for value in self.values():
+        for value in list(self.values()):
 
             partition_expr = self.get_expression(value)
 
