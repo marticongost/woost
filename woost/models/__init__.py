@@ -103,14 +103,7 @@ from .event import Event
 from .uri import URI
 from .file import File
 from .emailtemplate import EmailTemplate
-
-from .userfilter import (
-    IsPublishedFilter,
-    TypeFilter
-)
-
 from .caching import CachingPolicy
-
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings
 from . import staticpublication
@@ -145,6 +138,7 @@ from .textblock import TextBlock
 from .tweetbutton import TweetButton
 from .twittertimelineblock import TwitterTimelineBlock
 from .videoblock import VideoBlock
+
 from .importurl import url_importer
 from . import migration
 
