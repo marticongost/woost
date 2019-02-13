@@ -29,7 +29,23 @@ auto = object()
 
 Export = None
 
-class Export(object):
+class ExportMetaclass(type):
+
+    def __init__(cls, name, bases, members):
+
+        type.__init__(cls, name, bases, members)
+
+        if Export is not None:
+            for base in bases:
+                if issubclass(base, Export):
+                    cls.model_exporters = base.model_exporters.new_child()
+                    cls.member_expansion = \
+                        base.member_expansion.new_child()
+                    cls.member_fields = base.member_fields.new_child()
+                    break
+
+
+class Export(metaclass = ExportMetaclass):
 
     model_exporters = ChainTypeMapping()
     member_expansion = ChainMap()
@@ -55,21 +71,6 @@ class Export(object):
             cls.model_exporters[model] = func
             return func
         return decorator
-
-    class __metaclass__(type):
-
-        def __init__(cls, name, bases, members):
-
-            type.__init__(cls, name, bases, members)
-
-            if Export is not None:
-                for base in bases:
-                    if issubclass(base, Export):
-                        cls.model_exporters = base.model_exporters.new_child()
-                        cls.member_expansion = \
-                            base.member_expansion.new_child()
-                        cls.member_fields = base.member_fields.new_child()
-                        break
 
     def __init__(
         self,
