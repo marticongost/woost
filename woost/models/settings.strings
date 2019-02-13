@@ -258,7 +258,7 @@
         en:
             This option will only be taken into account if
             <em>HTTPS policy</em> is set to <em>Decide on a per-page
-             u"basis</em>.
+            basis</em>.
 
     [timezone]
     ca: Zona horària
