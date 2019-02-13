@@ -7,7 +7,7 @@ from cocktail.translations.helpers import plural2
 [woost.admin.controllers.datacontroller]
 
     [count(model, count)]
-    ca: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
-    es: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
-    en: ${plural2(count, u"1 " + decapitalize(translations(model)), u"%d " + decapitalize(translations(model, suffix = ".plural")))}
+    ca: ${plural2(count, "1 " + decapitalize(translations(model)), "%d " + decapitalize(translations(model, suffix = ".plural")))}
+    es: ${plural2(count, "1 " + decapitalize(translations(model)), "%d " + decapitalize(translations(model, suffix = ".plural")))}
+    en: ${plural2(count, "1 " + decapitalize(translations(model)), "%d " + decapitalize(translations(model, suffix = ".plural")))}
 
