@@ -9,8 +9,8 @@ Controllers for the CMS backend and frontend applications.
 """
 from warnings import warn
 from cocktail.controllers import context
-from woost.controllers.cmscontroller import CMSController
-from woost.controllers.module import Module
-from woost.controllers.basecmscontroller import BaseCMSController
-from woost.controllers.notifications import notify_user, Notification
+from .cmscontroller import CMSController
+from .module import Module
+from .basecmscontroller import BaseCMSController
+from .notifications import notify_user, Notification
 
