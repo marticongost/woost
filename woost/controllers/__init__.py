@@ -10,7 +10,6 @@ Controllers for the CMS backend and frontend applications.
 from warnings import warn
 from cocktail.controllers import context
 from .cmscontroller import CMSController
-from .module import Module
 from .basecmscontroller import BaseCMSController
 from .notifications import notify_user, Notification
 
