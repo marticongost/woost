@@ -9,14 +9,16 @@
 import buffet
 from mimetypes import guess_type
 from email.mime.text import MIMEText
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEImage import MIMEImage
-from email.MIMEBase import MIMEBase
-from email.Header import Header
-from email.Utils import formatdate, parseaddr, formataddr
-from email import Encoders
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from email.header import Header
+from email.utils import formatdate, parseaddr, formataddr
+from email.encoders import encode_base64
+from pkg_resources import iter_entry_points
 from cocktail import schema
 from cocktail.translations import language_context
+from cocktail.controllers.renderingengines import get_rendering_engine
 from .item import Item
 from .configuration import Configuration
 from .file import File
@@ -215,7 +217,7 @@ class EmailTemplate(Item):
                         main_type, sub_type = mime_type.split('/', 1)
                         message_attachment = MIMEBase(main_type, sub_type)
                         message_attachment.set_payload(open(file_path).read())
-                        Encoders.encode_base64(message_attachment)
+                        encode_base64(message_attachment)
                         message_attachment.add_header("Content-ID", "<%s>" % cid)
                         message_attachment.add_header(
                             'Content-Disposition',

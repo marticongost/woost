@@ -147,7 +147,7 @@ class File(Publishable):
 
                 source = temp_path
 
-            if encoding and isinstance(file_name, str):
+            if encoding and isinstance(file_name, bytes):
                 file_name = file_name.decode(encoding)
 
             if assign_file_name:
@@ -320,7 +320,7 @@ def file_hash(source, algorithm = "md5", chunk_size = 1024):
 
     if isinstance(source, str):
         should_close = True
-        source = open(source, "r")
+        source = open(source, "rb")
     else:
         should_close = False
 

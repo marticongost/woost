@@ -7,8 +7,6 @@
 @since:			October 2008
 """
 
-import sha
-from string import letters, digits
 from random import choice
 from optparse import OptionParser
 from getpass import getpass
