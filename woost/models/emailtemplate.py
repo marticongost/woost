@@ -6,7 +6,6 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-import buffet
 from mimetypes import guess_type
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -82,7 +81,10 @@ class EmailTemplate(Item):
     )
 
     template_engine = schema.String(
-        enumeration = list(buffet.available_engines.keys()),
+        enumeration = [
+            engine.name
+            for engine in iter_entry_points("python.templating.engines")
+        ],
         translatable_enumeration = False,
         text_search = False,
         listed_by_default = False
@@ -162,7 +164,7 @@ class EmailTemplate(Item):
 
             # Subject and body (templates)
             if self.template_engine:
-                template_engine = buffet.available_engines[self.template_engine]
+                template_engine = get_rendering_engine(self.template_engine)
                 engine = template_engine(
                     options = {"mako.output_encoding": self.encoding}
                 )
