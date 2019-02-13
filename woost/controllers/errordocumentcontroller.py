@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		    Javier Marrero
 @contact:		    javier.marrero@whads.com
@@ -15,7 +15,7 @@ class ErrorDocumentController(DocumentController):
 
     def submit(self):
 
-        if cherrypy.config.has_key('tools.error_email.on') and \
+        if 'tools.error_email.on' in cherrypy.config and \
             cherrypy.config['tools.error_email.on']:
 
             error_email(

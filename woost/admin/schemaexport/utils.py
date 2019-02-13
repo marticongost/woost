@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -9,7 +9,7 @@ from woost.admin.views import available_views
 def iter_last(items):
     iterator = iter(items)
     try:
-        prev = iterator.next()
+        prev = next(iterator)
     except StopIteration:
         pass
     else:
@@ -20,7 +20,7 @@ def iter_last(items):
 
 def export_view_names(target):
     return (
-        u"[woost.admin.views.views]",
+        "[woost.admin.views.views]",
         dumps([
             view.name
             for view in available_views(target)

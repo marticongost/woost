@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -19,7 +19,7 @@ class Slot(schema.Collection):
 
         if not related_end:
             related_end = schema.Reference()
-        elif isinstance(related_end, basestring):
+        elif isinstance(related_end, str):
             related_end = schema.Reference(related_end)
         elif isinstance(related_end, dict):
             related_end = schema.Reference(**related_end)

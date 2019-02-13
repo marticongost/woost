@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -64,7 +64,7 @@ class Grid(Item):
                 "%s: (%s)" % (
                     size.identifier,
                     ", ".join(
-                        ("%s:%dpx" % prop) for prop in geometry.iteritems()
+                        ("%s:%dpx" % prop) for prop in geometry.items()
                     )
                 )
             )

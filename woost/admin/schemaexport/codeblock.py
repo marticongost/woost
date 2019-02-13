@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -18,5 +18,5 @@ class CodeBlockExport(MemberExport):
             yield prop
 
         if member.language:
-            yield u"language", dumps(member.language)
+            yield "language", dumps(member.language)
 

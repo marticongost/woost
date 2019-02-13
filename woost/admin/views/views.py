@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -79,14 +79,14 @@ def available_views(target = None):
     :rtype: iterable of `View`
     """
     if target is None:
-        views = _views.itervalues()
+        views = iter(_views.values())
     elif isinstance(target, (schema.RelationMember, PersistentClass)):
         views = registered_views(target)
     else:
         views = target
 
     for view in views:
-        if isinstance(view, basestring):
+        if isinstance(view, str):
             view = require_view(view)
         if view.is_available():
             yield view
@@ -174,7 +174,7 @@ def unregister_view(view, target):
 
     if views:
 
-        if isinstance(view, basestring):
+        if isinstance(view, str):
             view_name = view
         else:
             view_name = view.name
@@ -201,7 +201,7 @@ def registered_views(target):
         # Per member registrations trump per model registrations
         registrations = _registered_views.get(target)
         if registrations:
-            return _order_views(registrations.itervalues())
+            return _order_views(iter(registrations.values()))
 
         model = target.related_type
 
@@ -222,13 +222,13 @@ def registered_views(target):
             registrations.extend(
                 (view, position, inheritable)
                 for view, position, inheritable
-                in cls_registrations.itervalues()
+                in cls_registrations.values()
                 if inheritable
             )
 
     model_registrations = _registered_views.get(model)
     if model_registrations:
-        registrations.extend(model_registrations.itervalues())
+        registrations.extend(iter(model_registrations.values()))
 
     return _order_views(registrations)
 
@@ -279,7 +279,7 @@ def _order_views(registrations):
                 views.insert(i, view)
 
         while relative:
-            for view_name in relative.itervalues():
+            for view_name in relative.values():
                 insert_rel(view_name)
                 break
 

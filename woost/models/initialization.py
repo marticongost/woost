@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
-from __future__ import with_statement
+
 import sha
 from string import letters, digits
 from random import choice
@@ -180,7 +180,7 @@ class SiteInitializer(object):
         self.admin_password = options.password
 
         if self.admin_email is None:
-            self.admin_email = raw_input("Administrator email: ") or "admin@localhost"
+            self.admin_email = input("Administrator email: ") or "admin@localhost"
 
         if self.admin_password is None:
             self.admin_password = getpass("Administrator password: ") \
@@ -191,7 +191,7 @@ class SiteInitializer(object):
 
         languages = options.languages \
             and options.languages.replace(",", " ") \
-            or raw_input("Languages: ") or "en"
+            or input("Languages: ") or "en"
 
         self.languages = languages.split()
         self.extensions = options.extensions.split(",")
@@ -200,13 +200,13 @@ class SiteInitializer(object):
 
         self.initialize()
 
-        print (
-            u"Your site has been successfully created. You can start it by "
-            u"executing the 'run.py' script. An administrator account for the "
-            u"content manager interface has been generated with email "
-            u"%s and the supplied password."
+        print((
+            "Your site has been successfully created. You can start it by "
+            "executing the 'run.py' script. An administrator account for the "
+            "content manager interface has been generated with email "
+            "%s and the supplied password."
             % self.admin_email
-        )
+        ))
 
     def initialize(self):
         self.reset_database()
@@ -228,7 +228,7 @@ class SiteInitializer(object):
     def _create(self, _model, **values):
         instance = _model()
 
-        for key, value in values.iteritems():
+        for key, value in values.items():
             if isinstance(value, TranslatedValues):
                 trans_key = "woost.initialization."
 
@@ -817,8 +817,8 @@ class SiteInitializer(object):
             title = TranslatedValues(),
             subject = TranslatedValues(),
             body = TranslatedValues(),
-            sender = u'u"noreply@' + self.hosts[0] + '"',
-            receivers = u"[user.email]"
+            sender = 'u"noreply@' + self.hosts[0] + '"',
+            receivers = "[user.email]"
         )
 
     def create_login_page(self):

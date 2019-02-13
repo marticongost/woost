@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -7,7 +7,7 @@ u"""
 @since:			March 2009
 """
 import re
-import htmlentitydefs
+import html.entities
 from difflib import _mdiff
 from cocktail.modeling import GenericMethod
 from cocktail.html import templates
@@ -49,15 +49,15 @@ def _unescape(text):
             # character reference
             try:
                 if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
+                    return chr(int(text[3:-1], 16))
                 else:
-                    return unichr(int(text[2:-1]))
+                    return chr(int(text[2:-1]))
             except ValueError:
                 pass
         else:
             # named entity
             try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+                text = chr(html.entities.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
         return text # leave as is
@@ -78,5 +78,5 @@ if __name__ == "__main__":
     from_seq = ["Hello universe!"]
     to_seq = ["Hello world!"]
     diffs = html_diff(from_seq, to_seq)
-    print diffs
+    print(diffs)
 

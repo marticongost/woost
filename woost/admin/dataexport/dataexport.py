@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -104,7 +104,7 @@ class Export(object):
 
         self.excluded_members = excluded_members
 
-        if isinstance(thumbnail_factory, basestring):
+        if isinstance(thumbnail_factory, str):
             thumbnail_factory = ImageFactory.require_instance(
                 identifier = thumbnail_factory
             )
@@ -267,7 +267,7 @@ class Export(object):
                             value = v
                         )
                     )
-                    for k, v in value.iteritems()
+                    for k, v in value.items()
                 )
             elif (
                 isinstance(member, schema.Collection)
@@ -283,7 +283,7 @@ class Export(object):
             elif isinstance(member, schema.JSON):
                 try:
                     return json.loads(value)
-                except ValueError, e:
+                except ValueError as e:
                     raise ValueError(
                         str(e) + " (at object %r, member %r, language %r)" % (
                             obj,
@@ -293,7 +293,7 @@ class Export(object):
                     )
         try:
             return self.export_value(value)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError(
                 str(e) + " (at object %r, member %r, language %r)" % (
                     obj,
@@ -306,7 +306,7 @@ class Export(object):
         return obj.get(member, language)
 
     def export_value(self, value):
-        if value is None or isinstance(value, (basestring, int, float)):
+        if value is None or isinstance(value, (str, int, float)):
             return value
         elif isinstance(value, (date, time, datetime)):
             return value.isoformat()
@@ -319,7 +319,7 @@ class Export(object):
         elif isinstance(value, (Mapping, DictWrapper)):
             return dict(
                 (self.export_value(k), self.export_value(v))
-                for k, v in value.iteritems()
+                for k, v in value.items()
             )
         else:
             raise ValueError("Can't export %s to JSON" % repr(value))
@@ -377,7 +377,7 @@ def make_permissions_field(exporter):
                     )
                 )
                 for key, permission_class
-                in exporter.exported_permissions.iteritems()
+                in exporter.exported_permissions.items()
             )
         )
 

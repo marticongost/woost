@@ -109,7 +109,7 @@ class ImagesController(BaseCMSController):
                 format,
                 parameters
             )
-        except BadRenderingRequest, ex:
+        except BadRenderingRequest as ex:
             raise cherrypy.HTTPError(400, ex.message)
 
         return serve_file(image_cache_file)

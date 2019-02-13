@@ -421,7 +421,7 @@ class Publishable(Item, PublishableObject):
     @classmethod
     def rebuild_per_website_publication_index(cls, verbose = False):
         if verbose:
-            print "Rebuilding the Publishable/Website index"
+            print("Rebuilding the Publishable/Website index")
         del datastore.root[WEBSITE_PUB_INDEX_KEY]
         for publishable in cls.select():
             publishable.__insert_into_per_website_publication_index()

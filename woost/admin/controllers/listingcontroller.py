@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -121,18 +121,18 @@ class ListingController(Controller):
                 "application/json; charset=utf-8"
 
             html = [
-                u'{"count": %s, "records": [\n'
+                '{"count": %s, "records": [\n'
                 % json.dumps(self._get_count_object(count))
             ]
-            glue = u""
+            glue = ""
 
             for record in results:
                 html.append(glue)
-                glue = u",\n"
+                glue = ",\n"
                 html.append(json.dumps(record))
 
-            html.append(u"]}")
-            return u"".join(html)
+            html.append("]}")
+            return "".join(html)
 
     @cherrypy.expose
     def ids(self, **kwargs):
@@ -162,7 +162,7 @@ class ListingController(Controller):
         if self.range:
             query.range = (0, self.range[1])
 
-        return u'{"count": %s, "objects": [%s]}\n' % (
+        return '{"count": %s, "objects": [%s]}\n' % (
             json.dumps(self._get_count_object(count)),
             ", ".join(str(id) for id in query.execute())
         )
@@ -285,7 +285,7 @@ class ListingController(Controller):
         if value == "_object":
             return None
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             return value.split()
 
         return value or [get_language()]
@@ -299,7 +299,7 @@ class ListingController(Controller):
             or self.default_export
         )
 
-        if isinstance(export_class, basestring):
+        if isinstance(export_class, str):
             try:
                 export_class = self.exports[export_class]
             except KeyError:
@@ -350,14 +350,14 @@ class ListingController(Controller):
             try:
                 page = int(page)
                 assert page >= 0
-            except ValueError, AssertionError:
+            except ValueError as AssertionError:
                 raise cherrypy.HTTPError(400, "Invalid page number")
 
         if not isinstance(page_size, int):
             try:
                 page_size = int(page_size)
                 assert page_size > 0
-            except ValueError, AssertionError:
+            except ValueError as AssertionError:
                 raise cherrypy.HTTPError(400, "Invalid value for page_size")
 
         start = page_size * page

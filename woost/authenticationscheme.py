@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -35,7 +35,7 @@ class AuthenticationScheme(object):
 
         try:
             self.process_auth()
-        except AuthenticationFailedError, e:
+        except AuthenticationFailedError as e:
             authentication_errors = ErrorList()
             authentication_errors.add(e)
             cherrypy.request.authentication_errors = authentication_errors

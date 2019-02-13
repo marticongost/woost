@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -38,15 +38,15 @@ def _remove_dir_contents(path, pattern = None):
         for item in items:
             item_path = os.path.join(path, item)
             if debug:
-                print styled(" " * 4 + item_path, "red")
+                print(styled(" " * 4 + item_path, "red"))
             try:
                 if os.path.isdir(item_path):
                     rmtree(item_path)
                 else:
                     os.remove(item_path)
-            except OSError, ex:
+            except OSError as ex:
                 if debug:
-                    print styled(ex, "red")
+                    print(styled(ex, "red"))
 
 def clear_image_cache(item = None, factory = None):
 
@@ -55,17 +55,17 @@ def clear_image_cache(item = None, factory = None):
 
     if debug:
         from cocktail.styled import styled
-        print styled("Clearing image cache", "red"),
+        print(styled("Clearing image cache", "red"), end=' ')
 
         if item:
-            print styled("Item:", "light_gray"),
-            print styled(item, "red", style = "bold"),
+            print(styled("Item:", "light_gray"), end=' ')
+            print(styled(item, "red", style = "bold"), end=' ')
 
         if factory:
-            print styled("Factory:", "light_gray"),
-            print styled(factory, "red", style = "bold"),
+            print(styled("Factory:", "light_gray"), end=' ')
+            print(styled(factory, "red", style = "bold"), end=' ')
 
-        print
+        print()
 
     # Remove the full cache
     if item is None and factory is None:
@@ -185,7 +185,7 @@ def require_rendering(
         except OSError:
             pass
 
-        if isinstance(image, basestring):
+        if isinstance(image, str):
             try:
                 os.remove(image_cache_file)
             except OSError:
@@ -219,7 +219,7 @@ def require_rendering(
                     factory.id
                 )
                 options = compile(factory.options_code, label, "exec")
-                exec options in context
+                exec(options, context)
 
             # Save the image to the filesystem
             image.save(image_cache_file, format, **save_options)

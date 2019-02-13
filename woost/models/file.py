@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -12,7 +12,7 @@ import hashlib
 from weakref import WeakKeyDictionary
 from mimetypes import guess_type
 from shutil import copy, copyfileobj
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from tempfile import mkdtemp
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
@@ -123,7 +123,7 @@ class File(Publishable):
         user_agent = None,
         redownload = False
     ):
-        is_path = isinstance(source, basestring)
+        is_path = isinstance(source, str)
 
         if is_path:
 
@@ -137,7 +137,7 @@ class File(Publishable):
                 temp_path = os.path.join(download_temp_folder, file_name)
 
                 if redownload or not os.path.exists(temp_path):
-                    opener = urllib2.build_opener()
+                    opener = urllib.request.build_opener()
                     if user_agent:
                         opener.addheaders = [("User-Agent", user_agent)]
                     response = opener.open(source)
@@ -294,7 +294,7 @@ def _delete_files_after_commit(success, deleted_instances):
 
 def _duplicate_files_after_commit(success, dup_files):
     if success:
-        for clone, source in dup_files.iteritems():
+        for clone, source in dup_files.items():
             if clone.is_inserted:
                 copy(source.file_path, clone.file_path)
 
@@ -318,7 +318,7 @@ def file_hash(source, algorithm = "md5", chunk_size = 1024):
     """
     hash = hashlib.new(algorithm)
 
-    if isinstance(source, basestring):
+    if isinstance(source, str):
         should_close = True
         source = open(source, "r")
     else:

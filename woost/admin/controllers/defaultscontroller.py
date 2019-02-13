@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -47,7 +47,7 @@ class DefaultsController(Controller):
 
     def _resolve_locales(self, locales):
 
-        if isinstance(locales, basestring):
+        if isinstance(locales, str):
             locales = locales.split()
 
         app_languages = Configuration.instance.languages

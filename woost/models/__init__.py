@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 Provides base and default content types for the woost CMS.
 
 @author:		Martí Congost

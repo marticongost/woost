@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Defines the `Block` model.
+"""Defines the `Block` model.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -311,12 +311,12 @@ class Block(Item):
             def add_embedded_styles(document):
                 try:
                     css = self.get_embedded_css()
-                except sass.CompileError, error:
+                except sass.CompileError as error:
                     sys.stderr.write(
                         (
-                            u"Error compiling SASS for block %s:\n"
-                            u"  SASS:\n%s\n"
-                            u"  Exception: %s" % (
+                            "Error compiling SASS for block %s:\n"
+                            "  SASS:\n%s\n"
+                            "  Exception: %s" % (
                                 repr(self).decode("utf-8"),
                                 sass_code,
                                 error
@@ -354,7 +354,7 @@ class Block(Item):
             controller.block = self
             controller.view = view
             controller()
-            for key, value in controller.output.iteritems():
+            for key, value in controller.output.items():
                 setattr(view, key, value)
 
         initialization = self.initialization
@@ -365,7 +365,7 @@ class Block(Item):
                 "exec"
             )
             context = {"block": self, "view": view}
-            exec code in context
+            exec(code, context)
             del context["block"]
             del context["view"]
 

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Functions to parse and serialize partitioning methods specifiers (ie. for
+"""Functions to parse and serialize partitioning methods specifiers (ie. for
 HTTP request parameters).
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>

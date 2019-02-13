@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2009
 """
-import __builtin__
+import builtins
 from datetime import datetime
 import cherrypy
 from cocktail.controllers.location import Location
@@ -42,7 +42,7 @@ class FeedController(PublishableController):
 
         params = {
             "title": feed.title,
-            "url": unicode(location),
+            "url": str(location),
             "description": feed.description,
             "language": get_language(),
             "now": rfc822_date(datetime.now())
@@ -50,11 +50,11 @@ class FeedController(PublishableController):
 
         location.path_info = self.application_uri()
         location.query_string = None
-        base_url = unicode(location)
+        base_url = str(location)
         params["base_url"] = base_url
 
         output = []
-        output.append(u"""<?xml version='1.0' encoding='utf-8'?>
+        output.append("""<?xml version='1.0' encoding='utf-8'?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title><![CDATA[%(title)s]]></title>
@@ -72,7 +72,7 @@ class FeedController(PublishableController):
                 image_uri = base_url + image_uri[1:]
 
             params["image_url"] = image_uri
-            output.append(u"""
+            output.append("""
         <image>
             <url>%(image_url)s</url>
             <title>%(title)s</title>
@@ -80,7 +80,7 @@ class FeedController(PublishableController):
         </image>""" % params)
 
         if feed.ttl:
-            output.append(u"""
+            output.append("""
         <ttl>%d</ttl>""" % feed.ttl)
 
         context = {
@@ -137,7 +137,7 @@ class FeedController(PublishableController):
                 link = base_url + link[1:]
 
             output.append(
-u"""        <item>
+"""        <item>
             <title><![CDATA[%(title)s]]></title>
             <url><![CDATA[%(url)s]]></url>
             <guid isPermaLink="true"><![CDATA[%(url)s]]></guid>
@@ -149,18 +149,18 @@ u"""        <item>
             pub_date = eval(item_publication_date_code, context)
             if pub_date:
                 output.append(
-u"""            <pubDate><![CDATA[%s]]></pubDate>""" % rfc822_date(pub_date))
+"""            <pubDate><![CDATA[%s]]></pubDate>""" % rfc822_date(pub_date))
 
             description = eval(item_description_code, context)
             if description:
                 output.append(
-u"""            <description><![CDATA[%s]]></description>""" % description)
+"""            <description><![CDATA[%s]]></description>""" % description)
 
             output.append(
-u"""        </item>""")
+"""        </item>""")
 
-        output.append(u"""
+        output.append("""
     </channel>
 </rss>""")
-        return u"\n".join(output).encode("utf-8")
+        return "\n".join(output).encode("utf-8")
 

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Defines migrations to the database schema for woost.
+"""Defines migrations to the database schema for woost.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -239,7 +239,7 @@ def add_multisite_support(e):
     site_state = site.__Broken_state__.copy()
     site_state["translations"] = dict(
         (lang, translation.__Broken_state__.copy())
-        for lang, translation in site_state.pop("_translations").iteritems()
+        for lang, translation in site_state.pop("_translations").items()
     )
     Item.index.remove(site_id)
     Item.keys.remove(site_id)
@@ -324,7 +324,7 @@ def add_multisite_support(e):
         "keywords",
         "description"
     ):
-        for lang, translation_state in site_state["translations"].iteritems():
+        for lang, translation_state in site_state["translations"].items():
             value = translation_state.pop("_" + key)
             website.set(key, value, lang)
 
@@ -479,7 +479,7 @@ def remove_workflow_extension(e):
 
             break
 
-            for member in Extension.members().itervalues():
+            for member in Extension.members().values():
                 if member.indexed:
                     member.rebuild_index()
 
@@ -594,7 +594,7 @@ def move_blocks_to_core(e):
 
             block = TextBlock()
 
-            for lang, trans in page.translations.iteritems():
+            for lang, trans in page.translations.items():
                 if hasattr(trans, "_body"):
                     block.set("text", trans._body, lang)
                     del trans._body
@@ -958,7 +958,7 @@ def initialize_enabled_translations(e):
 
     for cls in (Publishable, Block):
         for item in cls.select():
-            for lang, translation in item.translations.iteritems():
+            for lang, translation in item.translations.items():
                 if (
                     not item.per_language_publication
                     or getattr(translation, "_translation_enabled", False)
@@ -1013,13 +1013,13 @@ def introduce_publishable_access_level(e):
             break
     else:
         warn(
-            u"The migration expected to find a permission in the 'Everybody' "
-            u"role that allowed all users to read publishable objects, so it "
-            u"could be modified to take access levels into account. Since "
-            u"that permission is not present, you will have to create it "
-            u"manually, or otherwise access levels won't work. Check the "
-            u"SiteInitializer.create_everybody_role() method for clues on "
-            u"how the permission should work."
+            "The migration expected to find a permission in the 'Everybody' "
+            "role that allowed all users to read publishable objects, so it "
+            "could be modified to take access levels into account. Since "
+            "that permission is not present, you will have to create it "
+            "manually, or otherwise access levels won't work. Check the "
+            "SiteInitializer.create_everybody_role() method for clues on "
+            "how the permission should work."
         )
 
     # Create the "Only for editors" access level
@@ -1030,9 +1030,9 @@ def introduce_publishable_access_level(e):
         level.insert()
     else:
         warn(
-            u"The migration wanted to create an 'Only for editors' access "
-            u"level, but the 'Editors' role can't be found. If you want it, "
-            u"you will have to create the access level on your own."
+            "The migration wanted to create an 'Only for editors' access "
+            "level, but the 'Editors' role can't be found. If you want it, "
+            "you will have to create the access level on your own."
         )
 
     # Import access levels from the 'restrictedaccess' extension
@@ -1064,13 +1064,13 @@ def introduce_publishable_access_level(e):
         AccessRestriction.select().delete_items()
 
         warn(
-            u"The deprecated 'restrictedaccess' extension has been disabled. "
-            u"Instances of AccessRestriction have been replaced with "
-            u"equivalent AccessLevel instances. You should relate the created "
-            u"levels to their roles, and delete or correct the existing "
-            u"permissions that were used to enforce access restrictions using "
-            u"the AccessRestriction model.\n\nAlso, *remember to reboot your "
-            u"site*!"
+            "The deprecated 'restrictedaccess' extension has been disabled. "
+            "Instances of AccessRestriction have been replaced with "
+            "equivalent AccessLevel instances. You should relate the created "
+            "levels to their roles, and delete or correct the existing "
+            "permissions that were used to enforce access restrictions using "
+            "the AccessRestriction model.\n\nAlso, *remember to reboot your "
+            "site*!"
         )
 
     # Rebuild indexes
@@ -1104,7 +1104,7 @@ def use_sets_for_publishable_website_relations(e):
         pub_websites[publishable] = set(publishable.websites)
         del publishable._websites
 
-    for publishable, websites in pub_websites.iteritems():
+    for publishable, websites in pub_websites.items():
         publishable.websites = websites
 
 
@@ -1523,7 +1523,7 @@ def add_site_identifiers(e):
             identifier = "website%d" % n
 
         website.identifier = identifier
-        print identifier
+        print(identifier)
 
 #------------------------------------------------------------------------------
 
@@ -1637,7 +1637,7 @@ def create_block_catalogs(e):
         return schema.TranslatedValues(
             **dict(
                 (lang, v)
-                for lang, v in values.iteritems()
+                for lang, v in values.items()
                 if lang in config.languages
             )
         )
@@ -1694,9 +1694,9 @@ def create_block_catalogs(e):
     footer_def = (
         "footer_blocks", {
             "title": T(
-                ca = u"Peu de pàgina",
-                es = u"Pie de página",
-                en = u"Footer"
+                ca = "Peu de pàgina",
+                es = "Pie de página",
+                en = "Footer"
             )
         }
     )
@@ -1704,9 +1704,9 @@ def create_block_catalogs(e):
     create_catalogs(config, "woost.block_catalogs", [
         ("common_blocks", {
             "title": T(
-                ca = u"Blocs comuns",
-                es = u"Bloques comunes",
-                en = u"Common blocks"
+                ca = "Blocs comuns",
+                es = "Bloques comunes",
+                en = "Common blocks"
             )
         }),
         footer_def
@@ -1717,7 +1717,7 @@ def create_block_catalogs(e):
             website,
             website.identifier + ".block_catalogs",
             (footer_def,) if getattr(website, "_footer_blocks", None) else (),
-            title_suffix = u" - " + translations(website)
+            title_suffix = " - " + translations(website)
         )
 
     for block in catalog_blocks:
@@ -1864,7 +1864,7 @@ def assign_default_controllers(e):
         )
 
     for model, (controller_name, controller_fullname) \
-    in model_controllers.iteritems():
+    in model_controllers.items():
         controller = Controller.select({"python_name": controller_fullname})[0]
         if controller:
             key = "default_%s_controller" % controller_name

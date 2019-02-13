@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -66,7 +66,7 @@ class TransactionController(Controller):
 
                 try:
                     datastore.commit()
-                except ConflictError, conflict_error:
+                except ConflictError as conflict_error:
                     if attempts > self.max_transaction_attempts:
                         raise
                     attempt += 1

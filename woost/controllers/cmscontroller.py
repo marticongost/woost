@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -16,9 +16,9 @@ import json
 from warnings import warn
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 import rfc822
 import cherrypy
@@ -274,7 +274,7 @@ class CMSController(BaseCMSController):
     def resolve(self, path):
 
         # Consume path segments
-        for x in xrange(
+        for x in range(
             len(path) - len(app.url_resolution.remaining_segments)
         ):
             path.pop(0)
@@ -474,7 +474,7 @@ class CMSController(BaseCMSController):
             response.status = status
 
         if body:
-            if isinstance(body, unicode):
+            if isinstance(body, str):
                 body = body.encode("utf-8")
 
             event.handled = True
@@ -552,7 +552,7 @@ class CMSController(BaseCMSController):
         error_data = {
             "type": get_full_name(error.__class__),
             "label": translations(error),
-            "message": unicode(error)
+            "message": str(error)
         }
         error_document = {"error": error_data}
 

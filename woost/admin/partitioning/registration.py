@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Functions to define and query the partitioning methods available to
+"""Functions to define and query the partitioning methods available to
 different models and members.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -78,7 +78,7 @@ def methods(target = None):
     :rtype: Iterable sequence of `PartitioningMethod` objects
     """
     if not target:
-        return _methods.values()
+        return list(_methods.values())
 
     if (
         isinstance(target, schema.RelationMember)

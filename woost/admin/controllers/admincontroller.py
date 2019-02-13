@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -53,7 +53,7 @@ class AdminController(PublishableController):
     def __call__(self, *args, **kwargs):
 
         config = Configuration.instance
-        url = unicode(app.publishable.get_uri()).rstrip("/")
+        url = str(app.publishable.get_uri()).rstrip("/")
 
         # Collect UI component dependencies for the admin sections
         dependencies = set()
@@ -106,7 +106,7 @@ class AdminController(PublishableController):
             extra_dependencies = dependencies,
             variables = {
                 "woost.admin.origin":
-                    unicode(get_request_root_url()).rstrip("/"),
+                    str(get_request_root_url()).rstrip("/"),
                 "woost.admin.url": url,
                 "woost.admin.id": app.publishable.id
             }
