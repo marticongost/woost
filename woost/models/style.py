@@ -8,7 +8,6 @@
 """
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.modeling import getter
 from .item import Item
 
 

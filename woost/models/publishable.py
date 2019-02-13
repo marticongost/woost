@@ -7,7 +7,7 @@
 @since:			January 2010
 """
 from datetime import datetime
-from cocktail.modeling import getter, classgetter
+from cocktail.modeling import classgetter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
 from cocktail.translations import (

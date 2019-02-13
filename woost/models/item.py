@@ -10,7 +10,7 @@ import re
 from datetime import date, datetime
 from contextlib import contextmanager
 from cocktail.iteration import first
-from cocktail.modeling import getter, copy_mutable_containers
+from cocktail.modeling import copy_mutable_containers
 from cocktail.events import event_handler, when, Event, EventInfo
 from cocktail.urls import URL
 from cocktail import schema
@@ -165,7 +165,7 @@ class Item(PersistentObject):
 
     __deleted = False
 
-    @getter
+    @property
     def is_deleted(self):
         return self.__deleted
 

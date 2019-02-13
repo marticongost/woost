@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			August 2009
 """
-from cocktail.modeling import getter, cached_getter
+from cocktail.modeling import cached_getter
 from cocktail.schema.expressions import (
     Self,
     Constant,
@@ -117,7 +117,7 @@ class ChangeSetHasChangeFilter(UserFilter):
             ]
         )
 
-    @getter
+    @property
     def expression(self):
         return ChangeSetHasChangeExpression(
             self.target or self.target_type,

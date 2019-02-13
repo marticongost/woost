@@ -8,7 +8,6 @@
 """
 from urllib.parse import urlencode
 import cherrypy
-from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.controllers import Controller, request_property
 from cocktail.html import renderers, templates
