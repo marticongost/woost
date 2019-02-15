@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "3.0b1",
+    version = "2.13",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -57,7 +57,7 @@ of its features include:\n"
         "chainmap",
         "libsass",
         "mako==1.*",
-        "cocktail==1.13b1"
+        "cocktail==1.14"
     ],
     packages = find_packages(),
     include_package_data = True,
