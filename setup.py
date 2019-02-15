@@ -57,7 +57,8 @@ of its features include:\n"
         "chainmap",
         "libsass",
         "mako==1.*",
-        "cocktail[sass]==2.0a1"
+        "cocktail[sass]==2.0a1",
+        "zeo"
     ],
     packages = find_packages(),
     include_package_data = True,
