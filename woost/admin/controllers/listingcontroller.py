@@ -7,8 +7,12 @@ import json
 import cherrypy
 from cocktail.translations import translations, get_language
 from cocktail.schema.expressions import Self
-from cocktail.controllers import Controller, get_parameter, request_property
-from cocktail.controllers.csrfprotection import no_csrf_token_injection
+from cocktail.controllers import (
+    Controller,
+    get_parameter,
+    request_property,
+    json_out
+)
 from woost import app
 from woost.models import (
     Item,
@@ -22,7 +26,6 @@ from woost.models.utils import (
     get_model_from_dotted_name
 )
 from woost.admin.dataexport import Export
-from woost.admin.dataexport.sitetreeexport import SiteTreeExport
 from woost.admin.dataexport.adminexport import AdminExport
 from woost.admin.path import get_path
 from woost.admin.partitioning import parse_partition_parameter
@@ -38,13 +41,12 @@ class ListingController(Controller):
     default_export = "default"
     exports = {
         "default": Export,
-        "site_tree": SiteTreeExport,
         "admin": AdminExport
     }
     default_order = "-last_update_time"
     max_page_size = 10000
 
-    @no_csrf_token_injection
+    @json_out
     def __call__(self, **kwargs):
 
         # Returning a single object
@@ -87,9 +89,6 @@ class ListingController(Controller):
             ):
                 raise cherrypy.HTTPError(403, "Unauthorized object access")
 
-            cherrypy.response.headers["Content-Type"] = \
-                "application/json; charset=utf-8"
-
             object_data = self.export.export_object(self.instance)
 
             # Export the object path, if it defines one
@@ -100,7 +99,7 @@ class ListingController(Controller):
                     ref = True
                 )
 
-            return json.dumps(object_data)
+            return object_data
 
         # Returning a list of objects
         else:
@@ -117,24 +116,13 @@ class ListingController(Controller):
             self.export.range = self.range
             results, count = self.export.get_results()
 
-            cherrypy.response.headers["Content-Type"] = \
-                "application/json; charset=utf-8"
-
-            html = [
-                '{"count": %s, "records": [\n'
-                % json.dumps(self._get_count_object(count))
-            ]
-            glue = ""
-
-            for record in results:
-                html.append(glue)
-                glue = ",\n"
-                html.append(json.dumps(record))
-
-            html.append("]}")
-            return "".join(html)
+            return {
+                "count": self._get_count_object(count),
+                "records": list(results)
+            }
 
     @cherrypy.expose
+    @json_out
     def ids(self, **kwargs):
 
         # TODO: hierarchical results [[A1, [A1_1, [A1_2, [A1_2_1, A1_2_2]]]], A2]
@@ -162,15 +150,14 @@ class ListingController(Controller):
         if self.range:
             query.range = (0, self.range[1])
 
-        return '{"count": %s, "objects": [%s]}\n' % (
-            json.dumps(self._get_count_object(count)),
-            ", ".join(str(id) for id in query.execute())
-        )
+        return {
+            "count": self._get_count_object(count),
+            "objects": list(query.execute())
+        }
 
     @cherrypy.expose
+    @json_out
     def contains(self, **kwargs):
-
-        cherrypy.response.headers["Content-Type"] = "application/json"
 
         instance = self.instance
         if instance is None:
@@ -185,10 +172,10 @@ class ListingController(Controller):
             if expr is not None:
                 query.add_filter(expr)
 
-        return json.dumps(instance in query)
+        return (instance in query)
 
     @cherrypy.expose
-    @no_csrf_token_injection
+    @json_out
     def clear_cache(self, **kwargs):
 
         scope = set()
@@ -238,8 +225,7 @@ class ListingController(Controller):
         if scope:
             app.cache.clear(scope)
 
-        cherrypy.response.headers["Content-Type"] = "application/json"
-        return json.dumps(list(scope))
+        return list(scope)
 
     @request_property
     def model(self):

@@ -3,10 +3,9 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import json
 import cherrypy
 from cocktail.persistence import PersistentObject
-from cocktail.controllers import Controller
+from cocktail.controllers import Controller, json_out
 from woost import app
 from woost.models import (
     Configuration,
@@ -19,6 +18,7 @@ from woost.admin.dataexport import Export
 
 class DefaultsController(Controller):
 
+    @json_out
     def __call__(self, model_name, locales = ()):
 
         if not model_name:
@@ -37,13 +37,10 @@ class DefaultsController(Controller):
             )
             obj.new_translation(locale)
 
-        cherrypy.response.headers["Content-Type"] = \
-            "application/json; charset=utf-8"
-
         export = Export()
         export.languages = locales
         state = export.export_object(obj)
-        return json.dumps(state)
+        return state
 
     def _resolve_locales(self, locales):
 
