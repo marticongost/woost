@@ -2023,3 +2023,10 @@ def add_listing_pagination_method(e):
     for listing in Listing.select():
         listing.pagination_method = "pager" if listing._paginated else None
         del listing._paginated
+
+@migration_step
+def remove_login_controller(e):
+    from woost.models import Controller
+    controller = Controller.get_instance(qname = "woost.login_controller")
+    controller.delete()
+

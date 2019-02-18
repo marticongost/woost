@@ -819,7 +819,6 @@ class SiteInitializer(object):
             qname = "woost.login_page",
             title = TranslatedValues(),
             hidden = True,
-            controller = self.login_controller,
             blocks = [
                 self._create(LoginBlock)
             ]
