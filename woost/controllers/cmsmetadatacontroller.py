@@ -40,8 +40,9 @@ class CMSMetadataController(Controller):
                 data["types"][full_name] = type_info
 
             if format == "json":
-                cherrypy.response.headers["Content-Type"] = "application/json"
-                return dumps(data)
+                cherrypy.response.headers["Content-Type"] = \
+                    "application/json; charset=utf-8"
+                return dumps(data).encode("utf-8")
             elif format == "javascript":
                 cherrypy.response.headers["Content-Type"] = "text/javascript"
                 javascript = ["cocktail.declare('woost.metadata');"]
