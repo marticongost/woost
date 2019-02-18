@@ -36,7 +36,12 @@ en: User
         en: Password
         pt: Palavra-passe
 
-        [prefered_language]
+        [preferred_language]
+        ca: Idioma preferit
+        es: Idioma preferido
+        en: Preferred language
+
+        [backoffice_language]
         ca: Idioma del gestor de continguts
         es: Idioma del gestor de contenidos
         en: Back office language

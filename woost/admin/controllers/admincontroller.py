@@ -4,7 +4,6 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import (
-    set_language,
     translations,
     translate_locale
 )
@@ -22,6 +21,7 @@ from woost.admin.views import available_views
 from .schemascontroller import SchemasController
 from .datacontroller import DataController
 from .previewcontroller import PreviewController
+from .utils import set_admin_language
 
 
 class AdminController(PublishableController):
@@ -41,10 +41,7 @@ class AdminController(PublishableController):
     @event_handler
     def handle_traversed(cls, e):
 
-        set_language(
-            app.user.prefered_language
-            or app.publishable.default_language
-        )
+        set_admin_language()
 
         pkg = app.publishable.python_package
         if pkg:
