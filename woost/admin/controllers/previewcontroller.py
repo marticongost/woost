@@ -3,10 +3,9 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import json
 import cherrypy
 from cocktail.persistence import InstanceNotFoundError
-from cocktail.controllers import HTTPMethodController
+from cocktail.controllers import HTTPMethodController, read_json
 from cocktail.translations import set_language
 from cocktail.html import templates
 from woost import app
@@ -20,8 +19,6 @@ from woost.models import (
 )
 from woost.models.utils import get_matching_website
 from woost.admin.dataimport import Import
-
-JSON_MIME = "application/json"
 
 
 class BasePreviewController(HTTPMethodController):
@@ -44,15 +41,7 @@ class BasePreviewController(HTTPMethodController):
     def _import_data(self):
 
         # Validate the content type
-        content_type = cherrypy.request.headers["Content-Type"]
-        if content_type != JSON_MIME:
-            raise cherrypy.HTTPError(
-                400,
-                "POST data should be in %s format, received %s instead"
-                % (JSON_MIME, content_type)
-            )
-
-        data = json.load(cherrypy.request.body)
+        data = read_json()
         return self.data_import(
             data,
             dry_run = True

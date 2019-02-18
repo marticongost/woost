@@ -3,10 +3,9 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import json
 import cherrypy
 from cocktail.persistence import delete_dry_run
-from cocktail.controllers import Controller, request_property
+from cocktail.controllers import Controller, json_out, request_property
 from woost import app
 from woost.models import DeletePermission
 from woost.admin.dataexport import Export
@@ -15,10 +14,8 @@ from woost.admin.controllers.utils import resolve_object_ref
 
 class DeletePreviewController(Controller):
 
+    @json_out
     def __call__(self, id_list):
-
-        cherrypy.response.headers["Content-Type"] = \
-            "application/json; charset=utf-8"
 
         if not id_list:
             raise cherrypy.HTTPError(400, "No objects specified")
@@ -37,7 +34,7 @@ class DeletePreviewController(Controller):
                     root.append(self.export_node(dry_run))
 
         data["blocked"] = self.blocked
-        return json.dumps(data)
+        return data
 
     def export_node(self, node):
 

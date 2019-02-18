@@ -3,7 +3,6 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from json import dumps
 import cherrypy
 from cocktail.modeling import camel_to_underscore
 from cocktail import schema
@@ -77,26 +76,26 @@ class SchemasController(Cached, Controller):
                     and filter_class not in custom_filters
                 ):
                     custom_filters.add(filter_class)
-                    yield export.get_declaration(filter_class)
+                    yield export.get_declaration(filter_class).encode("utf-8")
 
         # Default filters
         for member_type, filter_dfns in get_filters_by_member_type():
             yield (
-                "%s[woost.admin.filters.defaultFilters] = {"
-                % member_type.ui_member_class
+                b"%s[woost.admin.filters.defaultFilters] = {"
+                % member_type.ui_member_class.encode("utf-8")
             )
-            yield ",".join(
-                "\n    %s: %s" % (
+            yield b",".join(
+                b"\n    %s: %s" % (
                     (
-                        filter_id,
-                        filter_dfn.template.javascript_class
+                        filter_id.encode("utf-8"),
+                        filter_dfn.template.javascript_class.encode("utf-8")
                     )
                 )
                 for filter_id, filter_dfn in filter_dfns.items()
             )
-            yield "\n};\n"
+            yield b"\n};\n"
 
         # Model declarations
         for model in models:
-            yield export.get_declaration(model)
+            yield export.get_declaration(model).encode("utf-8")
 
