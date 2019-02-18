@@ -9,44 +9,25 @@
 import sys
 import os.path
 import traceback
-from string import ascii_letters
-from sha import sha
-from random import choice
+from string import ascii_letters, digits
 import json
-from warnings import warn
-
-try:
-    from io import StringIO
-except ImportError:
-    from io import StringIO
-
-import rfc822
 import cherrypy
-from cherrypy.lib.cptools import validate_since
-from simplejson import dumps
-from pkg_resources import resource_filename
-from beaker.cache import CacheManager
-from beaker.util import parse_cache_config_options
 from beaker.middleware import SessionMiddleware
+from cocktail.stringutils import random_string
 from cocktail.pkgutils import get_full_name
 from cocktail.events import Event, event_handler
 from cocktail.translations import translations, get_language, set_language
 from cocktail.controllers import (
     Dispatcher,
-    try_decode,
     session,
     redirect
 )
 from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers import get_request_url
 from cocktail.persistence import datastore
-from cocktail.html import templates
 from woost import app
 from woost.authenticationscheme import AuthenticationFailedError
 from woost.models import (
-    Item,
-    Publishable,
-    URI,
     File,
     Configuration,
     ReadPermission,
@@ -181,17 +162,13 @@ class CMSController(BaseCMSController):
                     sconf["session.data_dir"] = session_path
 
             if not sconf.get("session.secret"):
-
                 session_key_path = app.path(".session_key")
                 if os.path.exists(session_key_path):
                     with open(session_key_path, "r") as session_key_file:
                         session_key = session_key_file.readline()
                 else:
+                    session_key = random_string(40, ascii_letters + digits)
                     with open(session_key_path, "w") as session_key_file:
-                        session_key = sha("".join(
-                            choice(ascii_letters)
-                            for i in range(10)
-                        )).hexdigest()
                         session_key_file.write(session_key)
 
                 sconf["session.secret"] = session_key
@@ -582,7 +559,7 @@ class CMSController(BaseCMSController):
         cherrypy.response.headers["Content-Type"] = "text/javascript"
         cherrypy.response.headers["Cache-Control"] = "no-store"
         user = app.user
-        return "cocktail.declare('woost'); woost.user = %s;" % dumps(
+        return "cocktail.declare('woost'); woost.user = %s;" % json.dumps(
             {
                 "id": user.id,
                 "label": translations(user),

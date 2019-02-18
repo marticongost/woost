@@ -6,10 +6,14 @@
 from types import GeneratorType
 from time import time
 import cherrypy
-from cherrypy.lib import cptools, http
 from cocktail.caching import CacheKeyError
 from cocktail.translations import get_language, translations
-from cocktail.controllers import request_property, Cached, get_state, redirect
+from cocktail.controllers import (
+    request_property,
+    Cached,
+    redirect,
+    get_request_url
+)
 from woost import app
 from woost.controllers import BaseCMSController
 
@@ -115,7 +119,7 @@ class PublishableController(BaseCMSController, Cached):
                 raise cherrypy.NotFound()
 
             if redirection_target.is_internal_content():
-                parameters = get_state()
+                parameters = get_request_url().query.fields
             else:
                 parameters = None
 
