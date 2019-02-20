@@ -74,7 +74,7 @@ class AttributesExtension(Extension):
             "default_attributes.path",
             title = extension_translations,
             attribute_name = "data-woost-path",
-            code = "value = reversed(list(publishable.ascend_tree(True)))"
+            code = "value = reversed(list(app.ascend_navigation()))"
         )
 
         self._create_asset(
