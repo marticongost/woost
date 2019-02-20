@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -8,7 +8,6 @@ u"""
 """
 from cocktail.events import event_handler
 from cocktail import schema
-from cocktail.modeling import getter
 from .item import Item
 
 

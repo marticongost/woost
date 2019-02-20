@@ -80,13 +80,13 @@ def main():
     parser = OptionParser()
 
     parser.add_option("--quality",
-        help = u"The quality for the image")
+        help = "The quality for the image")
 
     parser.add_option("--min-width",
-        help = u"The minimum width for the viewport")
+        help = "The minimum width for the viewport")
 
     parser.add_option("--min-height",
-        help = u"The minimum height for the viewport")
+        help = "The minimum height for the viewport")
 
     options, args = parser.parse_args()
 

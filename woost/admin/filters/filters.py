@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -182,7 +182,7 @@ def get_filters_for_member_type(member_type):
     return _filters[member_type]
 
 def get_filters_by_member_type():
-    return _filters.iteritems()
+    return _filters.items()
 
 def get_filters(member, recursive = True, include_members = True):
 
@@ -209,7 +209,7 @@ def get_filters(member, recursive = True, include_members = True):
             except KeyError:
                 pass
             else:
-                for filter_dfn in member_type_filters.itervalues():
+                for filter_dfn in member_type_filters.values():
                     filters.append(filter_dfn.get_filter_class(member))
                 break
 

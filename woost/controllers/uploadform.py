@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Provides the `UploadForm` class, that makes it easy to upload files into
+"""Provides the `UploadForm` class, that makes it easy to upload files into
 `woost.models.File` objects.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>

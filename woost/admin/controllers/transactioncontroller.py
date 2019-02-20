@@ -1,9 +1,8 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import json
 import cherrypy
 from ZODB.POSException import ConflictError
 from cocktail.events import monitor_thread_events
@@ -12,8 +11,7 @@ from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema.exceptions import ValidationError, ValueRequiredError
 from cocktail.persistence import datastore
-from cocktail.controllers import Controller
-from cocktail.controllers.csrfprotection import no_csrf_token_injection
+from cocktail.controllers import Controller, json_out, read_json
 from woost import app
 from woost.models import (
     changeset_context,
@@ -31,19 +29,14 @@ class TransactionController(Controller):
 
     max_transaction_attempts = 3
 
-    @no_csrf_token_injection
+    @json_out
     def __call__(self):
 
         if cherrypy.request.method != "POST":
             raise cherrypy.HTTPError(405, "Expected a POST request")
 
-        if cherrypy.request.headers["Content-Type"] != "application/json":
-            raise cherrypy.HTTPError(400, "Expected an application/json payload")
-
         # Load JSON data from the request body
-        length = int(cherrypy.request.headers["Content-Length"])
-        json_string = cherrypy.request.body.read(length)
-        data = json.loads(json_string)
+        data = read_json()
         dry_run = data.get("dry_run", False)
 
         response_data = {"request": data}
@@ -66,7 +59,7 @@ class TransactionController(Controller):
 
                 try:
                     datastore.commit()
-                except ConflictError, conflict_error:
+                except ConflictError as conflict_error:
                     if attempts > self.max_transaction_attempts:
                         raise
                     attempt += 1
@@ -78,9 +71,6 @@ class TransactionController(Controller):
                     break
 
         # Return the updated state
-        cherrypy.response.headers["Content-Type"] = \
-            "application/json; charset=utf-8"
-
         if errors:
             response_data["errors"] = errors
         else:
@@ -90,7 +80,7 @@ class TransactionController(Controller):
                 deleted
             )
 
-        return json.dumps(response_data)
+        return response_data
 
     def _execute(self, data, dry_run = False):
 

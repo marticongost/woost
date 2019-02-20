@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -73,7 +73,7 @@ class SchemaExport(MemberExport):
     def write_declaration(self, member, writer, nested = False):
         MemberExport.write_declaration(self, member, writer, nested)
         if not nested:
-            writer.replace_line(u"%s;")
+            writer.replace_line("%s;")
             writer.linejump()
 
             if not nested and self.locales:
@@ -84,7 +84,7 @@ class SchemaExport(MemberExport):
         if nested:
             return MemberExport.get_instantiation(self, member, nested)
         else:
-            return u"%s.declare" % self.get_class(member)
+            return "%s.declare" % self.get_class(member)
 
     def get_class(self, member):
         return "woost.models.Model"
@@ -105,7 +105,7 @@ class SchemaExport(MemberExport):
                 yield key, value
 
         if member.bases:
-            yield u"base", get_model_dotted_name(member.bases[0])
+            yield "base", get_model_dotted_name(member.bases[0])
 
         yield (
             "membersOrder",
@@ -115,49 +115,49 @@ class SchemaExport(MemberExport):
         members = list(self.get_members(member))
         if members:
             def members_prop(writer, is_last_prop):
-                closure = u"]" if is_last_prop else u"],"
+                closure = "]" if is_last_prop else "],"
                 with writer.indented_block("members: [", closure):
                     for m, is_last in iter_last(members):
                         if self.should_export_member(m):
                             exporter = member_exporters[m.__class__]()
                             exporter.write_declaration(m, writer, nested = True)
                             if not is_last:
-                                writer.replace_line(u"%s,")
+                                writer.replace_line("%s,")
 
             yield members_prop
 
-        yield (u"instantiable", dumps(member.instantiable))
+        yield ("instantiable", dumps(member.instantiable))
 
         yield (
-            u"[woost.admin.ui.modelIconURL]",
+            "[woost.admin.ui.modelIconURL]",
             dumps(app.icon_resolver.find_icon_url(member, "scalable"))
         )
 
         if member.admin_show_descriptions:
-            yield (u"[woost.admin.ui.showDescriptions]", "true")
+            yield ("[woost.admin.ui.showDescriptions]", "true")
 
         if member.admin_show_thumbnails:
-            yield (u"[woost.admin.ui.showThumbnails]", "true")
+            yield ("[woost.admin.ui.showThumbnails]", "true")
 
         if member.admin_edit_view:
-            yield (u"[woost.admin.ui.editView]", u"() => %s" % member.admin_edit_view)
+            yield ("[woost.admin.ui.editView]", "() => %s" % member.admin_edit_view)
 
         if issubclass(member, Block):
-            yield (u"views", dumps(member.views))
+            yield ("views", dumps(member.views))
 
         if member.admin_item_card:
             yield (
-                u"[woost.admin.ui.itemCard]",
-                u"() => %s" % member.admin_item_card
+                "[woost.admin.ui.itemCard]",
+                "() => %s" % member.admin_item_card
             )
 
-        yield (u"[woost.admin.views.views]", dumps([
+        yield ("[woost.admin.views.views]", dumps([
             view.name
             for view in views.available_views(member)
         ]))
 
         yield (
-            u"[woost.admin.partitioning.methods]",
+            "[woost.admin.partitioning.methods]",
             dumps([
                 method.name
                 for method in partitioning.available_methods(member)

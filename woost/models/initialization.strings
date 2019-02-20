@@ -69,11 +69,6 @@ PWD_RESET_LINK = """<a href="${confirmation_url}">${confirmation_url}</a>"""
     es: Controlador de estilos de usuario
     en: User styles controller
 
-    [feed_controller.title]
-    ca: Controlador de sindicació de continguts
-    es: Controlador de sindicación de contenidos
-    en: Feed controller
-
     [backoffice_controller.title]
     ca: Controlador de panell administratiu
     es: Controlador de panel administrativo

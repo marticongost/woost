@@ -6,7 +6,7 @@ def _translate_alignment(instance):
     if valign == halign:
         return valign.lower()
     else:
-        return u"%s, %s" % (valign, halign)
+        return "%s, %s" % (valign, halign)
 @end
 
 [woost.models.rendering.imageeffects]

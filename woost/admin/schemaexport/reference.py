@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -28,18 +28,18 @@ class ReferenceExport(MemberExport):
             yield prop
 
         if member.type:
-            yield u"type", dumps(get_model_dotted_name(member.type))
+            yield "type", dumps(get_model_dotted_name(member.type))
             if member.integral:
-                yield u"integral", dumps(True)
+                yield "integral", dumps(True)
 
         elif member.class_family:
             yield (
-                u"classFamily",
+                "classFamily",
                 dumps(get_model_dotted_name(member.class_family))
             )
 
             if not member.include_root_schema:
-                yield (u"includeRootSchema", dumps(False))
+                yield ("includeRootSchema", dumps(False))
 
         if isinstance(member.related_type, PersistentClass):
             yield export_view_names(member)

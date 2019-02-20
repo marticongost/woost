@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -26,10 +26,10 @@ class CollectionExport(MemberExport):
 
         if member.items:
             exporter = member_exporters[member.items.__class__]()
-            yield u"items", exporter.get_declaration(member.items, nested = True)
+            yield "items", exporter.get_declaration(member.items, nested = True)
 
         if member.integral:
-            yield u"integral", dumps(True)
+            yield "integral", dumps(True)
 
         if isinstance(member.related_type, PersistentClass):
             yield export_view_names(member)

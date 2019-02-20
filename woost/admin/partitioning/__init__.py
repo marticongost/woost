@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Split results into distinct partitions (ie. tabs in backoffice listings).
+"""Split results into distinct partitions (ie. tabs in backoffice listings).
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """

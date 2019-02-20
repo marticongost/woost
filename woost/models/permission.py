@@ -52,7 +52,7 @@ class Permission(Item):
     @classmethod
     def permission_not_found(cls, user, verbose = False, **context):
         if verbose:
-            print unauthorized_style("unauthorized")
+            print(unauthorized_style("unauthorized"))
         return False
 
 
@@ -90,24 +90,24 @@ class ContentPermission(Permission):
         if isinstance(target, type):
             if not issubclass(target, query.type):
                 if verbose:
-                    print permission_doesnt_match_style("type doesn't match"),
+                    print(permission_doesnt_match_style("type doesn't match"), end=' ')
                 return False
             elif not self.authorized and self.content_expression:
                 if verbose:
-                    print permission_doesnt_match_style("partial restriction")
+                    print(permission_doesnt_match_style("partial restriction"))
                 return False
         else:
             if not issubclass(target.__class__, query.type):
                 if verbose:
-                    print permission_doesnt_match_style("type doesn't match"),
+                    print(permission_doesnt_match_style("type doesn't match"), end=' ')
                 return False
 
             for filter in query.filters:
                 if not filter.eval(target):
                     if verbose:
-                        print permission_doesnt_match_style(
+                        print(permission_doesnt_match_style(
                             "filter %s doesn't match" % filter
-                        ),
+                        ), end=' ')
                     return False
 
         return True
@@ -122,7 +122,7 @@ class ContentPermission(Permission):
             context = {"items": items, "cls": self.content_type, "user": user}
             label = "%s #%s" % (self.__class__.__name__, self.id)
             code = compile(expression, label, "exec")
-            exec code in context
+            exec(code, context)
             items = context["items"]
 
         if args or kwargs:
@@ -157,7 +157,7 @@ class RenderPermission(ContentPermission):
 
     def _image_factories_enumeration(ctx):
         from woost.models.rendering.factories import image_factories
-        return image_factories.keys()
+        return list(image_factories.keys())
 
     image_factories = schema.Collection(
         items = schema.String(enumeration = _image_factories_enumeration),
@@ -169,7 +169,7 @@ class RenderPermission(ContentPermission):
     def match(self, user, target, image_factory, verbose = False):
 
         if self.image_factories and image_factory not in self.image_factories:
-            print permission_doesnt_match_style("image_factory doesn't match")
+            print(permission_doesnt_match_style("image_factory doesn't match"))
             return False
 
         return ContentPermission.match(self, user, target, verbose)
@@ -200,7 +200,7 @@ class TranslationPermission(Permission):
 
         if languages and language not in languages:
             if verbose:
-                print permission_doesnt_match_style("language doesn't match"),
+                print(permission_doesnt_match_style("language doesn't match"), end=' ')
             return False
 
         return True
@@ -234,7 +234,7 @@ def _resolve_matching_member_reference(compound_name):
 
 def _eligible_members():
     for cls in [Item] + list(Item.derived_schemas()):
-        for name, member in cls.members(recursive = False).iteritems():
+        for name, member in cls.members(recursive = False).items():
             if member.visible and member.name != "translations":
                 yield cls.full_name + "." + name
 
@@ -276,7 +276,7 @@ class MemberPermission(Permission):
 
         if members and member not in members:
             if verbose:
-                print permission_doesnt_match_style("member doesn't match"),
+                print(permission_doesnt_match_style("member doesn't match"), end=' ')
             return False
 
         return True
@@ -563,7 +563,7 @@ class ChangeSetPermissionExpression(Expression):
                 ReadPermission,
                 target = change.target
             )
-            for change in context.changes.itervalues()
+            for change in context.changes.values()
         )
 
     def resolve_filter(self, query):
@@ -615,7 +615,7 @@ def content_permission_translation_factory(language, predicate):
 
         if not subject:
             if instance.content_type is None:
-                subject = u"?"
+                subject = "?"
             else:
                 try:
                     query = instance.select_items()
@@ -669,12 +669,12 @@ def member_permission_translation_factory(
             for member in members:
                 counter[member.schema] = counter.get(member.schema, 0) + 1
 
-            target = u", ".join(
+            target = ", ".join(
                 abbr(count, content_type)
-                for content_type, count in counter.iteritems()
+                for content_type, count in counter.items()
             )
         else:
-            subject = u", ".join(
+            subject = ", ".join(
                 translations(member, language, qualified = True)
                 for member in members
             )
@@ -698,7 +698,7 @@ def language_permission_translation_factory(language, predicate, any_predicate):
         if not instance.matching_languages:
             return any_predicate
 
-        subject = u", ".join(
+        subject = ", ".join(
             translations(perm_lang, language)
             for perm_lang in instance.matching_languages
         )
@@ -715,41 +715,41 @@ def language_permission_translation_factory(language, predicate, any_predicate):
 
 translations.define("woost.models.permission",
     ca = lambda authorized, predicate:
-        u"Permís per " + predicate
+        "Permís per " + predicate
         if authorized
-        else u"Prohibició " + ca_possessive(predicate),
+        else "Prohibició " + ca_possessive(predicate),
     es = lambda authorized, predicate:
-        (u"Permiso para " if authorized else u"Prohibición de ") + predicate,
+        ("Permiso para " if authorized else "Prohibición de ") + predicate,
     en = lambda authorized, predicate:
-        (u"Permission to " if authorized else u"Prohibition to ") + predicate,
+        ("Permission to " if authorized else "Prohibition to ") + predicate,
 )
 
 translations.define(
     "woost.models.permission.ReadPermission.instance",
-    ca = content_permission_translation_factory("ca", u"llegir %s"),
-    es = content_permission_translation_factory("es", u"leer %s"),
-    en = content_permission_translation_factory("en", u"read %s")
+    ca = content_permission_translation_factory("ca", "llegir %s"),
+    es = content_permission_translation_factory("es", "leer %s"),
+    en = content_permission_translation_factory("en", "read %s")
 )
 
 translations.define(
     "woost.models.permission.CreatePermission.instance",
-    ca = content_permission_translation_factory("ca", u"crear %s"),
-    es = content_permission_translation_factory("es", u"crear %s"),
-    en = content_permission_translation_factory("en", u"create %s")
+    ca = content_permission_translation_factory("ca", "crear %s"),
+    es = content_permission_translation_factory("es", "crear %s"),
+    en = content_permission_translation_factory("en", "create %s")
 )
 
 translations.define(
     "woost.models.permission.ModifyPermission.instance",
-    ca = content_permission_translation_factory("ca", u"modificar %s"),
-    es = content_permission_translation_factory("es", u"modificar %s"),
-    en = content_permission_translation_factory("en", u"modify %s")
+    ca = content_permission_translation_factory("ca", "modificar %s"),
+    es = content_permission_translation_factory("es", "modificar %s"),
+    en = content_permission_translation_factory("en", "modify %s")
 )
 
 translations.define(
     "woost.models.permission.DeletePermission.instance",
-    ca = content_permission_translation_factory("ca", u"eliminar %s"),
-    es = content_permission_translation_factory("es", u"eliminar %s"),
-    en = content_permission_translation_factory("en", u"delete %s")
+    ca = content_permission_translation_factory("ca", "eliminar %s"),
+    es = content_permission_translation_factory("es", "eliminar %s"),
+    en = content_permission_translation_factory("en", "delete %s")
 )
 
 translations.define(
@@ -757,150 +757,150 @@ translations.define(
     ca = content_permission_translation_factory(
         "ca",
         lambda permission, subject, **kwargs:
-            u"generar imatges " + ca_possessive(subject)
+            "generar imatges " + ca_possessive(subject)
     ),
     es = content_permission_translation_factory(
         "es",
-        u"generar imágenes de %s"
+        "generar imágenes de %s"
     ),
-    en = content_permission_translation_factory("en", u"render %s")
+    en = content_permission_translation_factory("en", "render %s")
 )
 
 translations.define(
     "woost.models.permission.ReadMemberPermission.instance",
     ca = member_permission_translation_factory("ca",
-        u"llegir %s",
+        "llegir %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"el membre %s" % subject,
-                u"els membres %s" % subject
+                "el membre %s" % subject,
+                "els membres %s" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 membre ", u"%d membres " % count)
+            plural2(count, "1 membre ", "%d membres " % count)
             + ca_possessive(translations(content_type)),
-        u"qualsevol membre"
+        "qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
-        u"leer %s",
+        "leer %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"el miembro %s" % subject,
-                u"los miembros %s" % subject
+                "el miembro %s" % subject,
+                "los miembros %s" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 miembro", u"%d miembros" % count)
-            + u" de " + (translations(content_type)),
-        u"cualquier miembro"
+            plural2(count, "1 miembro", "%d miembros" % count)
+            + " de " + (translations(content_type)),
+        "cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
-        u"read %s",
+        "read %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"the %s member" % subject,
-                u"the %s members" % subject
+                "the %s member" % subject,
+                "the %s members" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 member", u"%d members" % count)
-            + u" of " + (translations(content_type)),
-        u"any member"
+            plural2(count, "1 member", "%d members" % count)
+            + " of " + (translations(content_type)),
+        "any member"
     )
 )
 
 translations.define(
     "woost.models.permission.ModifyMemberPermission.instance",
     ca = member_permission_translation_factory("ca",
-        u"modificar %s",
+        "modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"el membre %s" % subject,
-                u"els membres %s" % subject
+                "el membre %s" % subject,
+                "els membres %s" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 membre ", u"%d membres " % count)
+            plural2(count, "1 membre ", "%d membres " % count)
             + ca_possessive(translations(content_type)),
-        u"qualsevol membre"
+        "qualsevol membre"
     ),
     es = member_permission_translation_factory("es",
-        u"modificar %s",
+        "modificar %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"el miembro %s" % subject,
-                u"los miembros %s" % subject
+                "el miembro %s" % subject,
+                "los miembros %s" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 miembro", u"%d miembros" % count)
-            + u" de " + (translations(content_type)),
-        u"cualquier miembro"
+            plural2(count, "1 miembro", "%d miembros" % count)
+            + " de " + (translations(content_type)),
+        "cualquier miembro"
     ),
     en = member_permission_translation_factory("en",
-        u"modify %s",
+        "modify %s",
         lambda instance, subject, **kwargs:
             plural2(
                 len(instance.matching_members),
-                u"the %s member" % subject,
-                u"the %s members" % subject
+                "the %s member" % subject,
+                "the %s members" % subject
             ),
         lambda count, content_type, **kwargs:
-            plural2(count, u"1 member", u"%d members" % count)
-            + u" of " + (translations(content_type)),
-        u"any member"
+            plural2(count, "1 member", "%d members" % count)
+            + " of " + (translations(content_type)),
+        "any member"
     )
 )
 
 translations.define(
     "woost.models.permission.ReadTranslationPermission.instance",
     ca = language_permission_translation_factory("ca",
-        u"llegir traduccions: %s", u"llegir qualsevol traducció"
+        "llegir traduccions: %s", "llegir qualsevol traducció"
     ),
     es = language_permission_translation_factory("es",
-        u"leer traducciones: %s", u"leer cualquier traducción"
+        "leer traducciones: %s", "leer cualquier traducción"
     ),
     en = language_permission_translation_factory("en",
-        u"read translations: %s", u"read any translation"
+        "read translations: %s", "read any translation"
     )
 )
 
 translations.define(
     "woost.models.permission.CreateTranslationPermission.instance",
     ca = language_permission_translation_factory("ca",
-        u"crear traduccions: %s", u"crear qualsevol traducció"
+        "crear traduccions: %s", "crear qualsevol traducció"
     ),
     es = language_permission_translation_factory("es",
-        u"crear traducciones: %s", u"crear cualquier traducción"
+        "crear traducciones: %s", "crear cualquier traducción"
     ),
     en = language_permission_translation_factory("en",
-        u"create translations: %s", u"create any translation"
+        "create translations: %s", "create any translation"
     )
 )
 
 translations.define(
     "woost.models.permission.ModifyTranslationPermission.instance",
     ca = language_permission_translation_factory("ca",
-        u"modificar traduccions: %s", u"modificar qualsevol traducció"
+        "modificar traduccions: %s", "modificar qualsevol traducció"
     ),
     es = language_permission_translation_factory("es",
-        u"modificar traducciones: %s", u"modificar cualquier traducción"
+        "modificar traducciones: %s", "modificar cualquier traducción"
     ),
     en = language_permission_translation_factory("en",
-        u"modify translations: %s", u"modify any translation"
+        "modify translations: %s", "modify any translation"
     )
 )
 
 translations.define(
     "woost.models.permission.DeleteTranslationPermission.instance",
     ca = language_permission_translation_factory("ca",
-        u"eliminar traduccions: %s", u"eliminar qualsevol traducció"
+        "eliminar traduccions: %s", "eliminar qualsevol traducció"
     ),
     es = language_permission_translation_factory("es",
-        u"eliminar traducciones: %s", u"eliminar cualquier traducción"
+        "eliminar traducciones: %s", "eliminar cualquier traducción"
     ),
     en = language_permission_translation_factory("en",
-        u"delete translations: %s", u"delete any translation"
+        "delete translations: %s", "delete any translation"
     )
 )
 

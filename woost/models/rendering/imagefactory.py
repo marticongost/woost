@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -89,7 +89,7 @@ class ImageFactory(Item):
                 image = self.fallback.render(item)
         else:
             if self.effects:
-                if isinstance(image, basestring):
+                if isinstance(image, str):
                     image = Image.open(image)
 
                 for effect in self.effects:

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Site specific admin UI components.
+"""Site specific admin UI components.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """

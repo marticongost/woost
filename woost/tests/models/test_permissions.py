@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
-from __future__ import with_statement
+
 from woost.tests.models.basetestcase import BaseTestCase
 from nose.tools import assert_raises
 
@@ -48,7 +48,7 @@ class PermissionTestCase(BaseTestCase):
         user = User()
         user.role = r5
 
-        print list(user.iter_permissions())
+        print(list(user.iter_permissions()))
 
         assert list(user.iter_permissions()) == [
             r5.permissions[0],

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -166,7 +166,7 @@ class Document(Publishable):
         values["publishable"] = self
 
         view = template.create_view()
-        for key, value in values.iteritems():
+        for key, value in values.items():
             setattr(view, key, value)
 
         html = view.render_page()

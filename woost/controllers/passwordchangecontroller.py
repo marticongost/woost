@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Defines the `PasswordChangeController` class.
+"""Defines the `PasswordChangeController` class.
 
 .. moduleauthor:: Javier Marrero <javier.marrero@whads.com>
 """

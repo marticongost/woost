@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor::  <Martí Congost <marti.congost@whads.com>
 """
@@ -459,7 +459,7 @@ def resolve_languages(
 
     if language is PublishableObject.any_language:
         languages = website_languages
-    elif isinstance(language, basestring):
+    elif isinstance(language, str):
         if language in website_languages:
             languages = {language}
         else:

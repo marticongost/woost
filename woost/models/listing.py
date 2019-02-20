@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -15,32 +15,34 @@ from .publishableobject import PublishableObject
 
 Listing = None
 
-class Listing(Block):
 
-    # Metaclass to automatically add a 'subset' member to subclasses
-    class __metaclass__(Block.__metaclass__):
-        def __init__(cls, name, bases, members):
+# Metaclass to automatically add a 'subset' member to subclasses
+class ListingMetaclass(type(Block)):
 
-            if Listing is not None:
+    def __init__(cls, name, bases, members):
 
-                if cls.listed_model is None:
-                    raise TypeError(
-                        "%r needs to provide a 'listed_model' attribute"
-                        % cls
-                    )
+        if Listing is not None:
 
-                members["subset"] = schema.Collection(
-                    name = "subset",
-                    items = schema.Reference(type = cls.listed_model),
-                    related_end = schema.Collection(),
-                    before_member = "pagination_method",
-                    custom_translation_key =
-                        "woost.models.listing.Listing.members.subset",
-                    member_group = "listing"
+            if cls.listed_model is None:
+                raise TypeError(
+                    "%r needs to provide a 'listed_model' attribute"
+                    % cls
                 )
 
-            Block.__metaclass__.__init__(cls, name, bases, members)
+            members["subset"] = schema.Collection(
+                name = "subset",
+                items = schema.Reference(type = cls.listed_model),
+                related_end = schema.Collection(),
+                before_member = "pagination_method",
+                custom_translation_key =
+                    "woost.models.listing.Listing.members.subset",
+                member_group = "listing"
+            )
 
+        type(Block).__init__(cls, name, bases, members)
+
+
+class Listing(Block):
     type_group = "blocks.listings"
     instantiable = False
     listed_model = None

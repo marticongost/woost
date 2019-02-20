@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -11,9 +11,7 @@ from cocktail.html import resource_repositories
 from cocktail.ui import components
 
 
-class Section(object):
-
-    __metaclass__ = EventHub
+class Section(object, metaclass=EventHub):
 
     declared = Event(
         """An event triggered when the admin section and its descendants have
@@ -32,7 +30,7 @@ class Section(object):
         self.__parent = None
         self.__children = []
 
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             setattr(self, key, value)
 
         self._fill()
@@ -195,7 +193,7 @@ class Section(object):
         if anchor is None:
             raise ValueError("No anchor given")
 
-        if isinstance(anchor, basestring):
+        if isinstance(anchor, str):
             child = self.find(anchor)
             if child is None:
                 raise ValueError(

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -170,7 +170,7 @@ class URLMapping(object):
                != tuple(url_resolution.consumed_segments)
             or any(
                 value != url.query.fields[key]
-                for key, value in canonical_url.query.fields.iteritems()
+                for key, value in canonical_url.query.fields.items()
             )
         ):
             return canonical_url.copy(
@@ -620,7 +620,7 @@ class DescriptiveIdInPath(URLComponent):
             title = self.get_title(publishable, language)
 
             if title:
-                string = u"%s%s%d" % (title, self.id_separator, publishable.id)
+                string = "%s%s%d" % (title, self.id_separator, publishable.id)
             else:
                 string = str(publishable.id)
 
@@ -726,7 +726,7 @@ class HierarchyInPath(URLComponent):
         path = list(resolution.remaining_segments)
 
         while path:
-            publishable = get_publishable_by_full_path( u"/".join(path))
+            publishable = get_publishable_by_full_path( "/".join(path))
             if publishable:
                 resolution.publishable = publishable
                 for segment in path:

@@ -1,14 +1,13 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
-from urllib import urlencode
+from urllib.parse import urlencode
 import cherrypy
-from cocktail.modeling import getter
 from cocktail.events import event_handler
 from cocktail.controllers import Controller, request_property
 from cocktail.html import renderers, templates
@@ -43,7 +42,7 @@ class BaseCMSController(Controller):
             output = self.output
             cms.producing_output(controller = self, output = output)
 
-            for key, value in output.iteritems():
+            for key, value in output.items():
                 setattr(view, key, value)
 
             view.submitted = self.submitted
@@ -82,10 +81,10 @@ class BaseCMSController(Controller):
         @return: The generated absolute URI.
         @rtype: unicode
         """
-        path = (unicode(arg).strip("/") for arg in args)
+        path = (str(arg).strip("/") for arg in args)
         uri = (
             self.context["cms"].virtual_path
-            + u"/".join(component for component in path if component)
+            + "/".join(component for component in path if component)
         )
 
         if kwargs:
@@ -94,10 +93,10 @@ class BaseCMSController(Controller):
                     (
                         key,
                         value.encode("utf-8")
-                            if isinstance(value, unicode)
+                            if isinstance(value, str)
                             else value
                     )
-                    for key, value in kwargs.iteritems()
+                    for key, value in kwargs.items()
                     if not value is None
                 ),
                 True
