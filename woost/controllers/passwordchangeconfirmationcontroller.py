@@ -68,10 +68,12 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
         def schema(self):
 
             form_schema = schema.Schema("PasswordChangeConfirmationForm")
+            form_schema.members_order = ["password", "password_confirmation"]
 
             # New password
             password_member = User.password.copy()
             password_member.required = True
+            password_member.member_group = None
             form_schema.add_member(password_member)
 
             # New password confirmation
