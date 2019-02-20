@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cStringIO import StringIO
+from io import StringIO
 from cocktail.events import Event
 from cocktail.controllers import Controller, serve_file, request_property
 from woost.models import Configuration, Publishable

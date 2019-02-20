@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -57,7 +57,8 @@ of its features include:\n"
         "chainmap",
         "libsass",
         "mako==1.*",
-        "cocktail==1.13b1"
+        "cocktail[sass]==2.0a1",
+        "zeo"
     ],
     packages = find_packages(),
     include_package_data = True,

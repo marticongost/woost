@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -163,7 +163,7 @@ class Import(object):
 
         if member.translated and not language:
             self.require_value_type(member, dict, value)
-            for language, language_value in value.iteritems():
+            for language, language_value in value.items():
                 self.import_member_value(obj, member, language_value, language)
         else:
             # Prevent writing forbidden translations
@@ -185,7 +185,7 @@ class Import(object):
         elif value == "":
             value = None
         elif isinstance(member, schema.String):
-            self.require_value_type(member, unicode, value)
+            self.require_value_type(member, str, value)
             value = value.strip()
         elif isinstance(member, schema.DateTime):
             try:
@@ -212,13 +212,13 @@ class Import(object):
                     self.parse_member_value(member.keys, k),
                     self.parse_member_value(member.values, v)
                 )
-                for k, v in value.iteritems()
+                for k, v in value.items()
             )
         elif isinstance(member, schema.Tuple):
             self.require_value_type(member, list, value)
             value = tuple(
                 self.parse_member_value(tuple_member, tuple_value)
-                for tuple_member, tuple_value in izip_longest(
+                for tuple_member, tuple_value in zip_longest(
                     member.items,
                     value
                 )
@@ -254,7 +254,7 @@ class Import(object):
 
         id = None
 
-        if isinstance(value, (int, basestring)):
+        if isinstance(value, (int, str)):
             read_child_data = False
             id = value
         elif isinstance(value, dict):

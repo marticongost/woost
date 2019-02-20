@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -20,9 +20,9 @@ def create_admin():
         )
 
     admin_controller.title = T(
-        ca = u"Controlador de panell de control",
-        es = u"Controlador de panel de control",
-        en = u"Control panel controller"
+        ca = "Controlador de panell de control",
+        es = "Controlador de panel de control",
+        en = "Control panel controller"
     )
     admin_controller.python_name = \
         "woost.admin.controllers.admincontroller.AdminController"
@@ -31,9 +31,9 @@ def create_admin():
         identifier = "admin_thumbnail",
         qname = "woost.admin.thumbnail",
         title = T(
-            ca = u"Miniatura pel panell d'administració",
-            es = u"Miniatura para el panel de administración",
-            en = u"Admin thumbnail"
+            ca = "Miniatura pel panell d'administració",
+            es = "Miniatura para el panel de administración",
+            en = "Admin thumbnail"
         ),
         effects = [Thumbnail.new(width = 200, height = 200)]
     )
@@ -46,9 +46,9 @@ def create_admin():
         ),
         controller = admin_controller,
         title = T(
-            ca = u"Panell de control",
-            es = u"Panel de control",
-            en = u"Control panel"
+            ca = "Panell de control",
+            es = "Panel de control",
+            en = "Control panel"
         ),
         default_language = "en",
         python_package = app.package + ".admin" if app.package else None,

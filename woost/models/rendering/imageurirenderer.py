@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from urllib import urlopen
-from httplib import HTTPConnection
+from urllib.request import urlopen
+from http.client import HTTPConnection
 from time import mktime, strptime
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image
 from cocktail import schema
 from woost.models.uri import URI

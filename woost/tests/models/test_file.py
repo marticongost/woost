@@ -30,8 +30,8 @@ class FileTestCase(BaseTestCase):
         content = """div p {
     color: red;
     font-weight: bold
-}"""
-        f = open(path, "w")
+}""".encode("utf-8")
+        f = open(path, "wb")
         f.write(content)
         f.close()
 
@@ -49,7 +49,7 @@ class FileTestCase(BaseTestCase):
         assert os.path.exists(upload_path)
         assert os.path.exists(path)
 
-        f = open(upload_path, "r")
+        f = open(upload_path, "rb")
 
         try:
             assert f.read() == content

@@ -6,17 +6,18 @@
 @organization:	Whads/Accent SL
 @since:			February 2010
 """
-import buffet
 from mimetypes import guess_type
 from email.mime.text import MIMEText
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEImage import MIMEImage
-from email.MIMEBase import MIMEBase
-from email.Header import Header
-from email.Utils import formatdate, parseaddr, formataddr
-from email import Encoders
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from email.header import Header
+from email.utils import formatdate, parseaddr, formataddr
+from email.encoders import encode_base64
+from pkg_resources import iter_entry_points
 from cocktail import schema
 from cocktail.translations import language_context
+from cocktail.controllers.renderingengines import get_rendering_engine
 from .item import Item
 from .configuration import Configuration
 from .file import File
@@ -80,7 +81,10 @@ class EmailTemplate(Item):
     )
 
     template_engine = schema.String(
-        enumeration = buffet.available_engines.keys(),
+        enumeration = [
+            engine.name
+            for engine in iter_entry_points("python.templating.engines")
+        ],
         translatable_enumeration = False,
         text_search = False,
         listed_by_default = False
@@ -123,7 +127,7 @@ class EmailTemplate(Item):
             condition_context["should_send"] = True
             label = "%s #%s.condition" % (self.__class__.__name__, self.id)
             code = compile(condition, label, "exec")
-            exec code in condition_context
+            exec(code, condition_context)
             if not condition_context["should_send"]:
                 return False
 
@@ -156,11 +160,11 @@ class EmailTemplate(Item):
                     self.id
                 )
                 init_code = compile(init_code, label, "exec")
-                exec init_code in context
+                exec(init_code, context)
 
             # Subject and body (templates)
             if self.template_engine:
-                template_engine = buffet.available_engines[self.template_engine]
+                template_engine = get_rendering_engine(self.template_engine)
                 engine = template_engine(
                     options = {"mako.output_encoding": self.encoding}
                 )
@@ -174,7 +178,7 @@ class EmailTemplate(Item):
                         )
                         return engine.render(context, template = template)
                     else:
-                        return u""
+                        return ""
 
                 subject = render("subject").strip()
                 body = render("body")
@@ -189,7 +193,7 @@ class EmailTemplate(Item):
             if attachments:
                 attachments = dict(
                     (cid, attachment)
-                    for cid, attachment in attachments.iteritems()
+                    for cid, attachment in attachments.items()
                     if attachment is not None
                 )
                 if attachments:
@@ -197,7 +201,7 @@ class EmailTemplate(Item):
                     message = MIMEMultipart("related")
                     message.attach(message_text)
 
-                    for cid, attachment in attachments.iteritems():
+                    for cid, attachment in attachments.items():
 
                         if isinstance(attachment, File):
                             file_path = attachment.file_path
@@ -215,7 +219,7 @@ class EmailTemplate(Item):
                         main_type, sub_type = mime_type.split('/', 1)
                         message_attachment = MIMEBase(main_type, sub_type)
                         message_attachment.set_payload(open(file_path).read())
-                        Encoders.encode_base64(message_attachment)
+                        encode_base64(message_attachment)
                         message_attachment.add_header("Content-ID", "<%s>" % cid)
                         message_attachment.add_header(
                             'Content-Disposition',

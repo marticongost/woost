@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -205,21 +205,22 @@ http://woost.info
 
 ContextualProperty = None
 
-class ContextualProperty(object):
+class ContextualPropertyMetaclass(type):
 
-    class __metaclass__(type):
+    def __init__(cls, name, bases, members):
+        type.__init__(cls, name, bases, members)
 
-        def __init__(cls, name, bases, members):
-            type.__init__(cls, name, bases, members)
+        # Automaticall register subclasses
+        if ContextualProperty:
+            NAME_SUFFIX = "Property"
+            if name.endswith(NAME_SUFFIX):
+                cls.attr = camel_to_underscore(name[:-len(NAME_SUFFIX)])
+                prop = cls()
+                setattr(Application, cls.attr, prop)
+                Application._contextual_properties.append(prop)
 
-            # Automaticall register subclasses
-            if ContextualProperty:
-                NAME_SUFFIX = "Property"
-                if name.endswith(NAME_SUFFIX):
-                    cls.attr = camel_to_underscore(name[:-len(NAME_SUFFIX)])
-                    prop = cls()
-                    setattr(Application, cls.attr, prop)
-                    Application._contextual_properties.append(prop)
+
+class ContextualProperty(metaclass = ContextualPropertyMetaclass):
 
     default = None
 

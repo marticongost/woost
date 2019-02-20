@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -28,7 +28,7 @@ class TypeGroup(object):
     def insert(self, position, child):
 
         # Insert after / before an existing child
-        if isinstance(position, basestring):
+        if isinstance(position, str):
             parts = position.split()
             if len(parts) == 2:
                 for index, existing_child in enumerate(self.__children):
@@ -63,7 +63,7 @@ class TypeGroup(object):
 
 
     def remove(self, child):
-        if isinstance(child, basestring):
+        if isinstance(child, str):
             self.pop(child)
         else:
             self.__children.remove(child)
@@ -75,7 +75,7 @@ class TypeGroup(object):
         return len(self.__children)
 
     def __contains__(self, child):
-        if isinstance(child, basestring):
+        if isinstance(child, str):
             child_id = child
             return any(child.id == child_id for child in self.__children)
         else:

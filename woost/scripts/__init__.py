@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 Utility scripts for woost.
 
 @author:		Martí Congost

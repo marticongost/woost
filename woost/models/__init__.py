@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 Provides base and default content types for the woost CMS.
 
 @author:		Martí Congost
@@ -103,15 +103,7 @@ from .event import Event
 from .uri import URI
 from .file import File
 from .emailtemplate import EmailTemplate
-from .feed import Feed
-
-from .userfilter import (
-    IsPublishedFilter,
-    TypeFilter
-)
-
 from .caching import CachingPolicy
-
 from . import rendering
 from .videoplayersettings import VideoPlayerSettings
 from . import staticpublication
@@ -121,7 +113,6 @@ from . import staticpublication
 with_default_controller("publishable")(Publishable)
 with_default_controller("file")(File)
 with_default_controller("uri")(URI)
-with_default_controller("feed")(Feed)
 
 # Blocks
 from .slot import Slot
@@ -147,6 +138,7 @@ from .textblock import TextBlock
 from .tweetbutton import TweetButton
 from .twittertimelineblock import TwitterTimelineBlock
 from .videoblock import VideoBlock
+
 from .importurl import url_importer
 from . import migration
 

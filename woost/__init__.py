@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 Woost is an object oriented, web based Content Management System, written
 in python.
 
@@ -9,7 +9,7 @@ in python.
 @since:			October 2008
 """
 
-__version__ = "2.12b1"
+__version__ = "3.0b1"
 
 from woost.application import Application
 app = Application()

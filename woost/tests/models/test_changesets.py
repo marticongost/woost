@@ -1,12 +1,12 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
 @organization:	Whads/Accent SL
 @since:			February 2009
 """
-from __future__ import with_statement
+
 from woost.tests.models.basetestcase import BaseTestCase
 
 
@@ -24,8 +24,8 @@ class ChangeSetTests(BaseTestCase):
 
         with changeset_context(author) as changeset:
             item = Document()
-            item.set("title", u"Foo!", "en")
-            item.resource_type = u"text/foo"
+            item.set("title", "Foo!", "en")
+            item.resource_type = "text/foo"
             item.hidden = True
             assert not changeset.changes
             item.insert()
@@ -34,7 +34,7 @@ class ChangeSetTests(BaseTestCase):
         assert changeset.author is author
         assert isinstance(changeset.date, datetime)
 
-        assert changeset.changes.keys() == [item.id]
+        assert list(changeset.changes.keys()) == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
         assert change.action == "create"
@@ -44,10 +44,10 @@ class ChangeSetTests(BaseTestCase):
         for key in "id", "changes", "creation_time", "last_update_time":
             assert not key in change.item_state
 
-        print change.item_state
+        print(change.item_state)
 
-        assert change.item_state["title"] == {"en": u"Foo!"}
-        assert change.item_state["resource_type"] == u"text/foo"
+        assert change.item_state["title"] == {"en": "Foo!"}
+        assert change.item_state["resource_type"] == "text/foo"
         assert change.item_state["hidden"] == True
         assert item.author is author
         assert item.creation_time
@@ -74,7 +74,7 @@ class ChangeSetTests(BaseTestCase):
         assert changeset.author is author
         assert isinstance(changeset.date, datetime)
 
-        assert changeset.changes.keys() == [item.id]
+        assert list(changeset.changes.keys()) == [item.id]
         change = changeset.changes[item.id]
         assert change.target is item
         assert change.action == "delete"
@@ -96,8 +96,8 @@ class ChangeSetTests(BaseTestCase):
 
         with changeset_context(author) as creation:
             item = Document()
-            item.set("title", u"Foo!", "en")
-            item.resource_type = u"text/foo"
+            item.set("title", "Foo!", "en")
+            item.resource_type = "text/foo"
             item.hidden = True
             item.insert()
 
@@ -105,15 +105,15 @@ class ChangeSetTests(BaseTestCase):
         sleep(0.1)
 
         with changeset_context(author) as modification:
-            item.set("title", u"Bar!", "en")
-            item.resource_type = u"text/bar"
+            item.set("title", "Bar!", "en")
+            item.resource_type = "text/bar"
             item.hidden = True
 
         assert list(ChangeSet.select()) == [creation, modification]
         assert modification.author is author
         assert isinstance(modification.date, datetime)
 
-        assert modification.changes.keys() == [item.id]
+        assert list(modification.changes.keys()) == [item.id]
         change = modification.changes[item.id]
         assert change.target is item
         assert change.action == "modify"
@@ -124,8 +124,8 @@ class ChangeSetTests(BaseTestCase):
         for key in "id", "changes", "creation_time", "last_update_time":
             assert not key in change.item_state
 
-        assert change.item_state["title"] == {"en": u"Bar!"}
-        assert change.item_state["resource_type"] == u"text/bar"
+        assert change.item_state["title"] == {"en": "Bar!"}
+        assert change.item_state["resource_type"] == "text/bar"
         assert change.item_state["hidden"] == True
         assert item.author is author
         assert item.creation_time

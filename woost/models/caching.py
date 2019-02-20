@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -76,7 +76,7 @@ class CachingPolicy(Item):
         if expression:
             expression = expression.replace("\r", "")
             context["publishable"] = publishable
-            exec expression in context
+            exec(expression, context)
             return context.get("applies", False)
 
         return True
@@ -99,7 +99,7 @@ class CachingPolicy(Item):
         if expression:
             expression = expression.replace("\r", "")
             context["publishable"] = publishable
-            exec expression in context
+            exec(expression, context)
             key_qualifier = context.get("cache_key")
         else:
             request = context.get("request")
@@ -122,7 +122,7 @@ class CachingPolicy(Item):
             context["publishable"] = publishable
             context["datetime"] = datetime
             context["timedelta"] = timedelta
-            exec expression in context
+            exec(expression, context)
             expiration = context.get("expiration")
 
         return expiration
@@ -141,7 +141,7 @@ class CachingPolicy(Item):
         expression = self.cache_tags_expression
         if expression:
             context["tags"] = tags
-            exec expression in context
+            exec(expression, context)
             tags = context.get("tags")
 
         return tags
@@ -196,7 +196,7 @@ def menu_items(publishable):
 def file_date(publishable):
     try:
         ts = os.stat(publishable.file_path).st_mtime
-    except IOError, OSError:
+    except IOError as OSError:
         return None
 
     return datetime.fromtimestamp(ts)

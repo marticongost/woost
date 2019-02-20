@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			June 2009
 """
-from __future__ import with_statement
+
 from cocktail.translations import set_language
 from woost.tests.models.basetestcase import BaseTestCase
 

@@ -13,9 +13,9 @@ from woost import app
 
     <?py-class
     menu_image = "woost://images/menu-button.png"
-    collapsed_menu_character = u"▶"
+    collapsed_menu_character = "▶"
     collapsed_menu_image = None
-    expanded_menu_character = u"▼"
+    expanded_menu_character = "▼"
     expanded_menu_image = None
     single_branch_expansion = True
     folder_action = "expand"

@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
 from woost.models.configuration import Configuration
 from woost.models.uri import URI, File
@@ -53,7 +53,7 @@ class URLImport(object):
         self.languages = languages
 
         try:
-            self.response = urllib2.urlopen(
+            self.response = urllib.request.urlopen(
                 url,
                 timeout = timeout
             )

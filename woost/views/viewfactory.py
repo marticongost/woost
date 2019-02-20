@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
 """
@@ -18,7 +18,7 @@ class ViewFactory(object):
 
     def _normalize_view(self, value, item, **parameters):
 
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             view = templates.new(value)
             view.item = item
         elif isinstance(value, ViewFactory):
@@ -31,7 +31,7 @@ class ViewFactory(object):
 
         # Set any remaining parameters as attributes of the resulting view
         if view:
-            for key, value in parameters.iteritems():
+            for key, value in parameters.items():
                 setattr(view, key, value)
 
         return view
@@ -77,7 +77,7 @@ class ViewFactory(object):
             )
 
         def decorator(function):
-            register(*(register_args + [function.func_name, function]))
+            register(*(register_args + [function.__name__, function]))
             return function
 
         return decorator

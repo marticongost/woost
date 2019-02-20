@@ -1,12 +1,11 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-import json
 import cherrypy
 from cocktail.persistence import delete_dry_run
-from cocktail.controllers import Controller, request_property
+from cocktail.controllers import Controller, json_out, request_property
 from woost import app
 from woost.models import DeletePermission
 from woost.admin.dataexport import Export
@@ -15,10 +14,8 @@ from woost.admin.controllers.utils import resolve_object_ref
 
 class DeletePreviewController(Controller):
 
+    @json_out
     def __call__(self, id_list):
-
-        cherrypy.response.headers["Content-Type"] = \
-            "application/json; charset=utf-8"
 
         if not id_list:
             raise cherrypy.HTTPError(400, "No objects specified")
@@ -26,7 +23,7 @@ class DeletePreviewController(Controller):
         root = []
         data = {"root": root}
 
-        if isinstance(id_list, basestring):
+        if isinstance(id_list, str):
             id_list = [id_list]
 
         for id in id_list:
@@ -37,7 +34,7 @@ class DeletePreviewController(Controller):
                     root.append(self.export_node(dry_run))
 
         data["blocked"] = self.blocked
-        return json.dumps(data)
+        return data
 
     def export_node(self, node):
 
@@ -51,7 +48,7 @@ class DeletePreviewController(Controller):
                 member.name,
                 x.export_object_list(values, ref = True)
             )
-            for member, values in node["blocking"].iteritems()
+            for member, values in node["blocking"].items()
         )
         data["_cascade_delete"] = dict(
             (
@@ -61,7 +58,7 @@ class DeletePreviewController(Controller):
                     for subnode in subnodes
                 ]
             )
-            for member, subnodes in node["cascade"].iteritems()
+            for member, subnodes in node["cascade"].items()
         )
         return data
 

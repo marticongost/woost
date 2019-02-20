@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -99,7 +99,7 @@ class VideoFileRenderer(Renderer):
                     "Must specify a smaller position than the video duration."
                 )
 
-            command = u"%s -y -ss %s -i %s -vframes 1 -an -vcodec png -f rawvideo %s " % (
+            command = "%s -y -ss %s -i %s -vframes 1 -an -vcodec png -f rawvideo %s " % (
                 self.ffmpeg_path,
                 time.strftime("%H:%M:%S"),
                 item.file_path,

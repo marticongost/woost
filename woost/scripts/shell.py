@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -49,7 +49,7 @@ def show(target):
         for item in target:
             show(item)
     else:
-        print "Can't show non-publishable object %r" % target
+        print("Can't show non-publishable object %r" % target)
 
 def edit(target):
 
@@ -66,7 +66,7 @@ def edit(target):
         for item in target:
             edit(item)
     else:
-        print "Can't edit object %r" % target
+        print("Can't edit object %r" % target)
 
 def fetch(cls, *args, **kwargs):
     return list(cls.select(*args, **kwargs))

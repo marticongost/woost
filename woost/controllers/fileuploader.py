@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""Provides the `FileUploader` class, that makes it easy to upload files into
+"""Provides the `FileUploader` class, that makes it easy to upload files into
 `woost.models.File` objects using forms.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -104,7 +104,7 @@ class FileUploader(object):
                     get_file_destination = self.uploader.get_temp_path
                 )
 
-                for key, value in self.upload_options.iteritems():
+                for key, value in self.upload_options.items():
                     setattr(upload_member, key, value)
 
                 if isinstance(source_member, schema.Collection):
@@ -118,7 +118,7 @@ class FileUploader(object):
 
                 target_member.member_group = source_member.member_group
 
-                for key, value in self.properties.iteritems():
+                for key, value in self.properties.items():
                     setattr(target_member, key, value)
 
                 target_member.name = self.key

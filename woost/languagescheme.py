@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 @author:		Martí Congost
 @contact:		marti.congost@whads.com
@@ -13,7 +13,6 @@ from cocktail.translations import (
     clear_fallback_languages,
     set_fallback_languages
 )
-from cocktail.controllers import try_decode, context
 from cocktail.controllers.parameters import set_cookie_expiration
 from woost import app
 from woost.models import Configuration

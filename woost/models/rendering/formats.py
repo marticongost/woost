@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -18,7 +18,7 @@ formats_by_mime_type = {
 
 mime_types_by_format = dict(
     (v, k)
-    for k, v in formats_by_mime_type.iteritems()
+    for k, v in formats_by_mime_type.items()
 )
 
 formats_by_extension = {
@@ -31,6 +31,6 @@ formats_by_extension = {
 
 extensions_by_format = dict(
     (v, k)
-    for k, v in formats_by_extension.iteritems()
+    for k, v in formats_by_extension.items()
 )
 

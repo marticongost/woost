@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -30,7 +30,7 @@ members_affecting_static_publication = set([
 def encode_filename(link, encoding = None):
     if encoding is None:
         encoding = filesystem_encoding
-    return link.encode(encoding) if isinstance(link, unicode) else link
+    return link.encode(encoding) if isinstance(link, str) else link
 
 def create_links(file, links = None, encoding = None):
 
@@ -52,12 +52,12 @@ def create_links(file, links = None, encoding = None):
         link = encode_filename(link, encoding)
 
         if debug:
-            print styled("STATIC PUBLICATION", "white", "green"),
-            print "Adding link for #%s (%s -> %s)" % (
+            print(styled("STATIC PUBLICATION", "white", "green"), end=' ')
+            print("Adding link for #%s (%s -> %s)" % (
                 styled(file.id, style = "bold"),
                 styled(link, "yellow"),
                 styled(linked_file, "brown")
-            )
+            ))
 
         # Delete the link if it already existed
         try:
@@ -85,11 +85,11 @@ def remove_links(file, links = None, encoding = None):
         link = encode_filename(link, encoding)
         if os.path.lexists(link):
             if debug:
-                print styled("STATIC PUBLICATION", "white", "red"),
-                print "Removing link for #%s (%s)" % (
+                print(styled("STATIC PUBLICATION", "white", "red"), end=' ')
+                print("Removing link for #%s (%s)" % (
                     styled(file.id, style = "bold"),
                     styled(link, "yellow")
-                )
+                ))
             os.remove(link)
 
 def get_links(file):
