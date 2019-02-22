@@ -5,7 +5,7 @@ A script that imports a set of local files as CMS items.
 """
 from sys import argv, exit
 from glob import glob
-from pkg_resources import resource_filename
+from cocktail.pkgutils import resource_filename
 from cocktail.styled import styled
 from cocktail.persistence import datastore
 from woost.models import File

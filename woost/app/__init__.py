@@ -7,8 +7,8 @@ from types import ModuleType
 import sys
 import os
 from threading import local
-from pkg_resources import resource_filename
-from cocktail.modeling import GenericMethod, camel_to_underscore
+from cocktail.pkgutils import resource_filename
+from cocktail.modeling import camel_to_underscore
 from cocktail.caching import Cache
 from cocktail.controllers import context, folder_publisher, Cached
 from cocktail.controllers.asyncupload import AsyncUploader

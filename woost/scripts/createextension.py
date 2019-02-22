@@ -6,7 +6,7 @@
 import re
 import os
 from argparse import ArgumentParser
-from pkg_resources import resource_filename
+from cocktail.pkgutils import resource_filename
 
 def create_extension(name, module_header = ""):
     """Creates a skeleton directory structure for a new Woost extension.
