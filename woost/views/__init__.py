@@ -7,7 +7,7 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from pkg_resources import resource_filename
+from cocktail.pkgutils import resource_filename
 from cocktail.html import resource_repositories
 
 resource_repositories.define(

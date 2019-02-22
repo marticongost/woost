@@ -2,7 +2,7 @@
 u"""
 Provides the CMS subclass used to customize the behavior of the site.
 """
-from pkg_resources import resource_filename
+from cocktail.pkgutils import resource_filename
 from cocktail.controllers import folder_publisher
 from cocktail.controllers import renderingengines
 from woost.controllers.cmscontroller import CMSController

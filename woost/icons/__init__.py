@@ -8,7 +8,7 @@ Classes for choosing icons for CMS items.
 @since:			April 2009
 """
 import os
-from pkg_resources import resource_filename
+from cocktail.pkgutils import resource_filename
 from cocktail.typemapping import TypeMapping
 from cocktail.resourceloader import ResourceLoader
 from cocktail.persistence import PersistentObject
