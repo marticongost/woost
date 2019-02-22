@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from types import ModuleType
+import sys
 import os
 from threading import local
 from pkg_resources import resource_filename
@@ -13,7 +15,8 @@ from cocktail.controllers.asyncupload import AsyncUploader
 from cocktail.html.resources import resource_repositories, get_theme, set_theme
 
 
-class Application(object):
+class Application(ModuleType):
+    """Provides configuration and contextual state for a Woost application."""
 
     _contextual_properties = []
 
@@ -42,6 +45,7 @@ http://woost.info
     default_remote_python_executable = None
 
     def __init__(self):
+        ModuleType.__init__(self, "woost.app", self.__doc__)
         self._thread_data = local()
 
     def path(self, *args):
@@ -99,7 +103,7 @@ http://woost.info
     @property
     def icon_resolver(self):
         if self.__icon_resolver is None:
-            from woost.iconresolver import IconResolver
+            from woost.icons import IconResolver
             self.__icon_resolver = IconResolver()
         return self.__icon_resolver
 
@@ -117,7 +121,7 @@ http://woost.info
     # Language scheme
     def _get_language(self):
         if self.__language is None:
-            from woost.languagescheme import LanguageScheme
+            from woost.language import LanguageScheme
             self.__language = LanguageScheme()
         return self.__language
 
@@ -129,7 +133,7 @@ http://woost.info
     # Authentication scheme
     def _get_authentication(self):
         if self.__authentication is None:
-            from woost.authenticationscheme import AuthenticationScheme
+            from woost.authentication import AuthenticationScheme
             self.__authentication = AuthenticationScheme()
         return self.__authentication
 
@@ -147,21 +151,21 @@ http://woost.info
     def _get_url_mapping(self):
 
         if self.__url_mapping is None:
-            from woost import urlmapping as um
-            url_mapping = um.URLMapping([
-                um.Sequence([
-                    um.Optional(um.WebsiteInHostname()),
-                    um.Optional(um.LocaleInPath()),
-                    um.Conditional(
+            from woost import urls
+            url_mapping = urls.URLMapping([
+                urls.Sequence([
+                    urls.Optional(um.WebsiteInHostname()),
+                    urls.Optional(um.LocaleInPath()),
+                    urls.Conditional(
                         (
                             lambda publishable, **kwargs:
                             publishable is not None
                         ),
-                        um.OneOf([
-                            um.Home(),
-                            um.HierarchyInPath(),
-                            um.DescriptiveIdInPath(),
-                            um.IdInPath()
+                        urls.OneOf([
+                            urls.Home(),
+                            urls.HierarchyInPath(),
+                            urls.DescriptiveIdInPath(),
+                            urls.IdInPath()
                         ])
                     )
                 ])
@@ -243,7 +247,7 @@ class ContextualProperty(metaclass = ContextualPropertyMetaclass):
 class URLResolutionProperty(ContextualProperty):
     """Gets or sets the URL resolution for the current request.
 
-    .. type:: `~woost.urlmapping.URLResolution`
+    .. type:: `~woost.urls.URLResolution`
     """
 
 
@@ -377,4 +381,6 @@ def get_navigation_point(self):
 
 
 Cached.cache = Application.cache
+
+sys.modules["woost.app"] = Application()
 

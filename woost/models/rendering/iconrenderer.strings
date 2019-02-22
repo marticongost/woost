@@ -19,15 +19,15 @@ en: Icon library
             [explanation]
             ca:
                 Referència a una instància de
-                <em>woost.iconresolver.IconResolver.</em> Deixar buit per
+                <em>woost.icons.IconResolver.</em> Deixar buit per
                 utilitzar <em>woost.app.icon_resolver</em>.
             es:
                 Referencia a una instancia de
-                <em>woost.iconresolver.IconResolver.</em> Dejar vacío para
+                <em>woost.icons.IconResolver.</em> Dejar vacío para
                 utilizar <em>woost.app.icon_resolver</em>.",
             en:
                 Reference to an instance of
-                <em>woost.iconresolver.IconResolver.</em> Leave blank to use
+                <em>woost.icons.IconResolver.</em> Leave blank to use
                 <em>woost.app.icon_resolver</em>.
 
         [icon_size]

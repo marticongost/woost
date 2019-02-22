@@ -1,5 +1,5 @@
 
-[woost.authenticationscheme]
+[woost.authentication]
 
     [AuthenticationFailedError.instance]
     ca: Usuari o contrasenya incorrectes
