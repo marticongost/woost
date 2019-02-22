@@ -305,7 +305,10 @@ class PublishableProperty(ContextualProperty):
         ContextualProperty.set(self, app, value)
 
         if app.original_publishable is None:
-            app.navigation_point = get_navigation_point(value)
+            app.navigation_point = (
+                value.get_navigation_point()
+                if value else None
+            )
 
         # Required to preserve backward compatibility
         context["publishable"] = value
@@ -322,7 +325,10 @@ class OriginalPublishableProperty(ContextualProperty):
 
     def set(self, app, value):
         ContextualProperty.set(self, app, value)
-        app.navigation_point = get_navigation_point(value)
+        app.navigation_point = (
+            value.get_navigation_point()
+            if value else None
+        )
 
         # Required to preserve backward compatibility
         context["original_publishable"] = value
@@ -373,11 +379,6 @@ class EditingProperty(ContextualProperty):
     .. type:: bool
     """
     default = False
-
-
-@GenericMethod
-def get_navigation_point(self):
-    return self
 
 
 Cached.cache = Application.cache
