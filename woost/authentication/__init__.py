@@ -17,7 +17,7 @@ from cocktail.controllers import (
 from woost import app
 from woost.models import User
 
-translations.load_bundle("woost.authenticationscheme")
+translations.load_bundle("woost.authentication.package")
 
 
 class AuthenticationScheme(object):

@@ -26,7 +26,7 @@ from cocktail.controllers.asyncupload import AsyncUploadController
 from cocktail.controllers import get_request_url
 from cocktail.persistence import datastore
 from woost import app
-from woost.authenticationscheme import AuthenticationFailedError
+from woost.authentication import AuthenticationFailedError
 from woost.models import (
     File,
     Configuration,
@@ -110,7 +110,7 @@ class CMSController(BaseCMSController):
         (selected publishable, active website, active language, etc).
 
         :param url: The `~cocktail.urls.URL` for the current request.
-        :param url_resolution: The `~woost.urlmapping.URLResolution` object for
+        :param url_resolution: The `~woost.urls.URLResolution` object for
             the current request.
         """
     )

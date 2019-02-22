@@ -6,7 +6,7 @@
 @organization:	Whads/Accent SL
 @since:			December 2008
 """
-from setuptools import setup, find_packages
+from setuptools import setup
 from os import listdir
 from os.path import join, isdir
 
@@ -60,7 +60,20 @@ of its features include:\n"
         "cocktail[sass]==2.0a1",
         "zeo"
     ],
-    packages = find_packages(),
+    packages = [
+        "woost.app",
+        "woost.authentication",
+        "woost.language",
+        "woost.urls",
+        "woost.icons",
+        "woost.models",
+        "woost.views",
+        "woost.controllers",
+        "woost.admin",
+        "woost.tests",
+        "woost.scripts",
+        "woost.extensions"
+    ],
     include_package_data = True,
     # Woost can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution

@@ -9,7 +9,7 @@ from cocktail.events import when
 from pkg_resources import get_distribution
 from woost import app
 from woost.models import AuthorizationError
-from woost.authenticationscheme import AuthenticationFailedError
+from woost.authentication import AuthenticationFailedError
 from woost.controllers import CMSController
 
 
