@@ -154,8 +154,8 @@ http://woost.info
             from woost import urls
             url_mapping = urls.URLMapping([
                 urls.Sequence([
-                    urls.Optional(um.WebsiteInHostname()),
-                    urls.Optional(um.LocaleInPath()),
+                    urls.Optional(urls.WebsiteInHostname()),
+                    urls.Optional(urls.LocaleInPath()),
                     urls.Conditional(
                         (
                             lambda publishable, **kwargs:
