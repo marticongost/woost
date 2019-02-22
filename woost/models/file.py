@@ -104,7 +104,7 @@ class File(Publishable):
 
     @property
     def file_extension(self):
-        return os.path.splitext(self.file_name)[1]
+        return self.file_name and os.path.splitext(self.file_name)[1] or None
 
     @property
     def file_path(self):
