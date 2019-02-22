@@ -53,6 +53,7 @@ class PublishableObject(object):
     redirection_mode = None
     redirection_target = None
     redirection_method = None
+    navigation_point_qname = None
 
     def get_controller(self):
         return self.controller or self.get_default_controller()
@@ -159,6 +160,29 @@ class PublishableObject(object):
             ancestor = ancestor.parent
 
         return False
+
+    def get_navigation_point(self):
+        """Obtains the navigation point for this element.
+
+        The navigation point marks the inner most publishable object that
+        should be displayed as active on the site's navigation (ie. the
+        selected menu entry). Usually this defaults to the element itself,
+        but subclasses which are not intended to be added as children of a
+        document can supply a document that should be considered as their
+        parent for navigation purposes. This can be done in one of two ways:
+
+        - Overriding this method an returning the desired `PublishableObject`
+        - Setting the `navigation_point_qname` attribute to the qname of a
+          `PublishableObject`
+
+        :return: The element that should be highlighted in the site's
+            navigation.
+        :rtype: `PublishableObject`
+        """
+        if self.navigation_point_qname:
+            return Item.require_instance(qname = self.navigation_point_qname)
+        else:
+            return self
 
     def is_home_page(self):
         """Indicates if the object is the home page for any website.
