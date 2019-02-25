@@ -22,7 +22,6 @@ from woost.models.utils import (
     get_model_from_dotted_name
 )
 from woost.admin.dataexport import Export
-from woost.admin.dataexport.sitetreeexport import SiteTreeExport
 from woost.admin.dataexport.adminexport import AdminExport
 from woost.admin.path import get_path
 from woost.admin.partitioning import parse_partition_parameter
@@ -38,7 +37,6 @@ class ListingController(Controller):
     default_export = "default"
     exports = {
         "default": Export,
-        "site_tree": SiteTreeExport,
         "admin": AdminExport
     }
     default_order = "-last_update_time"
