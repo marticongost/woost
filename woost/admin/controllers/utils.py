@@ -4,7 +4,9 @@ u"""
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
+from cocktail.translations import set_language
 from cocktail.persistence import datastore, InstanceNotFoundError
+from woost import app
 from woost.models import Item, Configuration, Website
 from woost.models.utils import get_model_from_dotted_name
 
@@ -52,4 +54,19 @@ def get_model_from_state(state):
         raise cherrypy.HTTPError(400, "Unknown model: " + model_name)
 
     return model
+
+def set_admin_language():
+
+    language = app.user.backoffice_language
+
+    if not language:
+        language = app.user.preferred_language
+        if language not in Configuration.backoffice_language.enumeration:
+            language = None
+
+    if not language:
+        language = app.publishable.default_language
+
+    set_language(language)
+    return language
 
