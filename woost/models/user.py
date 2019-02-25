@@ -8,7 +8,7 @@ u"""
 """
 from hashlib import sha1
 from cocktail.events import event_handler
-from cocktail.translations import translations, translate_locale
+from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.html.uigeneration import display_factory
 from woost.models.item import Item
@@ -69,7 +69,8 @@ class User(Item):
         "password",
         "enabled",
         "role",
-        "prefered_language",
+        "preferred_language",
+        "backoffice_language",
         "backoffice_language_chain",
         "backoffice_visible_translations"
     ]
@@ -121,6 +122,10 @@ class User(Item):
         member_group = "user_data"
     )
 
+    def _preferred_language_default():
+        from woost.models.configuration import Configuration
+        return Configuration.instance.default_language
+
     def _backoffice_language_default():
         from woost.models.configuration import Configuration
         return Configuration.instance.backoffice_language
@@ -129,9 +134,15 @@ class User(Item):
         from woost.models.configuration import Configuration
         return Configuration.backoffice_language.enumeration
 
-    prefered_language = LocaleMember(
+    preferred_language = LocaleMember(
         required = True,
-        default = schema.DynamicDefault(_backoffice_language_default),
+        default = schema.DynamicDefault(get_language),
+        text_search = False,
+        listed_by_default = False,
+        member_group = "language_preferences"
+    )
+
+    backoffice_language = LocaleMember(
         enumeration = _backoffice_language_enumeration,
         text_search = False,
         listed_by_default = False,

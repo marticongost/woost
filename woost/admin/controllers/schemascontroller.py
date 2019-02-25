@@ -7,7 +7,6 @@ from json import dumps
 import cherrypy
 from cocktail.modeling import camel_to_underscore
 from cocktail import schema
-from cocktail.translations import set_language
 from cocktail.controllers import Controller, Cached, request_property
 from cocktail.persistence import PersistentObject
 from woost import app
@@ -18,6 +17,7 @@ from woost.admin.filters import (
     Filter,
     MultiValueFilter
 )
+from .utils import set_admin_language
 
 _standard_filter_templates = (Filter, MultiValueFilter)
 
@@ -45,11 +45,7 @@ class SchemasController(Cached, Controller):
 
     def _produce_content(self):
 
-        language = (
-            app.user.prefered_language
-            or app.publishable.default_language
-        )
-        set_language(language)
+        language = set_admin_language()
 
         cherrypy.response.headers["Content-Type"] = \
             "application/javascript; charset=utf-8"

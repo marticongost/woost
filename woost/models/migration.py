@@ -2028,3 +2028,18 @@ def add_listing_pagination_method(e):
     for listing in Listing.select():
         listing.pagination_method = "pager" if listing._paginated else None
         del listing._paginated
+
+@migration_step
+def add_user_preferred_language(e):
+
+    from woost.models import User
+
+    for user in User.select():
+        try:
+            lang = user._prefered_language
+        except AttributeError:
+            # Apply defaults
+            user.preferred_language
+        else:
+            user.preferred_language = lang
+
