@@ -4,6 +4,7 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.html import Element, first_last_classes
+from woost.models import Item
 
 
 class BlockList(Element):
@@ -24,6 +25,12 @@ class BlockList(Element):
 
     def _ready(self):
         Element._ready(self)
+
+        if isinstance(self.container, str):
+            self.container = Item.require_instance(qname = self.container)
+
+        if not self.slot and self.container:
+            self.slot = self.container.__class__.get_member("blocks")
 
         if self.container is not None and self.slot is not None:
             if isinstance(self.slot, str):
