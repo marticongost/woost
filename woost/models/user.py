@@ -302,7 +302,7 @@ class User(Item):
             print(permission_param_style("user", translations(self)))
 
             for key, value in context.items():
-                print(permission_param_style(key, _describe(value)))
+                print(permission_param_style(key, repr(value)))
 
         permissions = self.iter_permissions(permission_type)
 
@@ -312,9 +312,9 @@ class User(Item):
                 new_role = permission.role
                 if new_role is not role:
                     role = new_role
-                    print(role_style(_describe(role)))
+                    print(role_style(repr(role)))
 
-                print(permission_style(_describe(permission)))
+                print(permission_style(repr(permission)))
 
             if permission.match(verbose = verbose, user = self, **context):
 
@@ -391,11 +391,4 @@ class AuthorizationError(Exception):
         self.user = user
         self.permission_type = permission_type
         self.context = context
-
-
-def _describe(value):
-    text = repr(value)
-    if isinstance(text, str):
-        text = text.decode("utf-8")
-    return text
 
