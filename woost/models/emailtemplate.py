@@ -164,8 +164,8 @@ class EmailTemplate(Item):
 
             # Subject and body (templates)
             if self.template_engine:
-                template_engine = get_rendering_engine(self.template_engine)
-                engine = template_engine(
+                engine = get_rendering_engine(
+                    self.template_engine,
                     options = {"mako.output_encoding": self.encoding}
                 )
 
@@ -183,8 +183,8 @@ class EmailTemplate(Item):
                 subject = render("subject").strip()
                 body = render("body")
             else:
-                subject = self.subject.encode(self.encoding)
-                body = self.body.encode(self.encoding)
+                subject = self.subject
+                body = self.body
 
             message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
 
@@ -230,13 +230,12 @@ class EmailTemplate(Item):
             def format_email_address(address, encoding):
                 name, address = parseaddr(address)
                 name = Header(name, encoding).encode()
-                address = address.encode('ascii')
                 return formataddr((name, address))
 
              # Receivers (python expression)
             receivers = eval_member("receivers")
             if receivers:
-                receivers = set(r.strip().encode(self.encoding) for r in receivers)
+                receivers = set(r.strip() for r in receivers)
 
             if not receivers:
                 return set()
@@ -254,7 +253,7 @@ class EmailTemplate(Item):
             # BCC (python expression)
             bcc = eval_member("bcc")
             if bcc:
-                receivers.update(r.strip().encode(self.encoding) for r in bcc)
+                receivers.update(r.strip() for r in bcc)
 
             if subject:
                 message["Subject"] = Header(subject, self.encoding).encode()
