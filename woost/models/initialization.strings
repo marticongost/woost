@@ -232,8 +232,8 @@ PWD_RESET_LINK = """<a href="${confirmation_url}">${confirmation_url}</a>"""
         </p>
     es:
         <p>
-            Introduce a tu identificador de usuario para iniciar el
-             proceso de cambio de contraseña
+            Introduce tu identificador de usuario para iniciar el
+            proceso de cambio de contraseña
         </p>
     en:
         <p>
