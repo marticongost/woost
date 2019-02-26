@@ -754,7 +754,7 @@ class ObjectImporter(object):
         return self.loads(string, encoding)
 
     def loads(self, string, encoding = "utf-8"):
-        if isinstance(string, str):
+        if isinstance(string, bytes):
             data = string.decode(encoding)
         data = json.loads(string)
         return self.load_objects(data)
