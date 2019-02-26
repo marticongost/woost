@@ -473,21 +473,18 @@ class CMSController(BaseCMSController):
         @rtype: (L{Document<woost.models.Document>}, int)
         """
         is_http_error = isinstance(error, cherrypy.HTTPError)
-        config = Configuration.instance
-        page = None
-        page_name = None
-        status = None
+        get_setting = Configuration.instance.get_setting
 
         # Page not found
         if is_http_error and error.status == 404:
-            return config.get_setting("not_found_error_page"), 404
+            return get_setting("not_found_error_page"), 404
 
         elif is_http_error and error.status == 410:
-            return config.get_setting("gone_error_page"), 410
+            return get_setting("gone_error_page"), 410
 
         # Service unavailable
         elif is_http_error and error.status == 503:
-            return config.get_setting("maintenance_page"), 503
+            return get_setting("maintenance_page"), 503
 
         # Access forbidden:
         # The default behavior is to show a login page for anonymous users, and
@@ -505,13 +502,19 @@ class CMSController(BaseCMSController):
                         return login_page, 403
                     publishable = publishable.parent
 
-                return config.get_setting("login_page"), 403
+                return get_setting("login_page"), 403
             else:
-                return config.get_setting("forbidden_error_page"), 403
+                return get_setting("forbidden_error_page"), 403
 
         # Generic error
-        elif (is_http_error and error.status == 500) or not is_http_error:
-            return config.get_setting("generic_error_page"), 500
+        elif (
+            (is_http_error and error.status in (400, 500))
+            or not is_http_error
+        ):
+            return (
+                get_setting("generic_error_page"),
+                400 if (is_http_error and error.status == 400) else 500
+            )
 
         return None, None
 
