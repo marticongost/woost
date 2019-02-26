@@ -7,23 +7,22 @@ import cherrypy
 from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.translations import translations
-from cocktail.persistence import datastore
 from cocktail.controllers import (
     request_property,
     get_parameter,
     FormProcessor,
     Form
 )
+from cocktail.controllers.fieldconfirmation import field_confirmation
 from woost import app
 from woost.models.user import User
-from woost.controllers.backoffice.usereditnode import PasswordConfirmationError
-from woost.controllers.documentcontroller import DocumentController
+from woost.controllers.publishablecontroller import PublishableController
 from woost.controllers.passwordchangecontroller import generate_confirmation_hash
 
 translations.load_bundle("woost.controllers.passwordchangeconfirmationcontroller")
 
 
-class PasswordChangeConfirmationController(FormProcessor, DocumentController):
+class PasswordChangeConfirmationController(FormProcessor, PublishableController):
 
     is_transactional = True
     class_view = "woost.views.PasswordChangeFormTemplate"
@@ -61,61 +60,44 @@ class PasswordChangeConfirmationController(FormProcessor, DocumentController):
     @request_property
     def user(self):
         if self.identifier:
+            from cocktail.styled import styled
+            print(styled(self.identifier, "slate_blue"))
             return User.get_instance(**{
                 self.identifier_member.name: self.identifier
             })
 
+    @field_confirmation("password")
     class ChangePasswordForm(Form):
 
+        model = User
+
         @request_property
-        def schema(self):
+        def source_instance(self):
+            return self.controller.user
 
-            form_schema = schema.Schema(
-                name = self.get_schema_name(),
-                schema_aliases = self.get_schema_aliases(),
-                members_order = ["password", "password_confirmation"]
+        def init_data(self, data):
+            pass
+
+        @request_property
+        def adapter(self):
+            adapter = Form.adapter(self)
+            adapter.implicit_copy = False
+            adapter.copy(
+                "password",
+                properties = {
+                    "member_group": None,
+                    "required": True
+                }
             )
+            adapter.exclude("password_confirmation")
+            return adapter
 
-            # New password
-            password_member = User.password.copy(member_group = None)
-            password_member.required = True
-            form_schema.add_member(password_member)
-
-            # New password confirmation
-            password_confirmation_member = schema.String(
-                name = "password_confirmation",
-                edit_control = "cocktail.html.PasswordBox",
-                required = True
-            )
-
-            @password_confirmation_member.add_validation
-            def validate_password_confirmation(context):
-                password = context.get_value("password")
-                password_confirmation = context.value
-
-                if password and password_confirmation \
-                and password != password_confirmation:
-                    yield PasswordConfirmationError(context)
-
-            form_schema.add_member(password_confirmation_member)
-
-            return form_schema
-
-        def submit(self):
-
-            Form.submit(self)
-
-            # Update the user's password
-            user = self.controller.user
-            user.password = self.data["password"]
-            datastore.commit()
-
-            # Log in the user (after all, we just made certain it's him/her)
-            app.authentication.set_user_session(user)
+        def after_submit(self):
+            app.authentication.set_user_session(self.instance)
 
     @request_property
     def output(self):
-        output = DocumentController.output(self)
+        output = PublishableController.output(self)
         output["identifier"] = self.identifier
         output["hash"] = self.hash
         return output

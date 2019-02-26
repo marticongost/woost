@@ -17,7 +17,7 @@ from cocktail.controllers import (
 from woost import app
 from woost.models.emailtemplate import EmailTemplate
 from woost.models import Configuration, User, Publishable
-from woost.controllers.documentcontroller import DocumentController
+from woost.controllers.publishablecontroller import PublishableController
 
 translations.load_bundle("woost.controllers.passwordchangecontroller")
 
@@ -32,12 +32,12 @@ class UserEmailMissingError(ValidationError):
 
 def generate_confirmation_hash(identifier):
     hash = hashlib.sha1()
-    hash.update(identifier)
-    hash.update(Configuration.instance.secret_key)
+    hash.update(identifier.encode("utf-8"))
+    hash.update(Configuration.instance.secret_key.encode("utf-8"))
     return hash.hexdigest()
 
 
-class PasswordChangeController(FormProcessor, DocumentController):
+class PasswordChangeController(FormProcessor, PublishableController):
 
     class_view = "woost.views.PasswordChangeRequestTemplate"
 
@@ -87,7 +87,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
             if confirmation_email_template:
                 confirmation_email_template.send({
                     "user": self.user,
-                    "confirmation_url": str(self.confirmation_url)
+                    "confirmation_url": self.confirmation_url
                 })
 
         @request_property
@@ -102,6 +102,7 @@ class PasswordChangeController(FormProcessor, DocumentController):
                     "hash": generate_confirmation_hash(self.identifier)
                 }
             )
+
 
 class PasswordChangeBlockController(Controller):
 
