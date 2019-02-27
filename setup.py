@@ -55,7 +55,6 @@ of its features include:\n"
         "simplejson",
         "enum34",
         "chainmap",
-        "libsass",
         "mako==1.*",
         "zeo",
         "Pillow",
