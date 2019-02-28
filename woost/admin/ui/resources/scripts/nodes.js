@@ -1016,7 +1016,7 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     }
 
     get title() {
-        return cocktail.ui.translations["woost.admin.ui.actions.blocks"];
+        return cocktail.ui.translations["woost.admin.actions.blocks"];
     }
 
     get defaultComponent() {
