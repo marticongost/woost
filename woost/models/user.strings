@@ -35,6 +35,7 @@ en: User
         es: Contraseña
         en: Password
         pt: Palavra-passe
+        de: Passwort
 
         [preferred_language]
         ca: Idioma preferit
