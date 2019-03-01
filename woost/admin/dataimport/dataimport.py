@@ -115,7 +115,7 @@ class Import(object):
 
         if language not in perm_cache:
 
-            if language in self.obj.translations:
+            if language in obj.translations:
                 self.user.require_permission(
                     ModifyTranslationPermission,
                     language = language,
