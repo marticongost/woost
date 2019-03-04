@@ -512,6 +512,24 @@ def add_user_preferred_language(e):
         else:
             user.preferred_language = lang
 
+@migration_step
+def create_admin(e):
+
+    from woost.models import Document, Controller
+    from woost.admin.initialization import create_admin
+
+    old_admin = Document.get_instance(qname = "woost.backoffice")
+    if old_admin:
+        old_admin.delete()
+
+    old_admin_controller = Controller.get_instance(
+        qname = "woost.backoffice_controller"
+    )
+    if old_admin_controller:
+        old_admin_controller.delete()
+
+    create_admin()
+
 #------------------------------------------------------------------------------
 # Woost3 migrations
 #------------------------------------------------------------------------------
