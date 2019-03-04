@@ -39,11 +39,10 @@ class BasePreviewController(HTTPMethodController):
         return self._produce_content(imp)
 
     def _import_data(self):
-
-        # Validate the content type
         data = read_json()
         return self.data_import(
             data,
+            user = app.user,
             dry_run = True
         )
 
@@ -95,6 +94,14 @@ class BasePreviewController(HTTPMethodController):
     def _resolve_object_param(self, param_name, imp, model = Item):
 
         id = self._require_param(param_name)
+
+        try:
+            id = int(id)
+        except ValueError:
+            raise cherrypy.HTTPError(
+                400,
+                "Invalid object id, expected an integer: %s" % id
+            )
 
         obj = imp.get_instance(id, model)
         if obj is None:
