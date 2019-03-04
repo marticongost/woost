@@ -31,12 +31,9 @@ def should_import_item_member(self, imp, data, member):
     if member.editable != schema.EDITABLE:
         return False
 
-    if not (
-        imp.user
-        and imp.user.has_permission(
-            ModifyMemberPermission,
-            member = member
-        )
+    if imp.user and not imp.user.has_permission(
+        ModifyMemberPermission,
+        member = member
     ):
         return False
 
