@@ -32,7 +32,7 @@ from woost import app
 from .item import Item
 from .configuration import Configuration
 from .website import Website
-from .permission import ContentPermission
+from .permission import ContentPermission, MemberPermission
 from .changesets import Change
 from .role import Role
 from .file import File
@@ -66,6 +66,13 @@ def remove_broken_type(
         if content_type.__module__ + "." + content_type.__name__ == full_name:
             del permission._content_type
             permission.delete()
+
+    for permission in list(MemberPermission.select()):
+        if permission.matching_members:
+            for member_name in permission.matching_members:
+                if member_name.startswith(full_name + "."):
+                    permission.delete()
+                    break
 
 def delete_history():
 
