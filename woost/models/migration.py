@@ -55,7 +55,7 @@ def remove_woost2_models(e):
     from importlib import import_module
     from types import ModuleType
     from cocktail.persistence import datastore
-    from woost.models import Permission, Role
+    from woost.models import Permission, Role, Publishable
     from woost.models.utils import remove_broken_type
 
     broken_types = (
@@ -86,6 +86,14 @@ def remove_woost2_models(e):
                 "TriggerResponse",
                 "CustomTriggerResponse",
                 "SendEmailTriggerResponse"
+            )
+        ),
+        (
+            "woost.models.feed", (
+                {
+                    "name": "Feed",
+                    "existing_bases": (Publishable,)
+                },
             )
         ),
         ("woost.models.userview", ("UserView",)),
