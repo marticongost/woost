@@ -6,8 +6,7 @@
 import json
 from datetime import date, time, datetime
 from decimal import Decimal
-from collections import Sequence, Set, Mapping
-from chainmap import ChainMap
+from collections import Sequence, Set, Mapping, ChainMap
 from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
 from cocktail.typemapping import ChainTypeMapping
 from cocktail import schema

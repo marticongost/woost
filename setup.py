@@ -48,13 +48,10 @@ of its features include:\n"
         "License :: OSI Approved :: GNU Affero General Public License v3",
         "Natural Language :: Catalan",
         "Natural Language :: Spanish",
-        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
     install_requires = [
-        "simplejson",
-        "enum34",
-        "chainmap",
         "mako==1.*",
         "zeo",
         "Pillow",
