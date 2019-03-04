@@ -38,7 +38,7 @@ from woost.models import Publishable
             self.visible = False
 
         if self.thumbnail_factory:
-            if isinstance(self.thumbnail_factory, basestring):
+            if isinstance(self.thumbnail_factory, str):
                 factory_name = self.thumbnail_factory
             else:
                 factory_name = self.thumbnail_factory.identifier
