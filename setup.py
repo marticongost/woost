@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 setup(
     name = "woost",
-    version = "2.12",
+    version = "2.13",
     author = "Whads/Accent SL",
     author_email = "tech@whads.com",
     maintainer = "Marti Congost",
@@ -54,9 +54,10 @@ of its features include:\n"
     install_requires = [
         "simplejson",
         "enum34",
+        "chainmap",
         "libsass",
         "mako==1.*",
-        "cocktail==1.12b1"
+        "cocktail==1.14"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
@@ -70,54 +71,6 @@ of its features include:\n"
     },
     packages = find_packages(),
     include_package_data = True,
-    entry_points = {
-        "woost.extensions": [
-            "shop = woost.extensions.shop:ShopExtension",
-            "countries = woost.extensions.countries:CountriesExtension",
-            "payments = woost.extensions.payments:PaymentsExtension",
-            "comments = woost.extensions.comments:CommentsExtension",
-            "recaptcha = woost.extensions.recaptcha:ReCaptchaExtension",
-            "staticsite = woost.extensions.staticsite:StaticSiteExtension",
-            "sitemap = woost.extensions.sitemap:SitemapExtension",
-            "pdf = woost.extensions.pdf:PDFExtension",
-            "vimeo = woost.extensions.vimeo:VimeoExtension",
-            "signup = woost.extensions.signup:SignUpExtension",
-            "googlesearch = woost.extensions.googlesearch:GoogleSearchExtension",
-            "googleanalytics = woost.extensions.googleanalytics:GoogleAnalyticsExtension",
-            "googletagmanager=woost.extensions.googletagmanager:GoogleTagManagerExtension",
-            "campaignmonitor = woost.extensions.campaignmonitor:CampaignMonitorExtension",
-            "mailer = woost.extensions.mailer:MailerExtension",
-            "usermodels = woost.extensions.usermodels:UserModelsExtension",
-            "locations = woost.extensions.locations:LocationsExtension",
-            "webconsole = woost.extensions.webconsole:WebConsoleExtension",
-            "blocks = woost.extensions.blocks:BlocksExtension",
-            "opengraph = woost.extensions.opengraph:OpenGraphExtension",
-            "ecommerce = woost.extensions.ecommerce:ECommerceExtension",
-            "facebookpublication = woost.extensions.facebookpublication:FacebookPublicationExtension",
-            "shorturls = woost.extensions.shorturls:ShortURLsExtension",
-            "twitterpublication = woost.extensions.twitterpublication:TwitterPublicationExtension",
-            "textfile = woost.extensions.textfile:TextFileExtension",
-            "audio = woost.extensions.audio:AudioExtension",
-            "issuu = woost.extensions.issuu:IssuuExtension",
-            "campaign3 = woost.extensions.campaign3:CampaignMonitor3Extension",
-            "youtube = woost.extensions.youtube:YouTubeExtension",
-            "tv3alacarta = woost.extensions.tv3alacarta:TV3ALaCartaExtension",
-            "externalfiles = woost.extensions.externalfiles:ExternalFilesExtension",
-            "restrictedaccess = woost.extensions.restrictedaccess:RestrictedAccessExtension",
-            "annotations = woost.extensions.annotations:AnnotationsExtension",
-            "notices = woost.extensions.notices:NoticesExtension",
-            "variables = woost.extensions.variables:VariablesExtension",
-            "surveys = woost.extensions.surveys:SurveysExtension",
-            "newsletters = woost.extensions.newsletters:NewslettersExtension",
-            "forms = woost.extensions.forms:FormsExtension",
-            "translationworkflow = woost.extensions.translationworkflow:TranslationWorkflowExtension",
-            "identity = woost.extensions.identity:IdentityExtension",
-            "attributes = woost.extensions.attributes:AttributesExtension",
-            "staticpub = woost.extensions.staticpub:StaticPubExtension",
-            "nocaptcha = woost.extensions.nocaptcha:NoCaptchaExtension",
-            "flowflow = woost.extensions.flowflow:FlowFlowExtension"
-        ]
-    },
     # Woost can't yet access view resources (images, style sheets, client
     # side scripts, etc) that are packed inside a zipped egg, so distribution
     # in zipped form is disabled
