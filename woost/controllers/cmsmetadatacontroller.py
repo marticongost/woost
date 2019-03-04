@@ -4,7 +4,7 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
-from simplejson import dumps
+from json import dumps
 from cocktail.translations import language_context, translations
 from cocktail.persistence import PersistentObject
 from cocktail.controllers import Controller
