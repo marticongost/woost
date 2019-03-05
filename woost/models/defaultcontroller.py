@@ -5,8 +5,8 @@
 """
 from cocktail.translations import translations
 from cocktail import schema
+from .settings import add_setting
 from .configuration import Configuration
-from .website import Website
 from .controller import Controller
 
 translations.load_bundle("woost.models.defaultcontroller")
@@ -28,20 +28,16 @@ def with_default_controller(controller_name, **field_kwargs):
     def decorator(cls):
 
         # Define the Configuration and Website fields
-        for config_class in (Configuration, Website):
-            config_class.add_member(
-                schema.Reference(
-                    field_name,
-                    type = Controller,
-                    related_end = schema.Reference(),
-                    controller_owner = cls,
-                    member_group = "publication.controllers",
-                    custom_translation_key =
-                        "woost.models.defaultcontroller.field",
-                    **field_kwargs
-                ),
-                append = True
+        add_setting(
+            schema.Reference(
+                field_name,
+                type = Controller,
+                controller_owner = cls,
+                custom_translation_key =
+                    "woost.models.defaultcontroller.field",
+                **field_kwargs
             )
+        )
 
         # Define the method
         base_get_default_controller = cls.get_default_controller
