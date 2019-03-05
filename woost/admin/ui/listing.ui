@@ -44,6 +44,7 @@
         this.members = node.members;
         this.locales = node.locales;
         this.partition = node.partition;
+        this.order = node.order;
 
         if (!this.searchBox.dataBinding) {
             this.searchBox.dataBinding = {
@@ -110,7 +111,9 @@
         this.countEnabled = !newValue || newValue.count_enabled;
 
         if (!this[NAVIGATING] && oldValue !== undefined) {
+
             const params = {view: newValue || undefined};
+
             if (
                 newValue && (
                     !newValue.allows_partitioning
@@ -124,6 +127,11 @@
             ) {
                 params["partition"] = undefined;
             }
+
+            if (newValue && !newValue.allows_sorting) {
+                params["order"] = undefined;
+            }
+
             cocktail.navigation.changeQuery(params);
         }
         ?>
@@ -232,6 +240,17 @@
         <?on changed
         if (!this[NAVIGATING] && oldValue !== undefined) {
             cocktail.navigation.node.updateQueryStringWithFilters(newValue);
+        }
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="order"
+        type="string"
+        reflected="false">
+        <?on changed
+        if (!this[NAVIGATING] && oldValue !== undefined) {
+            cocktail.navigation.changeQuery({order: newValue || undefined});
         }
         ?>
     </ui:property>

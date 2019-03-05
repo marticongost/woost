@@ -5,7 +5,8 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
     tabindex="0"
     selectionType="multiple"
-    paging="infiniteScroll">
+    paging="infiniteScroll"
+    sortable="true">
 
     <ui:using mixin="woost.admin.ui.ObjectSource"/>
     <ui:symbol name="SET_AUTOEXPAND"/>
@@ -20,6 +21,7 @@
         cocktail.ui.link(newValue, this, "empty");
         cocktail.ui.link(newValue, this, ["members", "visibleMembers"]);
         cocktail.ui.link(newValue, this, ["locales", "visibleLocales"]);
+        cocktail.ui.link(newValue, this, "order");
         cocktail.ui.link(newValue, this, "resultCount");
         newValue.selectable = this;
         ?>
@@ -58,6 +60,10 @@
 
         if (listing.search) {
             options.parameters.search = listing.search;
+        }
+
+        if (listing.order) {
+            options.parameters.order = listing.order;
         }
 
         if (listing.filters.length) {
@@ -209,6 +215,7 @@
 
     <?on listingReset
     this[SET_AUTOEXPAND]();
+    this.sortable = this.listing.view.allows_sorting;
     this.treeRelations = this.listing.view.tree_relations;
     this.reset();
     ?>

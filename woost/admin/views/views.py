@@ -297,6 +297,7 @@ class View(object):
     controller = ListingController
     model = None
     export_class = Export
+    allows_sorting = True
     allows_partitioning = True
     partitioning_methods = None
     count_enabled = True
@@ -361,6 +362,7 @@ class View(object):
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
             "ui_component": self.ui_component,
+            "allows_sorting": self.allows_sorting,
             "allows_partitioning": self.allows_partitioning,
             "partitioning_methods": self.partitioning_methods,
             "count_enabled": self.count_enabled,

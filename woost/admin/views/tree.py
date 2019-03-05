@@ -14,6 +14,7 @@ class Tree(View):
     """A view for hierarchical data."""
 
     tree_relations = None
+    allows_sorting = False
     allows_partitioning = False
     count_enabled = False
 

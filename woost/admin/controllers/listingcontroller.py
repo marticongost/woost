@@ -6,7 +6,11 @@
 import json
 import cherrypy
 from cocktail.translations import translations, get_language
-from cocktail.schema.expressions import Self
+from cocktail.schema.expressions import (
+    Self,
+    TranslationExpression,
+    NegativeExpression
+)
 from cocktail.controllers import (
     Controller,
     get_parameter,
@@ -301,10 +305,35 @@ class ListingController(Controller):
         order = cherrypy.request.params.get("order", self.default_order)
 
         if order:
-            if not self.model.get_member(order.lstrip("-")):
+            if order[0] == "-":
+                descending = True
+                order = order[1:]
+            else:
+                descending = False
+
+            pos = order.find("-")
+            if pos == -1:
+                member_name = order
+                lang = None
+            else:
+                member_name = order[:pos]
+                lang = order[pos + 1:]
+
+            member = self.model.get_member(member_name)
+            if member is None:
                 raise cherrypy.HTTPError(400, "Invalid order criteria")
 
-        return order
+            expr = member
+
+            if lang:
+                expr = TranslationExpression(expr, lang)
+
+            if descending:
+                expr = NegativeExpression(expr)
+
+            return expr
+
+        return None
 
     @request_property
     def range(self):

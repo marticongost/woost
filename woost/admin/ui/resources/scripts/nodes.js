@@ -458,6 +458,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                         }
                     }({
                         name: "_thumbnail",
+                        [cocktail.ui.sortable]: false,
                         [woost.models.permissions]: {read: true},
                         [cocktail.ui.display]: () => woost.admin.ui.Thumbnail
                     })
@@ -478,6 +479,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
 
                     }({
                         name: "_label",
+                        [cocktail.ui.sortable]: false,
                         [woost.models.permissions]: {read: true}
                     })
                 );
@@ -519,6 +521,9 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 }),
                 new cocktail.schema.String({
                     name: "search"
+                }),
+                new cocktail.schema.String({
+                    name: "order"
                 }),
                 ...Array.from(
                     woost.admin.filters.getFilters(this.listedModel),
