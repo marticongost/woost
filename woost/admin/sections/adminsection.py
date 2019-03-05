@@ -5,6 +5,7 @@
 """
 from .folder import Folder
 from .systemsection import SystemSection
+from .aboutsection import AboutSection
 
 
 class AdminSection(Folder):
@@ -13,4 +14,5 @@ class AdminSection(Folder):
 
     def _fill(self):
         self.append(SystemSection("system"))
+        self.append(AboutSection("about"))
 
