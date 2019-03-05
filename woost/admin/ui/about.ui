@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.StackNode
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:with ui:element="main">
+
+        <div id="projectTitle">
+
+            <a
+                id="projectLogo"
+                href="http://www.woost.info"
+                target="_blank">
+                <?svg woost://images/logo.svg ?>
+            </a>
+
+            <div id="versionLabel">
+                <?js
+                element.innerText = woost.version;
+                ?>
+            </div>
+
+        </div>
+
+        <section id="extensionsSection">
+            <h1 id="extensionsSectionHeading">
+                <ui:translation/>
+            </h1>
+            <ul id="extensionsList">
+                <?js
+                let hasExtensions = false;
+                for (let extName in woost.extensions) {
+                    hasExtensions = true;
+                    const ext = Object.assign(woost.extensions[extName], {name: extName});
+                    const entry = this.constructor.ExtensionsListEntry.create();
+                    entry.extension = ext;
+                    element.appendChild(entry);
+                }
+                if (!hasExtensions) {
+                    this.extensionsSection.style.display = "none";
+                }
+                ?>
+            </ul>
+        </section>
+
+    </ui:with>
+
+    <li ui:component="ExtensionsListEntry">
+
+        <ui:property
+            name="extension"
+            reflected="false">
+            <?on changed
+            this.nameLabel.innerText = newValue.name;
+            this.versionLabel.innerText = newValue.version;
+            ?>
+        </ui:property>
+
+        <div id="nameLabel"/>
+        <div id="versionLabel"/>
+    </li>
+
+</ui:woost.admin.ui.StackNode>
+

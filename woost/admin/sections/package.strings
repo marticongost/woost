@@ -155,3 +155,8 @@
     es: Cerrar la sesión
     en: Logout
 
+    [aboutsection.AboutSection.instance]
+    ca: Sobre aquesta web
+    es: Acerca de esta web
+    en: About this website
+
