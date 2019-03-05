@@ -7,12 +7,4 @@
 @organization:	Whads/Accent SL
 @since:			July 2008
 """
-from cocktail.pkgutils import resource_filename
-from cocktail.html import resource_repositories
-
-resource_repositories.define(
-    "woost",
-    "/resources/woost",
-    resource_filename("woost.views", "resources")
-)
 
