@@ -1092,18 +1092,32 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
         return heading;
     }
 
+    getMemberEditMode(member) {
+        if (member.name == "view_class" && this.model.views.length == 1) {
+            return cocktail.ui.NOT_EDITABLE;
+        }
+        else {
+            return super.getMemberEditMode(member);
+        }
+    }
+
     get editSchemaOptions() {
-        return Object.assign(
-            super.editSchemaOptions,
-            {
-                [cocktail.schema.MEMBER_PARAMETERS]: {
-                    view_class: {
-                        enumeration: this.model.views,
-                        [cocktail.ui.formControl]: () => cocktail.ui.DropdownSelector
+        if (this.model.views.length >= 2) {
+            return Object.assign(
+                super.editSchemaOptions,
+                {
+                    [cocktail.schema.MEMBER_PARAMETERS]: {
+                        view_class: {
+                            enumeration: this.model.views,
+                            [cocktail.ui.formControl]: () => cocktail.ui.DropdownSelector
+                        }
                     }
                 }
-            }
-        );
+            );
+        }
+        else {
+            return super.editSchemaOptions;
+        }
     }
 }
 
