@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+import pkg_resources
 from cocktail.translations import (
     translations,
     translate_locale
@@ -14,7 +15,7 @@ from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
 from cocktail.persistence import PersistentClass, PersistentObject
 from woost import app
-from woost.models import Configuration
+from woost.models import Configuration, extensions_manager
 from woost.controllers.publishablecontroller import PublishableController
 import woost.admin.ui
 from woost.admin.views import available_views
@@ -22,6 +23,12 @@ from .schemascontroller import SchemasController
 from .datacontroller import DataController
 from .previewcontroller import PreviewController
 from .utils import set_admin_language
+
+def _get_version(pkg_name):
+    return pkg_resources.require(pkg_name)[0].version
+
+WOOST_VERSION = _get_version("woost")
+EXT_PREFIX = "woost.extensions."
 
 
 class AdminController(PublishableController):
@@ -105,7 +112,21 @@ class AdminController(PublishableController):
                 "woost.admin.origin":
                     str(get_request_root_url()).rstrip("/"),
                 "woost.admin.url": url,
-                "woost.admin.id": app.publishable.id
+                "woost.admin.id": app.publishable.id,
+                "woost.version": WOOST_VERSION,
+                "woost.extensions": dict(
+                    (
+                        (
+                            ext.__name__[len(EXT_PREFIX):]
+                            if ext.__name__.startswith(EXT_PREFIX)
+                            else ext.__name__
+                        ),
+                        {
+                            "version": _get_version(ext.__name__)
+                        }
+                    )
+                    for ext in extensions_manager.iter_extensions()
+                )
             }
         )
         return html.replace("--ADMIN--", url)
