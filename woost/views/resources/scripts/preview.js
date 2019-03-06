@@ -216,13 +216,13 @@ woost.preview.updateBlock = function (editState, blockData, changedMembers = nul
 
         // Render the full block server side
         if (needsReload) {
-            woost.preview.reloadBlock(element, editState);
+            return woost.preview.reloadBlock(element, editState);
         }
 
-        return true;
+        return Promise.resolve(element);
     }
 
-    return false;
+    return Promise.resolve(null);
 }
 
 woost.preview.updateElement = function (element, requestParams, handleResponse) {
@@ -233,20 +233,23 @@ woost.preview.updateElement = function (element, requestParams, handleResponse) 
             const loadables = [];
 
             // Add resources
-            for (let link of xhr.responseXML.querySelectorAll("link[href]")) {
-                if (!document.querySelector(`link[href='${link.href}']`)) {
-                    loadables.push(link);
-                    document.head.appendChild(link);
+            if (xhr.responseXML) {
+                for (let link of xhr.responseXML.querySelectorAll("link[href]")) {
+                    if (!document.querySelector(`link[href='${link.href}']`)) {
+                        loadables.push(link);
+                        document.head.appendChild(link);
+                    }
                 }
+                // TODO: add linked scripts, client variables, client models?
             }
-
-            // TODO: add linked scripts, client variables, client models?
 
             // Handle the received content
             const updateRoot = handleResponse(xhr);
 
             // Look for images
-            loadables.push(...updateRoot.querySelectorAll("img"));
+            if (updateRoot) {
+                loadables.push(...updateRoot.querySelectorAll("img"));
+            }
 
             return Promise.all(
                 loadables.map((loadable) => new Promise((resolve, reject) => {
@@ -290,26 +293,33 @@ woost.preview.updateSlot = function (editState, containerId, slotName) {
 woost.preview.reloadBlock = function (block, editState) {
     const element = block instanceof Element ? block : this.getBlock(block);
     if (element) {
-        const blockId = element.getAttribute("data-woost-block");
-        return this.updateElement(
-            element,
-            {
-                content: "block",
-                editState: editState,
-                params: {block: blockId}
-            },
-            (xhr) => {
-                const newElement = xhr.responseXML.body.querySelector(`.block[data-woost-block='${blockId}']`);
-                newElement.previewOverlay = element.previewOverlay;
-                newElement.previewOverlay.block = newElement;
-                element.replaceWith(newElement);
-                cocktail.init(newElement);
-                return newElement;
-            }
-        );
+        return new Promise((resolve, reject) => {
+            const blockId = element.getAttribute("data-woost-block");
+            this.updateElement(
+                element,
+                {
+                    content: "block",
+                    editState: editState,
+                    params: {block: blockId}
+                },
+                (xhr) => {
+                    const newElement = xhr.responseXML.body.querySelector(`.block[data-woost-block='${blockId}']`);
+                    if (newElement) {
+                        newElement.previewOverlay = element.previewOverlay;
+                        newElement.previewOverlay.block = newElement;
+                        element.replaceWith(newElement);
+                        cocktail.init(newElement);
+                    }
+                    else {
+                        element.previewOverlay.parentNode.removeChild(element.previewOverlay);
+                    }
+                    resolve(newElement);
+                }
+            );
+        });
     }
     else {
-        return Promise.reject("Can't find block");
+        return Promise.resolve(null);
     }
 }
 
@@ -396,18 +406,20 @@ window.addEventListener("message", (e) => {
             woost.preview.hover(e.data.target, false);
         }
         else if (e.data.type == "updateBlock") {
-            const blockFound = woost.preview.updateBlock(
+            woost.preview.updateBlock(
                 e.data.editState,
                 e.data.blockData,
                 e.data.changedMembers
-            );
-            if (!blockFound && e.data.containerId && e.data.slotName) {
-                woost.preview.updateSlot(
-                    e.data.editState,
-                    e.data.containerId,
-                    e.data.slotName
-                );
-            }
+            )
+                .then((blockElement) => {
+                    if (!blockElement && e.data.containerId && e.data.slotName) {
+                        woost.preview.updateSlot(
+                            e.data.editState,
+                            e.data.containerId,
+                            e.data.slotName
+                        );
+                    }
+                });
         }
         else if (e.data.type == "updateSlot") {
             woost.preview.updateSlot(
