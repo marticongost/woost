@@ -810,6 +810,10 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
     get iconURL() {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`)
     }
+
+    invoke(context) {
+        this.view.blocksTree.deleteBlocks(context.selection);
+    }
 }
 
 woost.admin.actions.ToggleRulersAction = class ToggleRulersAction extends woost.admin.actions.Action {
