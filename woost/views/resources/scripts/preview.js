@@ -218,11 +218,11 @@ woost.preview.updateBlock = function (editState, blockData, changedMembers = nul
         if (needsReload) {
             woost.preview.reloadBlock(element, editState);
         }
+
+        return true;
     }
-    // Render the full page server side
-    else {
-        woost.preview.reload(editState);
-    }
+
+    return false;
 }
 
 woost.preview.updateElement = function (element, requestParams, handleResponse) {
@@ -313,10 +313,6 @@ woost.preview.reloadBlock = function (block, editState) {
     }
 }
 
-woost.preview.reload = function (editState) {
-    // TODO
-}
-
 woost.preview.postMessage = function (data) {
     window.parent.postMessage(data, woost.preview.origin);
 }
@@ -400,11 +396,18 @@ window.addEventListener("message", (e) => {
             woost.preview.hover(e.data.target, false);
         }
         else if (e.data.type == "updateBlock") {
-            woost.preview.updateBlock(
+            const blockFound = woost.preview.updateBlock(
                 e.data.editState,
                 e.data.blockData,
                 e.data.changedMembers
             );
+            if (!blockFound && e.data.containerId && e.data.slotName) {
+                woost.preview.updateSlot(
+                    e.data.editState,
+                    e.data.containerId,
+                    e.data.slotName
+                );
+            }
         }
         else if (e.data.type == "updateSlot") {
             woost.preview.updateSlot(
