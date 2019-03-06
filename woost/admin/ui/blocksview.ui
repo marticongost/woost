@@ -54,6 +54,9 @@
                 const form = this.blockEditor.editForm;
                 form.addEventListener("valueChanged", (e) => {
 
+                    const blockDisplay = this.blocksTree.getBlockDisplay(this.blockEditor.editedItem);
+                    const slotDisplay = blockDisplay.slotDisplay;
+
                     // Update the state of the block on the parent edit form
                     woost.models.setValueAtPath(
                         woost.admin.editState.get(this.navigationNode.item),
@@ -68,6 +71,9 @@
                         e.detail.newValue
                     );
 
+                    // Update the block display on the blocks view
+                    blockDisplay.item = e.detail.newValue;
+
                     // Update blocks on the preview view
                     const changedMembers = Array.from(
                         form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
@@ -77,6 +83,8 @@
                         type: "updateBlock",
                         blockData: e.detail.newValue,
                         editState: instance.getEditState(),
+                        slotName: slotDisplay.slot.name,
+                        containerId: slotDisplay.item.id,
                         changedMembers
                     });
                 });
@@ -369,9 +377,17 @@
                 if (e.detail.focus) {
                     const tree = instance.blocksTree;
                     tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
-                    instance.actionList.getAction("edit").invoke({
-                        selection: tree.selectedValues,
-                        selectionObjectPath: tree.selectedElement.objectPath
+                    instance.actionList.invokeAction("edit");
+                }
+                ?>
+
+                <?on blocksDeleted
+                for (let locationInfo of e.detail.locations) {
+                    instance[POST_MESSAGE]({
+                        type: "updateSlot",
+                        containerId: locationInfo.container.id,
+                        slotName: locationInfo.slot.name,
+                        editState: instance.getEditState()
                     });
                 }
                 ?>
@@ -400,16 +416,21 @@
     </ui:with>
 
     <ui:woost.admin.ui.BlocksTree ui:component="BlocksTree">
+
         <?class
         selectionActivated() {
             if (this.selectedElements.size == 1) {
-                this.parentInstance.actionList.getAction("edit").invoke({
-                    selection: this.selectedValues,
-                    selectionObjectPath: this.selectedElement.objectPath
-                });
+                this.parentInstance.actionList.invokeAction("edit");
             }
         }
         ?>
+
+        <?on selection:changed
+        this.parentInstance.actionList.actionParameters.selectionObjectPath = (
+            this.selectedElements.size == 1 ? this.selectedElement.objectPath : null
+        );
+        ?>
+
     </ui:woost.admin.ui.BlocksTree>
 
     <?js

@@ -383,5 +383,16 @@ class EditingProperty(ContextualProperty):
 
 Cached.cache = Application.cache
 
-sys.modules["woost.app"] = Application()
+app = Application()
+sys.modules["woost.app"] = app
+
+app.add_resources_repository(
+    "woost",
+    resource_filename("woost.views", "resources")
+)
+
+app.add_resources_repository(
+    "woost.admin.ui",
+    resource_filename("woost.admin.ui", "resources")
+)
 

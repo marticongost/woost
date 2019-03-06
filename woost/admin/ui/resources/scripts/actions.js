@@ -790,6 +790,15 @@ woost.admin.actions.AddBlockAction = class AddBlockAction extends woost.admin.ac
 
 woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.admin.actions.Action {
 
+    getState(context) {
+        for (let entry of context.selectable.selectedElements) {
+            if (!(entry instanceof woost.admin.ui.BlocksTree.SlotDisplay.SlotRow)) {
+                return super.getState(context);
+            }
+        }
+        return "disabled";
+    }
+
     get min() {
         return 1;
     }
@@ -799,7 +808,11 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
     }
 
     get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/remove.svg`)
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`)
+    }
+
+    invoke(context) {
+        this.view.blocksTree.deleteBlocks(context.selection);
     }
 }
 

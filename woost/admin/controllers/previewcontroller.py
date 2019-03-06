@@ -125,9 +125,15 @@ class PagePreviewController(BasePreviewController):
 class BlockPreviewController(BasePreviewController):
 
     def _produce_content(self, imp):
+
         block = self._resolve_object_param("block", imp, Block)
-        # TODO: execute the block controller
-        return block.create_view().render_page()
+
+        if block.is_published():
+            view = block.create_view()
+            if view:
+                return view.render_page()
+
+        return ""
 
 
 class StylesPreviewController(BasePreviewController):

@@ -458,6 +458,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                         }
                     }({
                         name: "_thumbnail",
+                        [cocktail.ui.sortable]: false,
                         [woost.models.permissions]: {read: true},
                         [cocktail.ui.display]: () => woost.admin.ui.Thumbnail
                     })
@@ -478,6 +479,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
 
                     }({
                         name: "_label",
+                        [cocktail.ui.sortable]: false,
                         [woost.models.permissions]: {read: true}
                     })
                 );
@@ -519,6 +521,9 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 }),
                 new cocktail.schema.String({
                     name: "search"
+                }),
+                new cocktail.schema.String({
+                    name: "order"
                 }),
                 ...Array.from(
                     woost.admin.filters.getFilters(this.listedModel),
@@ -1087,18 +1092,32 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
         return heading;
     }
 
+    getMemberEditMode(member) {
+        if (member.name == "view_class" && this.model.views.length == 1) {
+            return cocktail.ui.NOT_EDITABLE;
+        }
+        else {
+            return super.getMemberEditMode(member);
+        }
+    }
+
     get editSchemaOptions() {
-        return Object.assign(
-            super.editSchemaOptions,
-            {
-                [cocktail.schema.MEMBER_PARAMETERS]: {
-                    view_class: {
-                        enumeration: this.model.views,
-                        [cocktail.ui.formControl]: () => cocktail.ui.DropdownSelector
+        if (this.model.views.length >= 2) {
+            return Object.assign(
+                super.editSchemaOptions,
+                {
+                    [cocktail.schema.MEMBER_PARAMETERS]: {
+                        view_class: {
+                            enumeration: this.model.views,
+                            [cocktail.ui.formControl]: () => cocktail.ui.DropdownSelector
+                        }
                     }
                 }
-            }
-        );
+            );
+        }
+        else {
+            return super.editSchemaOptions;
+        }
     }
 }
 

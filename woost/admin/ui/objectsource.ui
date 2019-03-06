@@ -143,7 +143,9 @@
 
     <div ui:component="ContextMenu">
         <div id="panel">
-            <ui:cocktail.ui.ActionList id="actionList">
+            <ui:cocktail.ui.ActionList
+                id="actionList"
+                separateExtraActions="false">
                 <?js
                 element.classList.add("vertical");
                 ?>

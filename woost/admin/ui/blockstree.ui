@@ -155,6 +155,43 @@
 
         return blockDisplay;
     }
+
+    deleteBlocks(blocks) {
+
+        const locationsMap = {};
+        const locationsList = [];
+
+        for (let block of blocks) {
+            const blockDisplay = this.getBlockDisplay(block.id);
+            const slotDisplay = blockDisplay.slotDisplay;
+
+            // Group delete operations, to emit a single event at the end
+            let locationInfo = locationsMap[slotDisplay.selectableId];
+            if (!locationInfo) {
+                locationInfo = {
+                    container: slotDisplay.item,
+                    slot: slotDisplay.slot,
+                    blocks: []
+                };
+                locationsMap[slotDisplay.selectableId] = locationInfo;
+                locationsList.push(locationInfo);
+            }
+            locationInfo.blocks.push(block);
+
+            // Remove the object from its container
+            const blocksArray = slotDisplay.item[slotDisplay.slot.name];
+            blocksArray.splice(blocksArray.indexOf(block), 1);
+
+            // Remove the entry in the tree
+            blockDisplay.remove();
+        }
+
+        if (blocks.length) {
+            cocktail.ui.trigger(this, "blocksDeleted", {
+                locations: locationsList
+            });
+        }
+    }
     ?>
 
     <?js
@@ -366,10 +403,15 @@
         const blockType = newValue._class;
         this.selectableId = `block-${newValue.id}`;
         this.disabledBlock = !newValue.enabled;
-        this.row.dataBinding = {
-            member: new cocktail.schema.Reference({type: blockType}),
-            value: newValue
-        };
+        if (!this.row.dataBinding) {
+            this.row.dataBinding = {
+                member: new cocktail.schema.Reference({type: blockType}),
+                value: newValue
+            };
+        }
+        else {
+            this.row.value = newValue;
+        }
         ?>
 
         <ui:woost.admin.ui.BlocksTree.Row ui:component="BlockRow">
