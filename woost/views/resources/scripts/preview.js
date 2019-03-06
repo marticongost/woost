@@ -134,6 +134,12 @@ woost.preview.HeadingUpdate = class HeadingUpdate extends woost.preview.Update {
         if (heading) {
             let field = (blockData.heading_display == "custom") ? "custom_heading" : "heading";
             heading.innerHTML = blockData[field][cocktail.getLanguage()];
+            if (blockData.heading_display == "hidden") {
+                heading.style.display = "none";
+            }
+            else {
+                heading.style.display = "";
+            }
         }
     }
 }
