@@ -54,6 +54,9 @@
                 const form = this.blockEditor.editForm;
                 form.addEventListener("valueChanged", (e) => {
 
+                    const blockDisplay = this.blocksTree.getBlockDisplay(this.blockEditor.editedItem);
+                    const slotDisplay = blockDisplay.slotDisplay;
+
                     // Update the state of the block on the parent edit form
                     woost.models.setValueAtPath(
                         woost.admin.editState.get(this.navigationNode.item),
@@ -68,12 +71,14 @@
                         e.detail.newValue
                     );
 
+                    // Update the block display on the blocks view
+                    blockDisplay.item = e.detail.newValue;
+
                     // Update blocks on the preview view
                     const changedMembers = Array.from(
                         form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
                         (change) => change.member.originalMember.fullName
                     );
-                    const slotDisplay = this.blocksTree.getBlockDisplay(this.blockEditor.editedItem).slotDisplay;
                     instance[POST_MESSAGE]({
                         type: "updateBlock",
                         blockData: e.detail.newValue,
