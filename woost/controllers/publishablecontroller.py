@@ -15,7 +15,7 @@ from cocktail.controllers import (
     get_request_url
 )
 from woost import app
-from woost.controllers import BaseCMSController
+from .basecmscontroller import BaseCMSController
 
 
 class PublishableController(BaseCMSController, Cached):

@@ -1,0 +1,68 @@
+
+@import "woost.admin.ui://styles/common";
+
+#stackNodeContent {
+    width: 100%;
+}
+
+#main {
+    flex: 1 1 auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#projectTitle {
+    margin-bottom: 4em;
+    align-items: baseline;
+
+    #projectLogo {
+        margin-bottom: 2rem;
+        text-decoration: none;
+        display: inline-block;
+
+        svg {
+            width: 25em;
+            height: auto;
+            fill: #333;
+            transition: fill 0.3s ease;
+        }
+
+        &:hover svg {
+            fill: #555;
+        }
+    }
+
+    #versionLabel {
+        font-size: 5em;
+        color: $hl-foreground;
+    }
+}
+
+#extensionsSection {
+    text-align: left;
+
+    #extensionsList {
+        @include clear-list-styles;
+        display: table;
+
+        .ExtensionsListEntry {
+            display: table-row;
+
+            .nameLabel {
+                display: table-cell;
+                font-size: 1.5em;
+            }
+
+            .versionLabel {
+                display: table-cell;
+                font-size: 1.5em;
+                color: #666;
+                padding-left: 1em;
+            }
+        }
+    }
+}
+

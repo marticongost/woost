@@ -82,7 +82,7 @@ $row-vpadding: 0.8em;
             }
 
             .icon {
-                --color: lighten($selection-background, 40);
+                --color: #{lighten($selection-background, 40)};
             }
         }
 
@@ -102,7 +102,7 @@ $row-vpadding: 0.8em;
             }
 
             .icon {
-                --color: lighten($hl-background, 30);
+                --color: #{lighten($hl-background, 30)};
             }
         }
 

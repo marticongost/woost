@@ -1,0 +1,8 @@
+
+[woost.admin.ui.About]
+
+    [extensionsSectionHeading]
+    ca: Extensions instal·lades
+    es: Extensiones instaladas
+    en: Installed extensions
+
