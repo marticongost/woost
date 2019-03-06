@@ -426,7 +426,7 @@
         ?>
 
         <?on selection:changed
-        this.parentInstance.actionList.actionParameters.selectionObjectPath = (
+        this.parentInstance.actionList.actionParameters.objectPath = (
             this.selectedElements.size == 1 ? this.selectedElement.objectPath : null
         );
         ?>
