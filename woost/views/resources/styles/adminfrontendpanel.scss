@@ -1,0 +1,41 @@
+
+@import "theme://";
+
+$hl-color: #db8417;
+
+.AdminFrontendPanel {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    .edit_button {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background-color: #f5f5f5;
+        box-shadow: 0 0 20px rgba(black, 0.25);
+        border-top-right-radius: 12px;
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-decoration: none;
+        transition: transform 0.1s ease;
+
+        &:hover {
+            border-color: $hl-color;
+            background-color: lighten($hl-color, 40);
+            transform: scale(1.4);
+
+            svg {
+                fill: $hl-color !important;
+            }
+        }
+
+        svg {
+            height: 24px;
+            width: auto;
+            fill: #888 !important;
+        }
+    }
+}
+

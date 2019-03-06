@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?py
+from cocktail.html.inlinesvg import get_file_svg
+from woost import app
+from woost.models import Item, ModifyPermission
+?>
+
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://www.whads.com/ns/cocktail/templates">
+
+    <?resource woost://styles/adminfrontendpanel.scss.css ?>
+
+    <?py-class
+    admin = None
+    publishable = None
+    _can_edit_publishable = False
+
+    def get_edit_uri(self, publishable):
+        return self.admin.get_uri(path = [str(publishable.id)])
+    ?>
+
+    <py:ready>
+        <?py
+        if self.admin is None:
+            self.admin = Item.get_instance(qname = "woost.backoffice")
+
+        if self.publishable is None:
+            self.publishable = app.publishable
+
+        if not (
+            not app.editing
+            and self.admin
+            and self.publishable
+            and app.user.has_permission(
+                ModifyPermission,
+                target = self.publishable
+            )
+        ):
+            element.visible = False
+        ?>
+    </py:ready>
+
+    <a py:id="edit_button" href="@{self.get_edit_uri(self.publishable)}">
+        <py:ready>
+            <?inline-svg woost.admin.ui://images/actions/edit.svg ?>
+        </py:ready>
+    </a>
+
+</div>
+
