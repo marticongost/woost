@@ -366,10 +366,15 @@
         const blockType = newValue._class;
         this.selectableId = `block-${newValue.id}`;
         this.disabledBlock = !newValue.enabled;
-        this.row.dataBinding = {
-            member: new cocktail.schema.Reference({type: blockType}),
-            value: newValue
-        };
+        if (!this.row.dataBinding) {
+            this.row.dataBinding = {
+                member: new cocktail.schema.Reference({type: blockType}),
+                value: newValue
+            };
+        }
+        else {
+            this.row.value = newValue;
+        }
         ?>
 
         <ui:woost.admin.ui.BlocksTree.Row ui:component="BlockRow">
