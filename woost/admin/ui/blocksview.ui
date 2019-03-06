@@ -377,10 +377,7 @@
                 if (e.detail.focus) {
                     const tree = instance.blocksTree;
                     tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
-                    instance.actionList.getAction("edit").invoke({
-                        selection: tree.selectedValues,
-                        selectionObjectPath: tree.selectedElement.objectPath
-                    });
+                    instance.actionList.invokeAction("edit");
                 }
                 ?>
 
@@ -408,16 +405,21 @@
     </ui:with>
 
     <ui:woost.admin.ui.BlocksTree ui:component="BlocksTree">
+
         <?class
         selectionActivated() {
             if (this.selectedElements.size == 1) {
-                this.parentInstance.actionList.getAction("edit").invoke({
-                    selection: this.selectedValues,
-                    selectionObjectPath: this.selectedElement.objectPath
-                });
+                this.parentInstance.actionList.invokeAction("edit");
             }
         }
         ?>
+
+        <?on selection:changed
+        this.parentInstance.actionList.actionParameters.selectionObjectPath = (
+            this.selectedElements.size == 1 ? this.selectedElement.objectPath : null
+        );
+        ?>
+
     </ui:woost.admin.ui.BlocksTree>
 
     <?js
