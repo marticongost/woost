@@ -59,13 +59,14 @@
         return position;
     }
 
-    getContextMenuActionParameters(model, item) {
+    getContextMenuActionParameters(resolution) {
         return {
-            selection: [item]
+            selection: [resolution.item],
+            objectPath: resolution.target.objectPath
         };
     }
 
-    expandContextMenu(model, item, position = null) {
+    expandContextMenu(objectSource) {
 
         // Don't create the menu until it is expanded for the first time
         if (mixin[EXPANDED_INSTANCE]) {
@@ -76,22 +77,22 @@
         if (!menu) {
             menu = mixin.ContextMenu.create();
             this[CONTEXT_MENU] = menu;
-            menu.actionList.actionParameters = this.getContextMenuActionParameters(model, item);
+            menu.actionList.actionParameters = this.getContextMenuActionParameters(objectSource);
             menu.actionList.actions = Array.from(woost.admin.actions.forContext({
                 view: this,
                 slot: "contextMenu",
-                model: model
+                model: objectSource.model
             }));
             this.shadowRoot.appendChild(menu);
         }
         else {
-            menu.actionList.actionParameters = this.getContextMenuActionParameters(model, item);
+            menu.actionList.actionParameters = this.getContextMenuActionParameters(objectSource);
             menu.actionList.updateEntries();
         }
 
-        if (position) {
-            menu.style.left = position.x + "px";
-            menu.style.top = position.y + "px";
+        if (objectSource.position) {
+            menu.style.left = objectSource.position.x + "px";
+            menu.style.top = objectSource.position.y + "px";
         }
         else {
             menu.style.left = "0";
@@ -130,11 +131,7 @@
     if (this.contextMenuEnabled) {
         const resolution = this.resolveObjectSourceEvent(e);
         if (resolution) {
-            this.expandContextMenu(
-                resolution.model,
-                resolution.item,
-                resolution.position
-            );
+            this.expandContextMenu(resolution);
             e.preventDefault();
             e.stopPropagation();
         }
