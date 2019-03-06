@@ -235,6 +235,8 @@ from woost.models import Configuration, Publishable, Document
         </py:binding>
     </py:cocktail.html.GridRulers>
 
+    <py:woost.views.AdminFrontendPanel py:id="admin_frontend_panel"/>
+
     <div py:id="main_content">
         <py:woost.views.BlockList
             py:id="main_blocks"
