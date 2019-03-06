@@ -381,6 +381,17 @@
                 }
                 ?>
 
+                <?on blocksDeleted
+                for (let locationInfo of e.detail.locations) {
+                    instance[POST_MESSAGE]({
+                        type: "updateSlot",
+                        containerId: locationInfo.container.id,
+                        slotName: locationInfo.slot.name,
+                        editState: instance.getEditState()
+                    });
+                }
+                ?>
+
             </ui:BlocksTree>
         </div>
         <div id="previewPanel">

@@ -284,6 +284,11 @@ woost.preview.updateSlot = function (editState, containerId, slotName) {
                 params: {container: containerId, slot: slotName}
             },
             (xhr) => {
+                const overlays = document.getElementsByClassName("woost-preview-overlay");
+                while (overlays[0]) {
+                    overlays[0].remove();
+                }
+
                 const loadedElement = woost.preview.getSlot(containerId, slotName, xhr.responseXML);
                 element.innerHTML = loadedElement.innerHTML;
                 cocktail.init();
