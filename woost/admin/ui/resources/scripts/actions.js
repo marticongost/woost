@@ -519,7 +519,6 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
         }
         // Edit an item in an integral reference
         else if (this.reference && this.reference.integral) {
-            const element = this.view.selectedElement;
             cocktail.navigation.extendPath("rel", this.reference.name);
         }
         // Non integral relation
