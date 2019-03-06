@@ -808,7 +808,7 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
     }
 
     get iconURL() {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/remove.svg`)
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`)
     }
 }
 
