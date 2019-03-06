@@ -73,10 +73,13 @@
                         form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
                         (change) => change.member.originalMember.fullName
                     );
+                    const slotDisplay = this.blocksTree.getBlockDisplay(this.blockEditor.editedItem).slotDisplay;
                     instance[POST_MESSAGE]({
                         type: "updateBlock",
                         blockData: e.detail.newValue,
                         editState: instance.getEditState(),
+                        slotName: slotDisplay.slot.name,
+                        containerId: slotDisplay.item.id,
                         changedMembers
                     });
                 });
