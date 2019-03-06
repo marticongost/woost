@@ -102,9 +102,9 @@
     en: Translations
 
     [add-block]
-    ca: Nou bloc
-    es: Nuevo bloque
-    en: New block
+    ca: Afegir
+    es: Añadir
+    en: Add
 
     [toggle-rulers]
     ca: Guies
