@@ -36,7 +36,8 @@
     const jsonData = e.dataTransfer.getData("application/x-woost-object");
     if (jsonData) {
         const data = JSON.parse(jsonData);
-        const model = cocktail.schema.getSchemaByName(data.model);
+        data.model = cocktail.schema.getSchemaByName(data.model);
+        data.item = data.model.fromJSONValue(data.item);
         if (model.isSchema(this.dataBinding.member.relatedType)) {
             if (this.objectDropped(data)) {
                 e.preventDefault();
