@@ -764,7 +764,11 @@ woost.admin.actions.TranslationsAction = class TranslationsAction extends woost.
     }
 
     createEntry() {
-        return woost.admin.ui.TranslationsDropdown.create();
+        const entry = woost.admin.ui.TranslationsDropdown.create();
+        if (!this.insideBlockEditPanel) {
+            entry.dropdownPanel.panelAlignment = "end";
+        }
+        return entry;
     }
 }
 
@@ -1002,6 +1006,20 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
             return "hidden";
         }
         return super.getState(context);
+    }
+
+    get iconURL() {
+        if (this.insideBlockEditPanel) {
+            return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/close-block.svg`);
+        }
+        return super.iconURL;
+    }
+
+    get translationKey() {
+        if (this.insideBlockEditPanel) {
+            return `${this.translationPrefix}.close-block`;
+        }
+        return super.translationKey;
     }
 
     invoke() {

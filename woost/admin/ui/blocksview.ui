@@ -29,8 +29,6 @@
             if (newValue) {
                 this.blocksTree.selectedElements = [this.blocksTree.getBlockRow(newValue.item.id)];
                 this.blockEditor = woost.admin.ui.BlockEditView.create();
-                this.heading.replaceWith(this.blockEditor.heading);
-                this.navigationActionList.replaceWith(this.blockEditor.navigationActionList);
 
                 // Set the position without waiting for the edit view stylesheets
                 // to kick in; otherwise, the recalculation of the flex heights
@@ -93,9 +91,6 @@
             }
             else if (prevEditor) {
                 this.blockEditor = null;
-                prevEditor.heading.replaceWith(this.heading);
-                prevEditor.navigationActionList.replaceWith(this.navigationActionList);
-
                 prevEditor.addEventListener(
                     "animationend",
                     (e) => {
