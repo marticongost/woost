@@ -10,6 +10,10 @@
 
     <ui:using mixin="cocktail.ui.Selectable"/>
 
+    <ui:symbol name="DROP_HIGHLIGHTED_ELEMENT"/>
+    <ui:symbol name="PLACE_INSERTION_MARKER"/>
+    <ui:symbol name="CLEAR_INSERTION_MARKER"/>
+    <ui:symbol name="INSERTION_MARKER"/>
     <ui:symbol name="SELECTABLE_ID_MAP"/>
 
     <ui:property
@@ -92,25 +96,20 @@
         const locales = params && params.locales;
 
         return blockType.newInstance(locales).then((block) => {
-            return this.placeBlock(block, placement, target);
-        })
-            .then((blockDisplay) => {
-
-                const slotDisplay = blockDisplay.slotDisplay;
-
-                cocktail.ui.trigger(this, "newBlock", {
-                    container: slotDisplay.item,
-                    slot: slotDisplay.slot,
-                    block: blockDisplay.item,
-                    focus: params && params.focus
-                });
-            });
+            return this.placeBlock(
+                block,
+                placement,
+                target,
+                Boolean(params && params.focus)
+            );
+        });
     }
 
-    placeBlock(block, placement, target) {
+    placeBlock(block, placement, target, focus = false) {
 
         let blockDisplay = this.getBlockDisplay(block.id);
         let slotDisplay;
+        let prevSlotDisplay;
 
         if (placement == "inside") {
             // Appending to a slot
@@ -127,7 +126,11 @@
         }
 
         if (blockDisplay) {
-            blockDisplay.parentNode.removeChild(blockDisplay);
+            block = blockDisplay.item;
+            prevSlotDisplay = blockDisplay.slotDisplay;
+            const blocksArray = prevSlotDisplay.item[prevSlotDisplay.slot.name];
+            blocksArray.splice(blockDisplay.blockIndex, 1);
+            blockDisplay.remove();
         }
         else {
             blockDisplay = this.createBlockDisplay(block, slotDisplay.depth);
@@ -142,15 +145,45 @@
         else {
             const targetDisplay = target.blockDisplay;
             const sibling = placement == "after" ? targetDisplay.nextSibling : targetDisplay;
-            slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
 
             if (!sibling) {
                 blocksArray.push(block);
             }
             else {
-                const index = sibling.parentNode.childNodes.indexOf(sibling);
-                blocksArray.splice(index, 0, block);
+                blocksArray.splice(sibling.blockIndex, 0, block);
+                console.log(blocksArray);
             }
+
+            slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
+        }
+
+        blockDisplay.depth = slotDisplay.depth;
+
+        if (prevSlotDisplay) {
+            cocktail.ui.trigger(this, "blockMoved", {
+                block: block,
+                previousLocation: {
+                    display: prevSlotDisplay,
+                    container: prevSlotDisplay.item,
+                    slot: prevSlotDisplay.slot
+                },
+                newLocation: {
+                    display: slotDisplay,
+                    container: slotDisplay.item,
+                    slot: slotDisplay.slot
+                },
+                placement,
+                target,
+                focus
+            });
+        }
+        else {
+            cocktail.ui.trigger(this, "newBlock", {
+                block: block,
+                container: slotDisplay.item,
+                slot: slotDisplay.slot,
+                focus: focus
+            });
         }
 
         return blockDisplay;
@@ -192,6 +225,63 @@
             });
         }
     }
+
+    [PLACE_INSERTION_MARKER](row, placement) {
+
+        let marker = this[INSERTION_MARKER];
+        if (!marker) {
+            marker = this.constructor.InsertionMarker.create();
+            this[INSERTION_MARKER] = marker;
+            this.shadowRoot.appendChild(marker);
+        }
+
+        let x, y;
+
+        if (placement == "before") {
+            x = row.icon.offsetLeft;
+            y = row.offsetTop;
+        }
+        else if (placement == "after") {
+            x = row.icon.offsetLeft;
+            const blockDisplay = row.blockDisplay;
+            y = blockDisplay.offsetTop + blockDisplay.offsetHeight;
+        }
+        else if (placement == "inside") {
+            x = (row.slotHeading || row.descriptionLabel).offsetLeft;
+            const slotDisplay = row.childrenSlotDisplay;
+            y = slotDisplay.offsetTop + slotDisplay.offsetHeight;
+        }
+
+        if (this[DROP_HIGHLIGHTED_ELEMENT]) {
+            this[DROP_HIGHLIGHTED_ELEMENT].classList.remove("dropHighlightedTarget");
+        }
+
+        if (placement == "inside") {
+            this[DROP_HIGHLIGHTED_ELEMENT] = row;
+        }
+        else {
+            this[DROP_HIGHLIGHTED_ELEMENT] = row.parentRow;
+        }
+
+        this[DROP_HIGHLIGHTED_ELEMENT].classList.add("dropHighlightedTarget");
+
+        marker.style.left = `${x}px`;
+        marker.style.top = `${y}px`;
+    }
+
+    [CLEAR_INSERTION_MARKER]() {
+        if (this[INSERTION_MARKER]) {
+            this[INSERTION_MARKER].remove();
+            this[INSERTION_MARKER] = null;
+        }
+        if (this[DROP_HIGHLIGHTED_ELEMENT]) {
+            this[DROP_HIGHLIGHTED_ELEMENT].classList.remove("dropHighlightedTarget");
+        }
+    }
+    ?>
+
+    <?on-window dragend
+    this[CLEAR_INSERTION_MARKER]();
     ?>
 
     <?js
@@ -207,11 +297,87 @@
 
     <div ui:component="Row">
 
+        <ui:using mixin="woost.admin.ui.ObjectDropArea"/>
+        <ui:symbol name="..PLACE_INSERTION_MARKER"/>
+        <ui:symbol name="..CLEAR_INSERTION_MARKER"/>
+
         <ui:property
             name="hover"
             type="boolean"
             reflected="true"
             default="false"/>
+
+        <?class
+        get nextRow() {
+            return null;
+        }
+
+        get parentRow() {
+            let element = this.parentNode;
+            while (element) {
+                if (element.row && element.row !== this) {
+                    return element.row;
+                }
+                element = element.parentNode;
+            }
+            return null;
+        }
+
+        objectDraggedOver(e) {
+            let [row, placement] = this.resolveDropEvent(e);
+            this.parentInstance[PLACE_INSERTION_MARKER](row, placement);
+        }
+
+        resolveDropEvent(e) {
+
+            const rect = this.getBoundingClientRect();
+            const y = e.pageY - rect.top;
+            const relPosition = y / rect.height;
+
+            let row = this;
+            let placement = this.getDropPlacement(relPosition);
+
+            // Prevent slight movements of the insertion marker by normalizing
+            // to 'before' when moving up/down along consecutive blocks in a slot
+            if (placement == "after") {
+                let nextRow = this.nextRow;
+                if (nextRow) {
+                    row = nextRow;
+                    placement = "before";
+                }
+            }
+
+            return [row, placement];
+        }
+
+        getDropPlacement(relPosition) {
+            return "inside";
+        }
+
+        acceptsDrop(data) {
+
+            // Accept only blocks
+            if (!data.model.isSchema(woost.models.Block)) {
+                return false;
+            }
+
+            // Prevent a block from being placed inside / next to itself
+            let row = this;
+            while (row) {
+                if (row.value && row.value.id == data.item.id) {
+                    return false;
+                }
+                row = row.parentRow;
+            }
+
+            return true;
+        }
+
+        objectDropped(data) {
+            let [row, placement] = this.resolveDropEvent(data.event);
+            this.parentInstance.placeBlock(data.item, placement, row);
+        }
+        ?>
 
         <?on mouseenter
         this.parentInstance.hoverRow = this;
@@ -350,6 +516,10 @@
                 return cocktail.ui.closestInstance(this, woost.admin.ui.BlocksTree.SlotDisplay);
             }
 
+            get childrenSlotDisplay() {
+                return this.slotDisplay;
+            }
+
             get selectableId() {
                 const slotDisplay = this.slotDisplay;
                 return slotDisplay && slotDisplay.selectableId;
@@ -414,7 +584,17 @@
         }
         ?>
 
-        <ui:woost.admin.ui.BlocksTree.Row ui:component="BlockRow">
+        <ui:woost.admin.ui.BlocksTree.Row
+            ui:component="BlockRow"
+            contextMenuEnabled="false">
+
+            <ui:using mixin="woost.admin.ui.ObjectSource"/>
+
+            <?head
+            const BLOCK_DROP_BEFORE_RATIO = 0.5;
+            const CONTAINER_DROP_BEFORE_RATIO = 0.3;
+            const CONTAINER_DROP_AFTER_RATIO = 0.7;
+            ?>
 
             <?class
             get blockDisplay() {
@@ -428,6 +608,11 @@
             get blockIndex() {
                 const blockDisplay = this.blockDisplay;
                 return blockDisplay && blockDisplay.blockIndex;
+            }
+
+            get nextRow() {
+                const blockDisplay = this.blockDisplay;
+                return blockDisplay && blockDisplay.nextSibling && blockDisplay.nextSibling.row;
             }
 
             get selectableId() {
@@ -453,6 +638,32 @@
                 }
                 return slots.length == 1 ? slots[0] : null;
             }
+
+            get childrenSlotDisplay() {
+                return this.blockDisplay.slotsList.firstChild;
+            }
+
+            getDropPlacement(relPosition) {
+                if (this.implicitSlot) {
+                    if (relPosition <= CONTAINER_DROP_BEFORE_RATIO) {
+                        return "before";
+                    }
+                    else if (relPosition >= CONTAINER_DROP_AFTER_RATIO) {
+                        return "after";
+                    }
+                    else {
+                        return "append";
+                    }
+                }
+                else {
+                    if (relPosition <= BLOCK_DROP_BEFORE_RATIO) {
+                        return "before";
+                    }
+                    else {
+                        return "after";
+                    }
+                }
+            }
             ?>
 
             <ui:using mixin="cocktail.ui.DataDisplay"/>
@@ -474,6 +685,8 @@
         </ui:woost.admin.ui.BlocksTree.Row>
 
     </ui:BlocksContainer>
+
+    <div ui:component="InsertionMarker"/>
 
 </div>
 
