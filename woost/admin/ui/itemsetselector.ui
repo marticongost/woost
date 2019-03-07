@@ -136,7 +136,8 @@
 
     <ui:cocktail.ui.ActionList
         id="toolbar"
-        ui:placement="before list">
+        ui:placement="before list"
+        buttonStyle="iconOnly">
         <?js
         element.classList.add("without-frame");
         element.classList.add("compact");

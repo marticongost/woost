@@ -1,14 +1,16 @@
 
-@import "cocktail.ui://styles/common";
+@import "woost.admin.ui://styles/common";
 
 :host {
     user-select: none;
     display: block;
     position: relative;
+    width: $item-selector-width;
 }
 
 #toolbar {
     margin-bottom: 0.2em;
+    font-size: 0.85em;
 
     :host([error]) & {
         @include input-with-error;
