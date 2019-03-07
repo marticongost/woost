@@ -509,8 +509,8 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     invoke(context) {
         // Edit an integral item, with a explicitly defined object path
         // (ie. an object in a deep tree, such as a block in the blocks view)
-        if (context.selectionObjectPath) {
-            cocktail.navigation.extendPath("rel", context.selectionObjectPath);
+        if (context.objectPath) {
+            cocktail.navigation.extendPath("rel", context.objectPath);
         }
         // Edit an item in an integral collection
         else if (this.collection && this.collection.integral) {
@@ -519,7 +519,6 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
         }
         // Edit an item in an integral reference
         else if (this.reference && this.reference.integral) {
-            const element = this.view.selectedElement;
             cocktail.navigation.extendPath("rel", this.reference.name);
         }
         // Non integral relation
