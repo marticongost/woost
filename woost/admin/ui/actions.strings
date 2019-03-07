@@ -191,6 +191,11 @@
     es: Cerrar
     en: Close
 
+    [close-block]
+    ca: Tancar el bloc
+    es: Cerrar el bloque
+    en: Close the block
+
     [upload]
     ca: Pujar fitxer
     es: Subir fichero

@@ -36,7 +36,7 @@
     }
     ?>
 
-    <ui:with ui:element="dropdownPanel" panelAlignment="end">
+    <ui:with ui:element="dropdownPanel">
 
         <ui:cocktail.ui.TranslationsSelector id="translationsSelector">
 

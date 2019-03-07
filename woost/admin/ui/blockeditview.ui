@@ -16,6 +16,20 @@
     }
     ?>
 
+    <ui:with ui:element="actionList" buttonStyle="iconOnly">
+        <?js
+        element.classList.add("compact");
+        element.classList.add("secondary");
+        ?>
+    </ui:with>
+
+    <ui:with ui:element="navigationActionList" buttonStyle="iconOnly">
+        <?js
+        element.classList.add("compact");
+        element.classList.add("secondary");
+        ?>
+    </ui:with>
+
     <ui:with ui:element="editForm.tabs">
         <ui:resource href="woost.admin.ui://styles/woost-admin-ui-blockeditview--editform--tabs.scss.css"/>
     </ui:with>
