@@ -5,6 +5,7 @@ $hl-shadow: #bb6200;
 $hl-light-background: desaturate(lighten($hl-background, 30), 15);
 $selection-hl-foreground: lighten($hl-foreground, 40);
 $focus-color: #d2a265;
+$item-selector-width: 30em;
 
 @import "cocktail://styles/utils";
 @import "cocktail.ui://styles/common";

@@ -1,11 +1,6 @@
 
 @import "woost.admin.ui://styles/common";
 
-:host {
-    display: inline-flex;
-    flex-direction: row;
-}
-
 :host(:focus) {
     outline: none !important;
 
@@ -16,6 +11,7 @@
 
 #autocomplete {
     cursor: pointer;
+    width: $item-selector-width;
 
     &:hover {
         border-color: $focus-color;
@@ -23,6 +19,7 @@
 }
 
 #actionList {
-    margin-left: 1em;
+    margin-bottom: 0.2em;
+    font-size: 0.85em;
 }
 
