@@ -151,7 +151,6 @@
             }
             else {
                 blocksArray.splice(sibling.blockIndex, 0, block);
-                console.log(blocksArray);
             }
 
             slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
