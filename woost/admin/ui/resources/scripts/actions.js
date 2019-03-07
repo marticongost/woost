@@ -803,7 +803,7 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
     }
 
     get translationKey() {
-        return `${this.translationPrefix}.remove`;
+        return `${this.translationPrefix}.delete`;
     }
 
     get iconURL() {

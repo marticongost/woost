@@ -167,9 +167,9 @@
     en: Add
 
     [remove]
-    ca: Eliminar
-    es: Eliminar
-    en: Delete
+    ca: Treure
+    es: Quitar
+    en: Remove
 
     [list]
     ca: Llistar
