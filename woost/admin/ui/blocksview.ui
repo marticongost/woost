@@ -381,6 +381,32 @@
                 }
                 ?>
 
+                <?on blockMoved
+                let dirtyLocations;
+
+                if (e.detail.previousLocation.display.contains(e.detail.newLocation.display)) {
+                    dirtyLocations = [e.detail.previousLocation];
+                }
+                else if (e.detail.newLocation.display.contains(e.detail.previousLocation.display)) {
+                    dirtyLocations = [e.detail.newLocation];
+                }
+                else {
+                    dirtyLocations = [
+                        e.detail.newLocation,
+                        e.detail.previousLocation
+                    ];
+                }
+
+                for (let dirtyLocation of dirtyLocations) {
+                    instance[POST_MESSAGE]({
+                        type: "updateSlot",
+                        containerId: dirtyLocation.container.id,
+                        slotName: dirtyLocation.slot.name,
+                        editState: instance.getEditState()
+                    });
+                }
+                ?>
+
                 <?on blocksDeleted
                 for (let locationInfo of e.detail.locations) {
                     instance[POST_MESSAGE]({

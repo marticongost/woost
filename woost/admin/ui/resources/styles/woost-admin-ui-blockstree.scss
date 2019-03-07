@@ -8,6 +8,7 @@ $row-vpadding: 0.8em;
 :host {
     padding: 1em 0;
     user-select: none;
+    position: relative;
 }
 
 .SlotDisplay {
@@ -20,6 +21,10 @@ $row-vpadding: 0.8em;
             font-weight: bold;
             color: $heading-color;
             padding-left: calc(#{$row-hpadding} + var(--depth) * #{$row-indentation});
+        }
+
+        &.dropHighlightedTarget > .slotHeading {
+            color: $hl-foreground;
         }
 
         &[selected] {
@@ -69,6 +74,10 @@ $row-vpadding: 0.8em;
         flex-direction: row;
         align-items: center;
         cursor: pointer;
+
+        &.dropHighlightedTarget > .blockInfo > .descriptionLabel {
+            color: $hl-foreground;
+        }
 
         &[selected] {
             background: $selection-background;
@@ -132,5 +141,13 @@ $row-vpadding: 0.8em;
             text-decoration: line-through;
         }
     }
+}
+
+.InsertionMarker {
+    position: absolute;
+    background-color: $hl-foreground;
+    left: 0;
+    right: 13px;
+    height: 3px;
 }
 
