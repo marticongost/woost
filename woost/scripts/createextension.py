@@ -57,8 +57,8 @@ class DirectorySkeleton(object):
         elif os.path.isfile(source):
             if os.path.splitext(source)[1] != ".pyc":
                 with open(source, "r") as source_file:
-                    source_data = source_file.read().decode("utf-8")
-                    target_data = self.expand_vars(source_data).encode("utf-8")
+                    source_data = source_file.read()
+                    target_data = self.expand_vars(source_data)
                     with open(target, "w") as target_file:
                         target_file.write(target_data)
 
@@ -91,7 +91,7 @@ def main():
     module_header = args.module_header
     if module_header and module_header.startswith("file:"):
         with open(module_header[5:]) as f:
-            module_header = f.read().strip().decode("utf-8")
+            module_header = f.read().strip()
 
     create_extension(name, module_header)
 
