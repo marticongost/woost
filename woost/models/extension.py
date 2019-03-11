@@ -97,7 +97,7 @@ class ExtensionsManager(object):
 
             if os.path.exists(icon_path):
                 icon_url = "%s://images/icons" % repo_name
-                app.icon_resolver.icon_resolver.insert(0, (
+                app.icon_resolver.icon_repositories.insert(0, (
                     icon_path,
                     icon_url
                 ))
