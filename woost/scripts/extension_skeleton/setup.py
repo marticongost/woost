@@ -16,9 +16,11 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
     install_requires = [
-        "woost>=3.0b1,<3.1"
+        "woost==3.0.*"
     ],
-    packages = find_packages(),
+    packages = [
+        "woost.extensions.--EXTENSION_NAME--"
+    ],
     include_package_data = True,
     zip_safe = False
 )
