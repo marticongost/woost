@@ -56,6 +56,7 @@ class UploadForm(Form):
 
         if "async_upload_url" not in options:
             options["async_upload_url"] = app.url_mapping.get_url(
+                website = app.website,
                 path = ["async_upload"]
             )
 
