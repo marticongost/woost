@@ -25,6 +25,7 @@ from woost.models import Publishable
         return getattr(image, "description", None)
     ?>
 
+    <?resource woost://styles/imagegallery.css ?>
     <?resource woost://scripts/imagegallery.js ?>
 
     <?py
