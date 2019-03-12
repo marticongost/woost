@@ -101,7 +101,8 @@ add_setting(
 )
 
 add_setting(
-    MetaTags("meta_tags")
+    MetaTags("meta_tags"),
+    inheritable = False
 )
 
 add_setting(
