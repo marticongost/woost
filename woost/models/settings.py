@@ -23,14 +23,15 @@ def get_setting(key):
 def add_setting(
     member,
     scopes = (Configuration, Website),
-    related_end = "auto"
+    related_end = "auto",
+    inheritable = True
 ):
     member.is_setting = True
     if not member.custom_translation_key:
         member.custom_translation_key = "woost.models.settings." + member.name
     member.listed_by_default = False
 
-    inherit_from_config = Configuration in scopes
+    inherit_from_config = inheritable and Configuration in scopes
 
     for scope in scopes:
         scope_member = member.copy()
