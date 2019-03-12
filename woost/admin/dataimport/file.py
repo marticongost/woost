@@ -34,9 +34,9 @@ def import_file(self, imp, data):
 
             # Move the temporary file only after the transaction has been
             # committed
-            imp.after_commit(move, temp_file, self.file_path)
+            imp.after_commit(_move_upload, self, temp_file, self.file_path)
 
-def _move_upload(temp_file, dest):
-    if transaction_success:
-        move(temp_file, dest)
+def _move_upload(file, temp_file, dest):
+    file._v_upload_id = None
+    move(temp_file, dest)
 
