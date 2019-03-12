@@ -41,7 +41,7 @@ from .websitesession import (
     set_current_website
 )
 from .changesets import ChangeSet, Change, changeset_context
-from .extension import extensions_manager
+from .extension import extensions_manager, ExtensionAssets
 from .item import Item
 from .grid import Grid, GridSize
 from .style import Style
