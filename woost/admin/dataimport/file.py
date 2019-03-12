@@ -24,10 +24,9 @@ def import_file(self, imp, data):
         self.file_name = upload.name
         self.file_size = upload.size
         self.mime_type = upload.type
+        self._v_upload_id = upload_id
 
-        if imp.dry_run:
-            self._v_upload_id = upload_id
-        else:
+        if not imp.dry_run:
             temp_file = app.async_uploader.get_temp_path(upload_id)
 
             # Compute the file hash
