@@ -42,7 +42,7 @@ class ListingMetaclass(type(Block)):
         type(Block).__init__(cls, name, bases, members)
 
 
-class Listing(Block):
+class Listing(Block, metaclass = ListingMetaclass):
     type_group = "blocks.listings"
     instantiable = False
     listed_model = None
