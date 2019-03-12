@@ -94,6 +94,9 @@ class ExtensionsManager(object):
                     except KeyError:
                         installed_extensions = PersistentSet()
                         datastore.root[KEY] = installed_extensions
+                    else:
+                        if extension.__name__ in installed_extensions:
+                            return
                     install_ext()
                     installed_extensions.add(extension.__name__)
 
