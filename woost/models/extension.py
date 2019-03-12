@@ -8,9 +8,16 @@ import importlib
 import os.path
 from threading import RLock
 from cocktail.events import Event
+from cocktail.translations import translations
 from cocktail.ui import components
+from cocktail.persistence import (
+    datastore,
+    transaction,
+    PersistentSet
+)
 from woost import app
 from woost import extensions as ext_root
+from .configuration import Configuration
 
 
 class ExtensionsManager(object):
@@ -51,6 +58,11 @@ class ExtensionsManager(object):
     def load_extension(self, extension):
         """Initializes the given extension.
 
+        If the extension package defines an 'install()' function, and it is the
+        first time that the extension is initialized, it will be called as a
+        datastore transaction. This gives the extension a chance to create its
+        required assets.
+
         If the extension package defines a 'load()' function at its root, it will
         be called.
 
@@ -71,6 +83,21 @@ class ExtensionsManager(object):
                 return False
 
             self._define_resource_repositories(extension)
+
+            install_ext = getattr(extension, "install", None)
+            if install_ext:
+
+                def installation():
+                    KEY = "woost.installed_extensions"
+                    try:
+                        installed_extensions = datastore.root[KEY]
+                    except KeyError:
+                        installed_extensions = PersistentSet()
+                        datastore.root[KEY] = installed_extensions
+                    install_ext()
+                    installed_extensions.add(extension.__name__)
+
+                transaction(installation)
 
             load_ext = getattr(extension, "load", None)
             if load_ext:
@@ -118,6 +145,35 @@ class ExtensionsManager(object):
 
 
 extensions_manager = ExtensionsManager()
+
+
+class ExtensionAssets:
+    """Convenience class for creating content when installing an extension."""
+
+    TRANSLATIONS = object()
+
+    def __init__(self, extension_name):
+        self.extension_name = extension_name
+
+    def new(self, cls, asset_name, **kwargs):
+        asset = cls()
+        asset.qname = qname = "woost.extensions.%s.%s" % (
+            self.extension_name,
+            asset_name
+        )
+
+        if kwargs:
+            for key, value in kwargs.items():
+                if value is self.TRANSLATIONS:
+                    for language in Configuration.instance.languages:
+                        value = translations(qname + "." + key, language)
+                        if value:
+                            asset.set(key, value, language)
+                else:
+                    asset.set(key, value)
+
+        asset.insert()
+        return asset
 
 # Required for backwards compatibility
 load_extensions = extensions_manager.load_extensions
