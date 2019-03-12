@@ -2,18 +2,7 @@
 u"""
 Provides the CMS subclass used to customize the behavior of the site.
 """
-from cocktail.pkgutils import resource_filename
-from cocktail.controllers import folder_publisher
-from cocktail.controllers import renderingengines
 from woost.controllers.cmscontroller import CMSController
-
-renderingengines.rendering_options.update({
-    "mako.directories": [
-        resource_filename("--SETUP-PACKAGE--", "views"),
-        resource_filename("woost", "views")
-    ],
-    "mako.output_encoding": "utf-8"
-})
 
 
 class --SETUP-WEBSITE--CMSController(CMSController):
