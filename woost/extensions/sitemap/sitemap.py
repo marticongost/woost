@@ -75,7 +75,7 @@ class SiteMap(Publishable):
             if publishable.per_language_publication:
                 languages = language_subset & publishable.enabled_translations
             else:
-                languages = ("x-default",)
+                languages = (None,)
 
             if not languages:
                 continue
@@ -131,31 +131,23 @@ class SiteMap(Publishable):
 
         for properties, urls in self.iter_entries():
 
-            yield indent
-            yield '<url>\n'
+            # URLs
+            for language, url in urls:
+                yield indent
+                yield '<url>\n'
 
-            # Main URL
-            yield indent * 2
-            yield '<loc>%s</loc>\n' % escape(str(urls[0][1]))
-
-            # Properties (priority, change frequency, etc)
-            for key, value in properties.iteritems():
                 yield indent * 2
-                yield '<%s>%s</%s>\n' % (key, escape(str(value)), key)
+                yield (
+                    '<loc>%s</loc>\n' % escape(str(url))
+                )
 
-            # Alternate languages
-            if len(urls) > 1:
-                for language, url in urls:
+                # Properties (priority, change frequency, etc)
+                for key, value in properties.iteritems():
                     yield indent * 2
-                    yield (
-                        '<xhtml:link rel="alternate" '
-                        'hreflang=%s '
-                        'href=%s/>\n'
-                        % (quoteattr(language), quoteattr(str(url)))
-                    )
+                    yield '<%s>%s</%s>\n' % (key, escape(str(value)), key)
 
-            yield indent
-            yield '</url>\n'
+                yield indent
+                yield '</url>\n'
 
         yield '</urlset>\n'
 
