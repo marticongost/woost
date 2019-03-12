@@ -12,7 +12,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: GNU Affero General Public License v3",
-        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
     install_requires = [
