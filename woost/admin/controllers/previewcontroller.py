@@ -49,8 +49,6 @@ class BasePreviewController(HTTPMethodController):
     def _setup_request(self, imp):
 
         # Set the active publishable
-        app.original_publishable = app.publishable
-
         if not isinstance(imp.obj, PublishableObject):
             raise cherrypy.HTTPError(400, "Invalid publishable: %r" % imp.obj)
 
