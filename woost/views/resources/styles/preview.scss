@@ -40,6 +40,7 @@ body {
 .woost-preview-overlay {
     position: absolute;
     cursor: pointer;
+    z-index: 100000;
 
     &[data-woost-preview-state='updating'] {
         animation: updating ease 0.2s both infinite;
