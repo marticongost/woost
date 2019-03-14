@@ -493,7 +493,7 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     getState(context) {
         if (
             (this.slot == "collectionToolbar" && context.collectionIsEmpty)
-            || this.slot == "referenceToolbar"
+            || (this.slot == "referenceToolbar" && !(context.selection && context.selection.length))
         ) {
             return "hidden";
         }
