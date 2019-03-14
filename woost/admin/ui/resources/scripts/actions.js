@@ -936,7 +936,9 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                         form.value = newState;
                     }
                     form.errors = [];
-                    woost.admin.actions.addToParent([newState], null, this.editingIntegralChild);
+                    if (cocktail.navigation.node.objectPath) {
+                        woost.admin.actions.addToParent([newState], null, this.editingIntegralChild);
+                    }
                 }
             })
             .catch((e) => {
