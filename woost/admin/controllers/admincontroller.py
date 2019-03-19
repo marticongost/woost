@@ -114,7 +114,7 @@ class AdminController(PublishableController):
                 "woost.admin.url": url,
                 "woost.admin.id": app.publishable.id,
                 "woost.version": WOOST_VERSION,
-                "woost.extensions": dict(
+                "woost.installedExtensions": dict(
                     (
                         (
                             ext.__name__[len(EXT_PREFIX):]

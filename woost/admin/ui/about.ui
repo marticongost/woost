@@ -30,9 +30,9 @@
             <ul id="extensionsList">
                 <?js
                 let hasExtensions = false;
-                for (let extName in woost.extensions) {
+                for (let extName in woost.installedExtensions) {
                     hasExtensions = true;
-                    const ext = Object.assign(woost.extensions[extName], {name: extName});
+                    const ext = Object.assign({name: extName}, woost.installedExtensions[extName]);
                     const entry = this.constructor.ExtensionsListEntry.create();
                     entry.extension = ext;
                     element.appendChild(entry);
