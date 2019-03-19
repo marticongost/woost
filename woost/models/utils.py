@@ -562,10 +562,21 @@ def get_matching_website(item):
     return None
 
 def get_model_dotted_name(model):
+
     name = model.get_qualified_name(include_ns = True)
     parts = name.split(".")
-    if len(parts) >= 2 and parts[-2] == parts[-1].lower():
+
+    if (
+        len(parts) >= 2
+        and parts[-2] == parts[-1].lower()
+        and not (
+            len(parts) == 4
+            and parts[0] == "woost"
+            and parts[1] == "extensions"
+        )
+    ):
         parts.pop(-2)
+
     return ".".join(parts)
 
 def get_model_from_dotted_name(name):
