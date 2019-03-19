@@ -93,12 +93,7 @@ class SchemaExport(MemberExport):
 
         for key, value in MemberExport.get_properties(self, member, nested):
             if key == "name":
-                name = get_model_dotted_name(member)
-                parts = name.split(".")
-                if len(parts) >= 2 and parts[-2] == parts[-1].lower():
-                    parts.pop(-2)
-                    name = ".".join(parts)
-                yield key, dumps(name)
+                yield key, dumps(get_model_dotted_name(member))
             elif key == "translated":
                 pass
             else:
