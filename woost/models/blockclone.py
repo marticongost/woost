@@ -23,7 +23,8 @@ class BlockClone(Block):
         required = True,
         text_search = True,
         editable = schema.READ_ONLY,
-        member_group = "content"
+        member_group = "content",
+        shadows_attribute = True
     )
 
     def is_published(self):

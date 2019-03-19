@@ -47,6 +47,7 @@ class Block(Item):
     )
     backoffice_card_view = "woost.views.BlockCard"
     views = []
+    source_block = None
 
     initializing_view = Event(
         """An event triggered when the block initializes the view that
