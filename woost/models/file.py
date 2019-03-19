@@ -9,6 +9,7 @@ u"""
 from warnings import warn
 import os
 import hashlib
+import fnmatch
 from zipfile import ZipFile
 from weakref import WeakKeyDictionary
 from mimetypes import guess_type
@@ -39,6 +40,10 @@ class File(Publishable):
 
     default_mime_type = None
     default_encoding = None
+
+    zip_excluded_patterns = [
+        "._*"
+    ]
 
     members_order = [
         "title",
@@ -202,11 +207,17 @@ class File(Publishable):
         temp_dir = mkdtemp()
         try:
             zip_file.extractall(temp_dir)
-            for file_name in zip_file.namelist():
-                new_file = cls.new()
-                path = os.path.join(temp_dir, file_name)
-                new_file.import_file(path, **new_file_options)
-                files.append(new_file)
+            for root, dirs, file_names in os.walk(temp_dir):
+                for file_name in file_names:
+                    # Import a file only if it matches none of the defined excluded patterns
+                    if not all([
+                        fnmatch.fnmatch(file_name, pattern)
+                        for pattern in cls.zip_excluded_patterns
+                    ]):
+                        new_file = cls.new()
+                        path = os.path.join(root, file_name)
+                        new_file.import_file(path, **new_file_options)
+                        files.append(new_file)
         finally:
             rmtree(temp_dir)
 
