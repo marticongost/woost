@@ -162,12 +162,16 @@ class ExtensionAssets:
             % extension_name
         )
 
-    def new(self, cls, asset_name, **kwargs):
-        asset = cls()
-        asset.qname = qname = "woost.extensions.%s.%s" % (
+    def require(self, cls, asset_name, **kwargs):
+
+        qname = "woost.extensions.%s.%s" % (
             self.extension_name,
             asset_name
         )
+
+        asset = cls.get_instance(qname = qname)
+        if asset is None:
+            asset = cls.new(qname = qname)
 
         if kwargs:
             for key, value in kwargs.items():
@@ -179,7 +183,6 @@ class ExtensionAssets:
                 else:
                     asset.set(key, value)
 
-        asset.insert()
         return asset
 
 # Required for backwards compatibility
