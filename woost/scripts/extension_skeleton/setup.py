@@ -1,5 +1,5 @@
 --MODULE_HEADER--
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name = "woost.extensions.--EXTENSION_NAME--",
