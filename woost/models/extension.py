@@ -157,6 +157,10 @@ class ExtensionAssets:
 
     def __init__(self, extension_name):
         self.extension_name = extension_name
+        translations.load_bundle(
+            "woost.extensions.%s.installation"
+            % extension_name
+        )
 
     def new(self, cls, asset_name, **kwargs):
         asset = cls()
