@@ -281,11 +281,10 @@ class Block(Item):
         view.block = self
 
         block_proxy = self.get_block_proxy(view)
+        block_proxy["data-woost-block"] = self.id
 
-        if self.catalog:
-            block_proxy["data-woost-source-block"] = self.id
-        else:
-            block_proxy["data-woost-block"] = self.id
+        if self.source_block:
+            block_proxy["data-woost-source-block"] = self.source_block.id
 
         block_proxy.add_class("block")
 
@@ -383,9 +382,8 @@ class Block(Item):
             else:
                 attrib = "data-woost-block"
 
-            sass_code = "%s.block[%s='%s'] {%s}" % (
+            sass_code = "%s.block[data-woost-block='%s'] {%s}" % (
                 sass_init,
-                attrib,
                 self.id,
                 sass_code
             )
