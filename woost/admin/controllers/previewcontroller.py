@@ -4,6 +4,7 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
+from cocktail.modeling import GenericMethod
 from cocktail.persistence import InstanceNotFoundError
 from cocktail.controllers import HTTPMethodController, read_json
 from cocktail.translations import set_language
@@ -14,11 +15,23 @@ from woost.models import (
     PublishableObject,
     Website,
     Block,
+    BlocksCatalog,
     Slot,
     ModifyPermission
 )
 from woost.models.utils import get_matching_website
 from woost.admin.dataimport import Import
+
+get_blocks_preview_target = GenericMethod("get_blocks_preview_target")
+
+@get_blocks_preview_target.implementation_for(PublishableObject)
+def get_publishable_blocks_preview_target(self):
+    return self
+
+@get_blocks_preview_target.implementation_for(BlocksCatalog)
+def get_blocks_catalog_blocks_preview_target(self):
+    website = app.website or Website.select()[0]
+    return website and website.home
 
 
 class BasePreviewController(HTTPMethodController):
@@ -49,10 +62,7 @@ class BasePreviewController(HTTPMethodController):
     def _setup_request(self, imp):
 
         # Set the active publishable
-        if not isinstance(imp.obj, PublishableObject):
-            raise cherrypy.HTTPError(400, "Invalid publishable: %r" % imp.obj)
-
-        app.publishable = imp.obj
+        app.publishable = self._resolve_preview_target(imp)
 
         # Set the active website
         website_identifier = cherrypy.request.params.pop("website", None)
@@ -88,6 +98,18 @@ class BasePreviewController(HTTPMethodController):
             return cherrypy.request.params[param_name]
         except KeyError:
             raise cherrypy.HTTPError(400, "Missing parameter %r" % param_name)
+
+    def _resolve_preview_target(self, imp):
+
+        publishable = get_blocks_preview_target(imp.obj)
+
+        if not isinstance(publishable, PublishableObject):
+            raise cherrypy.HTTPError(
+                400,
+                "Invalid publishable source: %r" % imp.obj
+            )
+
+        return publishable
 
     def _resolve_object_param(self, param_name, imp, model = Item):
 
