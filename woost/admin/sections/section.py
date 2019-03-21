@@ -52,13 +52,22 @@ class Section(object, metaclass=EventHub):
     def id(self):
         return self.__id
 
+    __icon_uri = None
+
     @property
     def icon_uri(self):
-        name = self.__class__.__name__
-        if name.endswith("Section"):
-            name = name[:-len("Section")]
-        name = camel_to_underscore(name)
-        return "woost.admin.ui://images/sections/%s.svg" % name
+        if not self.__icon_uri:
+            name = self.__class__.__name__
+            if name.endswith("Section"):
+                name = name[:-len("Section")]
+            name = camel_to_underscore(name)
+            return "woost.admin.ui://images/sections/%s.svg" % name
+        else:
+            return self.__icon_uri
+
+    @icon_uri.setter
+    def icon_uri(self, value):
+        self.__icon_uri = value
 
     @property
     def full_path(self):
