@@ -181,7 +181,7 @@ class Section(object, metaclass=EventHub):
         if isinstance(item, Section):
             item.release()
             self.__children.insert(index, item)
-            item.__parent = item
+            item.__parent = self
         elif isinstance(item, Sequence):
             for child in item:
                 child.release()
