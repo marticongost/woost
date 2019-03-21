@@ -197,6 +197,17 @@ class Section(object, metaclass=EventHub):
                 % type(item)
             )
 
+    def replace_with(self, other):
+
+        if self.__parent is None:
+            raise ValueError("Can't replace a section without a parent")
+
+        if other is None:
+            raise ValueError("No replacement given")
+
+        self.__parent.insert_before(self, other)
+        self.release()
+
     def _locate_anchor(self, anchor):
 
         if anchor is None:
