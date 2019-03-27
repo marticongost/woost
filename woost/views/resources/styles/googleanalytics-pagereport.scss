@@ -22,6 +22,10 @@ $insert-opacity: 50%;
     top: 0;
     left: 0;
 
+    @media print {
+        display: none;
+    }
+
     .toggle_button {
         border: none;
         text-transform: none;
