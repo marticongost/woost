@@ -72,7 +72,7 @@ class Website(Item):
         return languages
 
     @event_handler
-    def handle_inserted(cls, event):
+    def handle_inserted(event):
         index = Publishable.per_website_publication_index
         website = event.source
         for publishable in website.specific_content:
@@ -82,8 +82,8 @@ class Website(Item):
                 index.add(website.id, publishable.id)
 
     @event_handler
-    def handle_changed(cls, event):
-        if event.member is cls.home:
+    def handle_changed(event):
+        if event.member is Website.home:
             if event.previous_value:
                 event.previous_value.websites.remove(event.source)
             if event.value:

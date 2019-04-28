@@ -269,7 +269,7 @@ class File(Publishable):
         return clone
 
     @event_handler
-    def handle_deleted(cls, e):
+    def handle_deleted(e):
         TRANSACTION_KEY = "woost.models.File.deleted_instances"
         deleted_files = datastore.get_transaction_value(TRANSACTION_KEY)
         if deleted_files is None:

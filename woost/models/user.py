@@ -179,11 +179,11 @@ class User(Item):
         return data
 
     @event_handler
-    def handle_changing(cls, event):
+    def handle_changing(event):
 
-        if event.member is cls.password \
+        if event.member is User.password \
         and event.value is not None:
-            event.value = cls.encryption(event.value)
+            event.value = User.encryption(event.value)
 
     def test_password(self, password):
         """Indicates if the user's password matches the given string.

@@ -44,7 +44,7 @@ class IconRenderer(Renderer):
             return icon_resolver
 
     @event_handler
-    def handle_changed(cls, e):
-        if e.member is cls.icon_resolver_expression:
+    def handle_changed(e):
+        if e.member is IconRenderer.icon_resolver_expression:
             e.source._v_icon_resolver = None
 

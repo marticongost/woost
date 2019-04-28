@@ -228,26 +228,26 @@ class Change(PersistentObject):
         )
 
     @event_handler
-    def handle_changed(cls, e):
+    def handle_changed(e):
         change = e.source
         member = e.member
         value = e.value
 
-        if member is cls.changeset:
+        if member is Change.changeset:
             if e.previous_value is not None and value is not None:
                 raise ValueError("Can't move a change between changesets")
             if value is not None and change.is_inserted:
                 ChangeSet.changes_index.insert(change.id, value.id)
 
     @event_handler
-    def handle_inserted(cls, e):
+    def handle_inserted(e):
         change = e.source
         changeset = change.changeset
         if changeset is not None:
             ChangeSet.changes_index.insert(change.id, changeset.id)
 
     @event_handler
-    def handle_deleting(cls, e):
+    def handle_deleting(e):
         try:
             del ChangeSet.changes_index[e.source.id]
         except KeyError:

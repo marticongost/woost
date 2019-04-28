@@ -18,7 +18,7 @@ class BaseCMSController(Controller):
     """Base class for all CMS controllers."""
 
     @event_handler
-    def handle_after_request(cls, e):
+    def handle_after_request(e):
         view = e.source.__class__.view.get_current_value(e.source)
         if view:
             view.dispose()
