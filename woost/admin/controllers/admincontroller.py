@@ -46,7 +46,7 @@ class AdminController(PublishableController):
     ]
 
     @event_handler
-    def handle_traversed(cls, e):
+    def handle_traversed(e):
 
         set_admin_language()
 

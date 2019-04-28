@@ -4,14 +4,14 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from collections import Sequence
-from cocktail.events import EventHub, Event
+from cocktail.events import Event
 from cocktail.modeling import camel_to_underscore
 from cocktail.translations import translations
 from cocktail.html import resource_repositories
 from cocktail.ui import components
 
 
-class Section(object, metaclass=EventHub):
+class Section:
 
     declared = Event(
         """An event triggered when the admin section and its descendants have

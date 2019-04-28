@@ -104,7 +104,7 @@ class Item(PersistentObject):
             yield (tab_id, tab_label, tab_filter)
 
     @event_handler
-    def handle_inherited(cls, e):
+    def handle_inherited(e):
         if isinstance(e.schema, schema.SchemaClass):
 
             if "instantiable" not in e.schema.__dict__:
@@ -294,7 +294,7 @@ class Item(PersistentObject):
 
     # Item insertion overriden to make it versioning aware
     @event_handler
-    def handle_inserting(cls, event):
+    def handle_inserting(event):
 
         item = event.source
         now = datetime.now()
@@ -330,12 +330,12 @@ class Item(PersistentObject):
 
     # Extend item modification to make it versioning aware
     @event_handler
-    def handle_changed(cls, event):
+    def handle_changed(event):
 
         item = event.source
         now = None
 
-        if event.member is cls.id and not item.global_id:
+        if event.member is Item.id and not item.global_id:
             item._generate_global_id()
 
         update_timestamp = (
@@ -395,14 +395,14 @@ class Item(PersistentObject):
                 item.set("last_translation_update_time", now, event.language)
 
         if (
-            event.member is cls.primary_member
+            event.member is Item.primary_member
             and not item._v_initializing
             and item.global_id is None
         ):
             item._generate_global_id()
 
     @event_handler
-    def handle_deleting(cls, event):
+    def handle_deleting(event):
 
         item = event.source
 

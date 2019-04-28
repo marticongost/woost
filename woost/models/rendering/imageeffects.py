@@ -30,7 +30,7 @@ class ImageEffect(Item):
     )
 
     @event_handler
-    def handle_changed(cls, e):
+    def handle_changed(e):
         if e.source.is_inserted and e.source.image_factory:
             clear_image_cache_after_commit(factory = e.source.image_factory)
 

@@ -123,34 +123,34 @@ class ImageFactory(Item):
     ))
 
     @event_handler
-    def handle_changing(cls, e):
+    def handle_changing(e):
         from woost.models.rendering.request \
             import clear_image_cache_after_commit
-        if e.source.is_inserted and e.member in cls.cache_invalidators:
+        if e.source.is_inserted and e.member in ImageFactory.cache_invalidators:
             clear_image_cache_after_commit(factory = e.source)
             for referer in e.source.fallback_referers:
                 clear_image_cache_after_commit(factory = referer)
 
     @event_handler
-    def handle_related(cls, e):
+    def handle_related(e):
         from woost.models.rendering.request \
             import clear_image_cache_after_commit
-        if e.source.is_inserted and e.member in cls.cache_invalidators:
+        if e.source.is_inserted and e.member in ImageFactory.cache_invalidators:
             clear_image_cache_after_commit(factory = e.source)
             for referer in e.source.fallback_referers:
                 clear_image_cache_after_commit(factory = referer)
 
     @event_handler
-    def handle_unrelated(cls, e):
+    def handle_unrelated(e):
         from woost.models.rendering.request \
             import clear_image_cache_after_commit
-        if e.source.is_inserted and e.member in cls.cache_invalidators:
+        if e.source.is_inserted and e.member in ImageFactory.cache_invalidators:
             clear_image_cache_after_commit(factory = e.source)
             for referer in e.source.fallback_referers:
                 clear_image_cache_after_commit(factory = referer)
 
     @event_handler
-    def handle_deleting(cls, e):
+    def handle_deleting(e):
         from woost.models.rendering.request \
             import clear_image_cache_after_commit
         clear_image_cache_after_commit(factory = e.source)

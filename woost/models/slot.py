@@ -35,7 +35,7 @@ class Slot(schema.Collection):
         schema.Collection.__init__(self, *args, **kwargs)
 
     @event_handler
-    def handle_attached(cls, e):
+    def handle_attached(e):
         if (
             getattr(e.source.schema, "cacheable", False)
             and not e.source.cache_part

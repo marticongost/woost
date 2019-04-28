@@ -196,15 +196,15 @@ class Document(Publishable):
             redirect(child.get_uri())
 
     @event_handler
-    def handle_related(cls, event):
-        if event.member is cls.websites:
+    def handle_related(event):
+        if event.member is Document.websites:
             for child in event.source.children:
                 child.websites = set(event.source.websites)
 
     @event_handler
-    def handle_unrelated(cls, event):
+    def handle_unrelated(event):
         if not event.source.is_deleted:
-            if event.member is cls.websites:
+            if event.member is Document.websites:
                 for child in event.source.children:
                     child.websites = set(event.source.websites)
 

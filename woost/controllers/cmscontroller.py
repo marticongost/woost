@@ -325,7 +325,7 @@ class CMSController(BaseCMSController):
         return publishable.is_published()
 
     @event_handler
-    def handle_traversed(cls, e):
+    def handle_traversed(e):
 
         datastore.sync()
 
@@ -346,7 +346,7 @@ class CMSController(BaseCMSController):
         app.authentication.process_request()
 
     @event_handler
-    def handle_before_request(cls, event):
+    def handle_before_request(event):
 
         cms = event.source
         publishable = app.publishable
@@ -368,7 +368,7 @@ class CMSController(BaseCMSController):
                 cherrypy.response.headers["Content-Type"] = content_type
 
     @event_handler
-    def handle_producing_output(cls, event):
+    def handle_producing_output(event):
         # Set application wide output parameters
         cms = event.source
         event.output.update(
@@ -385,7 +385,7 @@ class CMSController(BaseCMSController):
     }
 
     @event_handler
-    def handle_exception_raised(cls, event):
+    def handle_exception_raised(event):
 
         app.error = error = event.exception
         app.traceback = sys.exc_info()[2]
@@ -548,7 +548,7 @@ class CMSController(BaseCMSController):
         return (error_document, status)
 
     @event_handler
-    def handle_after_request(cls, event):
+    def handle_after_request(event):
         datastore.abort()
 
     images = ImagesController

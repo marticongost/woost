@@ -28,7 +28,7 @@ class PasswordChangeConfirmationController(FormProcessor, PublishableController)
     class_view = "woost.views.PasswordChangeFormTemplate"
 
     @event_handler
-    def handle_traversed(cls, e):
+    def handle_traversed(e):
 
         controller = e.source
 

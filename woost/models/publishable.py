@@ -320,7 +320,7 @@ class Publishable(Item, PublishableObject):
         Item.__init__(self, *args, **kwargs)
 
     @event_handler
-    def handle_changed(cls, event):
+    def handle_changed(event):
 
         member = event.member
         publishable = event.source
@@ -353,24 +353,24 @@ class Publishable(Item, PublishableObject):
                     get_category_from_mime_type(event.value)
 
     @event_handler
-    def handle_related(cls, event):
-        if event.member is cls.websites:
+    def handle_related(event):
+        if event.member is Publishable.websites:
             publishable = event.source
             website = event.related_object
 
             # Update the index
             if publishable.is_inserted and website.is_inserted:
-                index = cls.per_website_publication_index
+                index = Publishable.per_website_publication_index
                 index.remove(None, publishable.id)
                 index.add(website.id, publishable.id)
 
     @event_handler
-    def handle_unrelated(cls, event):
-        if event.member is cls.websites:
+    def handle_unrelated(event):
+        if event.member is Publishable.websites:
             publishable = event.source
             website = event.related_object
 
-            index = cls.per_website_publication_index
+            index = Publishable.per_website_publication_index
             index.remove(website.id, publishable.id)
 
             # Now available to any website
@@ -378,12 +378,12 @@ class Publishable(Item, PublishableObject):
                 index.add(None, publishable.id)
 
     @event_handler
-    def handle_inserted(cls, event):
+    def handle_inserted(event):
         event.source.__insert_into_per_website_publication_index()
 
     @event_handler
-    def handle_deleted(cls, event):
-        cls.per_website_publication_index.remove(None, event.source.id)
+    def handle_deleted(event):
+        Publishable.per_website_publication_index.remove(None, event.source.id)
 
     def __insert_into_per_website_publication_index(self):
 
@@ -415,8 +415,8 @@ class Publishable(Item, PublishableObject):
         return index
 
     @event_handler
-    def handle_rebuilding_indexes(cls, e):
-        cls.rebuild_per_website_publication_index(verbose = e.verbose)
+    def handle_rebuilding_indexes(e):
+        Publishable.rebuild_per_website_publication_index(verbose = e.verbose)
 
     @classmethod
     def rebuild_per_website_publication_index(cls, verbose = False):
