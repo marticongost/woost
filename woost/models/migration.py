@@ -1518,3 +1518,19 @@ def add_listing_pagination_method(e):
         listing.pagination_method = "pager" if listing._paginated else None
         del listing._paginated
 
+@migration_step
+def support_multiple_icons_per_website(e):
+
+    from woost.models import Website
+
+    for website in Website.select():
+        try:
+            icon = website._icon
+        except AttributeError:
+            pass
+        else:
+            del website._icon
+            if icon:
+                del icon._Website_icon
+                website.icons.append(icon)
+

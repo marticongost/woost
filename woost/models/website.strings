@@ -87,10 +87,10 @@ en: Website
         es: Logotipo
         en: Logo
 
-        [icon]
-        ca: Icona
-        es: Icono
-        en: Icon
+        [icons]
+        ca: Icones
+        es: Iconos
+        en: Icons
 
         [keywords]
         ca: Paraules clau
