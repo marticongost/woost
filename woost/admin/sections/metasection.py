@@ -11,7 +11,7 @@ class MetaSection(Settings):
         "site_name",
         "hosts",
         "logo",
-        "icon",
+        "icons",
         "keywords",
         "description",
         "meta_tags",
