@@ -1,13 +1,15 @@
-#-*- coding: utf-8 -*-
 """Defines migrations to the database schema for woost.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from collections import defaultdict
+
 from cocktail.persistence import migration_step
 
 #------------------------------------------------------------------------------
 # Migrations for Woost2 projects
 #------------------------------------------------------------------------------
+
 
 @migration_step
 def convert_indexes_to_python3(e):
@@ -19,6 +21,9 @@ def convert_indexes_to_python3(e):
         migrate,
         datastore
     )
+
+    broken_objects = defaultdict(dict)
+    datastore.root["woost2_broken_objects"] = broken_objects
 
     model_keys = [
         v for k, v in datastore.root.items()
@@ -35,6 +40,9 @@ def convert_indexes_to_python3(e):
         cls.index = index
         for key, value in prev_index.__Broken_state__["_SingleValueIndex__items"].items():
             if isinstance(value, Broken):
+                broken_cls = value.__Broken_Persistent__
+                broken_name = f"{broken_cls.__module__}.{broken_cls.__name__}"
+                broken_objects[broken_name][key] = value.__Broken_state__
                 for keys in model_keys:
                     try:
                         keys.remove(key)
@@ -43,8 +51,13 @@ def convert_indexes_to_python3(e):
             else:
                 index.add(key, value)
 
+
+@migration_step
+def rebuild_indexes_after_conversion_to_python3(e):
+    from cocktail.persistence import PersistentObject
     PersistentObject.rebuild_indexes(True)
     PersistentObject.rebuild_full_text_indexes(True, True)
+
 
 @migration_step
 def remove_woost2_models(e):
