@@ -5,9 +5,11 @@
 """
 from cocktail.persistence import migration_step
 
+
 #------------------------------------------------------------------------------
 # Migrations for Woost2 projects
 #------------------------------------------------------------------------------
+
 
 @migration_step
 def convert_indexes_to_python3(e):
@@ -550,6 +552,7 @@ def create_admin(e):
         old_admin_controller.delete()
 
     create_admin()
+
 
 #------------------------------------------------------------------------------
 # Woost3 migrations
