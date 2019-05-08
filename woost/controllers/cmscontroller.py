@@ -41,6 +41,7 @@ from woost.controllers.imagescontroller import ImagesController
 from woost.controllers.autocomplete import AutocompleteController
 from woost.controllers.cmsmetadatacontroller import CMSMetadataController
 from .robotscontroller import RobotsController
+from .webappmanifestcontroller import WebAppManifestController
 
 
 class CMSController(BaseCMSController):
@@ -574,4 +575,5 @@ class CMSController(BaseCMSController):
 
     cms_metadata = CMSMetadataController()
     robots_txt = RobotsController()
+    web_app_manifest = WebAppManifestController()
 
