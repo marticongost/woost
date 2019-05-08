@@ -19,6 +19,8 @@ from woost import app
 from woost import extensions as ext_root
 from .configuration import Configuration
 
+INSTALLED_KEY = "woost.installed_extensions"
+
 
 class ExtensionsManager(object):
 
@@ -88,12 +90,11 @@ class ExtensionsManager(object):
             if install_ext:
 
                 def installation():
-                    KEY = "woost.installed_extensions"
                     try:
-                        installed_extensions = datastore.root[KEY]
+                        installed_extensions = datastore.root[INSTALLED_KEY]
                     except KeyError:
                         installed_extensions = PersistentSet()
-                        datastore.root[KEY] = installed_extensions
+                        datastore.root[INSTALLED_KEY] = installed_extensions
                     else:
                         if extension.__name__ in installed_extensions:
                             return
@@ -110,6 +111,25 @@ class ExtensionsManager(object):
             self.__loaded_extensions.add(extension)
 
         return True
+
+    def is_installed(self, ext: str) -> bool:
+        """Determines if the given extension has been installed."""
+        try:
+            installed_extensions = datastore.root[INSTALLED_KEY]
+        except KeyError:
+            return False
+        else:
+            return extension.__name__ in installed_extensions
+
+    def set_installed(self, ext: str, installed: bool):
+        """Forces the installation state for the given extension."""
+        try:
+            installed_extensions = datastore.root[INSTALLED_KEY]
+        except KeyError:
+            installed_extensions = PersistentSet()
+            datastore.root[INSTALLED_KEY] = installed_extensions
+
+        installed_extensions.add(ext)
 
     def _define_resource_repositories(self, extension):
 
