@@ -213,6 +213,7 @@ def remove_woost2_models(e):
         except AttributeError:
             pass
 
+
 @migration_step
 def add_site_identifiers(e):
 
@@ -236,6 +237,7 @@ def add_site_identifiers(e):
 
         website.identifier = identifier
 
+
 @migration_step
 def remove_configuration_image_factories(e):
 
@@ -254,6 +256,7 @@ def remove_configuration_image_factories(e):
             del img_factory._Configuration_image_factories
         except AttributeError:
             pass
+
 
 @migration_step
 def remove_configuration_renderers(e):
@@ -274,6 +277,7 @@ def remove_configuration_renderers(e):
         except AttributeError:
             pass
 
+
 @migration_step
 def remove_configuration_video_player_settings(e):
 
@@ -288,6 +292,7 @@ def remove_configuration_video_player_settings(e):
 
     for vid_player_settings in VideoPlayerSettings.select():
         del vid_player_settings._Configuration_video_player_settings
+
 
 @migration_step
 def remove_configuration_websites(e):
@@ -306,6 +311,7 @@ def remove_configuration_websites(e):
             del website._Configuration_websites
         except AttributeError:
             pass
+
 
 @migration_step
 def make_slots_integral_and_add_block_catalogs(e):
@@ -471,6 +477,7 @@ def make_slots_integral_and_add_block_catalogs(e):
             except AttributeError:
                 pass
 
+
 @migration_step
 def remove_role_hidden_content_types(e):
 
@@ -482,6 +489,7 @@ def remove_role_hidden_content_types(e):
         except AttributeError:
             pass
 
+
 @migration_step
 def remove_role_default_content_type(e):
 
@@ -492,6 +500,7 @@ def remove_role_default_content_type(e):
             del role._default_content_type
         except AttributeError:
             pass
+
 
 @migration_step
 def convert_user_roles_collection_to_single_reference(e):
@@ -513,11 +522,13 @@ def convert_user_roles_collection_to_single_reference(e):
             else:
                 user._role = None
 
+
 @migration_step
 def remove_login_controller(e):
     from woost.models import Controller
     controller = Controller.get_instance(qname = "woost.login_controller")
     controller.delete()
+
 
 @migration_step
 def add_user_preferred_language(e):
@@ -532,6 +543,7 @@ def add_user_preferred_language(e):
             user.preferred_language
         else:
             user.preferred_language = lang
+
 
 @migration_step
 def create_admin(e):
@@ -554,4 +566,21 @@ def create_admin(e):
 #------------------------------------------------------------------------------
 # Woost3 migrations
 #------------------------------------------------------------------------------
+
+
+@migration_step
+def support_multiple_icons_per_website(e):
+
+    from woost.models import Website
+
+    for website in Website.select():
+        try:
+            icon = website._icon
+        except AttributeError:
+            pass
+        else:
+            del website._icon
+            if icon:
+                del icon._Website_icon
+                website.icons.append(icon)
 

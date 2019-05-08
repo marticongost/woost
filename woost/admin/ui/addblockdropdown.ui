@@ -37,6 +37,7 @@
     ?>
 
     <ui:with ui:element="dropdownPanel">
+        <ui:resource href="woost.admin.ui://styles/woost-admin-ui-addblockdropdown--dropdownpanel.scss.css"/>
         <?on expanded:changed
         if (newValue) {
             instance.blockTypeSelector.selectedElements = [];
