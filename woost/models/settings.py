@@ -67,9 +67,9 @@ def add_setting(
 # Metadata and indexing
 #------------------------------------------------------------------------------
 add_setting(
-    schema.Reference(
-        "icon",
-        type = File,
+    schema.Collection(
+        "icons",
+        items = schema.Reference(type = File),
         relation_constraints = [File.resource_type.equal("image")]
     )
 )

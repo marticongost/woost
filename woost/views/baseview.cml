@@ -18,6 +18,7 @@ from woost.models import Configuration, Publishable, Document
     body_end_html = ""
     base_url = None
     include_alternate_language_links = True
+    web_app_manifest = "/web_app_manifest"
 
     def get_site_title(self):
         return app.website.site_name
@@ -56,7 +57,8 @@ from woost.models import Configuration, Publishable, Document
         )
 
     def get_page_icon(self):
-        return Configuration.instance.get_setting("icon")
+        icons = Configuration.instance.get_setting("icons")
+        return icons and icons[0] or None
 
     def rendering_home_page(self):
         return self.publishable.is_home_page()
@@ -81,6 +83,15 @@ from woost.models import Configuration, Publishable, Document
         home = app.website.home
         document.head_start_link = Element("link", rel = "start", title = translations(home), href = home.get_uri() or "/")
         document.head.append(document.head_start_link)
+
+        # Web app manifest
+        if self.web_app_manifest:
+            document.web_app_manifest_link = Element(
+                "link",
+                rel="manifest",
+                href=self.web_app_manifest
+            )
+            document.head.append(document.web_app_manifest_link)
 
         # Alternate languages
         config = Configuration.instance

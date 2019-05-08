@@ -1,10 +1,10 @@
 
 [woost.models.settings]
 
-    [icon]
-    ca: Icona
-    es: Icono
-    en: Icon
+    [icons]
+    ca: Icones
+    es: Iconos
+    en: Icons
 
     [logo]
     ca: Logotip
