@@ -40,6 +40,7 @@ class Website(Item):
         "hosts",
         "logo",
         "icon",
+        "icons",
         "keywords",
         "description",
 
@@ -103,8 +104,36 @@ class Website(Item):
         member_group = "website"
     )
 
-    icon = schema.Reference(
-        type = File,
+    def _get_icon(self):
+        try:
+            return self.icons[0]
+        except IndexError:
+            return None
+
+    def _set_icon(self, value):
+        if self.icons:
+            if value:
+                self.icons[0] = value
+            else:
+                self.pop(0)
+        elif value:
+            self.icons.append(value)
+
+    icon = property(
+        _get_icon,
+        _set_icon,
+        doc = """
+            Set the site's default icon.
+
+            New code can use the Website.icons collection instead; this
+            property is mainly provided in order to preserve API compatibility
+            with older sites where Website.icons didn't exist and each website
+            could only have a single icon.
+            """
+    )
+
+    icons = schema.Collection(
+        items = schema.Reference(type = File),
         relation_constraints = [File.resource_type.equal("image")],
         related_end = schema.Collection(),
         listed_by_default = False,
