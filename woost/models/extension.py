@@ -44,6 +44,17 @@ class ExtensionsManager(object):
         ):
             yield importlib.import_module(name)
 
+    def import_extensions(self):
+        """Import all available extensions, without loading them.
+
+        This method is similar to `load_extensions`, but it won't invoke the
+        'install' and 'load' methods of the imported extensions, nor will it
+        trigger the `extension_loaded` event or set up resource and UI
+        repositories.
+        """
+        for ext in self.iter_extensions():
+            pass
+
     def load_extensions(self):
         """Load all available extensions.
 
