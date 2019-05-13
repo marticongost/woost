@@ -102,7 +102,7 @@ class Export(metaclass = ExportMetaclass):
         else:
             self.__member_permissions = {}
 
-        self.excluded_members = excluded_members
+        self.excluded_members = set(excluded_members)
 
         if isinstance(thumbnail_factory, str):
             thumbnail_factory = ImageFactory.require_instance(
@@ -111,6 +111,14 @@ class Export(metaclass = ExportMetaclass):
 
         self.thumbnail_factory = thumbnail_factory
         self.children_export = children_export
+
+    def select_members(self, model, included_members):
+        for member in model.iter_members():
+            if (
+                not member.primary
+                and member not in included_members
+            ):
+                self.excluded_members.add(member)
 
     def get_fields(self, model, ref = False):
         try:
