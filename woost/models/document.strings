@@ -33,40 +33,15 @@ en: Document
         es: Encabezado personalizado
         en: Custom heading
 
-        [custom_document_title]
-        ca: Títol personalitzat
-        es: Título personalizado
-        en: Custom title
-
-            [explanation]
-            ca:
-                Títol del document HTML generat per aquest element (tag
-                <code>&lt;title&gt;</code> de l'element <code>&lt;head&gt;</code>).
-                Si no s'especifica, s'utilitzarà el títol general de l'element.
-            es:
-                Título del documento HTML generado para este elemento (tag
-                <code>&lt;title&gt;</code> del elemento <code>&lt;head&gt;</code>).
-                Si no se especifica, se utilitzará el título general del elemento.
-            en:
-                Title of the HTML document generated for this element
-                (<code>&lt;title&gt;</code> tag of the <code>&lt;head&gt;</code>
-                element). If not specified, the general title of the item will
-                be used.
+        [summary]
+        ca: Sumari
+        es: Sumario
+        en: Summary
 
         [meta_tags]
         ca: Meta tags
         es: Meta tags
         en: Meta tags
-
-        [description]
-        ca: Descripció
-        es: Descripción
-        en: Description
-
-        [keywords]
-        ca: Paraules clau
-        es: Palabras clave
-        en: Keywords
 
         [template]
         ca: Plantilla
@@ -105,9 +80,4 @@ en: Document
         ca: Pàgines filles
         es: Páginas hijas
         en: Child pages
-
-        [robots_should_follow]
-        ca: Seguir els enllaços
-        es: Seguir los enlaces
-        en: Follow links
 

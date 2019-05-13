@@ -21,7 +21,6 @@ class Event(Document):
         "event_end",
         "event_location",
         "image",
-        "summary",
         "blocks"
     ]
 
@@ -45,13 +44,6 @@ class Event(Document):
     image = schema.Reference(
         type = File,
         relation_constraints = {"resource_type": "image"},
-        listed_by_default = False,
-        member_group = "content"
-    )
-
-    summary = schema.HTML(
-        translated = True,
-        edit_control = "woost.views.RichTextEditor",
         listed_by_default = False,
         member_group = "content"
     )

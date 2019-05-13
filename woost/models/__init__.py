@@ -60,6 +60,7 @@ from .publishable import (
 )
 from .defaultcontroller import with_default_controller
 from .defaulttemplate import with_default_template
+from .seometadata import seo_metadata
 from .document import Document
 from .theme import Theme
 from .template import Template
