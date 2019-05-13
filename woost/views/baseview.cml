@@ -51,10 +51,7 @@ from woost.models import Configuration, Publishable, Document
         return " ".join(keywords) if keywords else None
 
     def get_page_description(self):
-        return (
-            getattr(self.publishable, "description", None)
-            or Configuration.instance.get_setting("description")
-        )
+        return getattr(self.publishable, "meta_description", None)
 
     def get_page_icon(self):
         icons = Configuration.instance.get_setting("icons")

@@ -1,0 +1,68 @@
+
+[woost.models.seometadata.SEOMetadata]
+
+    [members]
+
+        [custom_document_title]
+        ca: Títol personalitzat
+        es: Título personalizado
+        en: Custom title
+
+            [explanation]
+            ca:
+                Títol del document HTML generat per aquest element (tag
+                <code>&lt;title&gt;</code> de l'element <code>&lt;head&gt;</code>).
+                Si no s'especifica, s'utilitzarà el títol general de l'element.
+            es:
+                Título del documento HTML generado para este elemento (tag
+                <code>&lt;title&gt;</code> del elemento <code>&lt;head&gt;</code>).
+                Si no se especifica, se utilitzará el título general del elemento.
+            en:
+                Title of the HTML document generated for this element
+                (<code>&lt;title&gt;</code> tag of the <code>&lt;head&gt;</code>
+                element). If not specified, the general title of the item will
+                be used.
+
+        [meta_description]
+        ca: Meta descripció
+        es: Meta descripción
+        en: Meta description
+
+            [explanation]
+            ca:
+                Contingut que s'incloure a l'element
+                <code>&lt;meta name="description"&gt;</code>
+                de la pàgina.
+            es:
+                Contenido que se incluirá en el elemento
+                <code>&lt;meta name="description"&gt;</code>
+                de la página.
+            en:
+                Content that will be include in the
+                <code>&lt;meta name="description"&gt;</code>
+                element of this document.
+
+        [keywords]
+        ca: Paraules clau
+        es: Palabras clave
+        en: Keywords
+
+            [explanation]
+            ca:
+                Contingut que s'incloure a l'element
+                <code>&lt;meta name="keywords"&gt;</code>
+                de la pàgina.
+            es:
+                Contenido que se incluirá en el elemento
+                <code>&lt;meta name="keywords"&gt;</code>
+                de la página.
+            en:
+                Content that will be include in the
+                <code>&lt;meta name="keywords"&gt;</code>
+                element of this document.
+
+        [robots_should_follow]
+        ca: Seguir els enllaços
+        es: Seguir los enlaces
+        en: Follow links
+

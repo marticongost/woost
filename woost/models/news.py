@@ -20,7 +20,6 @@ class News(Document):
     members_order = [
         "news_date",
         "image",
-        "summary",
         "blocks"
     ]
 
@@ -35,12 +34,6 @@ class News(Document):
         type = File,
         related_end = schema.Collection(),
         relation_constraints = {"resource_type": "image"},
-        member_group = "content"
-    )
-
-    summary = schema.HTML(
-        listed_by_default = False,
-        translated = True,
         member_group = "content"
     )
 

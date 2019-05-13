@@ -24,11 +24,6 @@ en: News
         es: Imagen
         en: Image
 
-        [summary]
-        ca: Sumari
-        es: Sumario
-        en: Summary
-
         [blocks]
         ca: Cos
         es: Cuerpo
