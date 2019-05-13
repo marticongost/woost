@@ -584,3 +584,20 @@ def support_multiple_icons_per_website(e):
                 del icon._Website_icon
                 website.icons.append(icon)
 
+@migration_step
+def copy_document_description_to_summary_and_meta_description(e):
+
+    from woost.models import Document
+
+    for doc in Document.select():
+        for lang, trans in doc.translations.items():
+            try:
+                desc = trans._description
+            except AttributeError:
+                pass
+            else:
+                del trans._description
+                if desc:
+                    doc.set("summary", desc, lang)
+                    doc.set("meta_description", desc, lang)
+
