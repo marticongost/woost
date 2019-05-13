@@ -14,8 +14,10 @@ from .controller import Controller
 from .theme import Theme
 from .style import Style
 from .metatags import MetaTags
+from .seometadata import seo_metadata
 
 
+@seo_metadata
 class Document(Publishable):
 
     instantiable = True
@@ -30,15 +32,11 @@ class Document(Publishable):
     members_order = (
         "title",
         "inner_title",
+        "summary",
         "template",
         "theme",
         "styles",
-        "custom_document_title",
-        "meta_tags",
-        "description",
-        "keywords",
-        "children",
-        "robots_should_follow"
+        "children"
     )
 
     title = schema.String(
@@ -63,30 +61,14 @@ class Document(Publishable):
         member_group = "content"
     )
 
-    custom_document_title = schema.String(
-        translated = True,
-        listed_by_default = False,
-        spellcheck = True,
-        member_group = "meta"
+    summary = schema.HTML(
+        translated=True,
+        spellcheck=True,
+        listed_by_default=False,
+        member_group="content"
     )
 
     meta_tags = MetaTags(
-        member_group = "meta"
-    )
-
-    description = schema.String(
-        translated = True,
-        listed_by_default = False,
-        spellcheck = True,
-        edit_control = "cocktail.html.TextArea",
-        member_group = "meta"
-    )
-
-    keywords = schema.String(
-        translated = True,
-        listed_by_default = False,
-        spellcheck = True,
-        edit_control = "cocktail.html.TextArea",
         member_group = "meta"
     )
 
@@ -122,14 +104,6 @@ class Document(Publishable):
         cascade_delete = True,
         after_member = "parent",
         member_group = "navigation"
-    )
-
-    robots_should_follow = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False,
-        member_group = "meta.robots",
-        after_member = "robots_should_index"
     )
 
     def _update_path(self, parent, path):

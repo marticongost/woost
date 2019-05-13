@@ -598,7 +598,6 @@ body.modal {
     border-top: 1px solid #adb2bc;
     margin-top: 0;
     padding-top: 1em;
-    padding-left: 0.75em;
 }
 
 .scripted .BackOfficeEditView .ContentForm > .fields > fieldset .fieldset_fields > fieldset > .fieldset_fields {
@@ -615,7 +614,6 @@ body.modal {
 .BackOfficeLayout fieldset fieldset .fieldset_fields {
     border: 1px solid #ccc;
     background-color: #eee;
-    padding: 0.5em;
 }
 
 .BackOfficeLayout .Form .control[data-cocktail-editable='read_only'] {
@@ -623,10 +621,19 @@ body.modal {
 }
 
 .BackOfficeLayout .field input.control,
-.BackOfficeLayout .field textarea.control,
 .BackOfficeLayout .field select.control,
 .BackOfficeLayout .field .Autocomplete .text_box {
     width: 18em;
+    box-sizing: border-box;
+}
+
+.BackOfficeLayout .field input.control.String {
+    width: 32em;
+}
+
+.BackOfficeLayout .field textarea.control,
+.BackOfficeLayout .field .RichTextEditor.control {
+    width: 32em;
     box-sizing: border-box;
 }
 
@@ -697,7 +704,7 @@ body.modal {
     padding: 0.2em;
 }
 
-.BackOfficeLayout .Form .translated div.field_instance {
+.BackOfficeLayout .Form div.field_instance {
     margin-bottom: 0.5em;
     margin-right: 1.5em;
 }
@@ -708,12 +715,11 @@ body.modal {
 
 .BackOfficeLayout .Form .explanation {
     clear: both;
-    padding-top: 0.5em;
+    margin: 0.2em;
     padding-left: 0;
-    margin-left: 1em;
     color: rgb(75,75,75);
     font-size: 0.8em;
-    max-width: 38em;
+    max-width: 36em;
     text-align: justify;
 }
 
@@ -788,10 +794,6 @@ body.modal {
 .BackOfficeLayout .Form td .mceEditor .mceLayout,
 .BackOfficeLayout .Form td .ItemSelector .action_button {
     width: 100%;
-}
-
-.BackOfficeLayout .Form .field textarea.control.MetaTags {
-    width: 38.1em;
 }
 
 .BackOfficeLayout .Form td .DatePicker {
