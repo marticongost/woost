@@ -100,21 +100,12 @@ def _get_publishable_description(self):
 Publishable.get_open_graph_description = _get_publishable_description
 
 def _get_document_description(self):
-    if self.description:
-        return export_content(self.description)
+    if self.summary:
+        return export_content(self.summary)
 
     return Publishable.get_open_graph_description(self)
 
 Document.get_open_graph_description = _get_document_description
-
-def _get_news_description(self):
-
-    if self.summary:
-        return export_content(self.summary)
-
-    return Document.get_open_graph_description(self)
-
-News.get_open_graph_description = _get_news_description
 
 def _get_publishable_open_graph_image(self):
     return self.get_representative_image()
