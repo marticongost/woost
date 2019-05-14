@@ -281,35 +281,6 @@ class ListingController(Controller):
         return value or [get_language()]
 
     @request_property
-    def members(self):
-
-        keys = cherrypy.request.params.get("members")
-
-        if keys:
-            model = self.model
-            if not model:
-                raise cherrypy.HTTPError(
-                    400,
-                    "Can't select members without specifying a model"
-                )
-
-            members = []
-
-            for key in keys:
-                member = model.get_member(key)
-                if not member:
-                    raise cherrypy.HTTPError(
-                        400,
-                        "Unknown member %r" % key
-                    )
-
-                members.append(member)
-
-            return members
-
-        return None
-
-    @request_property
     def export(self):
 
         export_class = cherrypy.request.params.get(
@@ -327,13 +298,7 @@ class ListingController(Controller):
         if not export_class:
             raise ValueError("Missing export class")
 
-        export = export_class(languages = self.locales)
-
-        members = self.members
-        if members:
-            export.select_members(self.model, members)
-
-        return export
+        return export_class(languages = self.locales)
 
     @request_property
     def order(self):
