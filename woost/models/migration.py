@@ -6,6 +6,7 @@ from collections import defaultdict
 
 from cocktail.persistence import migration_step
 
+
 #------------------------------------------------------------------------------
 # Migrations for Woost2 projects
 #------------------------------------------------------------------------------
@@ -562,6 +563,7 @@ def create_admin(e):
         old_admin_controller.delete()
 
     create_admin()
+
 
 #------------------------------------------------------------------------------
 # Woost3 migrations
