@@ -584,3 +584,10 @@ def get_model_from_dotted_name(name):
         if get_model_dotted_name(cls) == name:
             return cls
 
+def rebuild_full_text_indexes(verbose=True):
+    Item.rebuild_full_text_indexes(
+        languages=[None, *Configuration.instance.languages],
+        recursive=True,
+        verbose=True
+    )
+
