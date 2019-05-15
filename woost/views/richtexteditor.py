@@ -6,6 +6,8 @@ u"""
 @organization:	Whads/Accent SL
 @since:			October 2008
 """
+from copy import deepcopy
+
 from cocktail.html import templates
 from cocktail.html.utils import is_inline_element
 from cocktail.translations import translations
@@ -58,7 +60,11 @@ class RichTextEditor(TinyMCE):
         "toolbar": "undo redo | "
                    "styleselect | "
                    "bold italic | "
-                   "bullist numlist outdent indent"
+                   "bullist numlist outdent indent",
+        "rel_list": [
+            {"value": ""},
+            {"value": "nofollow"}
+        ]
     }
 
     def __init__(self, *args, **kwargs):
@@ -137,4 +143,21 @@ class RichTextEditor(TinyMCE):
                 self.tinymce_params["woostShortcuts"] = shortcuts
 
         TinyMCE._ready(self)
+
+    def aggregate_tinymce_params(self):
+
+        params = TinyMCE.aggregate_tinymce_params(self)
+
+        rel_list = params.get("rel_list")
+        if rel_list:
+            rel_list = deepcopy(rel_list)
+            params["rel_list"] = rel_list
+            for entry in rel_list:
+                if not entry.get("title"):
+                    entry["title"] = translations(
+                        "woost.views.RichTextEditor.rel."
+                        + (entry["value"] or "none")
+                    )
+
+        return params
 
