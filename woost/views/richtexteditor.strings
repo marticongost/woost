@@ -6,3 +6,15 @@
     es: Estilos
     en: Styles
 
+    [rel]
+
+        [none]
+        ca: Cap
+        es: Ninguno
+        en: None
+
+        [nofollow]
+        ca: No seguir
+        es: No seguir
+        en: No follow
+
