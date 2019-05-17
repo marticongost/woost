@@ -876,7 +876,10 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
         let serializationParameters = {
             includeMember: (member) => {
-                return woost.models.getMemberEditMode(member) === cocktail.ui.EDITABLE;
+                return (
+                    member.primary
+                    || woost.models.getMemberEditMode(member) === cocktail.ui.EDITABLE
+                );
             },
             getMemberParameters: (member) => serializationParameters
         };
