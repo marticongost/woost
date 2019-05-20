@@ -77,7 +77,6 @@ class SiteInitializer(object):
     admin_email = "admin@localhost"
     admin_password = ""
     languages = ["en"]
-    extensions = []
     hosts = ["localhost"]
     base_id = None
 
@@ -160,9 +159,6 @@ class SiteInitializer(object):
         parser.add_option("-l", "--languages",
             help = "Comma separated list of languages")
         parser.add_option("--hostname", help = "Hostname for the website")
-        parser.add_option("-e", "--extensions",
-            default = "",
-            help = "The list of extensions to enable")
         parser.add_option("-b", "--base-id",
             type = int,
             help = "Seed the incremental ID sequence at a non-zero value")
@@ -192,7 +188,6 @@ class SiteInitializer(object):
             or input("Languages: ") or "en"
 
         self.languages = languages.split()
-        self.extensions = options.extensions.split(",")
         self.base_id = options.base_id
         app.installation_id = options.installation_id
 
