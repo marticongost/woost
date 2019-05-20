@@ -7,7 +7,7 @@ from woost import app
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
-    <?resource woost://styles/genericsitelayout.css ?>
+    <?resource woost://styles/genericsitelayout.scss.css ?>
 
     <py:with py:element="self.site_header">
         <?py
@@ -17,6 +17,18 @@ from woost import app
     </py:with>
 
     <py:with py:element="self.small_screen_navigation" py:visible="${False}"/>
+
+    <py:with
+        py:element="self.menu"
+        py:root_visibility="@{element.MERGED_ROOT}"
+        py:expanded="@{True}"/>
+
+    <div py:id="main_layout" py:after="self.site_header">
+        <?py
+        element.append(self.site_navigation)
+        element.append(self.main)
+        ?>
+    </div>
 
 </py:woost.views.StandardView>
 
