@@ -207,7 +207,8 @@ class PublishableObject(object):
         website = None,
         _user = None
     ):
-        from woost.models import Configuration, Website
+        if not self.enabled:
+            return False
 
         if self.per_language_publication:
 
@@ -223,14 +224,11 @@ class PublishableObject(object):
             )
             if not target_languages:
                 return False
-        else:
-            if not self.enabled:
-                return False
 
-            if website is not PublishableObject.any_website:
-                target_websites = resolve_websites(website, self)
-                if not target_websites:
-                    return False
+        elif website is not PublishableObject.any_website:
+            target_websites = resolve_websites(website, self)
+            if not target_websites:
+                return False
 
         if not self.is_current():
             return False

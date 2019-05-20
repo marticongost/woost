@@ -449,20 +449,20 @@ class Publishable(Item, PublishableObject):
 
                 per_lang_pub_index = Publishable.per_language_publication.index
                 per_website_index = Publishable.per_website_publication_index
+                enabled_trans_index = Publishable.enabled_translations.index
 
+                # Exclude disabled elements
+                dataset.difference_update(Publishable.enabled.index.values(key=False))
+
+                # Per website / language publication
                 matching_subset = set()
 
                 website_neutral = set(per_website_index.values(key = None))
                 language_dependant = set(per_lang_pub_index.values(key = True))
-
-                language_neutral_enabled = set(
+                language_neutral = set(
                     per_lang_pub_index.values(key = False)
                 )
-                language_neutral_enabled.intersection_update(
-                    Publishable.enabled.index.values(key = True)
-                )
 
-                # Per website publication
                 for website in resolve_websites(self.website):
 
                     # Content that can be published in languages that are enabled
@@ -474,13 +474,11 @@ class Publishable(Item, PublishableObject):
                         user = self._user
                     ):
                         website_subset.update(
-                            Publishable.enabled_translations.index.values(
-                                key = language
-                            )
+                            enabled_trans_index.values(key=language)
                         )
 
                     website_subset.intersection_update(language_dependant)
-                    website_subset.update(language_neutral_enabled)
+                    website_subset.update(language_neutral)
 
                     # Content that can be published on the active website
                     website_subset.intersection_update(
