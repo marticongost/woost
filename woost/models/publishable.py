@@ -51,6 +51,7 @@ class Publishable(Item, PublishableObject):
     type_group = "publishable"
     cacheable = True
     cacheable_server_side = True
+    admin_edit_view = "woost.admin.ui.PublishableEditView"
 
     groups_order = [
         "content",
@@ -79,8 +80,8 @@ class Publishable(Item, PublishableObject):
         "redirection_mode",
         "redirection_target",
         "redirection_method",
-        "per_language_publication",
         "enabled",
+        "per_language_publication",
         "enabled_translations",
         "websites",
         "access_level",
@@ -220,18 +221,18 @@ class Publishable(Item, PublishableObject):
         shadows_attribute = True
     )
 
-    per_language_publication = schema.Boolean(
+    enabled = schema.Boolean(
         required = True,
-        default = False,
+        default = True,
         indexed = True,
         listed_by_default = False,
         member_group = "publication",
         shadows_attribute = True
     )
 
-    enabled = schema.Boolean(
+    per_language_publication = schema.Boolean(
         required = True,
-        default = True,
+        default = False,
         indexed = True,
         listed_by_default = False,
         member_group = "publication",
