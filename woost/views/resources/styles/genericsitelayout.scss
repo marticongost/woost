@@ -1,0 +1,292 @@
+
+@import "theme://";
+
+@mixin button {
+    background-color: #222;
+    color: white;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    padding: 0.5em 2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #333;
+    }
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    background-color: #222;
+    margin: 0;
+    padding: 0;
+    font-family: Bitstream Vera Sans, Arial, sans-serif;
+    font-size: 10px;
+}
+
+.GenericSiteLayout {
+
+    a img {
+        border: none;
+    }
+
+    h1 a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .site_header {
+        @include grid-padded;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding-top: 2.4em;
+        padding-bottom: 2.4em;
+        background-color: #3e4351;
+
+        h1 {
+            font-size: 2.4em;
+            padding: 0;
+            margin: 0;
+            margin-right: auto;
+            color: white;
+
+            a {
+                color: inherit;
+            }
+
+            & ~ * {
+                margin-left: 5em;
+            }
+        }
+
+        a,
+        button {
+            display: inline;
+            font-size: inherit;
+            background: none;
+            border: none;
+            color: #ccc;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+    }
+
+    .LanguageSelector {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: inline;
+            padding: 0;
+            margin: 0;
+
+            & + li {
+                border-left: 1px solid #666;
+                margin-left: 1em;
+                padding-left: 1em;
+            }
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        strong a {
+            color: white;
+        }
+    }
+
+    .identity {
+        color: white;
+
+        * {
+            display: inline-block;
+        }
+
+        form {
+            margin: 0;
+            padding: 0;
+        }
+
+        strong {
+            font-size: 1.2em;
+        }
+
+        button {
+            font-size: 1.2em;
+            margin-left: 0.7em;
+            color: white;
+            text-decoration: underline;
+        }
+    }
+
+    .main_layout {
+        @include grid-padded;
+        display: flex;
+        background-color: #eee;
+
+        .site_navigation {
+            @include grid(gt XS) {
+                width: grid-columns(3);
+            }
+        }
+
+        .main {
+            @include grid(gt XS) {
+                width: grid-columns(9) + grid-spacing();
+                padding-left: grid-spacing();
+            }
+        }
+    }
+
+    .site_navigation {
+        padding-top: 2em;
+    }
+
+    .menu {
+        margin: 0;
+        padding: 0;
+
+        &, ul {
+            list-style-type: none;
+        }
+
+        ul {
+            padding: 0;
+            padding-left: 1.2em;
+            padding-top: 1em;
+            margin-bottom: 1.5em;
+        }
+
+        li {
+            margin-bottom: 1em;
+        }
+
+        a {
+            font-size: 1.7em;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .active {
+            font-weight: bold;
+        }
+    }
+
+    .main {
+        padding-top: 2em;
+        min-height: 80vh;
+        background-color: white;
+
+        .main_heading {
+            margin-top: 0;
+            font-size: 2em;
+            line-height: 1em;
+        }
+
+        .main_content {
+            clear: both;
+
+            p {
+                font-size: 1.7em;
+                color: #333;
+            }
+        }
+    }
+
+    .site_footer {
+        clear: left;
+    }
+
+    .Form {
+        display: inline-block;
+        background-color: #eee;
+        padding: 2em;
+
+        .field {
+
+            & + .field {
+                margin-top: 1em;
+            }
+
+            .field_instance {
+                display: flex;
+                align-items: center;
+
+                .field_label {
+                    width: 10em;
+                    font-size: 1.5em;
+                }
+            }
+        }
+
+        .required_mark {
+            font-weight: bold;
+            color: #6478AA;
+        }
+
+        .buttons {
+            display: flex;
+            margin-top: 2em;
+            align-items: center;
+
+            button {
+                @include button;
+            }
+        }
+
+        input[type=text],
+        input[type=email],
+        input[type=password] {
+            border: 1px solid #ccc;
+            padding: 0.4em;
+        }
+    }
+
+    .ErrorBox {
+        color: black;
+        border: 1px dotted rgb(200,160,120);
+        background-color: rgb(245,230,215);
+        padding: 0.5em;
+        margin: 0;
+        margin-bottom: 1em;
+
+        li {
+            list-style-type: none;
+
+            & + li {
+                margin-top: 0.2em;
+            }
+
+            em {
+                font-style: normal;
+                font-weight: bold;
+                color: rgb(135,35,10);
+            }
+        }
+    }
+
+    .LoginBlockView {
+
+        .field input {
+            width: 15em;
+        }
+
+        a.forgot_password_link {
+            font-size: 1.3em;
+            margin-right: auto;
+        }
+    }
+}
+
