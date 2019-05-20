@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.EditView
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:with ui:element="editForm">
+
+        <?on value:changed
+        this.awaitFields().then((fields) => {
+            const perLanguagePublication = fields.get("per_language_publication");
+            const translations = fields.get("enabled_translations");
+
+            if (perLanguagePublication && translations) {
+                if (perLanguagePublication.value) {
+                    translations.style.display = null;
+                }
+                else {
+                    translations.style.display = "none";
+                }
+            }
+        });
+        ?>
+
+    </ui:with>
+
+</ui:woost.admin.ui.EditView>
+
