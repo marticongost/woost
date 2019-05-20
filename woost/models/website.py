@@ -39,7 +39,6 @@ class Website(Item):
         "site_name",
         "hosts",
         "logo",
-        "icon",
         "icons",
         "keywords",
         "description",
