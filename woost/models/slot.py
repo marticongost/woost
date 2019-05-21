@@ -12,6 +12,7 @@ from . import block
 class Slot(schema.Collection):
 
     subset = "regular"
+    view_class = "woost.views.BlockList"
 
     def __init__(self, *args, **kwargs):
 
