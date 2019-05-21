@@ -19,7 +19,7 @@
                 this.placementSelector.value = "inside";
             }
             // Blocks with a single slot allow all options, and default to "inside"
-            if (selectedElement.slotInfo || selectedElement.implicitSlot) {
+            else if (selectedElement.implicitSlot) {
                 this.placementSelector.getOption("before").enabled = true;
                 this.placementSelector.getOption("after").enabled = true;
                 this.placementSelector.getOption("inside").enabled = true;
@@ -37,19 +37,43 @@
     ?>
 
     <ui:with ui:element="dropdownPanel">
+
         <ui:resource href="woost.admin.ui://styles/woost-admin-ui-addblockdropdown--dropdownpanel.scss.css"/>
+
         <?on expanded:changed
         if (newValue) {
             instance.blockTypeSelector.selectedElements = [];
         }
         ?>
-        <ui:woost.admin.ui.PlacementSelector id="placementSelector"/>
+
+        <ui:woost.admin.ui.PlacementSelector id="placementSelector">
+            <?on value:changed
+            const addBlockDropdown = this.parentInstance;
+            const blocksTree = addBlockDropdown.action.view.blocksTree;
+            const slot = blocksTree.getSlotForPlacement(blocksTree.selectedElement, newValue);
+            addBlockDropdown.blockTypeSelector.subset = slot.subset;
+            ?>
+        </ui:woost.admin.ui.PlacementSelector>
+
         <ui:BlockTypeSelector id="blockTypeSelector"/>
     </ui:with>
 
     <ui:woost.admin.ui.ModelSelector ui:component="BlockTypeSelector">
 
+        <ui:property
+            name="subset"
+            type="string"
+            reflected="true">
+            <?on changed
+            this.update();
+            ?>
+        </ui:property>
+
         <?class
+        shouldIncludeModel(model) {
+            return super.shouldIncludeModel(model) && model.blockSubsets.includes(this.subset);
+        }
+
         selectionActivated() {
             const addBlockDropdown = this.parentInstance;
             addBlockDropdown.dropdownPanel.expanded = false;

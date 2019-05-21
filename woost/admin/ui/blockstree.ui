@@ -277,6 +277,18 @@
             this[DROP_HIGHLIGHTED_ELEMENT].classList.remove("dropHighlightedTarget");
         }
     }
+
+    getSlotForPlacement(row, placement) {
+
+        if (placement == "inside") {
+            if (row.slotInfo) {
+                return row.slotInfo.member;
+            }
+            return row.implicitSlot;
+        }
+
+        return row.slotDisplay.slot;
+    }
     ?>
 
     <?on-window dragend
@@ -360,8 +372,16 @@
                 return false;
             }
 
+            // Reject blocks from other subsets
+            const [targetRow, placement] = this.resolveDropEvent(data.event);
+            const slot = this.parentInstance.getSlotForPlacement(targetRow, placement);
+
+            if (!data.model.blockSubsets.includes(slot.subset)) {
+                return false;
+            }
+
             // Prevent a block from being placed inside / next to itself
-            let row = this;
+            let row = targetRow;
             while (row) {
                 if (row.value && row.value.id == data.item.id) {
                     return false;
@@ -373,7 +393,7 @@
         }
 
         objectDropped(data) {
-            let [row, placement] = this.resolveDropEvent(data.event);
+            const [row, placement] = this.resolveDropEvent(data.event);
             this.parentInstance.placeBlock(data.item, placement, row);
         }
         ?>
@@ -651,7 +671,7 @@
                         return "after";
                     }
                     else {
-                        return "append";
+                        return "inside";
                     }
                 }
                 else {

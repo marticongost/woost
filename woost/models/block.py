@@ -28,6 +28,7 @@ from . import slot
 class Block(Item):
 
     instantiable = False
+    block_subsets = {"regular"}
     admin_show_descriptions = False
     visible_from_root = False
     edit_view = "woost.views.BlockFieldsView"

@@ -15,11 +15,23 @@
         name="rootModel"
         reflected="false">
         <?on changed
+        this.update();
+        ?>
+    </ui:property>
+
+    <ui:property
+        name="instantiableModelsOnly"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <?class
+    update() {
         this.clear();
 
-        if (newValue) {
+        if (this.rootModel) {
             const models = Array
-                .from(newValue.schemaTree())
+                .from(this.rootModel.schemaTree())
                 .filter((model) => this.shouldIncludeModel(model));
 
             const sortedModels = cocktail.ui.sorting.localeSort(
@@ -31,16 +43,8 @@
                 this.addModel(model);
             }
         }
-        ?>
-    </ui:property>
+    }
 
-    <ui:property
-        name="instantiableModelsOnly"
-        type="boolean"
-        reflected="true"
-        default="false"/>
-
-    <?class
     clear() {
         cocktail.ui.empty(this.modelsList);
     }
