@@ -21,13 +21,14 @@ from .item import Item
 from .localemember import LocaleMember
 from .publishable import Publishable
 from .style import Style
-from .slot import Slot
+from . import slot
 
 
 @auto_enables_translations
 class Block(Item):
 
     instantiable = False
+    block_subsets = {"regular"}
     admin_show_descriptions = False
     visible_from_root = False
     edit_view = "woost.views.BlockFieldsView"
@@ -490,7 +491,7 @@ class Block(Item):
         """
         for member in self.__class__.iter_members():
             related_end = getattr(member, "related_end", None)
-            if isinstance(related_end, Slot):
+            if isinstance(related_end, slot.Slot):
                 for container in self.get(member):
                     slot_content = container.get(related_end)
                     slot_content[slot_content.index(self)] = replacement
@@ -504,7 +505,7 @@ class Block(Item):
         """
         for member in self.__class__.iter_members():
             related_end = getattr(member, "related_end", None)
-            if isinstance(related_end, Slot):
+            if isinstance(related_end, slot.Slot):
                 owner = self.get(member)
                 if owner:
                     return owner, related_end
