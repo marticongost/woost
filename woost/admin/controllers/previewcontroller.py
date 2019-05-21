@@ -171,7 +171,7 @@ class SlotPreviewController(BasePreviewController):
         container = self._resolve_object_param("container", imp)
         slot = self._resolve_slot(imp, container.__class__)
 
-        block_list = templates.new("woost.views.BlockList")
+        block_list = templates.new(slot.view_class)
         block_list.container = container
         block_list.slot = slot
         return block_list.render_page()
