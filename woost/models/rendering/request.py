@@ -77,8 +77,13 @@ def clear_image_cache(item = None, factory = None):
         paths = []
 
         if item is not None:
-            paths.append(app.path("image-cache", item.image_id))
-            paths.append(app.path("static", "images", item.image_id))
+            for path in (
+                app.path("image-cache"),
+                app.path("static", "images")
+            ):
+                paths.append(os.path.join(path, item.image_id))
+                if str(item.id) != item.image_id:
+                    paths.append(os.path.join(path, str(item.id)))
         else:
             for base in (
                 app.path("image-cache"),
