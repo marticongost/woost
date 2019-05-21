@@ -11,6 +11,8 @@ from . import block
 
 class Slot(schema.Collection):
 
+    subset = "regular"
+
     def __init__(self, *args, **kwargs):
 
         if "items" not in kwargs:
