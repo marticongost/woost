@@ -27,6 +27,7 @@ from .schemaexport import (
 from .utils import iter_last
 
 schema.Schema.ui_member_class = "cocktail.schema.Schema"
+schema.Schema.ui_autofocus_member = None
 
 schema.SchemaObject.admin_show_descriptions = False
 schema.SchemaObject.admin_show_thumbnails = False
@@ -145,6 +146,12 @@ class SchemaExport(MemberExport):
             yield (
                 "[woost.admin.ui.itemCard]",
                 "() => %s" % member.admin_item_card
+            )
+
+        if member.ui_autofocus_member:
+            yield (
+                "[cocktail.ui.autofocusMember]",
+                dumps(member.ui_autofocus_member)
             )
 
         yield ("[woost.admin.views.views]", dumps([
