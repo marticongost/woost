@@ -158,7 +158,7 @@ class Import(object):
     def import_member_value(self, obj, member, value, language = None):
 
         # Prevent writing forbidden members
-        if self.permission_check:
+        if self.permission_check and self.user:
             self.check_member_permission(member)
 
         if member.translated and not language:
