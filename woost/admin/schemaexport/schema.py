@@ -139,6 +139,7 @@ class SchemaExport(MemberExport):
 
         if issubclass(member, Block):
             yield ("views", dumps(member.views))
+            yield ("blockSubsets", dumps(member.block_subsets))
 
         if member.admin_item_card:
             yield (

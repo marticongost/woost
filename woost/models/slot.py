@@ -6,14 +6,17 @@
 from cocktail.events import event_handler
 from cocktail import schema
 
+from . import block
+
 
 class Slot(schema.Collection):
+
+    subset = "regular"
 
     def __init__(self, *args, **kwargs):
 
         if "items" not in kwargs:
-            from woost.models.block import Block
-            kwargs["items"] = schema.Reference(type = Block)
+            kwargs["items"] = schema.Reference(type = block.Block)
 
         related_end = kwargs.get("related_end")
 

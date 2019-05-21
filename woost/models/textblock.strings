@@ -1,3 +1,16 @@
+@init
+from cocktail.stringutils import html_extract
+from cocktail.schema import generic_schema_object_translation
+
+def _describe_text_block(block, **kwargs):
+    desc = block.heading or ""
+    if not desc:
+        if block.text:
+            desc = html_extract(block.text, 50)
+        elif not kwargs.get("discard_generic_translation", False):
+            desc = generic_schema_object_translation(block, **kwargs)
+    return desc
+@end
 
 [woost.models.textblock.TextBlock]
 ca: Text + imatges
@@ -8,6 +21,9 @@ en: Text + images
     ca: Text + imatges
     es: Texto + imágenes
     en: Text + images
+
+    [instance(instance, **kwargs)]
+    *: ${_describe_text_block(instance, **kwargs)}
 
     [groups]
 
