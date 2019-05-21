@@ -5,6 +5,7 @@
     display: inline-block;
     flex-direction: row;
     border: 1px solid #ddd;
+    white-space: nowrap;
 }
 
 :host(:focus) {
