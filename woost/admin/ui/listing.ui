@@ -290,7 +290,7 @@
             this.filtersBar.addEventListener(
                 "entryAdded",
                 (e) => e.detail.entry.entryForm.awaitFields().then(
-                    () => e.detail.entry.entryForm.focusFirstControl()
+                    () => e.detail.entry.entryForm.focusDefaultControl()
                 ),
                 {once: true}
             );
