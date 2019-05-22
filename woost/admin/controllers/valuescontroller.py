@@ -24,7 +24,7 @@ class ValuesController(Controller):
         objects = []
 
         for obj_data in data["objects"]:
-            obj = Import(obj_data, user=user).obj
+            obj = Import(obj_data, user=user, dry_run=True).obj
             objects.append(exp.export_object(obj))
 
         return {"objects": objects}
