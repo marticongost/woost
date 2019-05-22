@@ -50,8 +50,12 @@ woost.preview.updateOverlay = function (element) {
                 }
             });
         });
+    }
+
+    if (!element.previewOverlay.parentNode) {
         document.body.appendChild(element.previewOverlay);
     }
+
     const rect = element.getBoundingClientRect();
     element.previewOverlay.overlayOwner = element;
     element.previewOverlay.style.left = (rect.left + window.scrollX) + "px";
@@ -292,6 +296,7 @@ woost.preview.updateSlot = function (editState, containerId, slotName) {
                 const loadedElement = woost.preview.getSlot(containerId, slotName, xhr.responseXML);
                 element.innerHTML = loadedElement.innerHTML;
                 cocktail.init();
+                woost.preview.update();
                 return element;
             }
         );
