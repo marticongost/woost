@@ -8,6 +8,7 @@
     <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
     <ui:requires component="woost.admin.ui.BlockEditView"/>
     <ui:requires component="woost.admin.ui.AddBlockDropdown"/>
+    <ui:requires component="woost.admin.ui.PasteBlocksDropdown"/>
 
     <ui:symbol name="PREVIEW_READY_PROMISE"/>
     <ui:symbol name="PREVIEW_READY_RESOLVE_PROMISE"/>
@@ -362,13 +363,6 @@
                 ?>
 
                 <?on newBlock
-                instance[POST_MESSAGE]({
-                    type: "updateSlot",
-                    containerId: e.detail.container.id,
-                    slotName: e.detail.slot.name,
-                    editState: instance.getEditState()
-                });
-
                 if (e.detail.focus) {
                     const tree = instance.blocksTree;
                     tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
@@ -376,28 +370,39 @@
                 }
                 ?>
 
-                <?on blockMoved
-                let dirtyLocations;
+                <?on blocksPlaced
+                const dirtyLocations = new Set();
 
-                if (e.detail.previousLocation.display.contains(e.detail.newLocation.display)) {
-                    dirtyLocations = [e.detail.previousLocation];
+                const addDirtyLocation = (location) => {
+                    for (let existingLocation of dirtyLocations) {
+                        if (location.display.contains(existingLocation.display)) {
+                            dirtyLocations.delete(existingLocation);
+                        }
+                        else if (existingLocation.display.contains(location.display)) {
+                            return false;
+                        }
+                    }
+                    dirtyLocations.add(location);
+                    return true;
+                };
+
+                for (let movement of e.detail.movedBlocks) {
+                    addDirtyLocation(movement.previousLocation);
+                    addDirtyLocation(movement.newLocation);
                 }
-                else if (e.detail.newLocation.display.contains(e.detail.previousLocation.display)) {
-                    dirtyLocations = [e.detail.newLocation];
+
+                for (let newBlock of e.detail.newBlocks) {
+                    addDirtyLocation(newBlock);
                 }
-                else {
-                    dirtyLocations = [
-                        e.detail.newLocation,
-                        e.detail.previousLocation
-                    ];
-                }
+
+                const editState = instance.getEditState();
 
                 for (let dirtyLocation of dirtyLocations) {
                     instance[POST_MESSAGE]({
                         type: "updateSlot",
                         containerId: dirtyLocation.container.id,
                         slotName: dirtyLocation.slot.name,
-                        editState: instance.getEditState()
+                        editState: editState
                     });
                 }
                 ?>

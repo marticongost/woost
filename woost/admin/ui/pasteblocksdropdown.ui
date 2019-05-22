@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdown
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:symbol name="PASTE"/>
+
+    <?class
+    update(context) {
+        super.update(context);
+
+        // Update placement options
+        const selectedElement = context.selectable.selectedElement;
+        if (selectedElement) {
+            // Slots only allow "inside" placement
+            if (selectedElement.slotInfo) {
+                this.dropdownPanel.dropdownEnabled = false;
+                this.placementSelector.value = "inside";
+            }
+            // Blocks with a single slot allow all options, and default to "inside"
+            else if (selectedElement.implicitSlot) {
+                this.dropdownPanel.dropdownEnabled = true;
+                this.placementSelector.getOption("before").enabled = true;
+                this.placementSelector.getOption("after").enabled = true;
+                this.placementSelector.getOption("inside").enabled = true;
+                this.placementSelector.value = "inside";
+            }
+            // Blocks without slots, or with more than one, default to "after" and hide the "inside" option
+            else {
+                this.dropdownPanel.dropdownEnabled = true;
+                this.placementSelector.getOption("before").enabled = true;
+                this.placementSelector.getOption("after").enabled = true;
+                this.placementSelector.getOption("inside").enabled = false;
+                this.placementSelector.value = "after";
+            }
+        }
+    }
+
+    [PASTE]() {
+        this.action.attempt(
+            navigator.permissions.query({name: "clipboard-read"})
+            .then(() => navigator.clipboard.readText())
+            .then((text) => {
+                const data = JSON.parse(text);
+
+                if (data.mode == "copy") {
+                    return cocktail.ui.request({
+                        url: woost.admin.url + "/data/paste",
+                        method: "POST",
+                        data: {objects: data.objects},
+                        responseType: "json"
+                    })
+                        .then((xhr) => {
+                            data.objects = xhr.response.objects;
+                            return data;
+                        });
+                }
+                else if (data.mode == "cut") {
+                    return data;
+                }
+            })
+            .then((data) => {
+                const blocks = cocktail.schema.objectsFromJSONValue(data.objects);
+                const placement = this.placementSelector.value;
+                const blocksTree = this.action.view.blocksTree;
+                const target = blocksTree.selectedElement;
+                blocksTree.placeBlocks(blocks, placement, target);
+            }),
+            {lock: null, successNotice: null}
+        );
+    }
+    ?>
+
+    <ui:with ui:element="dropdownPanel">
+
+        <ui:with ui:element="button">
+            <?on click
+            // Clicking the button when there's a single possible placement
+            // pastes directly at that location, without showing a dropdown menu
+            if (!instance.dropdownPanel.dropdownEnabled) {
+                instance[PASTE]();
+            }
+            ?>
+        </ui:with>
+
+        <?on expanded:changed
+        if (newValue) {
+            instance.placementSelector.focus();
+        }
+        ?>
+
+        <ui:woost.admin.ui.PlacementSelector
+            id="placementSelector"
+            activationType="singleClick">
+
+            <?on selectionActivated
+            instance[PASTE]();
+            instance.dropdownPanel.expanded = false;
+            ?>
+
+        </ui:woost.admin.ui.PlacementSelector>
+
+    </ui:with>
+
+</ui:cocktail.ui.ActionListDropdown>
+

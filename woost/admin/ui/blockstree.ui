@@ -96,96 +96,115 @@
         const locales = params && params.locales;
 
         return blockType.newInstance(locales).then((block) => {
-            return this.placeBlock(
-                block,
+            return this.placeBlocks(
+                [block],
                 placement,
                 target,
                 Boolean(params && params.focus)
-            );
+            )[0];
         });
     }
 
-    placeBlock(block, placement, target, focus = false) {
+    placeBlocks(blocks, placement, target, focus = false) {
 
-        let blockDisplay = this.getBlockDisplay(block.id);
-        let slotDisplay;
-        let prevSlotDisplay;
+        const newBlocks = [];
+        const movedBlocks = [];
+        const blockDisplays = [];
 
-        if (placement == "inside") {
-            // Appending to a slot
-            if (target.slotInfo) {
+        if (placement == "after" || placement == "before") {
+            blocks = Array.from(blocks);
+            blocks.reverse();
+        }
+
+        for (let block of blocks) {
+            let blockDisplay = this.getBlockDisplay(block.id);
+            let slotDisplay;
+            let prevSlotDisplay;
+
+            if (placement == "inside") {
+                // Appending to a slot
+                if (target.slotInfo) {
+                    slotDisplay = target.slotDisplay;
+                }
+                // Appending to a block with a single slot
+                else {
+                    slotDisplay = this.getSlotDisplay(target.value, target.implicitSlot);
+                }
+            }
+            else {
                 slotDisplay = target.slotDisplay;
             }
-            // Appending to a block with a single slot
-            else {
-                slotDisplay = this.getSlotDisplay(target.value, target.implicitSlot);
+
+            if (blockDisplay) {
+                block = blockDisplay.item;
+                prevSlotDisplay = blockDisplay.slotDisplay;
+                const blocksArray = prevSlotDisplay.item[prevSlotDisplay.slot.name];
+                blocksArray.splice(blockDisplay.blockIndex, 1);
+                blockDisplay.remove();
             }
-        }
-        else {
-            slotDisplay = target.slotDisplay;
-        }
+            else {
+                blockDisplay = this.createBlockDisplay(block, slotDisplay.depth);
+            }
 
-        if (blockDisplay) {
-            block = blockDisplay.item;
-            prevSlotDisplay = blockDisplay.slotDisplay;
-            const blocksArray = prevSlotDisplay.item[prevSlotDisplay.slot.name];
-            blocksArray.splice(blockDisplay.blockIndex, 1);
-            blockDisplay.remove();
-        }
-        else {
-            blockDisplay = this.createBlockDisplay(block, slotDisplay.depth);
-        }
+            const blocksArray = slotDisplay.item[slotDisplay.slot.name];
 
-        const blocksArray = slotDisplay.item[slotDisplay.slot.name];
-
-        if (placement == "inside") {
-            slotDisplay.slotBlocks.appendChild(blockDisplay);
-            blocksArray.push(block);
-        }
-        else {
-            const targetDisplay = target.blockDisplay;
-            const sibling = placement == "after" ? targetDisplay.nextSibling : targetDisplay;
-
-            if (!sibling) {
+            if (placement == "inside") {
+                slotDisplay.slotBlocks.appendChild(blockDisplay);
                 blocksArray.push(block);
             }
             else {
-                blocksArray.splice(sibling.blockIndex, 0, block);
+                const targetDisplay = target.blockDisplay;
+                const sibling = placement == "after" ? targetDisplay.nextSibling : targetDisplay;
+
+                if (!sibling) {
+                    blocksArray.push(block);
+                }
+                else {
+                    blocksArray.splice(sibling.blockIndex, 0, block);
+                }
+
+                slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
             }
 
-            slotDisplay.slotBlocks.insertBefore(blockDisplay, sibling);
-        }
+            blockDisplay.depth = slotDisplay.depth;
 
-        blockDisplay.depth = slotDisplay.depth;
-
-        if (prevSlotDisplay) {
-            cocktail.ui.trigger(this, "blockMoved", {
-                block: block,
-                previousLocation: {
-                    display: prevSlotDisplay,
-                    container: prevSlotDisplay.item,
-                    slot: prevSlotDisplay.slot
-                },
-                newLocation: {
+            if (prevSlotDisplay) {
+                const info = {
+                    block: block,
+                    previousLocation: {
+                        display: prevSlotDisplay,
+                        container: prevSlotDisplay.item,
+                        slot: prevSlotDisplay.slot
+                    },
+                    newLocation: {
+                        display: slotDisplay,
+                        container: slotDisplay.item,
+                        slot: slotDisplay.slot
+                    },
+                    placement,
+                    target,
+                    focus
+                };
+                movedBlocks.push(info);
+                cocktail.ui.trigger(this, "blockMoved", info);
+            }
+            else {
+                const info = {
+                    block: block,
                     display: slotDisplay,
                     container: slotDisplay.item,
-                    slot: slotDisplay.slot
-                },
-                placement,
-                target,
-                focus
-            });
-        }
-        else {
-            cocktail.ui.trigger(this, "newBlock", {
-                block: block,
-                container: slotDisplay.item,
-                slot: slotDisplay.slot,
-                focus: focus
-            });
+                    slot: slotDisplay.slot,
+                    focus: focus
+                };
+                newBlocks.push(info);
+                cocktail.ui.trigger(this, "newBlock", info);
+            }
+
+            blockDisplays.push(blockDisplay);
         }
 
-        return blockDisplay;
+        cocktail.ui.trigger(this, "blocksPlaced", {newBlocks, movedBlocks});
+        return blockDisplays;
     }
 
     deleteBlocks(blocks) {
@@ -394,7 +413,7 @@
 
         objectDropped(data) {
             const [row, placement] = this.resolveDropEvent(data.event);
-            this.parentInstance.placeBlock(data.item, placement, row);
+            this.parentInstance.placeBlocks([data.item], placement, row);
         }
         ?>
 

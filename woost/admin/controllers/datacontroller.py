@@ -13,6 +13,8 @@ from .currentusercontroller import CurrentUserController
 from .viewscontroller import ViewsController
 from .deletepreviewcontroller import DeletePreviewController
 from .partitionscontroller import PartitionsController
+from .copycontroller import CopyController
+from .pastecontroller import PasteController
 
 translations.load_bundle("woost.admin.controllers.datacontroller")
 
@@ -26,4 +28,6 @@ class DataController(Controller):
     delete_preview = DeletePreviewController
     settings_scopes = SettingsScopesController
     current_user = CurrentUserController
+    copy = CopyController
+    paste = PasteController
 
