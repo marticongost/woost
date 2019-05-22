@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:requires component="cocktail.ui.Delay"/>
     <ui:requires component="woost.admin.ui.TranslationsDropdown"/>
     <ui:requires component="woost.admin.ui.SettingsScopeDropdown"/>
     <ui:requires component="woost.admin.ui.FileUploader"/>
@@ -230,6 +231,27 @@
         tabbed="true"
         defaultGroup="item">
 
+        <ui:symbol name="PREVIOUS_STATE"/>
+        <ui:symbol name="UPDATE_DELAY"/>
+
+        <?js
+        this[UPDATE_DELAY] = new cocktail.ui.Delay(150, () => {
+            const oldValue = this[PREVIOUS_STATE];
+            delete this[PREVIOUS_STATE];
+            cocktail.ui.request({
+                url: woost.admin.url + "/data/values",
+                method: "POST",
+                data: {objects: [this.getJSONValue()]},
+                responseType: "json"
+            })
+                .then((xhr) => {
+                    const newValue = cocktail.schema.objectFromJSONValue(xhr.response.objects[0]);
+                    this.parentInstance.headingElement.firstChild.value = newValue;
+                    cocktail.ui.trigger(this.parentInstance, "newEditState", {oldValue, newValue});
+                });
+        });
+        ?>
+
         <?class
         shouldAddField(member) {
             return super.shouldAddField(member) && !member[woost.admin.ui.hiddenInEditView];
@@ -238,6 +260,13 @@
 
         <?on value:changed
         woost.admin.editState.set(newValue);
+
+        if (this.fieldsReady) {
+            if (!this[PREVIOUS_STATE]) {
+                this[PREVIOUS_STATE] = oldValue;
+            }
+            this[UPDATE_DELAY].begin();
+        }
         ?>
 
         <?js

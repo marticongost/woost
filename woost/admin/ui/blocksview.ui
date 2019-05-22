@@ -70,9 +70,6 @@
                         e.detail.newValue
                     );
 
-                    // Update the block display on the blocks view
-                    blockDisplay.item = e.detail.newValue;
-
                     // Update blocks on the preview view
                     const changedMembers = Array.from(
                         form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
@@ -86,6 +83,13 @@
                         containerId: slotDisplay.item.id,
                         changedMembers
                     });
+                });
+
+                // Update the block displays on the blocks view after a block
+                // is edited
+                this.blockEditor.addEventListener("newEditState", (e) => {
+                    const blockDisplay = this.blocksTree.getBlockDisplay(e.detail.newValue);
+                    blockDisplay.item = e.detail.newValue;
                 });
 
                 this.editingBlock = true;
