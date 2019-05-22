@@ -201,4 +201,18 @@
     es: Subir fichero
     en: Upload file
 
+    [copy]
+    ca: Copiar
+    es: Copiar
+    en: Copy
+
+    [cut]
+    ca: Retallar
+    es: Cortar
+    en: Cut
+
+    [paste]
+    ca: Enganxar
+    es: Pegar
+    en: Paste
 

@@ -8,6 +8,7 @@ from .dataexport import (
     object_field
 )
 from .treeexport import TreeExport
+from .clipboardexport import ClipboardExport
 from . import changeset
 from . import change
 from . import item
@@ -16,4 +17,3 @@ from . import publishable
 from . import controller
 from . import template
 from . import file
-

@@ -161,15 +161,18 @@ cocktail.declare("woost.admin.actions");
                 options.lock = {};
             }
 
-            if (options.lock.icon === undefined) {
-                options.lock.icon = this.iconURL;
-            }
+            if (options.lock) {
 
-            if (options.lock.message === undefined) {
-                options.lock.message = (
-                    cocktail.ui.translations[this.translationKey + ".lock"]
-                    || cocktail.ui.translations["woost.admin.actions.defaultLock"]
-                );
+                if (options.lock.icon === undefined) {
+                    options.lock.icon = this.iconURL;
+                }
+
+                if (options.lock.message === undefined) {
+                    options.lock.message = (
+                        cocktail.ui.translations[this.translationKey + ".lock"]
+                        || cocktail.ui.translations["woost.admin.actions.defaultLock"]
+                    );
+                }
             }
 
             // Default success notice
@@ -1176,6 +1179,93 @@ woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends 
     }
 }
 
+woost.admin.actions.WriteClipboardAction = class WriteClipboardAction extends woost.admin.actions.Action {
+
+    get min() {
+        return 1;
+    }
+
+    invoke(context) {
+        this.attempt(
+            navigator.permissions.query({name: "clipboard-write"})
+            .then(() => {
+                let objects;
+                if (context.selectable instanceof woost.admin.ui.BlocksTree) {
+                    objects = [];
+                    for (let row of context.selectable.selectedElements) {
+                        if (row.slotInfo) {
+                            for (let blockRow of row.slotDisplay.slotBlocks.children) {
+                                objects.push(blockRow.item);
+                            }
+                        }
+                        else {
+                            objects.push(row.blockDisplay.item);
+                        }
+                    }
+                }
+                else {
+                    objects = context.selection;
+                }
+
+                return cocktail.ui.request({
+                    url: woost.admin.url + "/data/copy",
+                    method: "POST",
+                    data: {
+                        objects: Array.from(
+                            objects,
+                            (obj) => obj._class.toJSONValue(obj)
+                        )
+                    },
+                    responseType: "json"
+                })
+                    .then((xhr) => {
+                        const response = xhr.response;
+                        response.mode = this.mode;
+                        navigator.clipboard.writeText(JSON.stringify(response));
+                    })
+            }),
+            {lock: null, successNotice: null}
+        );
+    }
+}
+
+woost.admin.actions.CopyAction = class CopyAction extends woost.admin.actions.WriteClipboardAction {
+
+    get mode() {
+        return "copy";
+    }
+}
+
+woost.admin.actions.CutAction = class CutAction extends woost.admin.actions.WriteClipboardAction {
+
+    get mode() {
+        return "cut";
+    }
+}
+
+woost.admin.actions.PasteBlocksAction = class PasteBlocksAction extends woost.admin.actions.Action {
+
+    get min() {
+        return 1;
+    }
+
+    get max() {
+        return 1;
+    }
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/paste.svg`);
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.paste`;
+    }
+
+    createEntry() {
+        return woost.admin.ui.PasteBlocksDropdown.create();
+    }
+}
+
 // -- Action registration --
 woost.admin.actions.SelectViewAction.register({
     id: "select-view",
@@ -1364,5 +1454,20 @@ woost.admin.actions.CancelSelectionAction.register({
 woost.admin.actions.CloseAction.register({
     id: "close",
     slots: ["editNavigationToolbar", "blocksNavigationToolbar"]
+});
+
+woost.admin.actions.CopyAction.register({
+    id: "copy",
+    slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.CutAction.register({
+    id: "cut",
+    slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.PasteBlocksAction.register({
+    id: "paste-blocks",
+    slots: ["blocksToolbar"]
 });
 
