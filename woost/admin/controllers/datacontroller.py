@@ -8,6 +8,7 @@ from cocktail.controllers import Controller
 from .listingcontroller import ListingController
 from .transactioncontroller import TransactionController
 from .defaultscontroller import DefaultsController
+from .valuescontroller import ValuesController
 from .settingsscopescontroller import SettingsScopesController
 from .currentusercontroller import CurrentUserController
 from .viewscontroller import ViewsController
@@ -25,6 +26,7 @@ class DataController(Controller):
     views = ViewsController
     partitions = PartitionsController
     defaults = DefaultsController
+    values = ValuesController
     delete_preview = DeletePreviewController
     settings_scopes = SettingsScopesController
     current_user = CurrentUserController
