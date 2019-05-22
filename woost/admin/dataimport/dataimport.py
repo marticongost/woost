@@ -286,6 +286,7 @@ class Import(object):
                     )
 
                 item = model()
+                item.id = id
                 self.__object_map[id] = item
 
                 if not self.dry_run:
