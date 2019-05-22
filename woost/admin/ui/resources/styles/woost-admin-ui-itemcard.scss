@@ -8,27 +8,38 @@ $image-width: 5.2em;
 $icon-padding: 0.5em;
 $icon-height: $card-height - $icon-padding * 2;
 
+@mixin dimmedStackHeading {
+    color: $stacknode-covered-heading-color;
+    transform: translate(0, 0.5em);
+}
+
 @keyframes dimStackHeading {
     from {
         color: $stacknode-exposed-heading-color;
     }
     to {
-        color: $stacknode-covered-heading-color;
+        @include dimmedStackHeading;
     }
 }
 
-@keyframes fadeDetails {
+@mixin collapsedDetails {
+    opacity: 0;
+    transform: scale(0);
+}
+
+@keyframes collapseDetails {
     from {
         opacity: 1;
+        transform: scale(1);
     }
     to {
-        opacity: 0;
+        @include collapsedDetails;
     }
 }
 
 @keyframes fadeImageFrame {
     from {
-        flex-basis: 5.2em;
+        flex-basis: $image-width;
         opacity: 1;
         margin-right: $image-separation;
     }
@@ -39,6 +50,12 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 }
 
+@mixin collapsed-icon {
+    padding: 0;
+    --height: 0;
+    opacity: 0;
+}
+
 @keyframes collapseIcon {
     from {
         --height: #{$icon-height};
@@ -46,9 +63,7 @@ $icon-height: $card-height - $icon-padding * 2;
         opacity: 1;
     }
     to {
-        --height: 0;
-        padding: 0;
-        opacity: 0;
+        @include collapsed-icon;
     }
 }
 
@@ -151,9 +166,7 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
-        padding: 0;
-        --height: 0;
-        opacity: 0;
+        @include collapsed-icon;
     }
 
     :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
@@ -182,7 +195,7 @@ $icon-height: $card-height - $icon-padding * 2;
     }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
-        color: $stacknode-covered-heading-color;
+        @include dimmedStackHeading;
     }
 
     :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
@@ -217,17 +230,18 @@ $icon-height: $card-height - $icon-padding * 2;
     align-items: baseline;
     color: rgba(black, 0.55);
     font-size: 0.9em;
+    transform-origin: top left;
 
     :host-context(.cocktail-ui-StackNode-header[animationState='childOpening']) & {
-        animation: $stacknode-animation-duration fadeDetails;
+        animation: $stacknode-animation-duration collapseDetails;
     }
 
     :host-context(.cocktail-ui-StackNode-header[animationState='childClosing']) &{
-        animation: $stacknode-animation-duration reverse fadeDetails;
+        animation: $stacknode-animation-duration reverse collapseDetails;
     }
 
     :host-context(.cocktail-ui-StackNode-header[stackNodeVisibility='covered']) & {
-        display: none;
+        @include collapsedDetails;
     }
 }
 
