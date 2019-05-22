@@ -29,9 +29,6 @@ class Block(Item):
 
     instantiable = False
     block_subsets = {"regular"}
-    admin_show_descriptions = False
-    visible_from_root = False
-    edit_view = "woost.views.BlockFieldsView"
     type_group = "blocks.content"
     type_groups_order = [
         "blocks.content",
@@ -72,8 +69,8 @@ class Block(Item):
         "heading_display",
         "catalog", # added by BlocksCatalog
         "clones",
-        "per_language_publication",
         "enabled",
+        "per_language_publication",
         "enabled_translations",
         "start_date",
         "end_date",
@@ -155,15 +152,15 @@ class Block(Item):
         member_group = "publication"
     )
 
-    per_language_publication = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "publication"
-    )
-
     enabled = schema.Boolean(
         required = True,
         default = True,
+        member_group = "publication"
+    )
+
+    per_language_publication = schema.Boolean(
+        required = True,
+        default = False,
         member_group = "publication"
     )
 
@@ -455,7 +452,12 @@ class Block(Item):
 
         return heading
 
-    def is_published(self):
+    def is_published(self, language: str = None) -> bool:
+        """Determines if the block should be rendered."""
+
+        # Master toggle
+        if not self.enabled:
+            return False
 
         # Time based publication window
         if self.start_date or self.end_date:
@@ -469,10 +471,14 @@ class Block(Item):
             if self.end_date and now >= self.end_date:
                 return False
 
-        if self.per_language_publication:
-            return require_language() in self.enabled_translations
-        else:
-            return self.enabled
+        # Per language publication
+        if (
+            self.per_language_publication
+            and require_language(language) not in self.enabled_translations
+        ):
+            return False
+
+        return True
 
     @property
     def name_prefix(self):
