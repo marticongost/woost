@@ -195,6 +195,7 @@ $icon-height: $card-height - $icon-padding * 2;
 
     :host-context(h1) & {
         font-size: 1.4em;
+        font-weight: bold;
         max-height: none;
         max-width: 20em;
         white-space: nowrap;
