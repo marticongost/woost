@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionListDropdownSelector
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:with ui:element="dropdownPanel" panelPosition="above"/>
+
+    <?on action:changed
+    const view = newValue.view;
+    woost.models.Configuration.getInstance("config").then((config) => {
+        this.dataBinding = {
+            member: new cocktail.schema.Locale({
+                enumeration: config.languages
+            }),
+            // TODO: restore the previous choice from the selector,
+            // consider publication state
+            value: woost.admin.user.backoffice_language
+        };
+        cocktail.ui.link(
+            this,
+            view,
+            ["value", "previewLanguage"]
+        );
+    });
+    ?>
+
+</ui:cocktail.ui.ActionListDropdownSelector>
+
