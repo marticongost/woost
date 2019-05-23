@@ -10,6 +10,9 @@
 cocktail.declare("woost.preview");
 
 woost.preview.update = function () {
+    if (!document.body) {
+        return;
+    }
     if (cocktail.rootElement) {
         cocktail.rootElement.classList.add("woost-preview-root");
     }
