@@ -55,6 +55,7 @@ class Import(object):
         self.__object_map = {}
         self.__allowed_translations_cache = defaultdict(set)
         self.__checked_members = set()
+        self.__orphans = set()
         self.data = data
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
@@ -74,6 +75,9 @@ class Import(object):
         else:
             self.obj = self.produce_object(data, model or Item)
 
+        if not self.dry_run:
+            self._delete_orphans()
+
     def get_instance(self, id, cls = Item):
         return self.__object_map.get(id) or cls.get_instance(id)
 
@@ -83,6 +87,22 @@ class Import(object):
     def commit_successful(self):
         for callback, args, kwargs in self.after_commit_callbacks:
             callback(*args, **kwargs)
+
+    def _delete_orphans(self):
+
+        # Delete all objects that have been removed from an integral reference
+        # or collection, unless they still are referenced by integral relations
+        for orphan in self.__orphans:
+            for member in orphan.__class__.iter_members():
+                if (
+                    isinstance(member, schema.RelationMember)
+                    and member.related_end
+                    and member.related_end.integral
+                    and orphan.get(member)
+                ):
+                    break
+            else:
+                orphan.delete()
 
     def import_object(self, obj, data):
 
@@ -171,10 +191,7 @@ class Import(object):
                 self.check_translation_permission(obj, language)
 
             parsed_value = self.parse_member_value(member, value)
-
-            # TODO: Make sure integral objects are automatically deleted
-            # / inserted
-            obj.set(member, parsed_value, language)
+            self.set_object_value(obj, member, parsed_value, language)
 
     def parse_member_value(self, member, value):
 
@@ -249,6 +266,35 @@ class Import(object):
                 value = self.produce_object(value, member.related_type)
 
         return value
+
+    def set_object_value(self, obj, member, value, language=None):
+
+        # Flag objects orphaned by an integral collection
+        if (
+            not self.dry_run
+            and isinstance(member, schema.Collection)
+            and member.integral
+            and member.related_type
+        ):
+            prev_items = set(obj.get(member, value))
+            obj.set(member, value)
+            self.__orphans.update(prev_items - set(value))
+
+        # Flag objects orphaned by an integral reference
+        elif (
+            not self.dry_run
+            and isinstance(member, schema.Reference)
+            and member.integral
+            and member.related_type
+        ):
+            prev_item = obj.get(member, value)
+            obj.set(member, value)
+            if value is not prev_item:
+                self.__orphans.add(prev_item)
+
+        # Non integral members
+        else:
+            obj.set(member, value, language)
 
     def produce_object(self, value, root_model = Item):
 
