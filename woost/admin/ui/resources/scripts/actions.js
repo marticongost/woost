@@ -867,6 +867,17 @@ woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.ad
     }
 }
 
+woost.admin.actions.SetPreviewLanguageAction = class SetPreviewLanguageAction extends woost.admin.actions.Action {
+
+    translate() {
+        return "";
+    }
+
+    createEntry() {
+        return woost.admin.ui.PreviewLanguageDropdown.create();
+    }
+}
+
 woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.actions.Action {
 
     get editingIntegralChild() {
@@ -1410,6 +1421,11 @@ woost.admin.actions.ToggleSelectorsAction.register({
 
 woost.admin.actions.SetGridSizeAction.register({
     id: "grid-size",
+    slots: ["blocksPreviewToolbar"]
+});
+
+woost.admin.actions.SetPreviewLanguageAction.register({
+    id: "set-preview-language",
     slots: ["blocksPreviewToolbar"]
 });
 

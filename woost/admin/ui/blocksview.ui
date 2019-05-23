@@ -6,6 +6,7 @@
 
     <ui:requires component="cocktail.ui.Lock"/>
     <ui:requires component="woost.admin.ui.GridSizeDropdown"/>
+    <ui:requires component="woost.admin.ui.PreviewLanguageDropdown"/>
     <ui:requires component="woost.admin.ui.BlockEditView"/>
     <ui:requires component="woost.admin.ui.AddBlockDropdown"/>
     <ui:requires component="woost.admin.ui.PasteBlocksDropdown"/>
@@ -190,12 +191,27 @@
         ?>
     </ui:property>
 
+    <ui:property
+        name="previewLanguage"
+        type="string"
+        reflected="true">
+        <?on changed
+        if (this.parentNode) {
+            this.loadPreview();
+        }
+        ?>
+    </ui:property>
+
     <?class
-    connectedCallback() {
-        super.connectedCallback();
+    loadPreview() {
 
         // Load the current edit state into the preview iframe
-        let url = this.getPreviewURL();
+
+        if (this.previewState == "loading") {
+            return;
+        }
+
+        const url = this.getPreviewURL();
         if (url) {
             this.previewState = "loading";
 
@@ -235,7 +251,7 @@
     }
 
     getPreviewURL() {
-        return `${woost.admin.url}/preview/page`;
+        return `${woost.admin.url}/preview/page?language=${this.previewLanguage}`;
     }
 
     [POST_MESSAGE](data) {
