@@ -878,6 +878,21 @@ woost.admin.actions.SetPreviewLanguageAction = class SetPreviewLanguageAction ex
     }
 }
 
+woost.admin.actions.RefreshPreviewAction = class RefreshPreviewAction extends woost.admin.actions.Action {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/refresh.svg`)
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.refresh`;
+    }
+
+    invoke() {
+        this.view.loadPreview();
+    }
+}
+
 woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.actions.Action {
 
     get editingIntegralChild() {
@@ -1407,6 +1422,11 @@ woost.admin.actions.TranslationsAction.register({
 woost.admin.actions.RemoveBlockAction.register({
     id: "remove-block",
     slots: ["blocksToolbar"]
+});
+
+woost.admin.actions.RefreshPreviewAction.register({
+    id: "refresh-preview",
+    slots: ["blocksPreviewToolbar"]
 });
 
 woost.admin.actions.ToggleRulersAction.register({
