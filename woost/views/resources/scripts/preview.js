@@ -363,9 +363,14 @@ woost.preview.request = function (req) {
 
         let uri = URI(woost.preview.baseURL).segment(req.content);
 
-        if (req.params) {
-            uri = uri.query((q) => Object.assign(q, req.params));
+        if (!req.params) {
+            req.params = {};
         }
+
+        if (!req.params.language) {
+            req.params.language = cocktail.getLanguage();
+        }
+        uri = uri.query((q) => Object.assign(q, req.params));
 
         const xhr = new XMLHttpRequest();
 
