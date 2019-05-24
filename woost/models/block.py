@@ -167,7 +167,7 @@ class Block(Item):
     enabled_translations = schema.Collection(
         items = LocaleMember(),
         default_type = set,
-        edit_control = "woost.views.EnabledTranslationsSelector",
+        ui_form_control = "cocktail.ui.SplitSelector",
         member_group = "publication"
     )
 
