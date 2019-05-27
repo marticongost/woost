@@ -30,6 +30,7 @@ from woost.models import (
     Configuration
 )
 from woost.models.utils import (
+    any_translation,
     get_model_dotted_name,
     get_model_from_dotted_name
 )
@@ -42,8 +43,7 @@ from .utils import resolve_object_ref
 
 undefined = object()
 
-Item.admin_xlsx_exporter = xlsx.default_exporter
-
+translations.load_bundle("woost.admin.ui.listing")
 
 
 class ListingController(Controller):
@@ -150,7 +150,11 @@ class ListingController(Controller):
             if part_expr is not None:
                 objects.add_filter(part_expr)
 
-        xlsx_exporter = self.export.model.admin_xlsx_exporter
+        xlsx_exporter = self.export.model.admin_xlsx_exporter()
+
+        if kwargs.get("label") == "true":
+            xlsx_exporter.include_label = True
+
         workbook = xlsx_exporter.create_workbook(
             objects,
             members=self.members,
@@ -614,4 +618,36 @@ class ListingController(Controller):
             count_obj["partition"] = method.serialize_value(partition_value)
 
         return count_obj
+
+
+
+class AdminXLSXExporter(xlsx.Exporter):
+
+    include_label = False
+
+    def get_columns(self, members, languages):
+
+        columns = []
+
+        if self.include_label:
+            columns.append(AdminXLSXLabelColumn(self))
+
+        columns.extend(super().get_columns(members, languages))
+        return columns
+
+
+class AdminXLSXLabelColumn(xlsx.Column):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.heading:
+            self.heading = translations(
+                "woost.admin.ui.Listing.labelColumn",
+            )
+
+    def get_cell_value(self, obj):
+        return any_translation(obj)
+
+
+Item.admin_xlsx_exporter = AdminXLSXExporter
 
