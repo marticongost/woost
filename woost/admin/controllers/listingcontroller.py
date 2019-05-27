@@ -4,6 +4,8 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import json
+from io import BytesIO
+
 import cherrypy
 from cocktail.translations import translations, get_language
 from cocktail.schema.expressions import (
@@ -11,11 +13,13 @@ from cocktail.schema.expressions import (
     TranslationExpression,
     NegativeExpression
 )
+from cocktail.schema import xlsx
 from cocktail.controllers import (
     Controller,
     get_parameter,
     request_property,
-    json_out
+    json_out,
+    serve_file
 )
 from woost import app
 from woost.models import (
@@ -37,6 +41,9 @@ from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
 
 undefined = object()
+
+Item.admin_xlsx_exporter = xlsx.default_exporter
+
 
 
 class ListingController(Controller):
@@ -124,6 +131,41 @@ class ListingController(Controller):
                 "count": self._get_count_object(count),
                 "records": list(results)
             }
+
+    @cherrypy.expose
+    def xlsx(self, **kwargs):
+
+        self.export.model = self.model
+        self.export.base_collection = self.subset
+        self.export.relation = self.relation
+        self.export.partition = self.partition
+        self.export.filters = self.filter_expressions
+        self.export.count_enabled = False
+        self.export.order = self.order
+        objects = self.export.select_objects()
+
+        if self.partition:
+            part_method, part_value = self.partition
+            part_expr = part_method.get_expression(part_value)
+            if part_expr is not None:
+                objects.add_filter(part_expr)
+
+        xlsx_exporter = self.export.model.admin_xlsx_exporter
+        workbook = xlsx_exporter.create_workbook(
+            objects,
+            members=self.members,
+            languages=self.locales
+        )
+        buffer = BytesIO()
+        workbook.save(buffer)
+        buffer.seek(0)
+
+        return serve_file(
+            buffer,
+            content_type=xlsx.MIME_TYPE,
+            disposition="attachment",
+            name=translations(self.model, suffix=".plural") + ".xlsx"
+        )
 
     @cherrypy.expose
     @json_out

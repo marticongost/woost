@@ -708,6 +708,18 @@ woost.admin.actions.ClearCacheAction = class ClearCacheAction extends woost.admi
 }
 
 woost.admin.actions.ExcelAction = class ExcelAction extends woost.admin.actions.Action {
+
+    invoke(context) {
+        const options = context.selectable.getDataSourceOptions();
+        if (options.parameters) {
+            delete options.parameters.page;
+            delete options.parameters.page_size;
+        }
+        const url = context.selectable.value.getURL(options);
+        const urlBuilder = URI(url);
+        urlBuilder.segment("xlsx");
+        window.open(urlBuilder.toString(), "woost.admin.excel");
+    }
 }
 
 woost.admin.actions.FieldsAction = class FieldsAction extends woost.admin.actions.Action {
