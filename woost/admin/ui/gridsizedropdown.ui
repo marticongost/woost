@@ -10,12 +10,13 @@
     const view = newValue.view;
     view.addEventListener("availableGridSizesChanged", (e) => {
         const gridSizes = e.detail.newValue;
+        this.clearEntries();
         this.dataBinding = {
             member: new cocktail.schema.String({
                 enumeration: ["auto", ...Array.from(gridSizes, (size) => size.identifier)],
                 translatableEnumeration: false
             }),
-            value: "auto"
+            value: this.value || "auto"
         };
     });
     cocktail.ui.link(

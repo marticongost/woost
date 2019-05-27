@@ -12,6 +12,7 @@ from woost.models import Publishable
 
     <?py-class
     __first_control = True
+    hide_when_authenticated = True
     ?>
 
     <py:binding>
@@ -19,7 +20,7 @@ from woost.models import Publishable
         if self.errors is None:
             self.errors = schema.ErrorList()
 
-        if not app.user.anonymous:
+        if self.hide_when_authenticated and not app.user.anonymous:
             self.visible = False
         else:
             if self.schema is None:

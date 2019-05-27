@@ -276,9 +276,11 @@ class Import(object):
             and member.integral
             and member.related_type
         ):
-            prev_items = set(obj.get(member, value))
+            prev_value = obj.get(member, value)
+            prev_items = None if prev_value is None else set(prev_value)
             obj.set(member, value)
-            self.__orphans.update(prev_items - set(value))
+            if prev_items is not None:
+                self.__orphans.update(prev_items - set(value))
 
         # Flag objects orphaned by an integral reference
         elif (

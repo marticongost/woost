@@ -10,6 +10,9 @@
 cocktail.declare("woost.preview");
 
 woost.preview.update = function () {
+    if (!document.body) {
+        return;
+    }
     if (cocktail.rootElement) {
         cocktail.rootElement.classList.add("woost-preview-root");
     }
@@ -56,6 +59,13 @@ woost.preview.updateOverlay = function (element) {
         document.body.appendChild(element.previewOverlay);
     }
 
+    if (woost.preview.selection.has(element.selectableId)) {
+        element.previewOverlay.classList.add("woost-preview-selected");
+    }
+    else {
+        element.previewOverlay.classList.remove("woost-preview-selected");
+    }
+
     const rect = element.getBoundingClientRect();
     element.previewOverlay.overlayOwner = element;
     element.previewOverlay.style.left = (rect.left + window.scrollX) + "px";
@@ -69,14 +79,18 @@ woost.preview.setSelected = function (selectableIds, selected, scrollIntoView = 
     let first = true;
     for (let selectableId of selectableIds) {
         const overlay = woost.preview.getOverlay(selectableId);
-        if (overlay) {
-            if (selected) {
+        if (selected) {
+            woost.preview.selection.add(selectableId);
+            if (overlay) {
                 overlay.classList.add(className);
                 if (scrollIntoView && first) {
                     overlay.scrollIntoViewIfNeeded();
                 }
             }
-            else {
+        }
+        else {
+            woost.preview.selection.delete(selectableId);
+            if (overlay) {
                 overlay.classList.remove(className);
             }
         }
@@ -349,9 +363,14 @@ woost.preview.request = function (req) {
 
         let uri = URI(woost.preview.baseURL).segment(req.content);
 
-        if (req.params) {
-            uri = uri.query((q) => Object.assign(q, req.params));
+        if (!req.params) {
+            req.params = {};
         }
+
+        if (!req.params.language) {
+            req.params.language = cocktail.getLanguage();
+        }
+        uri = uri.query((q) => Object.assign(q, req.params));
 
         const xhr = new XMLHttpRequest();
 
@@ -407,6 +426,8 @@ woost.preview.getBlockStylesElement = function (blockId) {
 
 window.addEventListener("load", woost.preview.update);
 window.addEventListener("resize", woost.preview.update);
+
+woost.preview.selection = new Set();
 
 window.addEventListener("message", (e) => {
     if (e.origin == woost.preview.origin) {

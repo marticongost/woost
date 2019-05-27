@@ -49,6 +49,7 @@ class Publishable(Item, PublishableObject):
     """
     instantiable = False
     type_group = "publishable"
+    admin_show_descriptions = True
     cacheable = True
     cacheable_server_side = True
     admin_edit_view = "woost.admin.ui.PublishableEditView"
