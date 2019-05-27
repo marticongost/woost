@@ -442,6 +442,7 @@
                     slots.push(member);
                 }
             }
+            cocktail.ui.empty(this.slotsList);
             for (let slot of slots) {
                 const slotDisplay = this.blocksTree.createSlotDisplay(
                     newValue,

@@ -879,6 +879,32 @@ woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.ad
     }
 }
 
+woost.admin.actions.SetPreviewLanguageAction = class SetPreviewLanguageAction extends woost.admin.actions.Action {
+
+    translate() {
+        return "";
+    }
+
+    createEntry() {
+        return woost.admin.ui.PreviewLanguageDropdown.create();
+    }
+}
+
+woost.admin.actions.RefreshPreviewAction = class RefreshPreviewAction extends woost.admin.actions.Action {
+
+    get iconURL() {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/refresh.svg`)
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.refresh`;
+    }
+
+    invoke() {
+        this.view.loadPreview();
+    }
+}
+
 woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.actions.Action {
 
     get editingIntegralChild() {
@@ -1410,6 +1436,11 @@ woost.admin.actions.RemoveBlockAction.register({
     slots: ["blocksToolbar"]
 });
 
+woost.admin.actions.RefreshPreviewAction.register({
+    id: "refresh-preview",
+    slots: ["blocksPreviewToolbar"]
+});
+
 woost.admin.actions.ToggleRulersAction.register({
     id: "toggle-rulers",
     slots: ["blocksPreviewToolbar"]
@@ -1422,6 +1453,11 @@ woost.admin.actions.ToggleSelectorsAction.register({
 
 woost.admin.actions.SetGridSizeAction.register({
     id: "grid-size",
+    slots: ["blocksPreviewToolbar"]
+});
+
+woost.admin.actions.SetPreviewLanguageAction.register({
+    id: "set-preview-language",
     slots: ["blocksPreviewToolbar"]
 });
 
