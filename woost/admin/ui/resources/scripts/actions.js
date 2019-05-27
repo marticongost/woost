@@ -710,11 +710,23 @@ woost.admin.actions.ClearCacheAction = class ClearCacheAction extends woost.admi
 woost.admin.actions.ExcelAction = class ExcelAction extends woost.admin.actions.Action {
 
     invoke(context) {
+
         const options = context.selectable.getDataSourceOptions();
         if (options.parameters) {
             delete options.parameters.page;
             delete options.parameters.page_size;
         }
+
+        for (let member of context.selectable.visibleMembers) {
+            if (member.name == "_label") {
+                if (!options.parameters) {
+                    options.parameters = {};
+                }
+                options.parameters.label = "true";
+                break;
+            }
+        }
+
         const url = context.selectable.value.getURL(options);
         const urlBuilder = URI(url);
         urlBuilder.segment("xlsx");
