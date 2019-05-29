@@ -1,4 +1,6 @@
 
+@import "woost.admin.ui://styles/common";
+
 .cocktail-ui-TextInput,
 .cocktail-ui-TextArea,
 .cocktail-ui-CodeEditor {
@@ -7,5 +9,10 @@
 
 .cocktail-ui-Tab {
     overflow-y: scroll;
+}
+
+.Field[modified='true'] .label,
+.FieldTranslations .translations .Translation[modified='true'] .label {
+    color: $hl-foreground;
 }
 
