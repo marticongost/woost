@@ -3,12 +3,19 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from .filters import (
-    Filter,
-    MultiValueFilter,
+from .filter import Filter
+from .memberfilter import MemberFilter
+from .registry import (
     get_filters,
-    get_filters_for_member_type,
-    get_filters_by_member_type
+    add_filter
 )
-from .defaultfilters import add_default_filters
+from .templates import (
+    FilterTemplate,
+    get_filter_templates,
+    get_filter_templates_by_member_type,
+    add_filter_template,
+    add_expression_template,
+    add_equality_templates,
+    add_order_templates
+)
 

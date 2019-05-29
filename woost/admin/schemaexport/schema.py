@@ -7,6 +7,7 @@ from collections import Iterable
 from cocktail.translations import translations, language_context
 from cocktail.javascriptserializer import dumps
 from cocktail import schema
+from cocktail.persistence import PersistentClass
 from woost import app
 from woost.models import (
     Item,
@@ -18,6 +19,7 @@ from woost.models import (
 )
 from woost.models.utils import get_model_dotted_name
 from woost.admin import views, partitioning
+from woost.admin.filters import Filter
 from .schemaexport import (
     MemberExport,
     exports_member,
@@ -88,7 +90,10 @@ class SchemaExport(MemberExport):
             return "%s.declare" % self.get_class(member)
 
     def get_class(self, member):
-        return "woost.models.Model"
+        if issubclass(member, Filter):
+            return "woost.admin.filters.Filter"
+        else:
+            return "woost.models.Model"
 
     def get_properties(self, member, nested):
 
@@ -101,7 +106,9 @@ class SchemaExport(MemberExport):
                 yield key, value
 
         if member.bases:
-            yield "base", get_model_dotted_name(member.bases[0])
+            base = member.bases[0]
+            if base is not Filter:
+                yield "base", get_model_dotted_name(base)
 
         yield (
             "membersOrder",
@@ -121,8 +128,6 @@ class SchemaExport(MemberExport):
                                 writer.replace_line("%s,")
 
             yield members_prop
-
-        yield ("instantiable", dumps(member.instantiable))
 
         yield (
             "[woost.admin.ui.modelIconURL]",
@@ -154,25 +159,33 @@ class SchemaExport(MemberExport):
                 dumps(member.ui_autofocus_member)
             )
 
-        yield ("[woost.admin.views.views]", dumps([
-            view.name
-            for view in views.available_views(member)
-        ]))
+        if (
+            isinstance(member, schema.SchemaClass)
+            and issubclass(member, Filter)
+        ):
+            yield ("filterId", dumps(member.filter_id))
+        elif isinstance(member, PersistentClass):
+            yield ("instantiable", dumps(member.instantiable))
 
-        yield (
-            "[woost.admin.partitioning.methods]",
-            dumps([
-                method.name
-                for method in partitioning.available_methods(member)
-            ])
-        )
+            yield ("[woost.admin.views.views]", dumps([
+                view.name
+                for view in views.available_views(member)
+            ]))
 
-        default_part_method = partitioning.get_default_method(member)
-        if default_part_method:
             yield (
-                "[woost.admin.partitioning.defaultMethod]",
-                dumps(default_part_method.name)
+                "[woost.admin.partitioning.methods]",
+                dumps([
+                    method.name
+                    for method in partitioning.available_methods(member)
+                ])
             )
+
+            default_part_method = partitioning.get_default_method(member)
+            if default_part_method:
+                yield (
+                    "[woost.admin.partitioning.defaultMethod]",
+                    dumps(default_part_method.name)
+                )
 
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):

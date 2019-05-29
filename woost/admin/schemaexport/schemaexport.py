@@ -8,12 +8,15 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.sourcecodewriter import SourceCodeWriter
 from cocktail.typemapping import TypeMapping
+
 from woost import app
 from woost.models import (
     ReadMemberPermission,
     ModifyMemberPermission
 )
+from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
+from woost.admin.filters import Filter, get_filters
 from .utils import iter_last
 
 schema.Member.ui_member_class = "cocktail.schema.Member"
@@ -202,17 +205,26 @@ class MemberExport(object):
                     dumps(permissions)
                 )
 
-        if member.admin_custom_filters:
-            yield (
-                "[woost.admin.filters.customFilters]",
-                "{%s}" % ", ".join(
-                    "%s: %s" % (
-                        dumps(filter_class.filter_id),
-                        self.get_member_name(filter_class)
-                    )
-                    for filter_class in member.admin_custom_filters
+        if not (
+            isinstance(member, schema.SchemaClass)
+            and issubclass(member, Filter)
+        ):
+            filters = list(
+                get_filters(
+                    member,
+                    include_templates=False,
+                    include_inherited=False,
+                    include_members=False
                 )
             )
+            if filters:
+                yield (
+                    "[woost.admin.filters.customFilters]",
+                    "[%s]" % ", ".join(
+                        get_model_dotted_name(filter_class)
+                        for filter_class in filters
+                    )
+                )
 
         if getattr(member, "is_setting", False):
             yield ("[woost.models.isSetting]", "true")

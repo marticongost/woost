@@ -576,7 +576,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
 
         updateQueryStringWithFilters(filters) {
 
-            let queryValues = {};
+            const queryValues = {};
 
             // Set parameters for defined filters
             for (let filter of filters) {
