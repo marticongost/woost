@@ -46,6 +46,10 @@ from woost import app
     <py:binding>
         <?py
         self.qualify_cache_key(app.website.id, get_language())
+        if app.user.anonymous:
+            self.qualify_cache_key("anonymous")
+        else:
+            self.qualify_cache_key("role%d" % app.user.role.id)
         ?>
     </py:binding>
 
