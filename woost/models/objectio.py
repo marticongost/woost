@@ -3,11 +3,7 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-try:
-    from io import StringIO
-except ImportError:
-    from io import StringIO
-
+from io import BytesIO
 from warnings import warn
 from collections import Sequence, Mapping, Set, defaultdict, Counter
 from datetime import date, time, datetime
@@ -272,11 +268,11 @@ class ObjectExporter(object):
 
         # Encode file contents
         if isinstance(obj, File):
-            buffer = StringIO()
+            buffer = BytesIO()
             with open(obj.file_path, "rb") as file:
                 base64.encode(file, buffer)
             buffer.seek(0)
-            data["@file_data"] = buffer.getvalue()
+            data["@file_data"] = buffer.getvalue().decode("ascii")
 
     def _get_object_ref(self, node):
         return get_object_ref(node.value)
