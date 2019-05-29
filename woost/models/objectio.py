@@ -862,7 +862,7 @@ class ObjectImporter(object):
                         file_contents
                     )
 
-                bdata = base64.decodestring(value)
+                bdata = base64.decodebytes(value.encode("ascii"))
                 file_contents[obj.id] = bdata
 
             return
