@@ -236,8 +236,18 @@
 
         <?js
         this[UPDATE_DELAY] = new cocktail.ui.Delay(150, () => {
+
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
+
+            if (this.parentInstance.hasActionList) {
+                this.parentInstance.actionList.updateEntries();
+            }
+
+            if (this.parentInstance.hasNavigationActionList) {
+                this.parentInstance.navigationActionList.updateEntries();
+            }
+
             cocktail.ui.request({
                 url: woost.admin.url + "/data/values",
                 method: "POST",
@@ -260,7 +270,6 @@
 
         <?on value:changed
         woost.admin.editState.set(newValue);
-
         if (this.fieldsReady) {
             if (!this[PREVIOUS_STATE]) {
                 this[PREVIOUS_STATE] = oldValue;
