@@ -13,141 +13,136 @@ cocktail.declare("woost.admin.filters");
     const TEMPLATE_INSTANCES = Symbol.for("woost.admin.filters.TEMPLATE_INSTANCES");
     const FILTER_SCHEMAS = Symbol.for("woost.admin.filters.FILTER_SCHEMAS");
 
-    woost.admin.filters.defaultFilters = Symbol.for("woost.admin.filters.defaultFilters");
+    woost.admin.filters.templates = Symbol.for("woost.admin.filters.templates");
     woost.admin.filters.customFilters = Symbol.for("woost.admin.filters.customFilters");
 
-    cocktail.schema.Member[woost.admin.filters.defaultFilters] = {};
-    cocktail.schema.Member[woost.admin.filters.customFilters] = [];
-
-    woost.admin.filters.getFilters = function *getFilters(member, recursive = true, includeMembers = true) {
+    woost.admin.filters.getFilters = function *getFilters(member, params = null) {
 
         member = member.originalMember;
 
-        if (member instanceof cocktail.schema.Schema) {
-            if (recursive && member.base) {
-                yield* woost.admin.filters.getFilters(member.base, true, includeMembers);
+        // Parameter defaults
+        let includeTemplates = true;
+        let includeInherited = true;
+        let includeMembers = true;
+
+        if (params) {
+            if (params.includeTemplates !== undefined) {
+                includeTemplates = params.includeTemplates;
             }
-            if (includeMembers) {
-                for (let child of member.members(false)) {
-                    yield* woost.admin.filters.getFilters(child);
-                }
+            if (params.includeInherited !== undefined) {
+                includeInherited = params.includeInherited;
             }
-        }
-        else {
-            let defaultFilters = member.constructor[woost.admin.filters.defaultFilters];
-            for (let filterId in defaultFilters) {
-                let filterTemplate = defaultFilters[filterId];
-                yield filterTemplate.getFilterSchema(member, filterId);
+            if (params.includeMembers !== undefined) {
+                includeMembers = params.includeMembers;
             }
         }
 
-        let customFilters = member[woost.admin.filters.customFilters]
-        for (let filterId in customFilters) {
-            let filterTemplate = customFilters[filterId];
-            yield filterTemplate.getFilterSchema(member, filterId);
+        // Template based filters, based on the member's type
+        if (includeTemplates) {
+            let memberType = member.constructor;
+            while (memberType) {
+                const templates = memberType[woost.admin.filters.templates];
+                if (templates) {
+                    for (let template of templates) {
+                        yield woost.admin.filters.fromTemplate(template, member);
+                    }
+                }
+                if (memberType === cocktail.schema.Member) {
+                    break;
+                }
+                memberType = memberType.__proto__;
+            }
+        }
+
+        // Models
+        if (member instanceof woost.models.Model) {
+
+            // Inherited and own custom filters
+            if (includeInherited) {
+                let model = member;
+                while (model) {
+                    const modelFilters = model[woost.admin.filters.customFilters];
+                    if (modelFilters) {
+                        yield *modelFilters;
+                    }
+                    model = model.base;
+                }
+            }
+            // Own custom filters only
+            else {
+                const modelFilters = model[woost.admin.filters.customFilters];
+                if (modelFilters) {
+                    yield *modelFilters;
+                }
+            }
+
+            // Member filters
+            if (includeMembers) {
+                for (let schemaMember of member.members()) {
+                    yield *woost.admin.filters.getFilters(schemaMember, {includeTemplates});
+                }
+            }
+        }
+        // Custom filters for regular members
+        else {
+            const memberFilters = member[woost.admin.filters.customFilters];
+            if (memberFilters) {
+                yield *memberFilters;
+            }
         }
     }
 
     woost.admin.filters.getFilter = function getFilter(member, filterId) {
         for (let filter of woost.admin.filters.getFilters(member)) {
-            if (filter.name == filterId) {
+            if (filter.filterId == filterId) {
                 return filter;
             }
         }
         return null;
     }
 
-    woost.admin.filters.Filter = class Filter extends cocktail.schema.Schema {
+    woost.admin.filters.fromTemplate = function (template, member) {
 
-        static getFilterSchema(member, filterId) {
+        let instances = member[TEMPLATE_INSTANCES];
 
-            let cls;
-            let classes = member[TEMPLATE_INSTANCES];
+        if (!instances) {
+            instances = {};
+            template[TEMPLATE_INSTANCES] = instances;
+        }
 
-            if (!classes) {
-                classes = {};
-                member[TEMPLATE_INSTANCES] = classes;
-            }
-            else {
-                cls = classes[filterId];
-            }
+        let instance = instances[template.id];
 
-            if (!cls) {
-                cls = class MemberFilter extends this {
+        if (!instance) {
+            const base = template.base || woost.admin.filters.MemberFilter;
 
-                    get filterMember() {
-                        return member;
-                    }
+            const instanceSchema = class FilterTemplateInstance extends base {
 
-                    translate() {
-                        return member.translate() + " " + cocktail.ui.translations[`woost.admin.filters.default.${filterId}`];
-                    }
-
-                    translateValue(value) {
-                        return this.translate() + " " + this.getMember("value").translateValue(value);
-                    }
+                get filterMember() {
+                    return member;
                 }
 
-                classes[filterId] = cls;
+                get filterTemplate() {
+                    return template;
+                }
             }
 
-            let schema;
-            let schemas = cls[FILTER_SCHEMAS];
-
-            if (!schemas) {
-                schemas = {};
-                cls[FILTER_SCHEMAS] = schemas;
-            }
-            else {
-                schema = schemas[filterId];
-            }
-
-            if (!schema) {
-                schema = new cls({name: `members.${member.name}.${filterId}`});
-                schema.initializeFilter();
-                schemas[filterId] = schema;
-            }
-
-            return schema;
+            instance = new instanceSchema();
+            instance.filterId = `members.${member.name}.${template.id}`;
+            instance.initializeFilter();
+            instances[template.id] = instance;
         }
+
+        return instance;
+    }
+
+    woost.admin.filters.Filter = class Filter extends cocktail.schema.Schema {
 
         get filterMember() {
             return null;
         }
 
-        translate() {
-            return "";
-        }
-
         get parameterName() {
-            return "filters." + this.name;
-        }
-
-        initializeFilter() {
-            this.addMember(
-                this.copyValueMember({
-                    name: "value",
-                    translate(suffix = null) {
-                        if (suffix) {
-                            return this.constructor.prototype.translate.call(this, suffix);
-                        }
-                        return this.schema.translate();
-                    }
-                })
-            );
-        }
-
-        copyValueMember(values = null) {
-            return this.filterMember.copy(
-                Object.assign(
-                    {
-                        name: null,
-                        [cocktail.ui.editable]: cocktail.ui.EDITABLE,
-                        [cocktail.ui.group]: null
-                    },
-                    values
-                )
-            );
+            return "filters." + this.filterId;
         }
 
         hasSingleMember() {
@@ -155,7 +150,7 @@ cocktail.declare("woost.admin.filters");
             for (let member of this.members()) {
                 memberCount++;
                 if (memberCount > 1) {
-                    break;
+                    return false;
                 }
             }
             return memberCount == 1;
@@ -175,11 +170,10 @@ cocktail.declare("woost.admin.filters");
         parseValue(value) {
             if (this.hasSingleMember()) {
                 for (let member of this.members()) {
-                    return new Promise((resolve, reject) =>
-                        Promise.resolve(member.parseValue(value))
-                            .then((parsedValue) => resolve({[member.name]: parsedValue}))
-                            .catch(reject)
-                    );
+                    return Promise.resolve(member.parseValue(value))
+                        .then((parsedValue) => {
+                            return {[member.name]: parsedValue};
+                        });
                 }
             }
             else {
@@ -188,21 +182,41 @@ cocktail.declare("woost.admin.filters");
         }
     }
 
-    woost.admin.filters.MultiValueFilter = class MultiValueFilter extends woost.admin.filters.Filter {
+    woost.admin.filters.MemberFilter = class MemberFilter extends woost.admin.filters.Filter {
+
+        translate() {
+            return this.filterMember.translate() + " " + cocktail.ui.translations[`woost.admin.filters.${this.filterTemplate.id}`];
+        }
+
+        translateValue(value) {
+            return this.translate() + " " + this.getMember("value").translateValue(value);
+        }
 
         initializeFilter() {
-            this.addMember(
-                new cocktail.schema.Collection({
+
+            let member = this.copyValueMember();
+
+            if (this.multivalue) {
+                member = new cocktail.schema.Collection({
                     name: "value",
-                    [cocktail.ui.editable]: cocktail.ui.EDITABLE,
-                    items: this.copyValueMember(),
-                    translate(suffix = null) {
-                        if (suffix) {
-                            return this.constructor.prototype.translate.call(this, suffix);
-                        }
-                        return this.schema.translate();
-                    }
-                })
+                    items: member,
+                    editable: cocktail.schema.EDITABLE
+                });
+            }
+
+            this.addMember(member);
+        }
+
+        copyValueMember(values = null) {
+            return this.filterMember.copy(
+                Object.assign(
+                    {
+                        name: this.multivalue ? null : "value",
+                        [cocktail.ui.editable]: cocktail.ui.EDITABLE,
+                        [cocktail.ui.group]: null
+                    },
+                    values
+                )
             );
         }
     }

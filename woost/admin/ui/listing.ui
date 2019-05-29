@@ -10,7 +10,7 @@
     <ui:requires component="woost.admin.ui.LocalesDropdown"/>
     <ui:requires component="woost.admin.ui.FiltersDropdown"/>
 
-    <ui:requires-translation-bundle name="woost.admin.filters.filters"/>
+    <ui:requires-translation-bundle name="woost.admin.filters.templates"/>
     <ui:symbol name="NAVIGATING"/>
     <ui:symbol name="UPDATE"/>
     <ui:symbol name="UPDATED_AT_LEAST_ONCE"/>
