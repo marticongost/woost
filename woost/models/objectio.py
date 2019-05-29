@@ -821,11 +821,15 @@ class ObjectImporter(object):
                 if self.verbose:
                     sys.stderr.write(
                         styled(
-                            "Error while parsing %s.%s = %r\n"
+                            "Error while parsing %s.%s = %s\n"
                             % (
                                 obj.__class__.__name__,
                                 key,
-                                value
+                                (
+                                    repr(value)
+                                        if key != "@file_data"
+                                        else "<base64 blob>"
+                                )
                             ),
                             "magenta"
                         )
