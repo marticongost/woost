@@ -923,6 +923,14 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
         return false;
     }
 
+    getState(context) {
+        let state = super.getState(context);
+        if (state == "visible" && this.view.editForm && this.view.editForm.modified) {
+            return "emphasized";
+        }
+        return state;
+    }
+
     invoke(context) {
 
         const form = this.view.editForm;
