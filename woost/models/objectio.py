@@ -3,9 +3,19 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Set,
+    TextIO,
+    Union
+)
 from io import BytesIO
 from warnings import warn
-from collections import Sequence, Mapping, Set, defaultdict, Counter
+from collections import Sequence, Mapping, defaultdict, Counter
 from datetime import date, time, datetime
 from contextlib import contextmanager
 from itertools import zip_longest
@@ -15,6 +25,8 @@ import json
 import argparse
 import enum
 from decimal import Decimal
+
+from cocktail.jsonutils import json_data, json_object
 from cocktail.typemapping import TypeMapping
 from cocktail.styled import styled, ProgressBar
 from cocktail.pkgutils import get_full_name, resolve
@@ -27,7 +39,12 @@ from cocktail.modeling import (
     frozen
 )
 from cocktail import schema
-from cocktail.persistence import datastore, transaction
+from cocktail.persistence import (
+    datastore,
+    transaction,
+    PersistentObject,
+    PersistentClass
+)
 from woost.models import (
     Item,
     File,
@@ -40,6 +57,8 @@ from woost.models import (
     Block,
     changeset_context
 )
+
+Exportable = Union[PersistentObject, "ExportNode"]
 
 
 @enum.unique
@@ -67,7 +86,7 @@ class MissingObjectPolicy(enum.Enum):
 
 
 @GenericMethod
-def get_object_ref(obj):
+def get_object_ref(obj: PersistentObject) -> json_object:
 
     ref = {
         "@class": get_full_name(obj.__class__)
@@ -87,7 +106,7 @@ def get_object_ref(obj):
     return ref
 
 @GenericClassMethod
-def resolve_object_ref(cls, ref):
+def resolve_object_ref(cls: PersistentClass, ref: dict) -> PersistentObject:
 
     for key, value in ref.items():
         if value is not None and value != "" and not key.startswith("@"):
@@ -104,7 +123,7 @@ def resolve_object_ref(cls, ref):
     return None
 
 @GenericClassMethod
-def create_object_from_ref(cls, ref):
+def create_object_from_ref(cls: PersistentClass, ref: dict) -> PersistentObject:
     obj = cls()
 
     for key, value in ref.items():
@@ -121,33 +140,33 @@ def create_object_from_ref(cls, ref):
     return obj
 
 
-class ObjectExporter(object):
+class ObjectExporter:
 
-    verbose = False
+    verbose: bool = False
     _depth = 0
-    language_subset = None
-    date_format = "%Y-%m-%d"
-    time_format = "%H:%M:%S"
-    datetime_format = date_format + " " + time_format
-    json_encoder_defaults = {"check_circular": False}
+    language_subset: Set[str] = None
+    date_format: str = "%Y-%m-%d"
+    time_format: str = "%H:%M:%S"
+    datetime_format: str = date_format + " " + time_format
+    json_encoder_defaults: dict = {"check_circular": False}
 
-    default_model_export_modes = {
+    default_model_export_modes: Dict[PersistentClass, ExportMode] = {
         File: ExportMode.expand
     }
 
-    default_model_colors = {
+    default_model_colors: Dict[PersistentClass, str] = {
         Publishable: "slate_blue",
         File: "pink",
         Item: "brown",
         Block: "cyan"
     }
 
-    default_model_styles = {
+    default_model_styles: Dict[PersistentClass, str] = {
         Item: "normal",
         Document: "bold"
     }
 
-    default_member_export_modes = {
+    default_member_export_modes: [schema.Member, ExportMode] = {
         Item.id: ExportMode.ignore,
         Item.translations: ExportMode.ignore,
         Item.last_update_time: ExportMode.ignore,
@@ -158,7 +177,7 @@ class ObjectExporter(object):
         Document.children: ExportMode.expand
     }
 
-    def __init__(self, verbose = False):
+    def __init__(self, verbose: bool = False):
         self.__member_export_modes = self.default_member_export_modes.copy()
         self.__model_export_modes = TypeMapping(self.default_model_export_modes)
         self.__model_colors = TypeMapping(self.default_model_colors)
@@ -182,7 +201,7 @@ class ObjectExporter(object):
         else:
             yield None
 
-    def dump(self, dest, **kwargs):
+    def dump(self, dest: Union[str, TextIO], **kwargs):
 
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
@@ -193,16 +212,16 @@ class ObjectExporter(object):
         else:
             json.dump(list(self.__exported_data.values()), dest, **options)
 
-    def dumps(self, **kwargs):
+    def dumps(self, **kwargs) -> str:
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
         return json.dumps(list(self.__exported_data.values()), **options)
 
-    def add_all(self, objects):
+    def add_all(self, objects: Iterable[Exportable]):
         for obj in objects:
             self.add(obj)
 
-    def add(self, obj):
+    def add(self, obj: Exportable) -> bool:
 
         if isinstance(obj, ExportNode):
             node = obj
@@ -230,7 +249,7 @@ class ObjectExporter(object):
 
         return True
 
-    def _export_object_data(self, node, data):
+    def _export_object_data(self, node: "ExportNode", data: dict):
 
         obj = node.value
 
@@ -274,10 +293,13 @@ class ObjectExporter(object):
             buffer.seek(0)
             data["@file_data"] = buffer.getvalue().decode("ascii")
 
-    def _get_object_ref(self, node):
+    def _get_object_ref(self, node: "ExportNode") -> json_object:
         return get_object_ref(node.value)
 
-    def _export_value(self, node, expand_object = False):
+    def _export_value(
+            self,
+            node: "ExportNode",
+            expand_object: bool = False) -> json_data:
 
         value = node.value
 
@@ -398,7 +420,7 @@ class ObjectExporter(object):
 
         return value
 
-    def get_node_export_mode(self, node):
+    def get_node_export_mode(self, node: "ExportNode") -> ExportMode:
 
         # Limit exported languages
         if (
@@ -459,37 +481,46 @@ class ObjectExporter(object):
         # If no other rule applies, assume a shallow copy
         return ExportMode.export
 
-    def set_member_export_mode(self, member, mode):
+    def set_member_export_mode(self, member: schema.Member, mode: ExportMode):
         self.__member_export_modes[member] = mode
 
-    def get_member_export_mode(self, member):
+    def get_member_export_mode(
+            self,
+            member: schema.Member) -> Optional[ExportMode]:
+
         return self.__member_export_modes.get(member)
 
-    def set_model_export_mode(self, model, mode):
+    def set_model_export_mode(self, model: PersistentClass, mode: ExportMode):
         self.__model_export_modes[model] = mode
 
-    def get_model_export_mode(self, model):
+    def get_model_export_mode(
+            self,
+            model: PersistentClass) -> Optional[ExportMode]:
+
         return self.__model_export_modes.get(model)
 
-    def expand(self, *args):
+    def expand(self, *args: schema.Member):
         """Convenience method to set the export mode for several elements to
         `ExportMode.expand`.
         """
         self._set_mode(args, ExportMode.expand)
 
-    def export(self, *args):
+    def export(self, *args: schema.Member):
         """Convenience method to set the export mode for several elements to
         `ExportMode.export`.
         """
         self._set_mode(args, ExportMode.export)
 
-    def ignore(self, *args):
+    def ignore(self, *args: schema.Member):
         """Convenience method to set the export mode for several elements to
         `ExportMode.ignore`.
         """
         self._set_mode(args, ExportMode.ignore)
 
-    def export_only(self, model, exported_members):
+    def export_only(
+            self,
+            model: PersistentClass,
+            exported_members: Set[schema.Member]):
         """Export only the given members of a model, ignore all others."""
 
         exported_members = set(
@@ -512,7 +543,10 @@ class ObjectExporter(object):
                 mode = ExportMode.ignore
             self.set_member_export_mode(member, mode)
 
-    def expand_only(self, model, expanded_members):
+    def expand_only(
+            self,
+            model: PersistentClass,
+            expanded_members: Set[schema.Member]):
         """Expand only the given members of a model, ignore all others."""
 
         expanded_members = set(
@@ -533,9 +567,10 @@ class ObjectExporter(object):
                 mode = ExportMode.expand
             else:
                 mode = ExportMode.ignore
+
             self.set_member_export_mode(member, mode)
 
-    def _set_mode(self, lst, mode):
+    def _set_mode(self, lst: Set[schema.Member], mode: ExportMode):
         for obj in lst:
             if isinstance(obj, schema.SchemaClass):
                 self.set_model_export_mode(obj, mode)
@@ -548,28 +583,32 @@ class ObjectExporter(object):
                 )
 
     @classmethod
-    def expand_by_default(cls, *args):
+    def expand_by_default(cls, *args: schema.Member):
         """Convenience method to set the default export mode for several
         elements to `ExportMode.expand`.
         """
         cls._set_default_mode(args, ExportMode.expand)
 
     @classmethod
-    def export_by_default(cls, *args):
+    def export_by_default(cls, *args: schema.Member):
         """Convenience method to set the default export mode for several
         elements to `ExportMode.export`.
         """
         cls._set_default_mode(args, ExportMode.export)
 
     @classmethod
-    def ignore_by_default(cls, *args):
+    def ignore_by_default(cls, *args: schema.Member):
         """Convenience method to set the default export mode for several
         elements to `ExportMode.ignore`.
         """
         cls._set_default_mode(args, ExportMode.ignore)
 
     @classmethod
-    def _set_default_mode(cls, lst, mode):
+    def _set_default_mode(
+            cls,
+            lst: Set[schema.Member],
+            mode: ExportMode):
+
         for obj in lst:
             if isinstance(obj, schema.SchemaClass):
                 cls.default_model_export_modes[obj] = mode
@@ -581,14 +620,14 @@ class ObjectExporter(object):
                     % obj
                 )
 
-    def run_cli(self, func):
+    def run_cli(self, func: Callable):
         parser = self._cli_create_parser()
         args = parser.parse_args()
         self._cli_process_args(args)
         func()
         self.dump(args.file)
 
-    def _cli_create_parser(self):
+    def _cli_create_parser(self) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "file",
@@ -617,17 +656,17 @@ class ObjectExporter(object):
             self.json_encoder_defaults["sort_keys"] = True
 
 
-class ExportNode(object):
+class ExportNode:
 
     _export_mode = None
 
     def __init__(self,
-        exporter,
-        value,
-        parent = None,
-        member = None,
-        language = None,
-        index = None
+        exporter: ObjectExporter,
+        value: Any,
+        parent: "ExportNode" = None,
+        member: schema.Member = None,
+        language: str = None,
+        index: int = None
     ):
         self._exporter = exporter
         self._value = value
@@ -657,15 +696,15 @@ class ExportNode(object):
         return desc + ")"
 
     @property
-    def exporter(self):
+    def exporter(self) -> ObjectExporter:
         return self._exporter
 
     @property
-    def value(self):
+    def value(self) -> Any:
         return self._value
 
     @property
-    def schema_object(self):
+    def schema_object(self) -> schema.SchemaObject:
 
         node = self
 
@@ -677,48 +716,48 @@ class ExportNode(object):
         return None
 
     @property
-    def parent(self):
+    def parent(self) -> "ExportNode":
         return self._parent
 
     @property
-    def member(self):
+    def member(self) -> schema.Member:
         return self._member
 
     @property
-    def language(self):
+    def language(self) -> str:
         return self._language
 
     @property
-    def index(self):
+    def index(self) -> int:
         return self._index
 
     @property
-    def export_mode(self):
+    def export_mode(self) -> ExportMode:
         if self._export_mode is None:
             self._export_mode = self._exporter.get_node_export_mode(self)
         return self._export_mode
 
 
-class ObjectImporter(object):
+class ObjectImporter:
 
-    verbose = False
-    unknown_member_policy = UnknownMemberPolicy.fail
-    missing_object_policy = MissingObjectPolicy.fail
-    language_subset = None
-    date_format = ObjectExporter.date_format
-    time_format = ObjectExporter.time_format
-    datetime_format = ObjectExporter.datetime_format
+    verbose: bool = False
+    unknown_member_policy: UnknownMemberPolicy = UnknownMemberPolicy.fail
+    missing_object_policy: MissingObjectPolicy = MissingObjectPolicy.fail
+    language_subset: Set[str] = None
+    date_format: str = ObjectExporter.date_format
+    time_format: str = ObjectExporter.time_format
+    datetime_format: str = ObjectExporter.datetime_format
 
     def __init__(self,
-        file = None,
-        string = None,
-        unknown_member_policy = UnknownMemberPolicy.fail,
-        missing_object_policy = MissingObjectPolicy.fail,
-        language_subset = None,
-        date_format = ObjectExporter.date_format,
-        time_format = ObjectExporter.time_format,
-        datetime_format = ObjectExporter.datetime_format,
-        verbose = False
+        file: Union[str, TextIO] = None,
+        string: str = None,
+        unknown_member_policy: UnknownMemberPolicy = UnknownMemberPolicy.fail,
+        missing_object_policy: MissingObjectPolicy = MissingObjectPolicy.fail,
+        language_subset: Set[str] = None,
+        date_format: str = ObjectExporter.date_format,
+        time_format: str = ObjectExporter.time_format,
+        datetime_format: str = ObjectExporter.datetime_format,
+        verbose: bool = False
     ):
         self.__qname_mapping = {}
         self.missing_references = Counter()
@@ -749,13 +788,13 @@ class ObjectImporter(object):
 
         return self.loads(string, encoding)
 
-    def loads(self, string, encoding = "utf-8"):
+    def loads(self, string: Union[str, bytes], encoding: str = "utf-8"):
         if isinstance(string, bytes):
             data = string.decode(encoding)
         data = json.loads(string)
         return self.load_objects(data)
 
-    def load_objects(self, object_list):
+    def load_objects(self, object_list: Set[json_object]):
 
         # Make a first pass to pregenerate all new objects
         if self.verbose:
@@ -813,7 +852,7 @@ class ObjectImporter(object):
                     print("  -%s (%d)" % (key, count))
             print()
 
-    def import_object_data(self, obj, data):
+    def import_object_data(self, obj: PersistentObject, data: json_object):
         for key, value in data.items():
             try:
                 self.import_object_key(obj, key, value)
@@ -836,7 +875,12 @@ class ObjectImporter(object):
                     )
                 raise
 
-    def import_object_key(self, obj, key, value):
+    def import_object_key(
+            self,
+            obj: PersistentObject,
+            key: str,
+            value: json_data):
+
         if isinstance(key, str):
             key = str(key)
 
@@ -898,7 +942,7 @@ class ObjectImporter(object):
                     imported_value
                 )
 
-    def _handle_unknown_member(self, obj, key):
+    def _handle_unknown_member(self, obj: PersistentObject, key: str):
         if self.unknown_member_policy == UnknownMemberPolicy.fail:
             raise ValueError(
                 "The schema for %r doesn't define member %s"
@@ -920,7 +964,13 @@ class ObjectImporter(object):
                 % (obj, key, self.unknown_member_policy)
             )
 
-    def import_object_value(self, obj, member, value, language = None):
+    def import_object_value(
+            self,
+            obj: PersistentObject,
+            member: schema.Member,
+            value: json_data,
+            language: str = None) -> Any:
+
         if value is None:
             return None
         elif (
@@ -982,7 +1032,11 @@ class ObjectImporter(object):
 
         return value
 
-    def resolve_object_ref(self, ref, missing_object_policy = None):
+    def resolve_object_ref(
+            self,
+            ref: json_object,
+            missing_object_policy: MissingObjectPolicy = None
+        ) -> PersistentObject:
 
         cls = resolve(ref["@class"])
         obj = resolve_object_ref(cls, ref)
@@ -996,7 +1050,12 @@ class ObjectImporter(object):
 
         return obj
 
-    def _handle_missing_object(self, cls, ref, policy):
+    def _handle_missing_object(
+            self,
+            cls: PersistentClass,
+            ref: json_object,
+            policy: MissingObjectPolicy
+        ) -> Union[PersistentObject, ExportMode]:
 
         if policy == MissingObjectPolicy.create:
 
@@ -1033,7 +1092,7 @@ class ObjectImporter(object):
                 % (ref, policy)
             )
 
-    def map_qname(self, original, replacement):
+    def map_qname(self, original: str, replacement: str):
         self.__qname_mapping[original] = replacement
 
     def run_cli(self):
@@ -1053,7 +1112,7 @@ class ObjectImporter(object):
                 for file in args.files:
                     self.load(file)
 
-    def _cli_create_parser(self):
+    def _cli_create_parser(self) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "files",
@@ -1105,7 +1164,7 @@ class ObjectImporter(object):
             )
 
 
-def _store_file_contents_after_commit(successful):
+def _store_file_contents_after_commit(successful: bool):
 
     if not successful:
         return
@@ -1125,7 +1184,12 @@ def _store_file_contents_after_commit(successful):
                 f.write(data)
 
 
-def _apply_imported_value(member, obj, value, language = None):
+def _apply_imported_value(
+        member: schema.Member,
+        obj: PersistentObject,
+        value: Any,
+        language: str = None):
+
     obj.set(member, value, language = language)
 
 schema.Member.apply_imported_value = _apply_imported_value
