@@ -310,11 +310,40 @@ class CMSController(BaseCMSController):
         publishable element.
         """
         current_url = get_request_url()
-        canonical_url = app.url_mapping.get_canonical_url(
-            current_url,
-            app.url_resolution
-        )
+        canonical_url = app.canonical_url
+        current_query = current_url.query
+        canonical_query = canonical_url.query
+        canonical_segments = canonical_url.path.segments
+        current_segments = current_url.path.segments
+
+        if current_segments[:len(canonical_segments)] == canonical_segments:
+            canonical_url = canonical_url.copy(
+                path = canonical_url.path.append(
+                    app.url_resolution.remaining_segments
+                )
+            )
+
+        if current_query:
+            query = dict(
+                (key, current_url.query.fields.get(key))
+                for key in app.url_resolution.canonical_parameters
+            )
+            current_url = current_url.copy(query=query)
+
+        if canonical_query:
+            query = dict(
+                (key, canonical_url.query.fields.get(key))
+                for key in app.url_resolution.canonical_parameters
+            )
+            canonical_url = canonical_url.copy(query=query)
+
         if current_url != canonical_url:
+
+            # Conserve extra parameters
+            query = dict(current_query.fields)
+            query.update(canonical_query.fields)
+            canonical_url = canonical_url.copy(query=query)
+
             redirect(canonical_url, status = 301)
 
     def _maintenance_check(self, publishable):
