@@ -54,6 +54,7 @@ class PublishableObject(object):
     redirection_target = None
     redirection_method = None
     navigation_point_qname = None
+    resolve_redirections = False
 
     def get_controller(self):
         return self.controller or self.get_default_controller()
@@ -284,10 +285,44 @@ class PublishableObject(object):
         )
         return query
 
-    def get_uri(self, **kwargs):
+    def find_redirection_target(self):
+
+        mode = self.redirection_mode
+
+        if not mode:
+            return None
+
+        if mode == "first_child":
+            target = self.find_first_child_redirection_target()
+        elif mode == "custom_target":
+            target = self.redirection_target
+        else:
+            raise ValueError(
+                "Unknown redirection mode: expected one of 'first_child', "
+                "'custom_target', got %r instead" % mode
+            )
+
+        if target and target is not self:
+            target = target.find_redirection_target() or target
+
+        return target
+
+    def find_first_child_redirection_target(self):
+        raise ValueError(
+            "PublishableObject can't redirect to a first child, it doesn't "
+            "have children"
+        )
+
+    def get_uri(self, resolve_redirections = None, **kwargs):
         if not self.id:
             return None
-        return app.url_mapping.get_url(self, **kwargs)
+        publishable = self
+        if resolve_redirections is None:
+            resolve_redirections = self.resolve_redirections
+        if resolve_redirections:
+            publishable = self.find_redirection_target() or self
+        return app.url_mapping.get_url(publishable, **kwargs)
+
 
     def translate_file_type(self, language = None):
 
