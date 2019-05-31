@@ -24,6 +24,8 @@ import base64
 import json
 import argparse
 import enum
+import subprocess
+import tempfile
 from decimal import Decimal
 
 from cocktail.jsonutils import json_data, json_object
@@ -45,6 +47,8 @@ from cocktail.persistence import (
     PersistentObject,
     PersistentClass
 )
+
+from woost import app
 from woost.models import (
     Item,
     File,
@@ -59,6 +63,26 @@ from woost.models import (
 )
 
 Exportable = Union[PersistentObject, "ExportNode"]
+
+_remote_installations = {}
+
+SCP_BIN = "/usr/bin/scp"
+SSH_BIN = "/usr/bin/ssh"
+
+
+def define_remote_installation(
+        name: str,
+        host: str,
+        user: str,
+        python_bin: str = None):
+
+    inst = {
+        "name": name,
+        "host": host,
+        "user": user,
+        "python_bin": python_bin or "/home/%s/vpython/bin/python" % user
+    }
+    _remote_installations[name] = inst
 
 
 @enum.unique
@@ -216,6 +240,51 @@ class ObjectExporter:
         options = self.json_encoder_defaults.copy()
         options.update(kwargs)
         return json.dumps(list(self.__exported_data.values()), **options)
+
+    def send(self, remote_inst_name: str):
+
+        try:
+            inst = _remote_installations[remote_inst_name]
+        except KeyError:
+            raise KeyError(
+                "Can't find a remote installation called %r. "
+                "Make sure you have called define_remote_installation() with "
+                "that name in a suitable location (typically your project's "
+                "settings.py file)."
+                % remote_inst_name
+            ) from None
+
+        remote_addr = f"{inst['user']}@{inst['host']}"
+        remote_file_name = "/tmp/objectio.json"
+        remote_file_addr = f"{remote_addr}:{remote_file_name}"
+
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8") as file:
+            self.dump(file)
+            file.flush()
+            subprocess.check_call([SCP_BIN, file.name, remote_file_addr])
+
+        python_snippet = (
+            f'from {app.package}.scripts.shell import *; '
+             'import os; '
+            f'ObjectImporter(file="{remote_file_name}"); '
+             'datastore.commit(); '
+            f'os.remove("{remote_file_name}")'
+        )
+        remote_command = f"{inst['python_bin']} -c '{python_snippet}'"
+
+        try:
+            print(
+                subprocess.check_output(
+                    [
+                        SSH_BIN,
+                        remote_addr,
+                        remote_command
+                    ],
+                    stderr=subprocess.STDOUT
+                ).decode("utf-8")
+            )
+        except subprocess.CalledProcessError as e:
+            print(e.output.decode("utf-8"))
 
     def add_all(self, objects: Iterable[Exportable]):
         for obj in objects:
