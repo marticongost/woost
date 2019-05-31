@@ -341,6 +341,16 @@ class ThemeProperty(ContextualProperty):
         set_theme(value and value.identifier or None)
 
 
+class CanonicalURLProperty(ContextualProperty):
+    """Gets or sets the canonical URL for the current context.
+
+    "Context" is typically an HTTP request, but the property can also be
+    used outside a web request/response cycle.
+
+    .. type:: `cocktail.urls.URL`
+    """
+
+
 @GenericMethod
 def get_navigation_point(self):
     return self

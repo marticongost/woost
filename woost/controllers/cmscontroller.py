@@ -271,6 +271,11 @@ class CMSController(BaseCMSController):
                 url_resolution = url_resolution
             )
 
+            app.canonical_url = app.url_mapping.get_canonical_url(
+                url,
+                url_resolution
+            )
+
     def resolve(self, path):
 
         # Consume path segments
