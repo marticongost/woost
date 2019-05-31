@@ -162,25 +162,18 @@ class URLMapping(object):
 
         canonical_url = app.url_mapping.get_url(**kwargs)
 
-        if (
-            canonical_url.scheme != url.scheme
-            or canonical_url.hostname != url.hostname
-            or canonical_url.port != url.port
-            or canonical_url.path.segments
-               != tuple(url_resolution.consumed_segments)
-            or any(
-                value != url.query.fields[key]
-                for key, value in canonical_url.query.fields.items()
-            )
-        ):
-            return canonical_url.copy(
-                path = canonical_url.path.append(
-                    url_resolution.remaining_segments
-                ),
-                query = url.query.merge(canonical_url.query)
-            )
+        if url_resolution.canonical_parameters:
+            params = {}
 
-        return url
+            for key in url_resolution.canonical_parameters:
+                value = url.query.fields.get(key)
+                if value is not None:
+                    params[key] = value
+
+            if params:
+                canonical_url = canonical_url.merge_query(params)
+
+        return canonical_url
 
 
 class URLComponent(object):
@@ -207,10 +200,12 @@ class URLResolution(object):
     website = None
     language = None
     canonical_validation = True
+    canonical_parameters = None
 
     def __init__(self, path_segments):
         self.__consumed_segments = []
         self.__remaining_segments = list(path_segments)
+        self.canonical_parameters = set()
 
     @property
     def consumed_segments(self):
