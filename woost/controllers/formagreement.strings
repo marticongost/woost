@@ -55,5 +55,5 @@ def describe_agreement_subject(member, link = True):
     fr:
         Vous devez accepter ${describe_agreement_subject(error.member)} du formulaire
     de:
-        Sie mussen ${describe_agreement_subject(error.member)} akzeptieren
+        Sie müssen ${describe_agreement_subject(error.member)} akzeptieren
 
