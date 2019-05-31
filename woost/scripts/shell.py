@@ -8,6 +8,7 @@ from decimal import Decimal
 from datetime import date, datetime, time, timedelta
 from collections import Counter, defaultdict
 import webbrowser
+
 from cocktail.schema import TranslatedValues as T
 from cocktail.translations import *
 from cocktail.persistence import *
@@ -24,6 +25,10 @@ from woost.models.objectio import (
     ObjectImporter
 )
 
+get = Item.get_instance
+req = Item.require_instance
+
+
 def setup_shell(env):
     env["config"] = config = Configuration.instance
     env["tr"] = translations
@@ -38,8 +43,6 @@ def setup_shell(env):
         module_name = extension.__name__[extension.__name__.rfind(".") + 1:]
         env[module_name] = extension
 
-get = Item.get_instance
-req = Item.require_instance
 
 def show(target):
 
@@ -50,6 +53,7 @@ def show(target):
             show(item)
     else:
         print("Can't show non-publishable object %r" % target)
+
 
 def edit(target):
 
@@ -67,6 +71,7 @@ def edit(target):
             edit(item)
     else:
         print("Can't edit object %r" % target)
+
 
 def fetch(cls, *args, **kwargs):
     return list(cls.select(*args, **kwargs))
