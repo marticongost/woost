@@ -98,7 +98,8 @@ class IssuuDocument(Publishable):
         path = None,
         parameters = None,
         language = None,
-        host = None
+        host = None,
+        **kwargs
     ):
         url = self.get_issuu_uri()
 
