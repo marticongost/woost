@@ -31,6 +31,7 @@ class Link(Element):
     content_check = REQUIRE_ACCESSIBLE
     inactive_behavior = HIDE
     force_download = False
+    resolve_redirections = None
 
     def _ready(self):
 
@@ -76,7 +77,7 @@ class Link(Element):
                 % self.inactive_behavior
             )
 
-    def get_uri(self):
+    def get_uri(self, **kwargs):
         if not self.value:
             return None
         else:
@@ -88,10 +89,12 @@ class Link(Element):
                     parameters = parameters.copy()
                 parameters["disposition"] = "attachment"
 
+            kwargs.setdefault("resolve_redirections", self.resolve_redirections)
+
             return self.value.get_uri(
                 language = self.language,
                 host = self.host,
                 path = self.path,
-                parameters = parameters
+                parameters = parameters,
+                **kwargs
             )
-
