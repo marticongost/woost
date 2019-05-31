@@ -25,6 +25,9 @@ from woost.models.objectio import (
     ObjectImporter
 )
 
+ObjectExporter.verbose = True
+ObjectImporter.verbose = True
+
 get = Item.get_instance
 req = Item.require_instance
 

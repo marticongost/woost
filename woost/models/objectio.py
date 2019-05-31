@@ -177,13 +177,13 @@ class ObjectExporter:
         Document.children: ExportMode.expand
     }
 
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = None):
         self.__member_export_modes = self.default_member_export_modes.copy()
         self.__model_export_modes = TypeMapping(self.default_model_export_modes)
         self.__model_colors = TypeMapping(self.default_model_colors)
         self.__model_styles = TypeMapping(self.default_model_styles)
         self.__exported_data = {}
-        self.verbose = verbose
+        self.verbose = self.verbose if verbose is None else verbose
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
 
     @contextmanager
@@ -757,7 +757,7 @@ class ObjectImporter:
         date_format: str = ObjectExporter.date_format,
         time_format: str = ObjectExporter.time_format,
         datetime_format: str = ObjectExporter.datetime_format,
-        verbose: bool = False
+        verbose: bool = None
     ):
         self.__qname_mapping = {}
         self.missing_references = Counter()
@@ -770,7 +770,7 @@ class ObjectImporter:
         self.date_format = date_format
         self.time_format = time_format
         self.datetime_format = datetime_format
-        self.verbose = verbose
+        self.verbose = self.verbose if verbose is None else verbose
 
         if file is not None:
             self.load(file)
