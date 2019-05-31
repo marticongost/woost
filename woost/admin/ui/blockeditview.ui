@@ -38,16 +38,21 @@
 
         <?on value:changed
         this.awaitFields().then((fields) => {
+
+            // Hide the "custom_heading" field unless "heading_display" is set to "custom"
+            const headingDisplay = fields.get("heading_display");
+            const customHeading = fields.get("custom_heading");
+
+            if (headingDisplay && customHeading) {
+                customHeading.style.display = (headingDisplay.value == "custom") ? null : "none";
+            }
+
+            // Hide the "enabled_translations" field unless "per_language_publication" is checked
             const perLanguagePublication = fields.get("per_language_publication");
             const translations = fields.get("enabled_translations");
 
             if (perLanguagePublication && translations) {
-                if (perLanguagePublication.value) {
-                    translations.style.display = null;
-                }
-                else {
-                    translations.style.display = "none";
-                }
+                translations.style.display = perLanguagePublication.value ? null : "none";
             }
         });
         ?>
