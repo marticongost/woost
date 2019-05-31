@@ -142,15 +142,6 @@ class Document(Publishable):
         view.dispose()
         return html
 
-    def find_redirection_target(self):
-        mode = self.redirection_mode
-
-        if mode == "first_child":
-            return self.find_first_child_redirection_target()
-
-        elif mode == "custom_target":
-            return self.redirection_target
-
     def find_first_child_redirection_target(self):
         for child in self.children:
             if child.is_accessible():
