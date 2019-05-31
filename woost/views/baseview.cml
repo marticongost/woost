@@ -74,7 +74,12 @@ from woost.models import Configuration, Publishable, Document
         if app.splash:
             document.head.insert(0, Content("<!--\n" + app.splash + "\n-->"))
 
-        # Links
+        # Canonical link
+        if app.canonical_url:
+            document.canonical_link = Element("link", rel = "canonical", href = app.canonical_url)
+            document.head.append(document.canonical_link)
+
+        # Home link
         home = app.website.home
         document.head_start_link = Element("link", rel = "start", title = translations(home), href = home.get_uri() or "/")
         document.head.append(document.head_start_link)
