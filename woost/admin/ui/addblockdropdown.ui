@@ -58,7 +58,7 @@
         <ui:BlockTypeSelector id="blockTypeSelector"/>
     </ui:with>
 
-    <ui:woost.admin.ui.ModelSelector ui:component="BlockTypeSelector">
+    <ui:woost.admin.ui.ModelSelector ui:component="BlockTypeSelector"  searchable="true">
 
         <ui:property
             name="subset"
