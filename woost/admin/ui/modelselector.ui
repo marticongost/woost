@@ -9,6 +9,8 @@
     activationType="singleClick">
 
     <ui:using mixin="cocktail.ui.Selectable"/>
+    <ui:using mixin="cocktail.ui.Searchable"/>
+
     <ui:requires component="cocktail.ui.sorting"/>
 
     <ui:property
@@ -21,6 +23,12 @@
 
     <ui:property
         name="instantiableModelsOnly"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
+    <ui:property
+        name="searchable"
         type="boolean"
         reflected="true"
         default="false"/>
@@ -63,6 +71,17 @@
         return entry;
     }
     ?>
+
+    <ui:cocktail.ui.SearchInput id="searchBox">
+        <?on keydown
+        if (
+            e.which == cocktail.ui.keys.HOME
+            || e.which == cocktail.ui.keys.END
+        ) {
+            e.stopPropagation();
+        }
+        ?>
+    </ui:cocktail.ui.SearchInput>
 
     <div id="modelsList"/>
 
