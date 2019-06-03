@@ -6,7 +6,12 @@
     flex-direction: column;
     overflow: hidden;
 }
-
+#panelContent {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    width: 25vw;
+}
 #searchBox {
     width: 100%;
     margin-bottom: 1em;
