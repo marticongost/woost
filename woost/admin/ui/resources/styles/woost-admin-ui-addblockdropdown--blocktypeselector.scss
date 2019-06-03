@@ -1,9 +1,12 @@
 
 @import "woost.admin.ui://styles/common";
 
-#blockTypeSelector {
+:host {
     margin-top: 1em;
-    max-height: 55vh;
+    flex: 1 1 auto;
+}
+
+#modelsList {
     overflow: hidden;
     overflow-y: auto;
     border: 1px solid #ddd;

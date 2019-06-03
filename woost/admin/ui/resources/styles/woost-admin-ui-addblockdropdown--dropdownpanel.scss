@@ -3,6 +3,8 @@
 
 #panelContent {
     display: flex;
+    overflow: hidden;
     flex-direction: column;
+    width: 25vw;
 }
 
