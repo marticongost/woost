@@ -32,7 +32,8 @@
         <ui:cocktail.ui.CheckList
             id="checkList"
             sorted="true"
-            selectionControlsVisible="true">
+            selectionControlsVisible="true"
+            searchable="true">
 
             <?on value:changed
             let value = this.value;
