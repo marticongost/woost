@@ -311,7 +311,7 @@
             id="listingControls"
             buttonStyle="textOnly"/>
 
-        <ui:cocktail.ui.SearchInput id="searchBox">
+        <ui:cocktail.ui.SearchInput id="searchBox" inputDelay="400">
             <?on keydown
             if (e.which == cocktail.ui.keys.DOWN && instance.selectable) {
                 if (!instance.selectable.selectedElements.size) {
