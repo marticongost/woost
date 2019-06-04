@@ -291,7 +291,7 @@ class Import(object):
         ):
             prev_item = obj.get(member, value)
             obj.set(member, value)
-            if value is not prev_item:
+            if value is not prev_item and prev_item is not None:
                 self.__orphans.add(prev_item)
 
         # Non integral members
