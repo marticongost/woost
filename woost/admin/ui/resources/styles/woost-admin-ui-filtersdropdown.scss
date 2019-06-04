@@ -3,20 +3,58 @@
 
 #filtersList {
     @include clear-list-styles;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+#searchBox {
+    width: 100%;
+    margin-bottom: 1em;
 }
 
 .Filter {
 
     .button {
         @include transparent-button;
-        text-align: left;
-        white-space: nowrap;
         cursor: pointer;
-        padding: 0.3em 0;
+        padding: 0.5em 1.5em;
+        text-align: left;
 
-        &:hover {
-            text-decoration: underline;
+    }
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+
+    &.cocktail-ui-Searchable-no_match {
+        display: none;
+    }
+
+    &:hover {
+        background-color: $hl-light-background;
+    }
+
+    &[selected] {
+        color: $selection-foreground;
+        background-color: $selection-background;
+        .button{
+            color: $selection-foreground;
+
         }
+    }
+
+    &:hover[selected] {
+        background-color: $hl-background;
+    }
+
+    .icon {
+        --height: 1.3em;
+        margin-right: 0.8em;
+    }
+
+    .label {
+        flex: 1 1 auto;
     }
 }
 

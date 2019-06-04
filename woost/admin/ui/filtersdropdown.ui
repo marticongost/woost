@@ -2,13 +2,25 @@
 
 <ui:cocktail.ui.ActionListDropdown
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui"
+    searchableEntriesSelector=".Filter"
+    selectableEntriesSelector=".Filter">
+
 
     <ui:requires component="cocktail.ui.sorting"/>
+
+    <ui:using mixin="cocktail.ui.Selectable"/>
+    <ui:using mixin="cocktail.ui.Searchable"/>
 
     <?on action:changed
     this.model = newValue.model;
     ?>
+
+    <ui:property
+        name="searchable"
+        type="boolean"
+        reflected="true"
+        default="false"/>
 
     <ui:property
         name="model"
@@ -41,6 +53,9 @@
     ?>
 
     <ui:with ui:element="dropdownPanel">
+        <ui:resource href="woost.admin.ui://styles/woost-admin-ui-filtersdropdown--dropdownpanel.scss.css"/>
+
+        <ui:cocktail.ui.SearchInput id="searchBox"/>
         <ul id="filtersList"/>
     </ui:with>
 
