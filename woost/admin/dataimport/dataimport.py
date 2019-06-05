@@ -7,8 +7,11 @@ from datetime import date, time, datetime
 from decimal import Decimal
 from fractions import Fraction
 from collections import defaultdict
+from itertools import zip_longest
+
 from cocktail.modeling import GenericMethod
 from cocktail import schema
+
 from woost.models import (
     Item,
     ReadPermission,
