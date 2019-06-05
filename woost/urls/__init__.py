@@ -69,7 +69,10 @@ class URLMapping(object):
                 scheme = "https"
 
         # Custom hostname
-        hostname = host if host not in ("!", "?") else None
+        if host == ".":
+            hostname = get_request_url().hostname
+        else:
+            hostname = host if host not in ("!", "?") else None
 
         # Composition
         for url_scheme in self.schemes:
