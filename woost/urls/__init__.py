@@ -400,7 +400,17 @@ class WebsiteInHostname(URLComponent):
             )
             or (not host and scheme == "https")
         ):
-            url_builder.hostname = website.hosts[0]
+            hosts = website.hosts
+            if len(hosts) > 1:
+                req_hostname = get_request_url().hostname
+                url_builder.hostname = (
+                    req_hostname
+                    if req_hostname in hosts
+                    else hosts[0]
+                )
+            else:
+                url_builder.hostname = hosts[0]
+
             return MATCH
         else:
             return IGNORED
