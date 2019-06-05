@@ -387,6 +387,17 @@ class FixedHostname(URLComponent):
 
 class WebsiteInHostname(URLComponent):
 
+    def choose_hostname(self, website: Website) -> str:
+
+        hosts = website.hosts
+
+        if len(hosts) > 1:
+            req_hostname = get_request_url().hostname
+            if req_hostname in hosts:
+                return req_hostname
+
+        return hosts[0]
+
     def build_url(
         self,
         url_builder,
@@ -403,17 +414,7 @@ class WebsiteInHostname(URLComponent):
             )
             or (not host and scheme == "https")
         ):
-            hosts = website.hosts
-            if len(hosts) > 1:
-                req_hostname = get_request_url().hostname
-                url_builder.hostname = (
-                    req_hostname
-                    if req_hostname in hosts
-                    else hosts[0]
-                )
-            else:
-                url_builder.hostname = hosts[0]
-
+            url_builder.hostname = self.choose_hostname(website)
             return MATCH
         else:
             return IGNORED
