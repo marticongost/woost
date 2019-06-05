@@ -1149,6 +1149,12 @@ woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectio
         return this.section.members;
     }
 
+    get objectRetrievalOptions() {
+        const scope = woost.admin.ui.settingsScope || "config";
+        const model = scope == "config" ? woost.models.Configuration : woost.models.Website;
+        return {members: this.members.filter((key) => model.getMember(key))};
+    }
+
     activate() {
         if (!woost.admin.ui.settingsScope) {
             woost.admin.ui.settingsScope = "config";
