@@ -32,10 +32,6 @@ class File(Publishable):
     admin_show_thumbnails = True
     ui_display = "woost.admin.ui.ItemCard"
     _v_upload_id = None
-
-    edit_node_class = \
-        "woost.controllers.backoffice.fileeditnode.FileEditNode"
-    backoffice_card_view = "woost.views.FileCard"
     video_player = "cocktail.html.MediaElementVideo"
 
     default_mime_type = None
