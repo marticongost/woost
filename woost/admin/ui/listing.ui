@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:requires component="cocktail.ui.delay"/>
     <ui:requires component="woost.admin.ui.ViewSelector"/>
     <ui:requires component="woost.admin.ui.PartitioningMethodSelector"/>
     <ui:requires component="woost.admin.ui.FieldsDropdown"/>
@@ -14,6 +15,7 @@
     <ui:symbol name="NAVIGATING"/>
     <ui:symbol name="UPDATE"/>
     <ui:symbol name="UPDATED_AT_LEAST_ONCE"/>
+    <ui:symbol name="FILTERS_DELAY"/>
 
     <?class
     get actionSlotPrefix() {
@@ -239,7 +241,7 @@
         reflected="false">
         <?on changed
         if (!this[NAVIGATING] && oldValue !== undefined) {
-            cocktail.navigation.node.updateQueryStringWithFilters(newValue);
+            this[FILTERS_DELAY].begin();
         }
         ?>
     </ui:property>
@@ -357,6 +359,10 @@
     ?>
 
     <?js
+    this[FILTERS_DELAY] = new cocktail.ui.Delay(
+        400,
+        () => cocktail.navigation.node.updateQueryStringWithFilters(this.filters)
+    );
     cocktail.ui.link(this, this.searchBox, ["search", "value"]);
     cocktail.ui.link(this, this.filtersBar, "filters");
     this.defaultActionList = this.actionList;
