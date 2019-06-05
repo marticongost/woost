@@ -264,7 +264,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
             if (isNaN(key)) {
                 return null;
             }
-            model = this.model;
+            model = this.model || woost.models.Item;
         }
 
         return model.getInstance(key, this.objectRetrievalOptions);
