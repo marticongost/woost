@@ -251,13 +251,27 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
             return null;
         }
 
-        if (key == "config" || key.startsWith("website-")) {
-            return woost.models.Item.getInstance(key);
+        let model;
+
+        if (key == "config") {
+            model = woost.models.Configuration;
+        }
+        else if (key.startsWith("website-")) {
+            model = woost.models.Website;
         }
         else {
-            const id = Number(key);
-            return isNaN(id) ? null : woost.models.Item.getInstance(id);
+            key = Number(key);
+            if (isNaN(key)) {
+                return null;
+            }
+            model = this.model;
         }
+
+        return model.getInstance(key, this.objectRetrievalOptions);
+    }
+
+    get objectRetrievalOptions() {
+        return null;
     }
 
     get consumesKeySegment() {
