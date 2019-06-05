@@ -16,7 +16,6 @@ class TextBlock(Block):
     instantiable = True
     views = ["woost.views.TextBlockView"]
     ui_autofocus_member = "text"
-    block_display = "woost.views.TextBlockDisplay"
 
     groups_order = [
         "content",

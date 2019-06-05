@@ -38,12 +38,6 @@ class Block(Item):
         "blocks.forms",
         "blocks.custom"
     ]
-    block_display = "woost.views.BlockDisplay"
-    edit_node_class = (
-        "woost.controllers.backoffice.blockeditnode."
-        "BlockEditNode"
-    )
-    backoffice_card_view = "woost.views.BlockCard"
     views = []
     source_block = None
 

@@ -22,7 +22,6 @@ class PublishableObject(object):
     """
     cacheable = True
     cacheable_server_side = True
-    backoffice_card_view = "woost.views.PublishableCard"
     type_group = "publishable"
 
     any_language = object()

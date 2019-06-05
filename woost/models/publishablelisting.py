@@ -20,7 +20,6 @@ class PublishableListing(Block):
 
     instantiable = True
     type_group = "blocks.listings"
-    block_display = "woost.views.PublishableListingDisplay"
     views = [
         "woost.views.PublishableTextualListing",
         "woost.views.PublishableIconListing",

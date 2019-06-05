@@ -153,15 +153,8 @@ class Item(PersistentObject):
 
             self.global_id = "%s-%d" % (app.installation_id, self.id)
 
-    # Backoffice customization
+    # Delete control
     #--------------------------------------------------------------------------
-    edit_node_class = "woost.controllers.backoffice.editstack.EditNode"
-    edit_view = "woost.views.BackOfficeFieldsView"
-    edit_form = "woost.views.ContentForm"
-    edit_controller = \
-        "woost.controllers.backoffice.itemfieldscontroller." \
-        "ItemFieldsController"
-
     __deleted = False
 
     @property

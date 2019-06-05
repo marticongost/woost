@@ -51,12 +51,7 @@ class User(Item):
     type_group = "users"
     admin_show_descriptions = False
     admin_edit_view = "woost.admin.ui.UserEditView"
-    edit_form = "woost.views.UserForm"
-    edit_node_class = \
-        "woost.controllers.backoffice.usereditnode.UserEditNode"
-
     encryption_method = sha1
-
     anonymous = False
 
     groups_order = [
@@ -96,7 +91,6 @@ class User(Item):
         searchable = False,
         text_search = False,
         min = 8,
-        visible_in_detail_view = False,
         edit_control = display_factory(
             "cocktail.html.PasswordBox",
             autocomplete = "off"

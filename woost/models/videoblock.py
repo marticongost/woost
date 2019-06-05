@@ -13,7 +13,6 @@ from .block import Block
 class VideoBlock(Block):
 
     instantiable = True
-    block_display = "woost.views.VideoBlockDisplay"
     views = [
         "woost.views.VideoBlockView",
         "woost.views.VideoPopUp"
