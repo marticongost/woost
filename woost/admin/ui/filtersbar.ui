@@ -19,7 +19,7 @@
         this.empty = !newValue.length;
         let currentEntry = this.filtersList.firstChild;
         for (let filter of newValue) {
-            while (currentEntry && currentEntry.dataBinding.member !== filter.member) {
+            while (currentEntry && currentEntry.dataBinding.member.fullName !== filter.member.fullName) {
                 let nextEntry = currentEntry.nextSibling;
                 this.filtersList.removeChild(currentEntry);
                 currentEntry = nextEntry;
