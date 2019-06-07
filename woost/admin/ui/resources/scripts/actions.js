@@ -1,363 +1,160 @@
 
 cocktail.declare("woost.admin.actions");
 
-{
-    const actionMap = {};
-    const actionList = [];
+woost.admin.actions.attempt = function (promise, options = null) {
 
-    woost.admin.actions.attempt = function (promise, options = null) {
-
-        if (options && options.lock) {
-            cocktail.ui.Lock.show(options.lock);
-        }
-
-        return promise
-            .then((newState) => {
-                if (options && options.successNotice) {
-                    cocktail.ui.Notice.show(options.successNotice);
-                }
-            })
-            .catch((e) => {
-                if (
-                    options
-                    && options.errorNotice
-                    && (
-                        !options.showErrorNotice
-                        || options.showErrorNotice(e)
-                    )
-                ) {
-                    cocktail.ui.Notice.show(options.errorNotice);
-                }
-            })
-            .finally(() => {
-                if (options && options.lock) {
-                    cocktail.ui.Lock.clear();
-                }
-            });
+    if (options && options.lock) {
+        cocktail.ui.Lock.show(options.lock);
     }
 
-    woost.admin.actions.forContext = function* (context = null) {
-        for (let actionRegistration of actionList) {
-            if (actionRegistration.matchesContext(context)) {
-                yield actionRegistration.createAction(context);
+    return promise
+        .then((newState) => {
+            if (options && options.successNotice) {
+                cocktail.ui.Notice.show(options.successNotice);
             }
-        }
-    }
-
-    Object.defineProperty(
-        woost.admin.actions,
-        "registrations",
-        {
-            get() {
-                return Object.freeze(actionList);
+        })
+        .catch((e) => {
+            if (
+                options
+                && options.errorNotice
+                && (
+                    !options.showErrorNotice
+                    || options.showErrorNotice(e)
+                )
+            ) {
+                cocktail.ui.Notice.show(options.errorNotice);
             }
-        }
-    );
-
-    woost.admin.actions.getRegistration = function (id) {
-        return actionMap[id];
-    }
-
-    woost.admin.actions.Action = class Action extends cocktail.ui.Action {
-
-        constructor(id, parameters = null, context = null) {
-            super(id, parameters && parameters.position);
-            for (let key in context) {
-                this[key] = context[key];
+        })
+        .finally(() => {
+            if (options && options.lock) {
+                cocktail.ui.Lock.clear();
             }
-        }
-
-        static matchesContext(context) {
-            return true;
-        }
-
-        static register(parameters) {
-
-            if (!parameters) {
-                throw new woost.admin.actions.ActionRegistrationError(
-                    "Missing registration parameters"
-                );
-            }
-
-            let id = parameters.id;
-            if (!parameters.id) {
-                throw new woost.admin.actions.ActionRegistrationError(
-                    "Missing action ID"
-                );
-            }
-
-            if (id in actionMap) {
-                throw new woost.admin.actions.ActionRegistrationError(
-                    `An action with ID "${id}" already exists`
-                );
-            }
-
-            let actionRegistration = new woost.admin.actions.ActionRegistration(this, parameters);
-            let order = parameters.order;
-
-            if (order === null || order === undefined) {
-                actionMap[id] = actionRegistration;
-                actionList.push(actionRegistration);
-            }
-            else if (typeof(order) == "string") {
-                try {
-                    let [placement, anchorId] = order.split(" ");
-                }
-                catch (e) {
-                    throw new woost.admin.actions.ActionRegistrationError(
-                        `"${order}" is not a valid order string; expected "before ACTION_ID" or "after ACTION_ID"`
-                    );
-                }
-
-                let anchor = actionMap[anchorId];
-
-                if (!anchor) {
-                    throw new woost.admin.actions.ActionRegistrationError(
-                        `Invalid anchor "${anchorId}"; no action with that ID exists`
-                    );
-                }
-
-                let anchorIndex = actionList.indexOf(anchor);
-
-                if (placement == "after") {
-                    anchorIndex++;
-                }
-                else if (placement != "before") {
-                    throw new woost.admin.actions.ActionRegistrationError(
-                        `Invalid placement "${placement}"; expected "after" or "before"`
-                    );
-                }
-
-                actionMap[id] = actionRegistration;
-                actionList.splice(anchorIndex, 0, actionRegistration);
-            }
-            else {
-                throw new woost.admin.actions.ActionRegistrationError(
-                    `Invalid order "${order}", expected null or a string`
-                );
-            }
-        }
-
-        static get defaultMatchingModels() {
-            return [woost.models.Item];
-        }
-
-        get translationPrefix() {
-            return "woost.admin.actions";
-        }
-
-        get iconURL() {
-            return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/${this.id}.svg`)
-        }
-
-        attempt(promise, options = null) {
-
-            if (!options) {
-                options = {};
-            }
-
-            // Default lock UI
-            if (options.lock === undefined) {
-                options.lock = {};
-            }
-
-            if (options.lock) {
-
-                if (options.lock.icon === undefined) {
-                    options.lock.icon = this.iconURL;
-                }
-
-                if (options.lock.message === undefined) {
-                    options.lock.message = (
-                        cocktail.ui.translations[this.translationKey + ".lock"]
-                        || cocktail.ui.translations["woost.admin.actions.defaultLock"]
-                    );
-                }
-            }
-
-            // Default success notice
-            if (options.successNotice === undefined) {
-                options.successNotice = {};
-            }
-
-            if (options.successNotice) {
-
-                if (options.successNotice.category === undefined) {
-                    options.successNotice.category = "success";
-                }
-
-                if (options.successNotice.summary === undefined) {
-                    options.successNotice.summary = (
-                        cocktail.ui.translations[this.translationKey + ".successNotice"]
-                        || cocktail.ui.translations["woost.admin.actions.defaultSuccessNotice"]
-                    );
-                }
-            }
-
-            // Default error notice
-            if (options.errorNotice === undefined) {
-                options.errorNotice = {};
-            }
-
-            if (options.errorNotice) {
-
-                if (options.errorNotice.category === undefined) {
-                    options.errorNotice.category = "error";
-                }
-
-                if (options.errorNotice.summary === undefined) {
-                    options.errorNotice.summary = (
-                        cocktail.ui.translations[this.translationKey + ".errorNotice"]
-                        || cocktail.ui.translations["woost.admin.actions.defaultErrorNotice"]
-                    );
-                }
-            }
-
-            return woost.admin.actions.attempt(promise, options);
-        }
-    }
+        });
 }
 
-{
-    const ID = Symbol.for("woost.admin.actions.ActionRegistration.ID");
-    const ACTION_CLASS = Symbol.for("woost.admin.actions.ActionRegistration.ACTION_CLASS");
-    const MATCHING_MODELS = Symbol.for("woost.admin.actions.ActionRegistration.MATCHING_MODELS");
-    const MATCHING_SLOTS = Symbol.for("woost.admin.actions.ActionRegistration.MATCHING_SLOTS");
+woost.admin.actions.Action = class Action extends cocktail.ui.Action {
 
-    woost.admin.actions.ActionRegistration = class ActionRegistration {
-
-        constructor(actionClass, parameters) {
-            this[ACTION_CLASS] = actionClass;
-            this[ID] = parameters.id;
-            this[MATCHING_MODELS] = new Set();
-            this[MATCHING_SLOTS] = new Set();
-            this.actionParameters = parameters.parameters;
-            this.enabled = true;
-            this.requiredPermission = parameters.requiredPermission;
-
-            cocktail.sets.update(this[MATCHING_MODELS], parameters.models || actionClass.defaultMatchingModels);
-
-            if (parameters.slots) {
-                cocktail.sets.update(this[MATCHING_SLOTS], parameters.slots);
-            }
+    constructor(id, parameters = null, context = null) {
+        super(id, parameters && parameters.position);
+        for (let key in context) {
+            this[key] = context[key];
         }
+    }
 
-        createAction(context) {
-            return new this.actionClass(this[ID], this.actionParameters, context);
-        }
+    compatibleWith(context) {
 
-        get actionClass() {
-            return this[ACTION_CLASS];
-        }
-
-        get id() {
-            return this[ID];
-        }
-
-        get matchingModels() {
-            return Object.freeze(this[MATCHING_MODELS]);
-        }
-
-        set matchingModels(value) {
-            const models = new Set();
-            cocktail.sets.update(models, value);
-            this[MATCHING_MODELS] = models;
-        }
-
-        addMatchingModel(model) {
-            this[MATCHING_MODELS].add(model);
-        }
-
-        removeMatchingModel(model) {
-            return this[MATCHING_MODELS].remove(model);
-        }
-
-        get matchingSlots() {
-            return Object.freeze(this[MATCHING_SLOTS]);
-        }
-
-        set matchingSlots(value) {
-            const slots = new Set();
-            cocktail.sets.update(slots, value);
-            this[MATCHING_SLOTS] = slots;
-        }
-
-        addMatchingSlot(slot) {
-            this[MATCHING_SLOTS].add(slot);
-        }
-
-        removeMatchingSlot(slot) {
-            return this[MATCHING_SLOTS].remove(slot);
-        }
-
-        matchesContext(context) {
-
-            if (!this.enabled) {
-                return false;
-            }
-
-            if (context.model && !this.matchesModel(context.model)) {
-                return false;
-            }
-
-            if (context.slot && !this.matchesSlot(context.slot)) {
-                return false;
-            }
-
-            if (this.actionClass && !this.actionClass.matchesContext(context)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        matchesModel(model) {
-
-            if (this.requiredPermission && !woost.models.hasPermission(model, this.requiredPermission)) {
-                return false;
-            }
-
-            let matchingModels = this[MATCHING_MODELS];
-            model = model.originalMember;
-
-            while (model) {
-                if (matchingModels.has(model)) {
-                    return true;
-                }
-                model = model.base;
-            }
-
+        if (!super.compatibleWith(context)) {
             return false;
         }
 
-        matchesSlot(slot) {
-            return this[MATCHING_SLOTS].has(slot);
+        const model = context.model;
+        if (model && !this.matchesModel(model)) {
+            return false;
         }
+
+        return true;
+    }
+
+    get requiredPermission() {
+        return null;
+    }
+
+    matchesModel(model) {
+
+        if (this.requiredPermission && !woost.models.hasPermission(model, this.requiredPermission)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    get translationPrefix() {
+        return "woost.admin.actions";
+    }
+
+    getIconURL(context) {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/${this.id}.svg`)
+    }
+
+    attempt(promise, options = null) {
+
+        if (!options) {
+            options = {};
+        }
+
+        // Default lock UI
+        if (options.lock === undefined) {
+            options.lock = {};
+        }
+
+        if (options.lock) {
+
+            if (options.lock.icon === undefined) {
+                options.lock.icon = this.iconURL;
+            }
+
+            if (options.lock.message === undefined) {
+                options.lock.message = (
+                    cocktail.ui.translations[this.translationKey + ".lock"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultLock"]
+                );
+            }
+        }
+
+        // Default success notice
+        if (options.successNotice === undefined) {
+            options.successNotice = {};
+        }
+
+        if (options.successNotice) {
+
+            if (options.successNotice.category === undefined) {
+                options.successNotice.category = "success";
+            }
+
+            if (options.successNotice.summary === undefined) {
+                options.successNotice.summary = (
+                    cocktail.ui.translations[this.translationKey + ".successNotice"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultSuccessNotice"]
+                );
+            }
+        }
+
+        // Default error notice
+        if (options.errorNotice === undefined) {
+            options.errorNotice = {};
+        }
+
+        if (options.errorNotice) {
+
+            if (options.errorNotice.category === undefined) {
+                options.errorNotice.category = "error";
+            }
+
+            if (options.errorNotice.summary === undefined) {
+                options.errorNotice.summary = (
+                    cocktail.ui.translations[this.translationKey + ".errorNotice"]
+                    || cocktail.ui.translations["woost.admin.actions.defaultErrorNotice"]
+                );
+            }
+        }
+
+        return woost.admin.actions.attempt(promise, options);
     }
 }
 
-woost.admin.actions.ActionRegistrationError = class ActionRegistrationError {
-
-    constructor(message) {
-        this.message = message;
-    }
-
-    toString() {
-        return this.message;
-    }
-}
-
-// -- Action declaration --
+/* Available actions
+-----------------------------------------------------------------------------*/
 woost.admin.actions.SelectViewAction = class SelectViewAction extends woost.admin.actions.Action {
 
-    createEntry() {
-        return woost.admin.ui.ViewSelector.create();
+    static get defaultComponent() {
+        return woost.admin.ui.ViewSelector;
     }
 }
 
 woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMethodAction extends woost.admin.actions.Action {
 
-    static matchesContext(context) {
+    matchesContext(context) {
         if (
             !context.node
             || !context.node.availablePartitioningMethods
@@ -368,8 +165,8 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
         return super.matchesContext(context);
     }
 
-    createEntry() {
-        return woost.admin.ui.PartitioningMethodSelector.create();
+    static get defaultComponent() {
+        return woost.admin.ui.PartitioningMethodSelector;
     }
 }
 
@@ -378,39 +175,37 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
 
     woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
 
-        constructor(id, parameters = null, context = null) {
-            super(id, parameters, context);
-            this[ELIGIBLE_MODELS] = Array.from(this.model.schemaTree()).filter((model) => this.modelIsEligible(model));
+        get requiredPermission() {
+            return "create";
         }
 
-        get eligibleModels() {
-            return this[ELIGIBLE_MODELS];
+        getEligibleModels(context) {
+            return Array.from(context.model.schemaTree()).filter((model) => this.modelIsEligible(model, context));
         }
 
-        modelIsEligible(model) {
+        modelIsEligible(model, context) {
             return (
                 model.instantiable
                 && woost.models.hasPermission(model, "create")
                 && !(
-                    this.view.navigationNode
-                    && this.view.navigationNode.instantiableModels
-                    && !this.view.navigationNode.instantiableModels.includes(model)
+                    context.instantiableModels
+                    && !context.instantiableModels.includes(model)
                 )
             );
         }
 
-        createEntry() {
-            if (this[ELIGIBLE_MODELS].length > 1) {
-                return woost.admin.ui.NewObjectDropdown.create();
+        getComponent(context) {
+            if (this.getEligibleModels(context).length > 1) {
+                return woost.admin.ui.NewObjectDropdown;
             }
             else {
-                return super.createEntry();
+                return super.getComponent(context);
             }
         }
 
         invoke(context) {
-            const relation = this.reference || this.collection;
-            const model = context.selectedModel || this.model.originalMember;
+            const relation = context.reference || context.collection;
+            const model = context.selectedModel || context.model.originalMember;
 
             // Create an object and add it to a relation
             if (relation) {
@@ -427,28 +222,28 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
 woost.admin.actions.ListAction = class ListAction extends woost.admin.actions.Action {
 
     getState(context) {
-        if (this.reference.integral) {
+        if (context.reference.integral) {
             return "hidden";
         }
         return super.getState(context);
     }
 
     invoke(context) {
-        cocktail.navigation.extendPath("rel", this.reference.name, "select");
+        cocktail.navigation.extendPath("rel", context.reference.name, "select");
     }
 }
 
 woost.admin.actions.AddAction = class AddAction extends woost.admin.actions.Action {
 
     getState(context) {
-        if (this.collection.integral) {
+        if (context.collection.integral) {
             return "hidden";
         }
         return super.getState(context);
     }
 
     invoke(context) {
-        cocktail.navigation.extendPath("rel", this.collection.name, "select");
+        cocktail.navigation.extendPath("rel", context.collection.name, "select");
     }
 }
 
@@ -479,7 +274,7 @@ woost.admin.actions.ClearAction = class ClearAction extends woost.admin.actions.
     }
 
     invoke(context) {
-        this.view.clearValue();
+        context.view.clearValue();
     }
 }
 
@@ -495,8 +290,8 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
 
     getState(context) {
         if (
-            (this.slot == "collectionToolbar" && context.collectionIsEmpty)
-            || (this.slot == "referenceToolbar" && !(context.selection && context.selection.length))
+            (context.slot == "collection-toolbar" && context.collectionIsEmpty)
+            || (context.slot == "reference-toolbar" && !(context.selection && context.selection.length))
         ) {
             return "hidden";
         }
@@ -516,13 +311,13 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
             cocktail.navigation.extendPath("rel", context.objectPath);
         }
         // Edit an item in an integral collection
-        else if (this.collection && this.collection.integral) {
-            const element = this.view.selectedElement;
-            cocktail.navigation.extendPath("rel", this.collection.name + "-" + element.dataBinding.index);
+        else if (context.collection && context.collection.integral) {
+            const element = context.view.selectedElement;
+            cocktail.navigation.extendPath("rel", context.collection.name + "-" + element.dataBinding.index);
         }
         // Edit an item in an integral reference
-        else if (this.reference && this.reference.integral) {
-            cocktail.navigation.extendPath("rel", this.reference.name);
+        else if (context.reference && context.reference.integral) {
+            cocktail.navigation.extendPath("rel", context.reference.name);
         }
         // Non integral relation
         else {
@@ -543,7 +338,7 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
 
     getState(context) {
 
-        if (this.editingSettings) {
+        if (context.editingSettings) {
             return "hidden";
         }
 
@@ -578,17 +373,17 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
         return 1;
     }
 
-    static get defaultMatchingModels() {
-        return [woost.models.Publishable];
+    matchesModel(model) {
+        return model.originalMember.isSchema(woost.models.Publishable);
     }
 
     getState(context) {
 
-        if (this.slot == "editToolbar" && context.selection[0]._new) {
+        if (context.slot == "edit-toolbar" && context.selection[0]._new) {
             return "hidden";
         }
 
-        if (this.slot == "collectionToolbar" && context.collectionIsEmpty) {
+        if (context.slot == "collection-toolbar" && context.collectionIsEmpty) {
             return "hidden";
         }
 
@@ -608,17 +403,21 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
         return 1;
     }
 
+    get requiredPermission() {
+        return "delete";
+    }
+
     getState(context) {
 
-        if (this.editingSettings) {
+        if (context.editingSettings) {
             return "hidden";
         }
 
-        if (this.slot == "editToolbar" && context.selection[0]._new) {
+        if (context.slot == "edit-toolbar" && context.selection[0]._new) {
             return "hidden";
         }
 
-        if (this.slot == "collectionToolbar" && (context.collectionIsEmpty || this.collection.integral)) {
+        if (context.slot == "collection-toolbar" && (context.collectionIsEmpty || context.collection.integral)) {
             return "hidden";
         }
 
@@ -633,7 +432,7 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
 
 woost.admin.actions.ConfirmDeleteAction = class ConfirmDeleteAction extends woost.admin.actions.Action {
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`)
     }
 
@@ -736,63 +535,81 @@ woost.admin.actions.ExcelAction = class ExcelAction extends woost.admin.actions.
 
 woost.admin.actions.FieldsAction = class FieldsAction extends woost.admin.actions.Action {
 
-    createEntry() {
-        return woost.admin.ui.FieldsDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.FieldsDropdown;
     }
 }
 
 woost.admin.actions.LocalesAction = class LocalesAction extends woost.admin.actions.Action {
 
-    createEntry() {
-        return woost.admin.ui.LocalesDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.LocalesDropdown;
     }
 }
 
 woost.admin.actions.FiltersAction = class FiltersAction extends woost.admin.actions.Action {
 
-    createEntry() {
-        return woost.admin.ui.FiltersDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.FiltersDropdown;
+    }
+}
+
+woost.admin.actions.SearchAction = class SearchAction extends woost.admin.actions.Action {
+
+    static get defaultComponent() {
+        return woost.admin.ui.Listing.SearchBox;
+    }
+}
+
+woost.admin.actions.ResultCountAction = class ResultCountAction extends woost.admin.actions.Action {
+
+    static get defaultComponent() {
+        return woost.admin.ui.Listing.ResultCount;
     }
 }
 
 woost.admin.actions.SettingsScopeAction = class SettingsScopeAction extends woost.admin.actions.Action {
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/settings-scope.svg`)
     }
 
-    translate() {
-        return this.model.translateValue(this.item);
+    translate(context) {
+        return context.model.translateValue(context.item);
     }
 
     getState(context) {
-        if (!this.editingSettings) {
+        if (!context.editingSettings) {
             return "hidden";
         }
         return super.getState(context);
     }
 
-    createEntry() {
-        return woost.admin.ui.SettingsScopeDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.SettingsScopeDropdown;
     }
 }
 
 woost.admin.actions.TranslationsAction = class TranslationsAction extends woost.admin.actions.Action {
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/locales.svg`)
     }
 
     getState(context) {
-        if (!this.editingTranslatedContent) {
+        if (!context.editingTranslatedContent) {
             return "hidden";
         }
         return super.getState(context);
     }
 
-    createEntry() {
-        const entry = woost.admin.ui.TranslationsDropdown.create();
-        if (!this.insideBlockEditPanel) {
+    static get defaultComponent() {
+        return woost.admin.ui.TranslationsDropdown;
+    }
+
+    createUI(context = null) {
+        const entry = super.createUI(context);
+        if (context.slot != "edit-block-toolbar") {
             entry.dropdownPanel.panelAlignment = "end";
         }
         return entry;
@@ -809,12 +626,12 @@ woost.admin.actions.AddBlockAction = class AddBlockAction extends woost.admin.ac
         return 1;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/add.svg`)
     }
 
-    createEntry() {
-        return woost.admin.ui.AddBlockDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.AddBlockDropdown;
     }
 }
 
@@ -837,12 +654,12 @@ woost.admin.actions.RemoveBlockAction = class RemoveBlockAction extends woost.ad
         return `${this.translationPrefix}.delete`;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`)
     }
 
     invoke(context) {
-        this.view.blocksTree.deleteBlocks(context.selection);
+        context.view.blocksTree.deleteBlocks(context.selection);
     }
 }
 
@@ -850,7 +667,7 @@ woost.admin.actions.ToggleRulersAction = class ToggleRulersAction extends woost.
 
     getState(context) {
         const state = super.getState(context);
-        if (state == "visible" && this.view.gridRulers) {
+        if (state == "visible" && context.view.gridRulers) {
             return "emphasized";
         }
         else {
@@ -859,7 +676,7 @@ woost.admin.actions.ToggleRulersAction = class ToggleRulersAction extends woost.
     }
 
     invoke(context) {
-        this.view.gridRulers = !this.view.gridRulers;
+        context.view.gridRulers = !context.view.gridRulers;
     }
 }
 
@@ -867,7 +684,7 @@ woost.admin.actions.ToggleSelectorsAction = class ToggleSelectorsAction extends 
 
     getState(context) {
         const state = super.getState(context);
-        if (state == "visible" && this.view.selectorsVisible) {
+        if (state == "visible" && context.view.selectorsVisible) {
             return "emphasized";
         }
         else {
@@ -876,7 +693,7 @@ woost.admin.actions.ToggleSelectorsAction = class ToggleSelectorsAction extends 
     }
 
     invoke(context) {
-        this.view.selectorsVisible = !this.view.selectorsVisible;
+        context.view.selectorsVisible = !context.view.selectorsVisible;
     }
 }
 
@@ -886,8 +703,8 @@ woost.admin.actions.SetGridSizeAction = class SetGridSizeAction extends woost.ad
         return "";
     }
 
-    createEntry() {
-        return woost.admin.ui.GridSizeDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.GridSizeDropdown;
     }
 }
 
@@ -897,14 +714,14 @@ woost.admin.actions.SetPreviewLanguageAction = class SetPreviewLanguageAction ex
         return "";
     }
 
-    createEntry() {
-        return woost.admin.ui.PreviewLanguageDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.PreviewLanguageDropdown;
     }
 }
 
 woost.admin.actions.RefreshPreviewAction = class RefreshPreviewAction extends woost.admin.actions.Action {
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/refresh.svg`)
     }
 
@@ -912,8 +729,8 @@ woost.admin.actions.RefreshPreviewAction = class RefreshPreviewAction extends wo
         return `${this.translationPrefix}.refresh`;
     }
 
-    invoke() {
-        this.view.loadPreview();
+    invoke(context) {
+        context.view.loadPreview();
     }
 }
 
@@ -925,7 +742,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
     getState(context) {
         let state = super.getState(context);
-        if (state == "visible" && this.view.editForm && this.view.editForm.modified) {
+        if (state == "visible" && context.view.editForm && context.view.editForm.modified) {
             return "emphasized";
         }
         return state;
@@ -933,7 +750,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
     invoke(context) {
 
-        const form = this.view.editForm;
+        const form = context.view.editForm;
 
         let serializationParameters = {
             includeMember: (member) => {
@@ -946,28 +763,28 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
         };
 
         const state = form.getJSONValue(serializationParameters);
-        const id = this.item.id
-        const isNew = this.item._new;
+        const id = context.item.id
+        const isNew = context.item._new;
 
         state.id = id;
         state._new = isNew;
 
         const transaction = woost.models.transaction({
             objects: [state],
-            dry_run: this.editingIntegralChild
+            dry_run: context.editingIntegralChild
         })
             .then((response) => {
 
                 // New object
                 if (isNew) {
                     const newState = response.changes.created[id];
-                    newState._new = this.editingIntegralChild;
+                    newState._new = context.editingIntegralChild;
 
                     if (!newState.id) {
                         newState.id = id;
                     }
 
-                    if (this.editingIntegralChild) {
+                    if (context.editingIntegralChild) {
                         woost.admin.actions.addToParent([newState]);
                     }
                     else {
@@ -1002,7 +819,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     form.errors = [];
                     form.acceptModifications();
                     if (cocktail.navigation.node.objectPath) {
-                        woost.admin.actions.addToParent([newState], null, this.editingIntegralChild);
+                        woost.admin.actions.addToParent([newState], null, context.editingIntegralChild);
                     }
                 }
             })
@@ -1016,14 +833,14 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
         const options = {};
         options.showErrorNotice = (e) => !(e instanceof woost.models.ValidationError);
 
-        if (this.editingIntegralChild) {
+        if (context.editingIntegralChild) {
             options.successNotice = null;
         }
         else {
             options.successNotice = {
                 summary: cocktail.ui.translations[
                     this.translationKey
-                    + (this.item._new ? ".createdNotice" : "modifiedNotice")
+                    + (context.item._new ? ".createdNotice" : "modifiedNotice")
                 ]
             };
         }
@@ -1036,11 +853,11 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ba
 
     getState(context) {
 
-        if (this.objectPath && this.objectPath[0].member.integral) {
+        if (context.objectPath && context.objectPath[0].member.integral) {
             return "hidden";
         }
 
-        if (!woost.models.hasPermission(this.item, "modify")) {
+        if (!woost.models.hasPermission(context.item, "modify")) {
             return "hidden";
         }
 
@@ -1050,7 +867,7 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ba
 
 woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction extends woost.admin.actions.BaseSaveAction {
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
     }
 
@@ -1059,7 +876,7 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
     }
 
     getState(context) {
-        if (!(this.objectPath && this.objectPath[0].member.integral) || this.insideBlockEditPanel) {
+        if (!(context.objectPath && context.objectPath[0].member.integral) || context.insideBlockEditPanel) {
             return "hidden";
         }
         return super.getState(context);
@@ -1069,28 +886,28 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
     getState(context) {
-        if (this.view.isStackRoot || this.editingBlocks) {
+        if (context.view.isStackRoot || context.editingBlocks) {
             return "hidden";
         }
         return super.getState(context);
     }
 
-    get iconURL() {
-        if (this.insideBlockEditPanel) {
+    getIconURL(context) {
+        if (context.insideBlockEditPanel) {
             return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/close-block.svg`);
         }
-        return super.iconURL;
+        return super.getIconURL(context);
     }
 
-    get translationKey() {
-        if (this.insideBlockEditPanel) {
-            return `${this.translationPrefix}.close-block`;
+    translate(context) {
+        if (context.insideBlockEditPanel) {
+            return cocktail.ui.translations[`${this.translationPrefix}.close-block`];
         }
-        return super.translationKey;
+        return super.translate(context);
     }
 
-    invoke() {
-        woost.admin.actions.up(this.node);
+    invoke(context) {
+        woost.admin.actions.up(context.node);
     }
 }
 
@@ -1101,7 +918,7 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
         this.requiresPendingChanges = parameters && parameters.requiresPendingChanges || false;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
     }
 
@@ -1196,8 +1013,12 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
         return `${this.translationPrefix}.accept`;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
+    }
+
+    compatibleWith(context) {
+        return context.node.relation && super.compatibleWith(context);
     }
 
     getState(context) {
@@ -1221,8 +1042,8 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
 
     invoke(context) {
         woost.admin.actions.addToParent(
-            this.filterSelection(context.selection),
-            this.node
+            context.filterSelection(context.selection),
+            context.node
         );
     }
 }
@@ -1233,8 +1054,12 @@ woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends 
         return `${this.translationPrefix}.cancel`;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
+    }
+
+    compatibleWith(context) {
+        return context.node.relation && super.compatibleWith(context);
     }
 }
 
@@ -1312,7 +1137,7 @@ woost.admin.actions.PasteBlocksAction = class PasteBlocksAction extends woost.ad
         return 1;
     }
 
-    get iconURL() {
+    getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/paste.svg`);
     }
 
@@ -1320,223 +1145,169 @@ woost.admin.actions.PasteBlocksAction = class PasteBlocksAction extends woost.ad
         return `${this.translationPrefix}.paste`;
     }
 
-    createEntry() {
-        return woost.admin.ui.PasteBlocksDropdown.create();
+    static get defaultComponent() {
+        return woost.admin.ui.PasteBlocksDropdown;
     }
 }
 
-// -- Action registration --
-woost.admin.actions.SelectViewAction.register({
-    id: "select-view",
-    slots: ["listingToolbar", "relationSelectorToolbar"]
-});
-
-woost.admin.actions.NewAction.register({
-    id: "new",
-    slots: [
-        "listingToolbar",
-        "referenceToolbar",
-        "collectionToolbar"
-    ],
-    requiredPermission: "create"
-});
-
-woost.admin.actions.AddAction.register({
-    id: "add",
-    slots: ["collectionToolbar"]
-});
-
-woost.admin.actions.RemoveAction.register({
-    id: "remove",
-    slots: ["collectionToolbar"]
-});
-
-woost.admin.actions.ListAction.register({
-    id: "list",
-    slots: ["referenceToolbar"]
-});
-
-woost.admin.actions.ClearAction.register({
-    id: "clear",
-    slots: ["referenceToolbar"]
-});
-
-woost.admin.actions.AddBlockAction.register({
-    id: "add-block",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.EditAction.register({
-    id: "edit",
-    slots: [
-        "contextMenu",
-        "listingToolbar",
-        "blocksToolbar",
-        "referenceToolbar",
-        "collectionToolbar"
+/* Action sets
+-----------------------------------------------------------------------------*/
+woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            entries: [
+                new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.OpenURLAction("open-url"),
+                new woost.admin.actions.DeleteAction("delete")
+            ]
+        }),
+        new cocktail.ui.ActionSet("extra", {
+            entries: [
+                new woost.admin.actions.ClearCacheAction("clear-cache")
+            ]
+        })
     ]
 });
 
-woost.admin.actions.EditBlocksAction.register({
-    id: "blocks",
-    slots: ["editToolbar"]
-});
-
-woost.admin.actions.OpenURLAction.register({
-    id: "open-url",
-    slots: [
-        "contextMenu",
-        "listingToolbar",
-        "relationSelectorToolbar",
-        "editToolbar",
-        "collectionToolbar"
+woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            entries: [
+                new woost.admin.actions.SelectViewAction("select-view"),
+                new woost.admin.actions.NewAction("new"),
+                new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.OpenURLAction("open-url"),
+                new woost.admin.actions.DeleteAction("delete")
+            ]
+        }),
+        new cocktail.ui.ActionSet("extra", {
+            component: () => cocktail.ui.ExtraActionList,
+            entries: [
+                new woost.admin.actions.RefreshAction("refresh"),
+                new woost.admin.actions.ClearCacheAction("clear-cache"),
+                new woost.admin.actions.ExcelAction("excel")
+            ]
+        }),
+        new cocktail.ui.ActionSet("controls", {
+            component: () => cocktail.ui.ActionList.withProperties({
+                buttonStyle: "textOnly"
+            }),
+            entries: [
+                new woost.admin.actions.SelectPartitioningMethodAction("select-partitioning-method"),
+                new woost.admin.actions.FieldsAction("fields"),
+                new woost.admin.actions.LocalesAction("locales"),
+                new woost.admin.actions.FiltersAction("filters"),
+                new woost.admin.actions.SearchAction("search"),
+                new woost.admin.actions.ResultCountAction("result-count")
+            ]
+        }),
+        new cocktail.ui.ActionSet("navigation", {
+            entries: [
+                new woost.admin.actions.AcceptSelectionAction("accept-selection"),
+                new woost.admin.actions.CancelSelectionAction("cancel-selection")
+            ]
+        })
     ]
 });
 
-woost.admin.actions.DeleteAction.register({
-    id: "delete",
-    slots: [
-        "contextMenu",
-        "listingToolbar",
-        "editToolbar",
-        "collectionToolbar"
-    ],
-    requiredPermission: "delete"
+woost.admin.actions.referenceToolbar = new cocktail.ui.ActionSet("reference-toolbar", {
+    entries: [
+        new woost.admin.actions.NewAction("new"),
+        new woost.admin.actions.ListAction("list"),
+        new woost.admin.actions.ClearAction("clear"),
+        new woost.admin.actions.EditAction("edit")
+    ]
 });
 
-woost.admin.actions.RefreshAction.register({
-    id: "refresh",
-    slots: ["listingToolbar", "relationSelectorToolbar"],
-    parameters: {position: "extra"}
+woost.admin.actions.collectionToolbar = new cocktail.ui.ActionSet("collection-toolbar", {
+    entries: [
+        new woost.admin.actions.NewAction("new"),
+        new woost.admin.actions.AddAction("add"),
+        new woost.admin.actions.RemoveAction("remove"),
+        new woost.admin.actions.EditAction("edit"),
+        new woost.admin.actions.OpenURLAction("open-url"),
+        new woost.admin.actions.DeleteAction("delete")
+    ]
 });
 
-woost.admin.actions.ClearCacheAction.register({
-    id: "clear-cache",
-    slots: ["listingToolbar", "contextMenu", "editToolbar"],
-    parameters: {position: "extra"}
+woost.admin.actions.editToolbar = new cocktail.ui.ActionSet("edit-toolbar", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            entries: [
+                new woost.admin.actions.EditBlocksAction("blocks"),
+                new woost.admin.actions.OpenURLAction("open-url"),
+                new woost.admin.actions.DeleteAction("delete"),
+                new woost.admin.actions.SettingsScopeAction("settings-scope")
+            ]
+        }),
+        new cocktail.ui.ActionSet("extra", {
+            component: () => cocktail.ui.ExtraActionList,
+            entries: [
+                new woost.admin.actions.ClearCacheAction("clear-cache")
+            ]
+        }),
+        new cocktail.ui.ActionSet("navigation", {
+            entries: [
+                new woost.admin.actions.TranslationsAction("translations"),
+                new woost.admin.actions.SaveAction("save"),
+                new woost.admin.actions.SaveIntegralChildAction("save-integral-child"),
+                new woost.admin.actions.CancelAction("cancel-edit", {
+                    requiresPendingChanges: true
+                }),
+                new woost.admin.actions.CloseAction("close")
+            ]
+        })
+    ]
 });
 
-woost.admin.actions.ExcelAction.register({
-    id: "excel",
-    slots: ["listingToolbar"],
-    parameters: {position: "extra"}
+woost.admin.actions.deleteToolbar = new cocktail.ui.ActionSet("delete-toolbar", {
+    entries: [
+        new woost.admin.actions.ConfirmDeleteAction("confirm-delete"),
+        new woost.admin.actions.CancelAction("cancel")
+    ]
 });
 
-woost.admin.actions.SelectPartitioningMethodAction.register({
-    id: "select-partitioning-method",
-    slots: ["listingControls", "relationSelectorControls"]
+woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            entries: [
+                new woost.admin.actions.AddBlockAction("add-block"),
+                new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.RemoveBlockAction("remove-block")
+            ]
+        }),
+        new cocktail.ui.ActionSet("copy-paste", {
+            entries: [
+                new woost.admin.actions.CopyAction("copy"),
+                new woost.admin.actions.CutAction("cut"),
+                new woost.admin.actions.PasteBlocksAction("paste")
+            ]
+        }),
+        new cocktail.ui.ActionSet("navigation", {
+            entries: [
+                new woost.admin.actions.CancelAction("cancel-edit", {
+                    requiresPendingChanges: true
+                }),
+                new woost.admin.actions.CloseAction("close")
+            ]
+        })
+    ]
 });
 
-woost.admin.actions.FieldsAction.register({
-    id: "fields",
-    slots: ["listingControls", "relationSelectorControls"]
+woost.admin.actions.editBlockToolbar = new cocktail.ui.ActionSet("edit-block-toolbar", {
+    entries: [
+        new woost.admin.actions.TranslationsAction("translations"),
+        new woost.admin.actions.CloseAction("close")
+    ]
 });
 
-woost.admin.actions.LocalesAction.register({
-    id: "locales",
-    slots: ["listingControls", "relationSelectorControls"]
-});
-
-woost.admin.actions.FiltersAction.register({
-    id: "filters",
-    slots: ["listingControls", "relationSelectorControls"]
-});
-
-woost.admin.actions.SettingsScopeAction.register({
-    id: "settings-scope",
-    slots: ["editToolbar"]
-});
-
-woost.admin.actions.TranslationsAction.register({
-    id: "translations",
-    slots: ["editNavigationToolbar"]
-});
-
-woost.admin.actions.RemoveBlockAction.register({
-    id: "remove-block",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.RefreshPreviewAction.register({
-    id: "refresh-preview",
-    slots: ["blocksPreviewToolbar"]
-});
-
-woost.admin.actions.ToggleRulersAction.register({
-    id: "toggle-rulers",
-    slots: ["blocksPreviewToolbar"]
-});
-
-woost.admin.actions.ToggleSelectorsAction.register({
-    id: "toggle-selectors",
-    slots: ["blocksPreviewToolbar"]
-});
-
-woost.admin.actions.SetGridSizeAction.register({
-    id: "grid-size",
-    slots: ["blocksPreviewToolbar"]
-});
-
-woost.admin.actions.SetPreviewLanguageAction.register({
-    id: "set-preview-language",
-    slots: ["blocksPreviewToolbar"]
-});
-
-woost.admin.actions.SaveAction.register({
-    id: "save",
-    slots: ["editNavigationToolbar"]
-});
-
-woost.admin.actions.SaveIntegralChildAction.register({
-    id: "save-integral-child",
-    slots: ["editNavigationToolbar"]
-});
-
-woost.admin.actions.CancelAction.register({
-    id: "cancel-edit",
-    slots: ["editNavigationToolbar", "blocksNavigationToolbar"],
-    parameters: {
-        requiresPendingChanges: true
-    }
-});
-
-woost.admin.actions.ConfirmDeleteAction.register({
-    id: "confirm-delete",
-    slots: ["deleteToolbar"]
-});
-
-woost.admin.actions.CancelAction.register({
-    id: "cancel",
-    slots: ["deleteToolbar"]
-});
-
-woost.admin.actions.AcceptSelectionAction.register({
-    id: "accept-selection",
-    slots: ["relationSelectorNavigation"]
-});
-
-woost.admin.actions.CancelSelectionAction.register({
-    id: "cancel-selection",
-    slots: ["relationSelectorNavigation"]
-});
-
-woost.admin.actions.CloseAction.register({
-    id: "close",
-    slots: ["editNavigationToolbar", "blocksNavigationToolbar"]
-});
-
-woost.admin.actions.CopyAction.register({
-    id: "copy",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.CutAction.register({
-    id: "cut",
-    slots: ["blocksToolbar"]
-});
-
-woost.admin.actions.PasteBlocksAction.register({
-    id: "paste-blocks",
-    slots: ["blocksToolbar"]
+woost.admin.actions.blocksPreviewToolbar = new cocktail.ui.ActionSet("blocks-preview-toolbar", {
+    entries: [
+        new woost.admin.actions.RefreshPreviewAction("refresh-preview"),
+        new woost.admin.actions.ToggleRulersAction("toggle-rulers"),
+        new woost.admin.actions.ToggleSelectorsAction("toggle-selectors"),
+        new woost.admin.actions.SetGridSizeAction("grid-size"),
+        new woost.admin.actions.SetPreviewLanguageAction("set-preview-language")
+    ]
 });
 

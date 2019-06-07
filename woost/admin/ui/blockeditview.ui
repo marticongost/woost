@@ -3,30 +3,17 @@
 <ui:woost.admin.ui.EditView
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    hasActionList="false"
     animationType="fade">
 
     <ui:requires component="woost.admin.ui.BlockEditViewHeading"/>
-
-    <?class
-    getActionListContext() {
-        const context = super.getActionListContext();
-        context.insideBlockEditPanel = true;
-        return context;
-    }
-    ?>
 
     <ui:with ui:element="actionList" buttonStyle="iconOnly">
         <?js
         element.classList.add("compact");
         element.classList.add("secondary");
-        ?>
-    </ui:with>
-
-    <ui:with ui:element="navigationActionList" buttonStyle="iconOnly">
-        <?js
-        element.classList.add("compact");
-        element.classList.add("secondary");
+        element.actionContext.slot = "edit-block-toolbar";
+        element.actionContext.insideBlockEditPanel = true;
+        element.actionSource = woost.admin.actions.editBlockToolbar;
         ?>
     </ui:with>
 

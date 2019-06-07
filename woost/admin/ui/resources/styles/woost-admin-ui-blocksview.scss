@@ -8,8 +8,14 @@
 #actionList {
     flex: 1 1 auto;
 
-    :host([editingBlock='true']) & {
-        display: none;
+    .cocktail-ui-ActionList:not([actionSet='navigation']) {
+        :host([editingBlock='true']) & {
+            display: none;
+        }
+    }
+
+    .cocktail-ui-ActionList[actionSet='navigation'] {
+        margin-left: auto;
     }
 }
 

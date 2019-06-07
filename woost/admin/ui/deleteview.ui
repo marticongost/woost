@@ -4,20 +4,6 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
-    <?class
-    getToolbarActions() {
-        return Array.from(woost.admin.actions.forContext(this.getToolbarContext()));
-    }
-
-    getToolbarContext() {
-        return {
-            slot: "deleteToolbar",
-            view: this,
-            node: this.navigationNode
-        };
-    }
-    ?>
-
     <?on navigationNode:changed
     if (newValue) {
         this.deletePreview.deleteSummary = newValue.deleteSummary;
@@ -27,9 +13,10 @@
                 key += ".blocked";
             }
             this.deleteNotice.innerHTML = cocktail.ui.translations[key];
-            this.actionList.actionParameters.itemsToDelete = newValue.itemsToDelete;
-            this.actionList.actionParameters.deleteSummary = deleteSummary;
-            this.actionList.updateEntries();
+            this.actionList.actionContext.node = newValue;
+            this.actionList.actionContext.itemsToDelete = newValue.itemsToDelete;
+            this.actionList.actionContext.deleteSummary = deleteSummary;
+            this.actionList.actionSetup();
         });
     }
     ?>
@@ -41,9 +28,15 @@
     ?>
 
     <ui:with ui:element="headerContent">
-        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText">
+        <ui:cocktail.ui.ActionList
+            id="actionList"
+            buttonStyle="iconAboveText">
             <?js
-            element.actions = this.getToolbarActions();
+            element.actionContext = {
+                view: this,
+                slot: "delete-toolbar"
+            };
+            element.actionSource = woost.admin.actions.deleteToolbar;
             ?>
         </ui:cocktail.ui.ActionList>
     </ui:with>

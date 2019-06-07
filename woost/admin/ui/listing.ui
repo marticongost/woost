@@ -18,46 +18,15 @@
     <ui:symbol name="FILTERS_DELAY"/>
 
     <?class
-    get actionSlotPrefix() {
-        return "listing";
-    }
-
-    getToolbarActions() {
-        return Array.from(woost.admin.actions.forContext({
-            view: this,
-            node: this.navigationNode,
-            slot: this.actionSlotPrefix + "Toolbar",
-            model: this.model
-        }));
-    }
-
-    getControlsActions() {
-        return Array.from(woost.admin.actions.forContext({
-            view: this,
-            node: this.navigationNode,
-            slot: this.actionSlotPrefix + "Controls",
-            model: this.model
-        }));
-    }
-
     [UPDATE](previousNode = null) {
 
         let node = this.navigationNode;
+        this.actionList.actionContext.node = node;
         this.members = node.members;
         this.locales = node.locales;
         this.partition = node.partition;
         this.order = node.order;
-
-        if (!this.searchBox.dataBinding) {
-            this.searchBox.dataBinding = {
-                member: node.queryParameters.search,
-                value: node.search
-            };
-        }
-        else {
-            this.search = node.search;
-        }
-
+        this.search = node.search;
         this.relation = node.relation;
         this.relationOwner = node.item;
 
@@ -89,6 +58,20 @@
         if (!previousNode || previousNode.queryString != node.queryString) {
             this[UPDATED_AT_LEAST_ONCE] = true;
             cocktail.ui.trigger(this.viewDisplay, "listingReset");
+        }
+    }
+
+    getDefaultControl() {
+        const entry = this.actionList.getEntry("controls.search");
+        if (entry) {
+            return entry.input;
+        }
+    }
+
+    focusDefaultControl() {
+        const control = this.getDefaultControl();
+        if (control) {
+            cocktail.ui.focus(control);
         }
     }
     ?>
@@ -169,9 +152,9 @@
                 if (this.defaultAction && this.defaultActionList) {
                     const context = this.defaultActionList.getActionContext();
                     for (let actionName of this.defaultAction.split(" ")) {
-                        const action = this.defaultActionList.getAction(actionName);
-                        if (action && action.getState(context) == "visible") {
-                            action.invoke(context);
+                        const entry = this.defaultActionList.getEntry(actionName);
+                        if (entry && entry.actionSource.getState(context) == "visible") {
+                            entry.actionSource.invoke(context);
                             break;
                         }
                     }
@@ -181,7 +164,7 @@
             // Pressing the Up key at the top of the selectable goes back to the search box
             newValue.addEventListener("keyboardSelectionOverflow", (e) => {
                 if (e.detail.direction == "up") {
-                    cocktail.ui.focus(this.searchBox);
+                    this.focusDefaultControl();
                 }
             });
         }
@@ -192,8 +175,8 @@
         name="model"
         reflected="false">
         <?on changed
-        this.actionList.actions = this.getToolbarActions();
-        this.listingControls.actions = this.getControlsActions();
+        this.actionList.actionContext.model = newValue;
+        this.actionList.actionSetup();
         ?>
     </ui:property>
 
@@ -266,13 +249,12 @@
         name="defaultAction"
         type="string"
         reflected="true"
-        default="edit"/>
+        default="main.edit"/>
 
     <ui:property
         name="resultCount"
         reflected="false">
         <?on changed
-        this.resultCountLabel.innerHTML = newValue && newValue.label || "";
         this.partitionTabs.resultCount = newValue;
         ?>
     </ui:property>
@@ -307,29 +289,15 @@
 
         <ui:cocktail.ui.ActionList
             id="actionList"
-            buttonStyle="iconAboveText"/>
-
-        <ui:cocktail.ui.ActionList
-            id="listingControls"
-            buttonStyle="textOnly"/>
-
-        <ui:cocktail.ui.SearchInput id="searchBox" inputDelay="400">
-            <?on keydown
-            if (e.which == cocktail.ui.keys.DOWN && instance.selectable) {
-                if (!instance.selectable.selectedElements.size) {
-                    let first = instance.selectable.getFirstSelectableElement();
-                    if (first) {
-                        instance.selectable.selectedElements = [first];
-                    }
-                }
-                cocktail.ui.focus(instance.viewDisplay);
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            buttonStyle="iconAboveText">
+            <?js
+            element.actionContext = {
+                view: this,
+                slot: "listing-toolbar"
+            };
+            element.actionSource = woost.admin.actions.listingToolbar;
             ?>
-        </ui:cocktail.ui.SearchInput>
-
-        <div id="resultCountLabel"/>
+        </ui:cocktail.ui.ActionList>
 
     </ui:with>
 
@@ -355,7 +323,7 @@
     if (!this[UPDATED_AT_LEAST_ONCE]) {
         this[UPDATE]();
     }
-    cocktail.ui.focus(this.searchBox);
+    this.focusDefaultControl();
     ?>
 
     <?js
@@ -363,10 +331,81 @@
         400,
         () => cocktail.navigation.node.updateQueryStringWithFilters(this.filters)
     );
-    cocktail.ui.link(this, this.searchBox, ["search", "value"]);
     cocktail.ui.link(this, this.filtersBar, "filters");
     this.defaultActionList = this.actionList;
     ?>
+
+    <ui:cocktail.ui.ActionListEntry ui:component="SearchBox">
+
+        <ui:cocktail.ui.SearchInput
+            id="input"
+            inputDelay="400"/>
+
+        <?class
+        static get requiresShadowDOM() {
+            return false;
+        }
+
+        actionSetup() {
+            super.actionSetup();
+            const context = this.getActionContext();
+            this.input.dataBinding = {
+                member: context.node.queryParameters.search,
+                value: context.node.search
+            };
+            cocktail.ui.link(
+                context.view,
+                this.input,
+                ["search", "value"],
+                null, null, false
+            );
+        }
+        ?>
+
+        <?on keydown
+        const context = this.getActionContext();
+        if (e.which == cocktail.ui.keys.DOWN && context.selectable) {
+            if (!context.selectable.selectedElements.size) {
+                let first = context.selectable.getFirstSelectableElement();
+                if (first) {
+                    context.selectable.selectedElements = [first];
+                }
+            }
+            cocktail.ui.focus(context.view.viewDisplay);
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        ?>
+
+    </ui:cocktail.ui.ActionListEntry>
+
+    <ui:cocktail.ui.ActionListEntry ui:component="ResultCount">
+
+        <ui:symbol name="DISCONNECT_LISTENER"/>
+
+        <?class
+        static get requiresShadowDOM() {
+            return false;
+        }
+
+        actionSetup() {
+            super.actionSetup();
+            const view = this.getActionContext().view;
+            const listener = view.addEventListener("resultCountChanged", (e) => {
+                this.resultCountLabel.innerHTML = e.detail.newValue && e.detail.newValue.label || "";
+            });
+            this[DISCONNECT_LISTENER] = () => view.removeEventListener("resultCountChanged", listener);
+        }
+
+        disconnectedCallback() {
+            this[DISCONNECT_LISTENER]();
+            delete this[DISCONNECT_LISTENER]
+        }
+        ?>
+
+        <div id="resultCountLabel"/>
+
+    </ui:cocktail.ui.ActionListEntry>
 
 </ui:woost.admin.ui.StackNode>
 

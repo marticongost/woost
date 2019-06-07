@@ -7,19 +7,22 @@
     <ui:symbol name="SYNCHRONIZE_LOCALES"/>
     <ui:symbol name="SYNCHRONIZING_LOCALES"/>
 
-    <?on action:changed
-    this.translationsSelector.awaitEntries().then(() => {
-        instance[SYNCHRONIZE_LOCALES](() => {
-            for (let [locale, state] of newValue.view.localeStates) {
-                this.translationsSelector.setLocaleState(locale, state);
-            }
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        this.translationsSelector.awaitEntries().then(() => {
+            this[SYNCHRONIZE_LOCALES](() => {
+                for (let [locale, state] of this.getActionContext().view.localeStates) {
+                    this.translationsSelector.setLocaleState(locale, state);
+                }
+            });
         });
-    });
-    newValue.view.addEventListener("localeChanged", (e) => {
-        instance[SYNCHRONIZE_LOCALES](() => {
-            instance.translationsSelector.setLocaleState(e.detail.locale, e.detail.newState);
+        this.getActionContext().view.addEventListener("localeChanged", (e) => {
+            this[SYNCHRONIZE_LOCALES](() => {
+                instance.translationsSelector.setLocaleState(e.detail.locale, e.detail.newState);
+            });
         });
-    });
+    }
     ?>
 
     <?class
@@ -42,7 +45,7 @@
 
             <?on localeChanged
             instance[SYNCHRONIZE_LOCALES](() => {
-                instance.action.view.setLocaleState(e.detail.locale, e.detail.newState);
+                instance.getActionContext().view.setLocaleState(e.detail.locale, e.detail.newState);
             });
             ?>
 

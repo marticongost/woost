@@ -4,25 +4,28 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
-    <?on action:changed
-    this.checkList.dataBinding = {
-        member: newValue.view.navigationNode.queryParameters.locales,
-        value: newValue.view.locales
-    };
-
-    cocktail.ui.link(
-        newValue.view,
-        this.checkList,
-        ["locales", "value"],
-        (view, checkList) => {
-            checkList.value = view.locales;
-        },
-        (checkList, view) => {
-            // Changes to the check list are not applied until the 'Apply' button is clicked
-        },
-        // No need to set the value again
-        false
-    );
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        const context = this.getActionContext();
+        this.checkList.dataBinding = {
+            member: context.view.navigationNode.queryParameters.locales,
+            value: context.view.locales
+        };
+        cocktail.ui.link(
+            context.view,
+            this.checkList,
+            ["locales", "value"],
+            (view, checkList) => {
+                checkList.value = view.locales;
+            },
+            (checkList, view) => {
+                // Changes to the check list are not applied until the 'Apply' button is clicked
+            },
+            // No need to set the value again
+            false
+        );
+    }
     ?>
 
     <ui:with ui:element="dropdownPanel" footerVisible="true">
@@ -50,7 +53,7 @@
             <ui:translation attribute="text"/>
             <?on click
             instance.dropdownPanel.expanded = false;
-            instance.action.view.locales = Array.from(instance.checkList.value);
+            instance.getActionContext().view.locales = Array.from(instance.checkList.value);
             ?>
         </ui:cocktail.ui.Button>
 

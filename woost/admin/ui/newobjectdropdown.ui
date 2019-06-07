@@ -5,24 +5,27 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
     selectionDisplayed="false">
 
-    <?on action:changed
-    const models = cocktail.ui.sorting.localeSort(
-        newValue.eligibleModels,
-        (model) => model.translate()
-    );
-
-    this.dataBinding = {
-        member: new cocktail.schema.SchemaReference({
-            classFamily: newValue.model,
-            enumeration: models
-        })
-    };
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        const context = this.getActionContext();
+        const models = cocktail.ui.sorting.localeSort(
+            this.actionSource.getEligibleModels(context),
+            (model) => model.translate()
+        );
+        this.dataBinding = {
+            member: new cocktail.schema.SchemaReference({
+                classFamily: context.model,
+                enumeration: models
+            })
+        };
+    }
     ?>
 
     <?on value:changed
     if (newValue) {
         this.value = null;
-        this.action.invoke({
+        this.actionSource.invoke({
             selectedModel: newValue
         });
     }

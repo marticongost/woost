@@ -3,44 +3,8 @@
 <ui:woost.admin.ui.Listing
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
-    defaultAction="accept-selection"
-    closeAction="cancel-selection">
-
-    <?class
-    get actionSlotPrefix() {
-        return "relationSelector";
-    }
-
-    getNavigationActions() {
-        return Array.from(woost.admin.actions.forContext({
-            view: this,
-            node: this.navigationNode,
-            slot: this.actionSlotPrefix + "Navigation",
-            model: this.model
-        }));
-    }
-    ?>
-
-    <?on model:changed
-    this.navigationActionList.actions = this.getNavigationActions();
-    ?>
-
-    <?on selectable:changed
-    this.navigationActionList.selectable = newValue;
-    ?>
-
-    <ui:with ui:element="headerContent">
-
-        <ui:cocktail.ui.ActionList
-            id="navigationActionList"
-            buttonStyle="iconAboveText"/>
-
-    </ui:with>
-
-    <?js
-    this.navigationActionList.selectable = this.table;
-    this.defaultActionList = this.navigationActionList;
-    ?>
+    defaultAction="navigation.accept-selection"
+    closeAction="navigation.cancel-selection">
 
 </ui:woost.admin.ui.Listing>
 

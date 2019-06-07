@@ -10,10 +10,8 @@
     }
 }
 
-#navigationActionList {
-    :host([hasNavigationActionList='false']) & {
-        display: none;
-    }
+.cocktail-ui-ActionList[actionSet='navigation'] {
+    margin-left: auto;
 }
 
 #main {

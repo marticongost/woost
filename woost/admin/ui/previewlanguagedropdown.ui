@@ -6,23 +6,26 @@
 
     <ui:with ui:element="dropdownPanel" panelPosition="above"/>
 
-    <?on action:changed
-    const view = newValue.view;
-    woost.models.Configuration.getInstance("config").then((config) => {
-        this.dataBinding = {
-            member: new cocktail.schema.Locale({
-                enumeration: config.languages
-            }),
-            // TODO: restore the previous choice from the selector,
-            // consider publication state
-            value: woost.admin.user.backoffice_language
-        };
-        cocktail.ui.link(
-            this,
-            view,
-            ["value", "previewLanguage"]
-        );
-    });
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        woost.models.Configuration.getInstance("config").then((config) => {
+            const view = this.getActionContext().view;
+            this.dataBinding = {
+                member: new cocktail.schema.Locale({
+                    enumeration: config.languages
+                }),
+                // TODO: restore the previous choice from the selector,
+                // consider publication state
+                value: woost.admin.user.backoffice_language
+            };
+            cocktail.ui.link(
+                this,
+                view,
+                ["value", "previewLanguage"]
+            );
+        });
+    }
     ?>
 
 </ui:cocktail.ui.ActionListDropdownSelector>

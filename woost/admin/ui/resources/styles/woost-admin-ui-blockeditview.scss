@@ -17,6 +17,10 @@
     border-bottom: none;
 }
 
+#actionList {
+    justify-content: flex-end;
+}
+
 #header {
     background-color: $secondary-panel-background-color;
 }

@@ -12,8 +12,11 @@
     <ui:using mixin="cocktail.ui.Selectable"/>
     <ui:using mixin="cocktail.ui.Searchable"/>
 
-    <?on action:changed
-    this.model = newValue.model;
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        this.model = this.getActionContext().model;
+    }
     ?>
 
     <ui:property
@@ -72,7 +75,7 @@
 
         <button id="button" type="button">
             <?on click
-            instance.parentInstance.action.view.addFilter(instance.filter, null, true);
+            instance.parentInstance.getActionContext().view.addFilter(instance.filter, null, true);
             instance.parentInstance.dropdownPanel.expanded = false;
             ?>
         </button>
