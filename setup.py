@@ -56,7 +56,8 @@ of its features include:\n"
         "enum34",
         "libsass",
         "mako==1.*",
-        "cocktail==1.12b1"
+        "cocktail==1.12b1",
+        "piexif==1.1.2"
     ],
     extras_require = {
         'campaign_monitor_api': ["campaign_monitor_api"],
