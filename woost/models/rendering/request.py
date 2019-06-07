@@ -226,6 +226,10 @@ def require_rendering(
                 options = compile(factory.options_code, label, "exec")
                 exec options in context
 
+            # Preserve EXIF metadata
+            if format == 'JPEG' and image.info.get('exif') is not None:
+                save_options.setdefault('exif', image.info['exif'])
+
             # Save the image to the filesystem
             image.save(image_cache_file, format, **save_options)
 
