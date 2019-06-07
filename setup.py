@@ -56,6 +56,7 @@ of its features include:\n"
         "zeo",
         "Pillow",
         "cocktail[sass]==2.0a1",
+        "piexif==1.1.2"
     ],
     packages = [
         "woost.app",
