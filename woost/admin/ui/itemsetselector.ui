@@ -17,7 +17,7 @@
         name="defaultAction"
         type="string"
         reflected="true"
-        default="edit"/>
+        default="main.edit"/>
 
     <ui:property
         name="mixedContentTypes"
@@ -37,7 +37,7 @@
 
     <?class
     selectionActivated() {
-        this.toolbar.getAction(this.defaultAction).invoke({selection: this.selectedValues});
+        this.toolbar.invokeAction(this.defaultAction, {selection: this.selectedValues});
     }
 
     getDropPrecedingElement(e) {
@@ -116,17 +116,15 @@
     this.mixedContentTypes = Boolean(relatedType && relatedType.derivedSchemas.length);
     this.meaningfulIcons = Boolean(this.mixedContentTypes || (relatedType && relatedType[woost.admin.ui.showThumbnails]));
 
-    this.toolbar.actions = Array.from(woost.admin.actions.forContext({
-        view: this,
-        slot: "collectionToolbar",
-        model: newValue.member.items.type,
-        collection: newValue.member
-    }));
+    this.toolbar.actionContext.model = newValue.member.items.type;
+    this.toolbar.actionContext.collection = newValue.member;
+    this.toolbar.actionContext.collectionIsEmpty = true;
+    this.toolbar.actionSetup();
     ?>
 
     <?on value:changed
-    this.toolbar.actionParameters.items = newValue;
-    this.toolbar.actionParameters.collectionIsEmpty = cocktail.isEmptyValue(newValue);
+    this.toolbar.actionContext.items = newValue;
+    this.toolbar.actionContext.collectionIsEmpty = cocktail.isEmptyValue(newValue);
     this.toolbar.updateEntries();
     ?>
 
@@ -141,12 +139,14 @@
         <?js
         element.classList.add("without-frame");
         element.classList.add("compact");
+        element.selectable = instance;
+        element.actionContext = {
+            view: this,
+            slot: "collection-toolbar"
+        };
+        element.actionSource = woost.admin.actions.collectionToolbar;
         ?>
     </ui:cocktail.ui.ActionList>
-
-    <?js
-    this.toolbar.selectable = this;
-    ?>
 
 </ui:cocktail.ui.List>
 

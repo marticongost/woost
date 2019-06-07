@@ -11,6 +11,11 @@
         <?js
         element.classList.add("compact");
         element.classList.add("without-frame");
+        element.actionContext = {
+            view: this,
+            slot: "reference-toolbar"
+        };
+        element.actionSource = woost.admin.actions.referenceToolbar;
         ?>
     </ui:cocktail.ui.ActionList>
 
@@ -27,16 +32,13 @@
     ?>
 
     <?on dataBinding:changed
-    this.actionList.actions = Array.from(woost.admin.actions.forContext({
-        view: this,
-        slot: "referenceToolbar",
-        model: newValue.member.relatedType,
-        reference: newValue.member
-    }));
+    this.actionList.actionContext.model = newValue.member.relatedType;
+    this.actionList.actionContext.reference = newValue.member;
+    this.actionList.actionSetup();
     ?>
 
     <?on value:changed
-    this.actionList.actionParameters.selection = newValue ? [newValue] : null;
+    this.actionList.actionContext.selection = newValue ? [newValue] : null;
     this.actionList.updateEntries();
     ?>
 

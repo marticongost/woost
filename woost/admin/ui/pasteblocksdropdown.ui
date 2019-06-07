@@ -38,7 +38,7 @@
     }
 
     [PASTE]() {
-        this.action.attempt(
+        this.actionSource.attempt(
             navigator.permissions.query({name: "clipboard-read"})
             .then(() => navigator.clipboard.readText())
             .then((text) => {
@@ -63,7 +63,7 @@
             .then((data) => {
                 const blocks = cocktail.schema.objectsFromJSONValue(data.objects);
                 const placement = this.placementSelector.value;
-                const blocksTree = this.action.view.blocksTree;
+                const blocksTree = this.getActionContext().view.blocksTree;
                 const target = blocksTree.selectedElement;
                 blocksTree.placeBlocks(blocks, placement, target);
             }),

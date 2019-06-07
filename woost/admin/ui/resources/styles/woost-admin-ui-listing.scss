@@ -12,6 +12,26 @@
     flex: 1 1 auto;
 }
 
+.cocktail-ui-ActionList[actionSet='controls'] {
+    margin-left: auto;
+}
+
+.cocktail-ui-ActionList[actionSet='navigation'] {
+    margin-left: 1em;
+}
+
+.SearchBox {
+    display: flex;
+    align-items: center;
+    margin: 0 2em;
+}
+
+.ResultCount {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
 #filterButton {
     @include transparent-button;
     cursor: pointer;

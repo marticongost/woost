@@ -27,7 +27,7 @@
         name="closeAction"
         type="string"
         reflected="true"
-        default="close"/>
+        default="navigation.close"/>
 
     <ui:with ui:element="heading">
         <h1 id="headingElement"/>
@@ -54,8 +54,8 @@
 
     <?class
     closeNode() {
-        if (this.navigationActionList && this.closeAction) {
-            this.navigationActionList.getAction(this.closeAction).invoke({});
+        if (this.actionList && this.closeAction) {
+            this.actionList.invokeAction(this.closeAction);
         }
     }
     ?>

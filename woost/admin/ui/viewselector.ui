@@ -4,22 +4,24 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
-    <?on action:changed
-    this.dataBinding = {
-        member: new woost.admin.views.ViewReference({
-            enumeration: newValue.node.availableViews
-        }),
-        value: newValue.view.view
+    <?class
+    actionSetup() {
+        const context = this.getActionContext();
+        this.dataBinding = {
+            member: new woost.admin.views.ViewReference({
+                enumeration: context.node.availableViews
+            }),
+            value: context.view.view
+        };
+        cocktail.ui.link(
+            context.view,
+            this,
+            ["view", "value"],
+            null,
+            null,
+            false
+        );
     }
-
-    cocktail.ui.link(
-        newValue.view,
-        this,
-        ["view", "value"],
-        null,
-        null,
-        false
-    );
     ?>
 
 </ui:cocktail.ui.ActionListCommuter>

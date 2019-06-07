@@ -59,13 +59,6 @@
         return position;
     }
 
-    getContextMenuActionParameters(resolution) {
-        return {
-            selection: [resolution.item],
-            objectPath: resolution.target.objectPath
-        };
-    }
-
     expandContextMenu(objectSource) {
 
         // Don't create the menu until it is expanded for the first time
@@ -77,18 +70,13 @@
         if (!menu) {
             menu = mixin.ContextMenu.create();
             this[CONTEXT_MENU] = menu;
-            menu.actionList.actionParameters = this.getContextMenuActionParameters(objectSource);
-            menu.actionList.actions = Array.from(woost.admin.actions.forContext({
-                view: this,
-                slot: "contextMenu",
-                model: objectSource.model
-            }));
             this.shadowRoot.appendChild(menu);
         }
-        else {
-            menu.actionList.actionParameters = this.getContextMenuActionParameters(objectSource);
-            menu.actionList.updateEntries();
-        }
+
+        menu.actionList.actionContext.model = objectSource.model;
+        menu.actionList.actionContext.selection = [objectSource.item];
+        menu.actionList.actionContext.objectPath = objectSource.target.objectPath;
+        menu.actionSetup();
 
         if (objectSource.position) {
             menu.style.left = objectSource.position.x + "px";
@@ -148,11 +136,14 @@
 
     <div ui:component="ContextMenu">
         <div id="panel">
-            <ui:cocktail.ui.ActionList
-                id="actionList"
-                separateExtraActions="false">
+            <ui:cocktail.ui.ActionList id="actionList">
                 <?js
                 element.classList.add("vertical");
+                element.actionContext = {
+                    view: this,
+                    slot: "context-menu"
+                };
+                element.actionSource = woost.admin.actions.contextMenu;
                 ?>
                 <?on click
                 instance.parentInstance.hideContextMenu();

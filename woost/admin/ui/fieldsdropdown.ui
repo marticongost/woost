@@ -6,25 +6,28 @@
 
     <ui:using mixin="cocktail.ui.DataDisplay"/>
 
-    <?on action:changed
-    this.checkList.dataBinding = {
-        member: newValue.view.navigationNode.queryParameters.members,
-        value: newValue.view.members
-    };
-
-    cocktail.ui.link(
-        newValue.view,
-        this.checkList,
-        ["members", "value"],
-        (view, checkList) => {
-            checkList.value = view.members;
-        },
-        (checkList, view) => {
-            // Changes to the check list are not applied until the 'Apply' button is clicked
-        },
-        // No need to set the value again
-        false
-    );
+    <?class
+    actionSetup() {
+        super.actionSetup();
+        const context = this.getActionContext();
+        this.checkList.dataBinding = {
+            member: context.node.queryParameters.members,
+            value: context.view.members
+        };
+        cocktail.ui.link(
+            context.view,
+            this.checkList,
+            ["members", "value"],
+            (view, checkList) => {
+                checkList.value = view.members;
+            },
+            (checkList, view) => {
+                // Changes to the check list are not applied until the 'Apply' button is clicked
+            },
+            // No need to set the value again
+            false
+        );
+    }
     ?>
 
     <ui:with ui:element="dropdownPanel" footerVisible="true">
@@ -52,7 +55,7 @@
             <ui:translation attribute="text"/>
             <?on click
             instance.dropdownPanel.expanded = false;
-            instance.action.view.members = Array.from(instance.checkList.value);
+            instance.getActionContext().view.members = Array.from(instance.checkList.value);
             ?>
         </ui:cocktail.ui.Button>
 

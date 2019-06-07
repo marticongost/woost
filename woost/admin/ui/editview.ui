@@ -13,18 +13,6 @@
     <ui:symbol name="EDITED_OBJECT_DELETED"/>
 
     <ui:property
-        name="hasActionList"
-        type="boolean"
-        reflected="true"
-        default="true"/>
-
-    <ui:property
-        name="hasNavigationActionList"
-        type="boolean"
-        reflected="true"
-        default="true"/>
-
-    <ui:property
         name="locales"
         reflected="false">
         <?on changed
@@ -37,22 +25,6 @@
         if (changes.deleted.has(String(this.editedItem.id))) {
             woost.admin.actions.up();
         }
-    }
-
-    getActionListContext() {
-        return {
-            view: this,
-            node: this.navigationNode,
-            model: this.navigationNode.model,
-            item: this.navigationNode.item,
-            objectPath: this.navigationNode.objectPath,
-            editingTranslatedContent:
-                Array
-                    .from(this.navigationNode.editSchema.members())
-                    .some((member) => member.translated && member.name != "last_translation_update_time"),
-            editingSettings: this.navigationNode instanceof woost.admin.nodes.EditSettingsNode,
-            editingBlocks: this.navigationNode instanceof woost.admin.nodes.BlocksNode
-        };
     }
     ?>
 
@@ -87,21 +59,20 @@
             }
         }
 
-        const actionListContext = this.getActionListContext();
-
-        if (this.hasActionList) {
-            this.actionList.actionParameters.selection = selection;
-            this.actionList.actions = Array.from(woost.admin.actions.forContext(
-                Object.assign({slot: "editToolbar"}, actionListContext)
-            ));
-        }
-
-        if (this.hasNavigationActionList) {
-            this.navigationActionList.actionParameters.selection = selection;
-            this.navigationActionList.actions = Array.from(woost.admin.actions.forContext(
-                Object.assign({slot: "editNavigationToolbar"}, actionListContext)
-            ));
-        }
+        Object.assign(this.actionList.actionContext, {
+            node: this.navigationNode,
+            model: this.navigationNode.model,
+            item: this.navigationNode.item,
+            selection: selection,
+            objectPath: this.navigationNode.objectPath,
+            editingTranslatedContent:
+                Array
+                    .from(this.navigationNode.editSchema.members())
+                    .some((member) => member.translated && member.name != "last_translation_update_time"),
+            editingSettings: this.navigationNode instanceof woost.admin.nodes.EditSettingsNode,
+            editingBlocks: this.navigationNode instanceof woost.admin.nodes.BlocksNode
+        });
+        this.actionList.actionSetup();
 
         if (newValue instanceof woost.admin.nodes.EditSettingsNode) {
             this.editForm.tabbed = false;
@@ -210,7 +181,7 @@
     ?>
 
     <?on isStackRoot:changed
-    this.navigationActionList.updateEntries();
+    this.actionList.updateEntries();
     ?>
 
     <?js
@@ -218,8 +189,17 @@
     ?>
 
     <ui:with ui:element="headerContent">
-        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText"/>
-        <ui:cocktail.ui.ActionList id="navigationActionList" buttonStyle="iconAboveText"/>
+        <ui:cocktail.ui.ActionList
+            id="actionList"
+            buttonStyle="iconAboveText">
+            <?js
+            element.actionContext = {
+                view: this,
+                slot: "edit-toolbar"
+            };
+            element.actionSource = woost.admin.actions.editToolbar;
+            ?>
+        </ui:cocktail.ui.ActionList>
     </ui:with>
 
     <ui:with ui:element="main">
@@ -239,14 +219,7 @@
 
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
-
-            if (this.parentInstance.hasActionList) {
-                this.parentInstance.actionList.updateEntries();
-            }
-
-            if (this.parentInstance.hasNavigationActionList) {
-                this.parentInstance.navigationActionList.updateEntries();
-            }
+            this.parentInstance.actionList.updateEntries();
 
             cocktail.ui.request({
                 url: woost.admin.url + "/data/values",

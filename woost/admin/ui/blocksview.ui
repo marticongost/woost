@@ -266,33 +266,19 @@
 
     <?on navigationNode:changed
     if (!oldValue) {
-        let selection = [newValue.item];
 
-        this.actionList.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
-            node: this.navigationNode,
-            slot: "blocksToolbar",
-            model: newValue.model,
-            item: newValue.item
-        }));
-
-        this.previewActionList.actionParameters.selection = selection;
-        this.previewActionList.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
+        const context = {
             node: this.previewNode,
-            slot: "blocksPreviewToolbar",
+            selection: [newValue.item],
             model: newValue.model,
             item: newValue.item
-        }));
+        };
 
-        this.navigationActionList.actionParameters.selection = selection;
-        this.navigationActionList.actions = Array.from(woost.admin.actions.forContext({
-            view: this,
-            node: this.navigationNode,
-            slot: "blocksNavigationToolbar",
-            model: newValue.model,
-            item: newValue.item
-        }));
+        for (let actionList of [this.actionList, this.previewActionList]) {
+            Object.assign(actionList.actionContext, context);
+            actionList.actionSetup();
+        }
+
         this.blocksTree.item = newValue.item;
     }
     ?>
@@ -341,8 +327,17 @@
     ?>
 
     <ui:with ui:element="headerContent">
-        <ui:cocktail.ui.ActionList id="actionList" buttonStyle="iconAboveText"/>
-        <ui:cocktail.ui.ActionList id="navigationActionList" buttonStyle="iconAboveText"/>
+        <ui:cocktail.ui.ActionList
+            id="actionList"
+            buttonStyle="iconAboveText">
+            <?js
+            element.actionContext = {
+                view: this,
+                slot: "blocks-toolbar"
+            };
+            element.actionSource = woost.admin.actions.blocksToolbar;
+            ?>
+        </ui:cocktail.ui.ActionList>
     </ui:with>
 
     <ui:with ui:element="main">
@@ -386,7 +381,7 @@
                 if (e.detail.focus) {
                     const tree = instance.blocksTree;
                     tree.selectedElements = [tree.getBlockRow(e.detail.block.id)];
-                    instance.actionList.invokeAction("edit");
+                    instance.actionList.invokeAction("main.edit");
                 }
                 ?>
 
@@ -456,8 +451,15 @@
 
             <ui:cocktail.ui.ActionList
                 id="previewActionList"
-                buttonStyle="iconBesideText"/>
-
+                buttonStyle="iconBesideText">
+                <?js
+                element.actionContext = {
+                    view: this,
+                    slot: "blocks-preview-toolbar"
+                };
+                element.actionSource = woost.admin.actions.blocksPreviewToolbar;
+                ?>
+            </ui:cocktail.ui.ActionList>
         </div>
     </ui:with>
 
@@ -466,13 +468,13 @@
         <?class
         selectionActivated() {
             if (this.selectedElements.size == 1) {
-                this.parentInstance.actionList.invokeAction("edit");
+                this.parentInstance.actionList.invokeAction("main.edit");
             }
         }
         ?>
 
         <?on selection:changed
-        this.parentInstance.actionList.actionParameters.objectPath = (
+        this.parentInstance.actionList.actionContext.objectPath = (
             this.selectedElements.size == 1 ? this.selectedElement.objectPath : null
         );
         ?>
