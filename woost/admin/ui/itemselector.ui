@@ -39,7 +39,7 @@
 
     <?on value:changed
     this.actionList.actionContext.selection = newValue ? [newValue] : null;
-    this.actionList.updateEntries();
+    this.actionList.updateActions();
     ?>
 
     <?on dblclick
