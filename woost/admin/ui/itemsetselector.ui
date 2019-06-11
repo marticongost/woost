@@ -125,7 +125,7 @@
     <?on value:changed
     this.toolbar.actionContext.items = newValue;
     this.toolbar.actionContext.collectionIsEmpty = cocktail.isEmptyValue(newValue);
-    this.toolbar.updateEntries();
+    this.toolbar.updateActions();
     ?>
 
     <?on drop

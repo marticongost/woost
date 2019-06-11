@@ -181,7 +181,7 @@
     ?>
 
     <?on isStackRoot:changed
-    this.actionList.updateEntries();
+    this.actionList.updateActions();
     ?>
 
     <?js
@@ -219,7 +219,7 @@
 
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
-            this.parentInstance.actionList.updateEntries();
+            this.parentInstance.actionList.updateActions();
 
             cocktail.ui.request({
                 url: woost.admin.url + "/data/values",

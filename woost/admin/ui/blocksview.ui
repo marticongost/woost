@@ -140,7 +140,7 @@
             type: "rulers",
             visible: newValue
         });
-        this.previewActionList.updateEntries();
+        this.previewActionList.updateActions();
         ?>
     </ui:property>
 
@@ -154,7 +154,7 @@
             type: "selectors",
             visible: newValue
         });
-        this.previewActionList.updateEntries();
+        this.previewActionList.updateActions();
         ?>
     </ui:property>
 
