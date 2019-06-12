@@ -310,20 +310,17 @@ class Block(Item):
                 else:
                     block_proxy[key.strip()] = value.strip()
 
-        if self.embedded_styles:
+        if self.embedded_styles or self.embedded_styles_initialization:
             element_id = block_proxy.require_id()
 
             @view.when_document_ready
             def add_embedded_styles(document):
 
-                sass_init = "@import 'theme://';\n"
-                sass_init += self.embedded_styles_initialization or ""
+                sass_code = "@import 'theme://';\n"
+                sass_code += self.embedded_styles_initialization or ""
 
-                sass_code = "%s#%s {%s}" % (
-                    sass_init,
-                    element_id,
-                    self.embedded_styles
-                )
+                if self.embedded_styles:
+                    sass_code += "#%s {%s}" % (element_id, self.embedded_styles)
 
                 try:
                     css = SASSCompilation().compile(string = sass_code)
