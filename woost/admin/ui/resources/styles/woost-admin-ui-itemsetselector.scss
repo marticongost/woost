@@ -11,6 +11,7 @@
 #toolbar {
     margin-bottom: 0.2em;
     font-size: 0.85em;
+    --action-list-icon-width: 1.8em;
 
     :host([error]) & {
         @include input-with-error;
