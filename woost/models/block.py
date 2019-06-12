@@ -297,7 +297,7 @@ class Block(Item):
                 else:
                     block_proxy[key.strip()] = value.strip()
 
-        if self.embedded_styles:
+        if self.embedded_styles or self.embedded_styles_initialization:
 
             @view.when_document_ready
             def add_embedded_styles(document):
@@ -363,25 +363,20 @@ class Block(Item):
 
     def get_embedded_css(self):
 
-        sass_code = self.embedded_styles
+        if (
+            not self.embedded_styles
+            and not self.embedded_styles_initialization
+        ):
+            return ""
 
-        if sass_code:
-            sass_init = "@import 'theme://';\n"
-            sass_init += self.embedded_styles_initialization or ""
-
-            if self.catalog:
-                attrib = "data-woost-source-block"
-            else:
-                attrib = "data-woost-block"
-
-            sass_code = "%s.block[data-woost-block='%s'] {%s}" % (
-                sass_init,
+        sass_code = "@import 'theme://';\n"
+        sass_code += self.embedded_styles_initialization or ""
+        if self.embedded_styles:
+            sass_code += ".block[data-woost-block='%s'] {%s}" % (
                 self.id,
-                sass_code
+                self.embedded_styles
             )
-            return SASSCompilation().compile(string = sass_code)
-
-        return None
+        return SASSCompilation().compile(string = sass_code)
 
     def get_block_proxy(self, view):
         return view
