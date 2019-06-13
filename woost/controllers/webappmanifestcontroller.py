@@ -38,16 +38,22 @@ class WebAppManifestController(Cached, Controller):
     def get_manifest(self):
         data = deepcopy(self.defaults)
         data["name"] = app.website.site_name
-        data["icons"] = [
-            self.export_icon(icon)
-            for icon in Configuration.instance.get_setting("icons")
-        ]
+        data["icons"] = icons = []
+        for icon in Configuration.instance.get_setting("icons"):
+            icon_data = self.export_icon(icon)
+            if icon_data:
+                icons.append(icon_data)
         return data
 
     def export_icon(self, icon):
-        return {
-            "src": icon.get_uri(),
-            "type": icon.mime_type,
-            "sizes": "%dx%d" % get_image_size(icon.file_path)
-        }
+        try:
+            size = get_image_size(icon.file_path)
+        except:
+            return None
+        else:
+            return {
+                "src": icon.get_uri(),
+                "type": icon.mime_type,
+                "sizes": "%dx%d" % size
+            }
 
