@@ -23,6 +23,8 @@ class Role(Item):
     permissions from its base roles, recursively. This ability makes it
     possible to grow a site's access policy by means of specialization.
     """
+    groups_order = list(Item.groups_order)
+    groups_order.insert(0, "users")
     type_group = "users"
     admin_show_descriptions = False
 
@@ -30,9 +32,9 @@ class Role(Item):
         "title",
         "base_roles",
         "child_roles",
-        "users",
         "permissions",
-        "access_levels"
+        "access_levels",
+        "users"
     ]
 
     title = schema.String(
@@ -57,11 +59,6 @@ class Role(Item):
         editable = schema.NOT_EDITABLE
     )
 
-    users = schema.Collection(
-        items = "woost.models.User",
-        bidirectional = True
-    )
-
     permissions = schema.Collection(
         items = "woost.models.Permission",
         bidirectional = True,
@@ -78,6 +75,12 @@ class Role(Item):
     access_levels = schema.Collection(
         items = "woost.models.AccessLevel",
         bidirectional = True
+    )
+
+    users = schema.Collection(
+        items = "woost.models.User",
+        bidirectional = True,
+        member_group = "users"
     )
 
     def iter_roles(self, include_self = True, recursive = True):
