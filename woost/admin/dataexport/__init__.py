@@ -17,3 +17,4 @@ from . import publishable
 from . import controller
 from . import template
 from . import file
+from . import style
