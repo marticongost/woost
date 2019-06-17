@@ -118,7 +118,7 @@
 
     this.toolbar.actionContext.model = newValue.member.items.type;
     this.toolbar.actionContext.collection = newValue.member;
-    this.toolbar.actionContext.collectionIsEmpty = true;
+    this.toolbar.actionContext.collectionIsEmpty = cocktail.isEmptyValue(this.value);
     this.toolbar.actionSetup();
     ?>
 
