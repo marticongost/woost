@@ -25,9 +25,12 @@
     <?on value:changed
     if (newValue) {
         this.value = null;
-        this.actionSource.invoke({
-            selectedModel: newValue
-        });
+        const context = Object.assign(
+            {},
+            this.getActionContext(),
+            {selectedModel: newValue}
+        );
+        this.actionSource.invoke(context);
     }
     ?>
 
