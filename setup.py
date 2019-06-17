@@ -65,7 +65,7 @@ of its features include:\n"
         "twitterpublication": ["oauth2"],
         "amazon_s3_static_publication": ["boto"],
         "newsletters": ["premailer"],
-        "identity": ["google-api-python-client"],
+        "identity": ["google-api-python-client", "oauth2client"],
         "analytics": ["oauth2client", "google-api-python-client"],
         "pdf": ["pdfkit"]
     },
