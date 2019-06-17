@@ -1042,7 +1042,7 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
 
     invoke(context) {
         woost.admin.actions.addToParent(
-            context.filterSelection(context.selection),
+            this.filterSelection(context.selection),
             context.node
         );
     }
