@@ -63,7 +63,7 @@ of its features include:\n"
         "twitterpublication": ["oauth2"],
         "amazon_s3_static_publication": ["boto"],
         "newsletters": ["premailer"],
-        "identity": ["google-api-python-client"]
+        "identity": ["google-api-python-client", "oauth2client"]
     },
     packages = find_packages(),
     include_package_data = True,
