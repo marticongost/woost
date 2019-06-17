@@ -55,7 +55,7 @@ class FacebookOAuthProviderController(Controller):
     def step_url(self, step_number):
         url_builder = get_request_root_url_builder()
         url_builder.path = [
-            "facebook_oauth"
+            "facebook_oauth",
             str(self.provider.id),
             "step%d" % step_number
         ]
