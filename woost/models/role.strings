@@ -9,6 +9,13 @@ en: Role
     es: Roles
     en: Roles
 
+    [groups]
+
+        [users]
+        ca: Usuaris
+        es: Usuarios
+        en: Users
+
     [members]
 
         [title]
