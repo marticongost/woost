@@ -55,9 +55,19 @@ def convert_indexes_to_python3(e):
 
 @migration_step
 def rebuild_indexes_after_conversion_to_python3(e):
-    from cocktail.persistence import PersistentObject
-    PersistentObject.rebuild_indexes(True)
-    PersistentObject.rebuild_full_text_indexes(True, True)
+
+    from cocktail.persistence import (
+        PersistentObject,
+        full_text_indexing_disabled
+    )
+
+    with full_text_indexing_disabled():
+        PersistentObject.rebuild_indexes(True)
+
+    PersistentObject.rebuild_full_text_indexes(
+        recursive=True,
+        verbose=True
+    )
 
 
 @migration_step
