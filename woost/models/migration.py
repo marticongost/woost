@@ -526,9 +526,15 @@ def convert_user_roles_collection_to_single_reference(e):
         else:
             del user._roles
             if roles:
-                assert len(roles) == 1, \
-                    "Users should have a single role; %r has %r" \
-                    % (user, roles)
+                if len(roles) > 1:
+                    print(
+                        "Users should have a single role; %r has %r. "
+                        "Defaulted to the first role, original roles "
+                        "accessible through the User._woost2_roles "
+                        "property."
+                        % (user, roles)
+                    )
+                    user._woost2_roles = list(roles)
                 user._role = roles[0]
             else:
                 user._role = None
