@@ -6,7 +6,8 @@
 import json
 from datetime import date, time, datetime
 from decimal import Decimal
-from collections import Sequence, Set, Mapping, ChainMap
+from collections import Sequence, Set, Mapping, ChainMap, Counter
+
 from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
 from cocktail.typemapping import ChainTypeMapping
 from cocktail import schema
@@ -260,7 +261,13 @@ class Export(metaclass = ExportMetaclass):
                     self.get_mapping_exports(member, value)
                 keys = member.keys
                 values = member.values
-                return dict(
+
+                if isinstance(value, Counter):
+                    items = value.most_common()
+                else:
+                    items = value.items()
+
+                return [
                     (
                         keys_export.export_member(
                             obj,
@@ -275,8 +282,8 @@ class Export(metaclass = ExportMetaclass):
                             value = v
                         )
                     )
-                    for k, v in value.items()
-                )
+                    for k, v in items
+                ]
             elif (
                 isinstance(member, schema.Collection)
                 and isinstance(member.items, schema.Reference)
