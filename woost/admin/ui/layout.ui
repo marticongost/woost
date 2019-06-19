@@ -178,14 +178,7 @@
 
             <?on changed
             let title = this.getMenuEntryTitle(newValue);
-
-            if (newValue.parent.parent) {
-                this.heading.innerHTML = title;
-            }
-            else {
-                this.entryDescription.title = title;
-            }
-
+            this.heading.innerHTML = title;
             this.sectionURL = newValue.url;
 
             if (newValue.icon) {
@@ -275,11 +268,11 @@
         ?>
 
         <div id="entryDescription">
+            <span id="icon"/>
+            <span id="heading"/>
             <span id="moreSign">
                 <?svg woost.admin.ui://images/more.svg ?>
             </span>
-            <span id="icon"/>
-            <span id="heading"/>
         </div>
 
         <ul id="subsectionsList"/>

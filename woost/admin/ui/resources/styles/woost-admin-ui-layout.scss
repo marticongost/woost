@@ -1,8 +1,9 @@
 
 @import "woost.admin.ui://styles/common";
 
-$bar-color: #333;
-$bar-width: 5.4em;
+$bar-color: $selection-background;
+$bar-width: 20em;
+$icon-size: 2.5em;
 $submenu-width: 40em;
 $submenu-background-color: white;
 $submenu-hover-background-color: darken($panel-background-color, 5);
@@ -86,32 +87,53 @@ $submenu-transition: 0.4s ease;
         & > .entryDescription {
             $padding: 1em;
             position: relative;
-            display: block;
+            display: flex;
+            align-items: center;
             padding: $padding !important;
-            border: 1px solid $bar-color;
-            border-bottom-color: #4a4a4a;
+            border-bottom: 1px solid #444;
             width: $bar-width;
-            height: $bar-width;
             cursor: pointer;
+            color: white;
 
             svg {
-                max-width: 100%;
-                max-height: 100%;
+                width: $icon-size;
+                max-height: $icon-size;
                 fill: #999;
             }
 
-            &:hover svg {
-                fill: #ddd;
+            &:hover {
+                background-color: darken($selection-background, 5);
+
+                svg {
+                    fill: white;
+                    filter: drop-shadow(0 0 8px rgba(black, 0.3));
+                }
+
+                .heading {
+                    text-shadow: 0 0 8px rgba(black, 0.5);
+                }
+
+                .moreSign svg {
+                    fill: white !important;
+                }
+            }
+
+            .heading {
+                margin-left: 1em;
+                font-size: 1.3em;
             }
         }
 
         &[inSelectionPath='true'] {
             & > .entryDescription {
-                background-color: #23211e;
-                border-color: transparent;
+                background-color: #0d0c0a;
 
                 svg {
                     fill: #ece3d0;
+                }
+
+                .heading {
+                    font-weight: bold;
                 }
 
                 & > .moreSign svg {
@@ -131,9 +153,7 @@ $submenu-transition: 0.4s ease;
         &[hasSubsections='true'] {
             & > .entryDescription > .moreSign {
                 display: block;
-                position: absolute;
-                right: 0.4em;
-                bottom: 0.4em;
+                margin-left: auto;
 
                 svg {
                     width: 0.8em;
