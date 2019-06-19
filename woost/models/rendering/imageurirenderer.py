@@ -6,7 +6,7 @@
 from urllib.request import urlopen
 from http.client import HTTPConnection
 from time import mktime, strptime
-from io import StringIO
+from io import BytesIO
 from PIL import Image
 from cocktail import schema
 from woost.models.uri import URI
@@ -32,7 +32,7 @@ class ImageURIRenderer(Renderer):
         # Wrap image data in a buffer
         # (the object returned by urlopen() doesn't support seek(), which is
         # required by PIL)
-        buffer = StringIO()
+        buffer = BytesIO()
         buffer.write(http_resource.read())
         buffer.seek(0)
 
