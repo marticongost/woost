@@ -91,6 +91,7 @@ $submenu-transition: 0.4s ease;
             align-items: center;
             padding: $padding !important;
             border-bottom: 1px solid #444;
+            background-image: linear-gradient(lighten($bar-color, 1), $bar-color);
             width: $bar-width;
             cursor: pointer;
             color: white;
@@ -103,6 +104,7 @@ $submenu-transition: 0.4s ease;
 
             &:hover {
                 background-color: darken($selection-background, 5);
+                background-image: none;
 
                 svg {
                     fill: white;
@@ -127,6 +129,7 @@ $submenu-transition: 0.4s ease;
         &[inSelectionPath='true'] {
             & > .entryDescription {
                 background-color: #0d0c0a;
+                background-image: none;
 
                 svg {
                     fill: #ece3d0;
