@@ -208,6 +208,8 @@ class Import(object):
             self.require_value_type(member, str, value)
             value = value.strip()
         elif isinstance(member, schema.DateTime):
+            if isinstance(value, str) and value.endswith("Z"):
+                value = value[:-1]
             try:
                 value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
             except ValueError:
