@@ -374,7 +374,7 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
     }
 
     matchesModel(model) {
-        return model.originalMember.isSchema(woost.models.Publishable);
+        return model.originalMember.isPublishable;
     }
 
     getState(context) {

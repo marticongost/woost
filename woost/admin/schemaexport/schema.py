@@ -12,6 +12,7 @@ from woost import app
 from woost.models import (
     Item,
     Block,
+    PublishableObject,
     ReadPermission,
     CreatePermission,
     ModifyPermission,
@@ -146,6 +147,9 @@ class SchemaExport(MemberExport):
         if issubclass(member, Block):
             yield ("views", dumps(member.views))
             yield ("blockSubsets", dumps(member.block_subsets))
+
+        if issubclass(member, PublishableObject):
+            yield ("isPublishable", dumps(True))
 
         if member.admin_item_card:
             yield (
