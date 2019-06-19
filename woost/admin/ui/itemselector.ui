@@ -44,7 +44,7 @@
 
     <?on dblclick
     if (this.value) {
-        this.actionList.getAction("edit").invoke({selection: [this.value]});
+        this.actionList.invokeAction("edit", {selection: [this.value]});
     }
     ?>
 
