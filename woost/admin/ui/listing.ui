@@ -260,28 +260,45 @@
     </ui:property>
 
     <?class
-    addFilter(filter, filterValues = null, edit = false) {
+    addFilter(filterMember, filterValues = null, edit = false) {
 
-        if (typeof(filter) == "string") {
-            filter = woost.admin.filters.getFilter(this.model, filter);
+        if (typeof(filterMember) == "string") {
+            filterMember = woost.admin.filters.getFilter(this.model, filterMember);
         }
 
-        if (!filterValues) {
-            filterValues = filter.defaults();
+        let alreadySelected = false;
+        if (this.filters) {
+            for (let existingFilter of this.filters) {
+                if (existingFilter.member.name == filterMember.name) {
+                    alreadySelected = true;
+                    break;
+                }
+            }
         }
 
-        if (edit) {
-            this.filtersBar.addEventListener(
-                "entryAdded",
-                (e) => e.detail.entry.entryForm.awaitFields().then(
-                    () => e.detail.entry.entryForm.focusDefaultControl()
-                ),
-                {once: true}
-            );
+        if (alreadySelected) {
+            const entry = this.filtersBar.getEntry(filterMember);
+            entry.entryForm.focusDefaultControl();
+            return Promise.resolve(null);
         }
+        else {
+            if (!filterValues) {
+                filterValues = filterMember.getDefaultFilterValues();
+            }
 
-        let filters = [...this.filters, {member: filter, value: filterValues}];
-        return cocktail.navigation.node.updateQueryStringWithFilters(filters);
+            if (edit) {
+                this.filtersBar.addEventListener(
+                    "entryAdded",
+                    (e) => e.detail.entry.entryForm.awaitFields().then(
+                        () => e.detail.entry.entryForm.focusDefaultControl()
+                    ),
+                    {once: true}
+                );
+            }
+
+            const filters = [...this.filters, {member: filterMember, value: filterValues}];
+            return cocktail.navigation.node.updateQueryStringWithFilters(filters);
+        }
     }
     ?>
 

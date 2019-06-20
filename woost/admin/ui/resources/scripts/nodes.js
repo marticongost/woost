@@ -539,26 +539,17 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 new cocktail.schema.String({
                     name: "order"
                 }),
-                ...Array.from(
-                    woost.admin.filters.getFilters(this.listedModel),
-                    (filter) => new woost.admin.filters.FilterParameter({
-                        name: filter.parameterName,
-                        items: filter.copy(),
-                        defaultValue: undefined
-                    })
-                )
+                ...woost.admin.filters.getFilters(this.listedModel)
             ];
         }
 
         applyQueryParameter(parameter, value) {
-            if (parameter instanceof woost.admin.filters.FilterParameter) {
-                if (value) {
-                    for (let filterValues of value) {
-                        this.filters.push({
-                            member: parameter.items,
-                            value: filterValues
-                        });
-                    }
+            if (parameter instanceof woost.admin.filters.Filter) {
+                if (value !== null) {
+                    this.filters.push({
+                        member: parameter,
+                        value: value
+                    });
                 }
             }
             else {
@@ -591,21 +582,18 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
         updateQueryStringWithFilters(filters) {
 
             const queryValues = {};
+            const activeFilters = new Set();
 
             // Set parameters for defined filters
             for (let filter of filters) {
-                let valueList = queryValues[filter.member.parameterName];
-                if (valueList === undefined) {
-                    valueList = [];
-                    queryValues[filter.member.parameterName] = valueList;
-                }
-                valueList.push(filter.value);
+                queryValues[filter.member.name] = filter.value;
+                activeFilters.add(filter.member.name);
             }
 
-            // Clear undefined filters
+            // Remove the parameter for all other filters
             for (let filterMember of woost.admin.filters.getFilters(this.listedModel)) {
-                if (queryValues[filterMember.parameterName] === undefined) {
-                    queryValues[filterMember.parameterName] = undefined;
+                if (!activeFilters.has(filterMember.name)) {
+                    queryValues[filterMember.name] = undefined;
                 }
             }
 
@@ -614,22 +602,10 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
 
         getQueryValuesForFilters(filters) {
 
-            let groupedValues = new Map();
-
-            for (let filter of filters) {
-                let parameter = this.queryParameters[filter.member.parameterName];
-                let valueList = groupedValues.get(parameter);
-                if (valueList === undefined) {
-                    valueList = [];
-                    groupedValues.set(parameter, valueList);
-                }
-                valueList.push(filter.value);
-            }
-
             let queryValues = {};
 
-            for (let [parameter, filterValues] of groupedValues) {
-                queryValues[parameter.name] = parameter.serializeValue(filterValues);
+            for (let filter of filters) {
+                queryValues[filter.member.name] = filter.member.serializeValue(filter.value);
             }
 
             return queryValues;
