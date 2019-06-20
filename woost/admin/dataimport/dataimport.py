@@ -157,11 +157,6 @@ class Import(object):
     def check_member_permission(self, member):
         if member not in self.__checked_members:
             self.user.require_permission(
-                ReadMemberPermission,
-                member = member,
-                verbose = self.verbose_permission_checks
-            )
-            self.user.require_permission(
                 ModifyMemberPermission,
                 member = member,
                 verbose = self.verbose_permission_checks
