@@ -70,6 +70,15 @@
         );
         return entry;
     }
+
+    getEntry(member) {
+        for (let entry of this.filtersList.childNodes) {
+            if (entry.entryForm.dataBinding.member.name == member.name) {
+                return entry;
+            }
+        }
+        return null;
+    }
     ?>
 
     <ul id="filtersList"/>

@@ -51,9 +51,9 @@ class MemberFilter(Filter):
             + "admin.filters." + get_full_name(expression_class)
         )
         MemberFilter.member = member
-        MemberFilter.add_member(cls._create_value_member(member))
-        MemberFilter.expression_class = expression_class
         MemberFilter.multivalue = multivalue
+        MemberFilter.add_member(MemberFilter._create_value_member(member))
+        MemberFilter.expression_class = expression_class
         return MemberFilter
 
     @classmethod
@@ -102,7 +102,8 @@ class MemberFilter(Filter):
         if cls.multivalue:
             member = schema.Collection(
                 items=member,
-                min=1
+                min=1,
+                request_value_separator=" "
             )
 
         member.name = "value"

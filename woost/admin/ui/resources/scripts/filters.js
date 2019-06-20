@@ -126,8 +126,12 @@ cocktail.declare("woost.admin.filters");
                 }
             }
 
-            instance = new instanceSchema();
-            instance.filterId = `members.${member.name}.${template.id}`;
+            const filterId = `members.${member.name}.${template.id}`;
+            instance = new instanceSchema({
+                name: "filters." + filterId,
+                filterId,
+                multivalue: template.multivalue
+            });
             instance.initializeFilter();
             instances[template.id] = instance;
         }
@@ -137,12 +141,16 @@ cocktail.declare("woost.admin.filters");
 
     woost.admin.filters.Filter = class Filter extends cocktail.schema.Schema {
 
-        get filterMember() {
+        getDefaultValue() {
             return null;
         }
 
-        get parameterName() {
-            return "filters." + this.filterId;
+        getDefaultFilterValues() {
+            return super.defaults();
+        }
+
+        get filterMember() {
+            return null;
         }
 
         hasSingleMember() {
@@ -204,11 +212,12 @@ cocktail.declare("woost.admin.filters");
                 });
             }
 
+            const baseTranslate = member.translate;
             member.translate = function (suffix="") {
                 if (!suffix) {
                     return this.schema.translate(suffix);
                 }
-                return this.originalMember.translate(suffix);
+                return baseTranslate.call(this, suffix);
             };
             this.addMember(member);
         }
@@ -224,13 +233,6 @@ cocktail.declare("woost.admin.filters");
                     values
                 )
             );
-        }
-    }
-
-    woost.admin.filters.FilterParameter = class FilterParameter extends cocktail.schema.Collection {
-
-        splitValues(value) {
-            return value ? super.splitValue(value) : [""];
         }
     }
 }
