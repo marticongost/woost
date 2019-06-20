@@ -204,6 +204,12 @@ cocktail.declare("woost.admin.filters");
                 });
             }
 
+            member.translate = function (suffix="") {
+                if (!suffix) {
+                    return this.schema.translate(suffix);
+                }
+                return this.originalMember.translate(suffix);
+            };
             this.addMember(member);
         }
 
