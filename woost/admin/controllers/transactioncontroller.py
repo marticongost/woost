@@ -130,6 +130,7 @@ class TransactionController(Controller):
 
                     if not new and not id:
                         raise cherrypy.HTTPError(
+                            400,
                             "Expected a _new flag or the id of an existing "
                             "object"
                         )
