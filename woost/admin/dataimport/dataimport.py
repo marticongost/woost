@@ -42,7 +42,7 @@ class Import(object):
     deleted_translations = None
     user = None
     permission_check = True
-    verbose_permission_checks = False
+    verbose_permission_checks = None
 
     def __init__(
         self,
