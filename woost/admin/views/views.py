@@ -385,6 +385,16 @@ class View(object):
             "default_partitioning_method": self.default_partitioning_method
         }
 
+    def get_export_parameters(self) -> dict:
+        """Allows views to customize the instantiation of the
+        `woost.admin.dataexport.Export` object they use to export their results
+        to the client.
+
+        :return: A dictionary with keyword parameters to supply to the object
+            exporter.
+        """
+        return {}
+
 
 class UnavailableViewError(Exception):
     """An exception raised when trying to apply a view that is not available

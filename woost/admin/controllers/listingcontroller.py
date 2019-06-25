@@ -380,7 +380,12 @@ class ListingController(Controller):
         if not export_class:
             raise ValueError("Missing export class")
 
-        export = export_class(languages = self.locales)
+        kwargs = {"languages": self.locales}
+
+        if self.view:
+            kwargs.update(self.view.get_export_parameters())
+
+        export = export_class(**kwargs)
 
         members = self.members
         if members:
