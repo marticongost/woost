@@ -4,6 +4,8 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from collections import OrderedDict, defaultdict
+
+from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import PersistentClass
@@ -361,7 +363,14 @@ class View(object):
         :return: A dictionary with the view's data.
         :rtype: dict
         """
+
+        class_names = []
+        for cls in self.__class__.__mro__:
+            if cls is not View and issubclass(cls, View):
+                class_names.append(get_full_name(cls))
+
         return {
+            "classes": class_names,
             "label": translations(self),
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
