@@ -10,6 +10,12 @@
     [tree.Tree.instance(instance, **kwargs)]
     *: ${translations("woost.admin.views." + instance.name) or translations("woost.admin.views.tree")}
 
+    [count.Count.instance(instance, **kwargs)]
+    *: ${translations("woost.admin.views." + instance.name) or translations("woost.admin.views.count")}
+
+    [count.CountByMember.instance(instance, **kwargs)]
+    *: ${translations("woost.admin.views." + instance.name) or translations("woost.admin.views.count.by_member", member=instance.member)}
+
     [listing]
     ca: Llistat
     es: Listado
@@ -19,4 +25,14 @@
     ca: Arbre
     es: Árbol
     en: Tree
+
+    [count]
+    ca: Recompte
+    es: Recuento
+    en: Count
+
+        [by_member(member)]
+        ca: Recompte per ${translations(member).lower()}
+        es: Recuento por ${translations(member).lower()}
+        en: Per ${translations(member).lower()} count
 
