@@ -429,9 +429,20 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
         getAdapterOptions(model) {
 
             const options = {};
-            const extraMembers = this.getExtraMembers(model);
-            const members = [...extraMembers, ...model.orderedMembers()]
-                .filter((member) => this.shouldIncludeMember(member));
+            let members;
+
+            if (this.view.classes.includes("woost.admin.views.count.Count")) {
+                options.name = "woost.admin.views.Group";
+                members = [
+                    this.view.group_column.copy({name: "group", primary: true}),
+                    new cocktail.schema.Integer({name: "count"})
+                ];
+            }
+            else {
+                const extraMembers = this.getExtraMembers(model);
+                members = [...extraMembers, ...model.orderedMembers()]
+                    .filter((member) => this.shouldIncludeMember(member));
+            }
 
             options.membersOrder = Array.from(members, (member) => member.name);
             options[cocktail.schema.MEMBERS] = members;

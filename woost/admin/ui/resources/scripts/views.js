@@ -33,6 +33,10 @@ cocktail.declare("woost.admin.views");
         view.dataURL = woost.admin.url + "/data/views/" + view.name;
         view.ui_component = cocktail.getVariable(view.ui_component);
 
+        if (view.group_column) {
+            view.group_column = cocktail.schema.resolveMember(view.group_column);
+        }
+
         if (view.tree_relations) {
             view.tree_relations = view.tree_relations.map(
                 (rel) => cocktail.schema.resolveMember(rel)

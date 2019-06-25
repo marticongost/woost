@@ -1,0 +1,10 @@
+
+[woost.admin.views]
+
+    [Group.members]
+
+        [count]
+        ca: Recompte
+        es: Recuento
+        en: Count
+
