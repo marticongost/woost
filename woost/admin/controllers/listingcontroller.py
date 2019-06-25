@@ -329,6 +329,10 @@ class ListingController(Controller):
     @request_property
     def members(self):
 
+        view = self.view
+        if view and not view.allows_member_selection:
+            return None
+
         keys = cherrypy.request.params.get("members")
 
         if isinstance(keys, str):
