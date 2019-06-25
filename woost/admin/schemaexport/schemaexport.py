@@ -40,6 +40,11 @@ def exports_member(member_type):
     return decorator
 
 
+def get_declaration(member: schema.Member) -> str:
+    exporter = member_exporters[member.__class__]
+    return exporter.get_declaration(member)
+
+
 @exports_member(schema.Member)
 class MemberExport(object):
 
