@@ -7,6 +7,7 @@ from collections import OrderedDict, defaultdict
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import PersistentClass
+
 from woost.models import Item
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
@@ -299,6 +300,9 @@ class View(object):
     export_class = Export
     allows_sorting = True
     allows_partitioning = True
+    allows_member_selection = True
+    allows_locale_selection = True
+    pagination = True
     partitioning_methods = None
     count_enabled = True
     default_partitioning_method = None
@@ -364,6 +368,9 @@ class View(object):
             "ui_component": self.ui_component,
             "allows_sorting": self.allows_sorting,
             "allows_partitioning": self.allows_partitioning,
+            "allows_member_selection": self.allows_member_selection,
+            "allows_locale_selection": self.allows_locale_selection,
+            "pagination": self.pagination,
             "partitioning_methods": self.partitioning_methods,
             "count_enabled": self.count_enabled,
             "default_partitioning_method": self.default_partitioning_method

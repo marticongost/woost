@@ -5,7 +5,6 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
     tabindex="0"
     selectionType="multiple"
-    paging="infiniteScroll"
     sortable="true">
 
     <ui:using mixin="woost.admin.ui.ObjectSource"/>
@@ -216,6 +215,7 @@
     <?on listingReset
     this[SET_AUTOEXPAND]();
     this.sortable = this.listing.view.allows_sorting;
+    this.paging = this.listing.view.pagination ? "infiniteScroll" : "none";
     this.treeRelations = this.listing.view.tree_relations;
     this.reset();
     ?>
