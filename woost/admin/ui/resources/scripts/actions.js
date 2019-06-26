@@ -289,6 +289,15 @@ woost.admin.actions.EditAction = class EditAction extends woost.admin.actions.Ac
     }
 
     getState(context) {
+
+        if (
+            context.node
+            && context.node.view
+            && context.node.view.classes.includes("woost.admin.views.count.Count")
+        ) {
+            return "hidden";
+        }
+
         if (
             (context.slot == "collection-toolbar" && context.collectionIsEmpty)
             || (context.slot == "reference-toolbar" && !(context.selection && context.selection.length))
@@ -379,6 +388,14 @@ woost.admin.actions.OpenURLAction = class OpenURLAction extends woost.admin.acti
 
     getState(context) {
 
+        if (
+            context.node
+            && context.node.view
+            && context.node.view.classes.includes("woost.admin.views.count.Count")
+        ) {
+            return "hidden";
+        }
+
         if (context.slot == "edit-toolbar" && context.selection[0]._new) {
             return "hidden";
         }
@@ -408,6 +425,14 @@ woost.admin.actions.DeleteAction = class DeleteAction extends woost.admin.action
     }
 
     getState(context) {
+
+        if (
+            context.node
+            && context.node.view
+            && context.node.view.classes.includes("woost.admin.views.count.Count")
+        ) {
+            return "hidden";
+        }
 
         if (context.editingSettings) {
             return "hidden";
@@ -484,6 +509,14 @@ woost.admin.actions.ClearCacheAction = class ClearCacheAction extends woost.admi
 
         let dataSource;
         let options = null;
+
+        if (
+            context.node
+            && context.node.view
+            && context.node.view.classes.includes("woost.admin.views.count.Count")
+        ) {
+            return "hidden";
+        }
 
         if (context.selectable) {
             options = context.selectable.getDataSourceOptions();
