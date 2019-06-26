@@ -6,7 +6,8 @@
 from .schemaexport import (
     MemberExport,
     exports_member,
-    excluded_members
+    excluded_members,
+    get_declaration
 )
 from .schema import SchemaExport
 from . import boolean

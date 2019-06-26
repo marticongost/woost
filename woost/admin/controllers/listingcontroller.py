@@ -329,6 +329,10 @@ class ListingController(Controller):
     @request_property
     def members(self):
 
+        view = self.view
+        if view and not view.allows_member_selection:
+            return None
+
         keys = cherrypy.request.params.get("members")
 
         if isinstance(keys, str):
@@ -376,7 +380,12 @@ class ListingController(Controller):
         if not export_class:
             raise ValueError("Missing export class")
 
-        export = export_class(languages = self.locales)
+        kwargs = {"languages": self.locales}
+
+        if self.view:
+            kwargs.update(self.view.get_export_parameters())
+
+        export = export_class(**kwargs)
 
         members = self.members
         if members:

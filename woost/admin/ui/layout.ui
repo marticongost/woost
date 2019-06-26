@@ -28,6 +28,7 @@
     <ui:requires-translation-bundle name="woost.admin.ui.actions"/>
     <ui:requires-translation-bundle name="woost.admin.ui.nodes"/>
     <ui:requires-translation-bundle name="woost.admin.ui.partitioning"/>
+    <ui:requires-translation-bundle name="woost.admin.ui.views"/>
 
     <ui:resource href="woost.admin.ui://scripts/views.js"/>
     <ui:resource href="woost.admin.ui://scripts/partitioning.js"/>
