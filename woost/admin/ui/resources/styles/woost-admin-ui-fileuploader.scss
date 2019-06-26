@@ -6,6 +6,20 @@
     flex-direction: row;
 }
 
+#dropArea {
+    border: 3px dashed $hl-background;
+    padding: 2em;
+    display: none;
+
+    :host-context(.woost-admin-ui-FileUploader-droppingFile) & {
+        display: block;
+    }
+}
+
+#dropArea.dropArea--highlight {
+    border: 3px dashed $hl-shadow;
+}
+
 #fileInput {
     display: none;
 }
@@ -14,6 +28,10 @@
     margin-right: 1em;
     border: 1px solid #ddd;
     padding: 1em;
+
+    :host-context(.woost-admin-ui-FileUploader-droppingFile) & {
+        display: none;
+    }
 
     :host([uploadState='uploading']) &,
     :host([empty='true']) & {
@@ -28,6 +46,10 @@
 }
 
 #actionList {
+    :host-context(.woost-admin-ui-FileUploader-droppingFile) & {
+        display: none;
+    }
+
     :host([uploadState='uploading']) & {
         display: none;
     }
