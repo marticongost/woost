@@ -4,6 +4,8 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:symbol name="UPLOAD_TEMP_FILE"/>
+
     <ui:using mixin="cocktail.ui.DataDisplay"/>
 
     <ui:property
@@ -17,6 +19,33 @@
         type="boolean"
         reflected="true"
         default="true"/>
+
+    <?class
+    [UPLOAD_TEMP_FILE](file) {
+       this.uploadState = "uploading";
+
+        cocktail.ui.request({
+            url: "/async_upload",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/octet-stream",
+                "X-File-Name": file.name
+            },
+            data: file,
+            progressBar:this.progressBar,
+            responseType: "json"
+        })
+            .then((xhr) => {
+               this.value = xhr.response.id;
+               this.fileNameLabel.innerText = xhr.response.name;
+               this.fileSizeLabel.innerText = xhr.response.size_desc;
+               this.empty = false;
+            })
+            .finally(() => {
+               this.uploadState = "idle";
+            });
+    }
+    ?>
 
     <?on dataBinding:changed
     const file = this.dataBinding.parent && this.dataBinding.parent.value;
@@ -46,11 +75,42 @@
             new cls.UploadFileAction("upload")
         ]
     });
+
+    window.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("dragover", e => {
+            e.preventDefault();
+            document.documentElement.classList.add("woost-admin-ui-FileUploader-droppingFile");
+        });
+        document.addEventListener("dragleave", () => {
+            document.documentElement.classList.remove("woost-admin-ui-FileUploader-droppingFile");
+        });
+    });
     ?>
 
     <div id="uploadInfo">
         <div id="fileNameLabel"/>
         <div id="fileSizeLabel"/>
+    </div>
+
+    <div id="dropArea">
+        <ui:translation/>
+        
+        <?on dragover
+        e.preventDefault();
+        this.classList.add("dropArea--highlight")
+        ?>
+
+        <?on dragleave
+        e.preventDefault();
+        this.classList.remove("dropArea--highlight")
+        ?>
+
+        <?on drop
+        e.preventDefault();
+        instance[UPLOAD_TEMP_FILE](e.dataTransfer.items[0].getAsFile())
+        document.documentElement.classList.remove("woost-admin-ui-FileUploader-droppingFile");
+        this.classList.remove("dropArea--highlight")
+        ?>
     </div>
 
     <ui:cocktail.ui.ActionList id="actionList">
@@ -68,30 +128,11 @@
     <input
         id="fileInput"
         type="file">
+        
         <?on change
-        instance.uploadState = "uploading";
-
-        cocktail.ui.request({
-            url: "/async_upload",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/octet-stream",
-                "X-File-Name": this.files[0].name
-            },
-            data: this.files[0],
-            progressBar: instance.progressBar,
-            responseType: "json"
-        })
-            .then((xhr) => {
-                instance.value = xhr.response.id;
-                instance.fileNameLabel.innerText = xhr.response.name;
-                instance.fileSizeLabel.innerText = xhr.response.size_desc;
-                instance.empty = false;
-            })
-            .finally(() => {
-                instance.uploadState = "idle";
-            });
+        instance[UPLOAD_TEMP_FILE](this.files[0]);
         ?>
+
     </input>
 
 </ui:element>

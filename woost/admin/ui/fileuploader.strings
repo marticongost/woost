@@ -1,0 +1,8 @@
+
+[woost.admin.ui.FileUploader]
+
+    [dropArea]
+    ca: Deixa anar el fitxer aquí per carregar-lo
+    es: Suelta el fichero aquí para cargarlo
+    en: Drop your file here to upload it
+
