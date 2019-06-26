@@ -154,15 +154,15 @@ woost.admin.actions.SelectViewAction = class SelectViewAction extends woost.admi
 
 woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMethodAction extends woost.admin.actions.Action {
 
-    matchesContext(context) {
+    getState(context) {
         if (
             !context.node
             || !context.node.availablePartitioningMethods
             || !context.node.availablePartitioningMethods.length
         ) {
-            return false;
+            return "hidden";
         }
-        return super.matchesContext(context);
+        return super.getState(context);
     }
 
     static get defaultComponent() {
@@ -535,12 +535,34 @@ woost.admin.actions.ExcelAction = class ExcelAction extends woost.admin.actions.
 
 woost.admin.actions.FieldsAction = class FieldsAction extends woost.admin.actions.Action {
 
+    getState(context) {
+        if (
+            !context.node
+            || !context.node.view
+            || !context.node.view.allows_member_selection
+        ) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     static get defaultComponent() {
         return woost.admin.ui.FieldsDropdown;
     }
 }
 
 woost.admin.actions.LocalesAction = class LocalesAction extends woost.admin.actions.Action {
+
+    getState(context) {
+        if (
+            !context.node
+            || !context.node.view
+            || !context.node.view.allows_locale_selection
+        ) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
 
     static get defaultComponent() {
         return woost.admin.ui.LocalesDropdown;

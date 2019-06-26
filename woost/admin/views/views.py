@@ -4,9 +4,12 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from collections import OrderedDict, defaultdict
+
+from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.persistence import PersistentClass
+
 from woost.models import Item
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
@@ -299,6 +302,9 @@ class View(object):
     export_class = Export
     allows_sorting = True
     allows_partitioning = True
+    allows_member_selection = True
+    allows_locale_selection = True
+    pagination = True
     partitioning_methods = None
     count_enabled = True
     default_partitioning_method = None
@@ -357,17 +363,37 @@ class View(object):
         :return: A dictionary with the view's data.
         :rtype: dict
         """
+
+        class_names = []
+        for cls in self.__class__.__mro__:
+            if cls is not View and issubclass(cls, View):
+                class_names.append(get_full_name(cls))
+
         return {
+            "classes": class_names,
             "label": translations(self),
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
             "ui_component": self.ui_component,
             "allows_sorting": self.allows_sorting,
             "allows_partitioning": self.allows_partitioning,
+            "allows_member_selection": self.allows_member_selection,
+            "allows_locale_selection": self.allows_locale_selection,
+            "pagination": self.pagination,
             "partitioning_methods": self.partitioning_methods,
             "count_enabled": self.count_enabled,
             "default_partitioning_method": self.default_partitioning_method
         }
+
+    def get_export_parameters(self) -> dict:
+        """Allows views to customize the instantiation of the
+        `woost.admin.dataexport.Export` object they use to export their results
+        to the client.
+
+        :return: A dictionary with keyword parameters to supply to the object
+            exporter.
+        """
+        return {}
 
 
 class UnavailableViewError(Exception):

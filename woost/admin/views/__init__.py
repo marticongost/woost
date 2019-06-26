@@ -14,6 +14,7 @@ from .views import (
     UnavailableViewError
 )
 from .listing import Listing
+from .count import Count, CountByMember
 from .tree import Tree
 from . import sitetree
 
