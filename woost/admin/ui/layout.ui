@@ -145,7 +145,7 @@
         return expandedEntry;
     }
     ?>
-
+    
     <?on-window click
     instance.closeMenu();
     ?>
@@ -266,6 +266,15 @@
                 cocktail.navigation.push(this.section.url);
             }
         }
+        ?>
+
+        <?tail
+        window.addEventListener("DOMContentLoaded", () => {
+            document.addEventListener("drop", e => {
+                e.preventDefault();
+                document.documentElement.classList.remove("woost-admin-ui-FileUploader-droppingFile");
+            });
+        })
         ?>
 
         <div id="entryDescription">
