@@ -34,6 +34,20 @@
     }
     ?>
 
+    <?tail
+    cls.UploadFileAction = class UploadFileAction extends woost.admin.actions.Action {
+        invoke(context) {
+            context.fileUploader.fileInput.click();
+        }
+    }
+
+    cls.toolbar = new cocktail.ui.ActionSet("file-uploader-toolbar", {
+        entries: [
+            new cls.UploadFileAction("upload")
+        ]
+    });
+    ?>
+
     <div id="uploadInfo">
         <div id="fileNameLabel"/>
         <div id="fileSizeLabel"/>
@@ -41,18 +55,11 @@
 
     <ui:cocktail.ui.ActionList id="actionList">
         <?js
-        class UploadFileAction extends woost.admin.actions.Action {
-
-            invoke() {
-                instance.fileInput.click();
-            }
-        }
-
         element.classList.add("compact");
         element.classList.add("without-frame");
-        element.actions = [
-            new UploadFileAction("upload")
-        ];
+        element.actionContext.fileUploader = instance;
+        element.actionSource = cls.toolbar;
+        element.actionSetup();
         ?>
     </ui:cocktail.ui.ActionList>
 
