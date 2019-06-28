@@ -11,7 +11,8 @@ from cocktail.translations import translations, get_language
 from cocktail.schema.expressions import (
     Self,
     TranslationExpression,
-    NegativeExpression
+    NegativeExpression,
+    Expression
 )
 from cocktail.schema import xlsx
 from cocktail.controllers import (
@@ -395,38 +396,51 @@ class ListingController(Controller):
 
     @request_property
     def order(self):
-        order = cherrypy.request.params.get("order", self.default_order)
+
+        order = cherrypy.request.params.get("order") or self.get_default_order()
 
         if order:
-            if order[0] == "-":
-                descending = True
-                order = order[1:]
-            else:
-                descending = False
+            order = self.resolve_order_string(order)
 
-            pos = order.find("-")
-            if pos == -1:
-                member_name = order
-                lang = None
-            else:
-                member_name = order[:pos]
-                lang = order[pos + 1:]
+        return order
 
-            member = self.model.get_member(member_name)
-            if member is None:
-                raise cherrypy.HTTPError(400, "Invalid order criteria")
+    def get_default_order(self) -> str:
+        return self.view and self.view.get_default_order() or self.default_order
 
-            expr = member
+    def resolve_order_string(self, order: str) -> Expression:
 
-            if lang:
-                expr = TranslationExpression(expr, lang)
+        if self.view:
+            order_expr = self.view.resolve_order_string(order)
+            if order_expr is not None:
+                return order_expr
 
-            if descending:
-                expr = NegativeExpression(expr)
+        if order[0] == "-":
+            descending = True
+            order = order[1:]
+        else:
+            descending = False
 
-            return expr
+        pos = order.find("-")
+        if pos == -1:
+            member_name = order
+            lang = None
+        else:
+            member_name = order[:pos]
+            lang = order[pos + 1:]
 
-        return None
+        member = self.model.get_member(member_name)
+        if member is None:
+            raise cherrypy.HTTPError(400, "Invalid order criteria")
+
+        expr = member
+
+        if lang:
+            expr = TranslationExpression(expr, lang)
+
+        if descending:
+            expr = NegativeExpression(expr)
+
+        return expr
 
     @request_property
     def range(self):
