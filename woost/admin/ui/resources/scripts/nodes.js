@@ -560,14 +560,6 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return extraMembers;
         }
 
-        get availablePartitioningMethods() {
-            return [];
-        }
-
-        get defaultPartitioningMethod() {
-            return null;
-        }
-
         defineQueryParameters() {
             return [
                 new woost.admin.views.ViewReference({
