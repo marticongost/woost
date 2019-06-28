@@ -94,7 +94,7 @@ def available_views(target = None):
         if view.is_available():
             yield view
 
-def register_view(view, target, position = "append", inheritable = True):
+def register_view(view, target=None, position="append", inheritable=True):
     """Make a view available to the given target.
 
     :param view: The view to register.
@@ -106,6 +106,8 @@ def register_view(view, target, position = "append", inheritable = True):
         - A model
         - A reference member
         - A collection of references
+        - None, if the view shouldn't be bound to a specific target; it will be
+          up to the client to make it explicitly avaiable.
 
     :type target:
         `~cocktail.persistence.PersistentClass`,
@@ -124,15 +126,16 @@ def register_view(view, target, position = "append", inheritable = True):
     """
     # target validation
     if (
-        not (
+        target is not None
+        and not (
             isinstance(target, schema.RelationMember)
             and isinstance(target.related_type, PersistentClass)
         )
         and not isinstance(target, PersistentClass)
     ):
         raise ValueError(
-            "Invalid view target: %r. Expected a reference, a collection or a "
-            "model."
+            "Invalid view target: %r. Expected a reference, a collection, a "
+            "model or None."
         )
 
     # position validation
