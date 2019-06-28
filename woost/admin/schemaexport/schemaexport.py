@@ -32,6 +32,7 @@ schema.Member.ui_item_set_selector_display = None
 schema.Member.ui_collection_editor_control = None
 schema.Member.ui_autocomplete_display = None
 schema.Member.ui_column_width = None
+schema.Member.ui_sortable = True
 
 def exports_member(member_type):
     def decorator(cls):
@@ -233,6 +234,9 @@ class MemberExport(object):
 
         if getattr(member, "is_setting", False):
             yield ("[woost.models.isSetting]", "true")
+
+        if member.ui_sortable != member.__class__.ui_sortable:
+            yield ("[cocktail.ui.sortable]", dumps(member.ui_sortable))
 
     def export_display(self, display):
         if isinstance(display, tuple):
