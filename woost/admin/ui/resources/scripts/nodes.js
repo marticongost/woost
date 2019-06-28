@@ -398,8 +398,41 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             }
         }
 
+        get availableViews() {
+            return woost.admin.views.resolve(
+                (this.section && this.section.views),
+                this.model[woost.admin.views.views]
+            );
+        }
+
+        get availablePartitioningMethods() {
+            if (this.view && !this.view.allows_partitioning) {
+                return [];
+            }
+            return woost.admin.partitioning.resolveSets(
+                this.view && this.view.partitioning_methods,
+                (this.section && this.section.partitioning_methods),
+                this.listedModel[woost.admin.partitioning.methods]
+            );
+        }
+
+        get defaultPartitioningMethod() {
+            if (this.view && !this.view.allows_partitioning) {
+                return null;
+            }
+            return woost.admin.partitioning.resolveMethod(
+                this.view && this.view.default_partitioning_method,
+                (this.section && this.section.default_partitioning_method),
+                this.listedModel[woost.admin.partitioning.defaultMethod]
+            );
+        }
+
         get exporter() {
             return null;
+        }
+
+        get listedModel() {
+            return this.model;
         }
 
         get adaptedModel() {
@@ -511,10 +544,6 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             }
 
             return extraMembers;
-        }
-
-        get availableViews() {
-            return [woost.admin.views.listing];
         }
 
         get availablePartitioningMethods() {
@@ -635,39 +664,6 @@ woost.admin.nodes.CRUD = class CRUD extends woost.admin.nodes.Listing(woost.admi
 
     get model() {
         return this.constructor.model;
-    }
-
-    get listedModel() {
-        return this.model;
-    }
-
-    get availableViews() {
-        return woost.admin.views.resolve(
-            this.section.views,
-            this.model[woost.admin.views.views]
-        );
-    }
-
-    get availablePartitioningMethods() {
-        if (this.view && !this.view.allows_partitioning) {
-            return [];
-        }
-        return woost.admin.partitioning.resolveSets(
-            this.view && this.view.partitioning_methods,
-            this.section.partitioning_methods,
-            this.listedModel[woost.admin.partitioning.methods]
-        );
-    }
-
-    get defaultPartitioningMethod() {
-        if (this.view && !this.view.allows_partitioning) {
-            return null;
-        }
-        return woost.admin.partitioning.resolveMethod(
-            this.view && this.view.default_partitioning_method,
-            this.section.default_partitioning_method,
-            this.listedModel[woost.admin.partitioning.defaultMethod]
-        );
     }
 
     static createSectionClass(section) {
