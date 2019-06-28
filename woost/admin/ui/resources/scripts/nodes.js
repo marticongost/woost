@@ -622,6 +622,9 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
             return queryValues;
         }
 
+        getDataSourceOptions(options) {
+        }
+
         get defaultComponent() {
             return woost.admin.ui.Listing;
         }

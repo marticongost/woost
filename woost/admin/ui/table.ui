@@ -45,7 +45,7 @@
 
     getDataSourceOptions(page) {
 
-        const options = super.getDataSourceOptions(page);
+        let options = super.getDataSourceOptions(page);
         const listing = this.listing;
 
         if (listing.view) {
@@ -82,6 +82,7 @@
             }
         }
 
+        options = cocktail.navigation.node.getDataSourceOptions(options) || options;
         return options;
     }
 
