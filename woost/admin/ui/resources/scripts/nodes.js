@@ -591,7 +591,8 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                     name: "search"
                 }),
                 new cocktail.schema.String({
-                    name: "order"
+                    name: "order",
+                    defaultValue: "-last_update_time"
                 }),
                 ...woost.admin.filters.getFilters(this.listedModel)
             ];
@@ -628,6 +629,11 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                     const defaultMethod = this.defaultPartitioningMethod;
                     if (defaultMethod) {
                         partition.defaultValue = () => woost.admin.partitioning.getDefaultPartition(defaultMethod);
+                    }
+
+                    // Default order
+                    if (value.default_order) {
+                        this.queryParameters.order.defaultValue = value.default_order;
                     }
                 }
             }

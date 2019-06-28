@@ -5,6 +5,7 @@
 """
 from collections import OrderedDict, defaultdict
 
+from cocktail.schema.expressions import Expression
 from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
 from cocktail import schema
@@ -311,6 +312,7 @@ class View(object):
     partitioning_methods = None
     count_enabled = True
     default_partitioning_method = None
+    default_order: str = None
 
     def __init__(
         self,
@@ -385,7 +387,8 @@ class View(object):
             "pagination": self.pagination,
             "partitioning_methods": self.partitioning_methods,
             "count_enabled": self.count_enabled,
-            "default_partitioning_method": self.default_partitioning_method
+            "default_partitioning_method": self.default_partitioning_method,
+            "default_order": self.default_order
         }
 
     def get_export_parameters(self) -> dict:
@@ -397,6 +400,12 @@ class View(object):
             exporter.
         """
         return {}
+
+    def get_default_order(self) -> str:
+        return self.default_order
+
+    def resolve_order_string(self, order: str) -> Expression:
+        return None
 
 
 class UnavailableViewError(Exception):
