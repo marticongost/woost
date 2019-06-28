@@ -657,6 +657,10 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
         get defaultComponent() {
             return woost.admin.ui.Listing;
         }
+
+        get toolbar() {
+            return woost.admin.actions.listingToolbar;
+        }
     }
 }
 

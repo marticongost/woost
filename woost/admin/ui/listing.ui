@@ -22,6 +22,7 @@
 
         let node = this.navigationNode;
         this.actionList.actionContext.node = node;
+        this.actionList.actionSource = node.toolbar;
         this.members = node.members;
         this.locales = node.locales;
         this.partition = node.partition;
@@ -312,7 +313,6 @@
                 view: this,
                 slot: "listing-toolbar"
             };
-            element.actionSource = woost.admin.actions.listingToolbar;
             ?>
         </ui:cocktail.ui.ActionList>
 
