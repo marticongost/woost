@@ -3,9 +3,10 @@ cocktail.declare("woost.admin.nodes");
 
 woost.admin.nodes.itemNodeClass = Symbol.for("woost.admin.nodes.itemNodeClass");
 woost.admin.ui.editView = Symbol.for("woost.admin.ui.editView");
+woost.admin.nodes.globalEntries = {};
 
-// Show navigation errors to the user
 {
+    // Show navigation errors to the user
     const baseErrorHandler = cocktail.navigation.handleError;
     cocktail.navigation.handleError = function handleError(error) {
         cocktail.ui.Notice.show({
@@ -14,97 +15,110 @@ woost.admin.ui.editView = Symbol.for("woost.admin.ui.editView");
         });
         baseErrorHandler.call(this, error);
     }
-};
 
-woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackNode {
+    const CHILDREN = Symbol("woost.admin.nodes.StackNode.CHILDREN");
 
-    static createSectionClass(section) {
-        let cls = class Section extends this {};
-        cls.section = section;
-        return cls;
-    }
+    woost.admin.nodes.StackNode = class StackNode extends cocktail.navigation.StackNode {
 
-    get title() {
-        return "";
-    }
-
-    get iconURL() {
-        return null;
-    }
-
-    get isCloseDestination() {
-        return this.createsStackUI;
-    }
-
-    createHeading() {
-        let heading = woost.admin.ui.StackNode.Heading.create();
-        heading.labelText = this.title;
-        return heading;
-    }
-
-    traverse() {
-        // Redirection after creating a new object. Overriden
-        // to change the animation type to fade
-        if (this.url == woost.admin.ui.redirectionAfterInsertion) {
-            woost.admin.ui.redirectionAfterInsertion = null;
-
-            const stack = this.stack;
-            const createNode = stack.stackTop;
-            createNode.animationType = "fade";
-
-            const targetNode = this.createStackNode();
-            this.stackNode = targetNode;
-            targetNode.navigationNode = this;
-
-            const prevAnimationType = targetNode.animationType;
-            targetNode.animationType = "fade";
-            targetNode.addEventListener(
-                "animationend",
-                () => targetNode.animationType = prevAnimationType,
-                {once: true}
-            );
-
-            stack.pop(createNode);
-            stack.push(targetNode);
+        static createSectionClass(section) {
+            let cls = class Section extends this {};
+            cls.section = section;
+            return cls;
         }
-        else {
-            super.traverse();
-        }
-    }
 
-    activate() {
-        super.activate();
-        let node = this;
-        while (node) {
-            const icon = node.iconURL;
-            if (icon) {
-                cocktail.setShortcutIcon(icon, "image/svg+xml");
-                break;
+        get title() {
+            return "";
+        }
+
+        get iconURL() {
+            return null;
+        }
+
+        get isCloseDestination() {
+            return this.createsStackUI;
+        }
+
+        createHeading() {
+            let heading = woost.admin.ui.StackNode.Heading.create();
+            heading.labelText = this.title;
+            return heading;
+        }
+
+        traverse() {
+            // Redirection after creating a new object. Overriden
+            // to change the animation type to fade
+            if (this.url == woost.admin.ui.redirectionAfterInsertion) {
+                woost.admin.ui.redirectionAfterInsertion = null;
+
+                const stack = this.stack;
+                const createNode = stack.stackTop;
+                createNode.animationType = "fade";
+
+                const targetNode = this.createStackNode();
+                this.stackNode = targetNode;
+                targetNode.navigationNode = this;
+
+                const prevAnimationType = targetNode.animationType;
+                targetNode.animationType = "fade";
+                targetNode.addEventListener(
+                    "animationend",
+                    () => targetNode.animationType = prevAnimationType,
+                    {once: true}
+                );
+
+                stack.pop(createNode);
+                stack.push(targetNode);
             }
-            node = node.parent;
+            else {
+                super.traverse();
+            }
         }
-    }
 
-    get component() {
-        return this.defaultComponent;
-    }
-
-    get defaultComponent() {
-        return null;
-    }
-
-    createStackNode() {
-        let display = null;
-        let component = this.component;
-        if (!component) {
-            throw `${this} defines no UI component`;
+        activate() {
+            super.activate();
+            let node = this;
+            while (node) {
+                const icon = node.iconURL;
+                if (icon) {
+                    cocktail.setShortcutIcon(icon, "image/svg+xml");
+                    break;
+                }
+                node = node.parent;
+            }
         }
-        display = component.create()
-        this.initializeStackNode(display);
-        return display;
-    }
 
-    initializeStackNode(display) {
+        get component() {
+            return this.defaultComponent;
+        }
+
+        get defaultComponent() {
+            return null;
+        }
+
+        createStackNode() {
+            let display = null;
+            let component = this.component;
+            if (!component) {
+                throw `${this} defines no UI component`;
+            }
+            display = component.create()
+            this.initializeStackNode(display);
+            return display;
+        }
+
+        initializeStackNode(display) {
+        }
+
+        get children() {
+            if (!this[CHILDREN]) {
+                this[CHILDREN] = Object.assign(
+                    {},
+                    woost.admin.nodes.globalEntries,
+                    this.constructor.children
+                );
+            }
+            return this[CHILDREN];
+        }
     }
 }
 
