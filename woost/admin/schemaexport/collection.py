@@ -14,6 +14,7 @@ from .schemaexport import (
 from .utils import export_view_names
 
 schema.Collection.ui_member_class = "cocktail.schema.Collection"
+schema.Collection.ui_sortable = False
 
 
 @exports_member(schema.Collection)
