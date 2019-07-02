@@ -531,6 +531,9 @@ class ListingController(Controller):
                 )
             )
 
+        if self.view:
+            filter_expressions.extend(self.view.extra_filters)
+
         for filter in self.filters:
             expr = filter.filter_expression()
             if expr is not None:

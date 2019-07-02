@@ -309,6 +309,7 @@ class View(object):
     allows_partitioning = True
     allows_member_selection = True
     allows_locale_selection = True
+    extra_filters: Sequence[Expression] = ()
     pagination = True
     partitioning_methods = None
     count_enabled = True
