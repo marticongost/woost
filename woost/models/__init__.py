@@ -127,7 +127,6 @@ from .listing import Listing
 from .eventlisting import EventListing
 from .facebooklikebox import FacebookLikeBox
 from .facebooklikebutton import FacebookLikeButton
-from .flashblock import FlashBlock
 from .htmlblock import HTMLBlock
 from .iframeblock import IFrameBlock
 from .loginblock import LoginBlock
