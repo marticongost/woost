@@ -3,7 +3,9 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Iterable, Set, Tuple, Union
 from cocktail.javascriptserializer import dumps
+from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.sourcecodewriter import SourceCodeWriter
@@ -12,7 +14,8 @@ from cocktail.typemapping import TypeMapping
 from woost import app
 from woost.models import (
     ReadMemberPermission,
-    ModifyMemberPermission
+    ModifyMemberPermission,
+    Block
 )
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
@@ -109,6 +112,10 @@ class MemberExport(object):
 
         if member.name:
             yield "name", dumps(self.get_member_name(member))
+
+        translations = self.get_translations(member, nested)
+        if translations:
+            yield "translations", dumps(translations)
 
         if member.required:
             yield "required", self._dump_constraint(member.required)
@@ -237,6 +244,63 @@ class MemberExport(object):
 
         if member.ui_sortable != member.__class__.ui_sortable:
             yield ("[cocktail.ui.sortable]", dumps(member.ui_sortable))
+
+    def get_translations(
+            self,
+            member: schema.Member,
+            nested: bool = False) -> dict:
+
+        trans = {}
+
+        if member.custom_translation_key or (
+            member.schema is not None
+            or (
+                isinstance(member, schema.Schema)
+                and not nested
+            )
+        ):
+            for entry in self.iter_member_translation_keys(member):
+                if isinstance(entry, tuple):
+                    suffix, text = entry
+                else:
+                    suffix = entry
+                    text = translations(member, suffix="." + suffix)
+
+                if text:
+                    trans[suffix] = text
+
+        return trans
+
+    def iter_member_translation_keys(
+            self,
+            member: schema.Member) -> Iterable[Union[str, Tuple[str, str]]]:
+
+        yield ("", translations(member))
+        yield "none"
+        yield "explanation"
+
+        if isinstance(member, schema.Collection):
+            yield "add"
+        elif isinstance(member, schema.Reference) and not member.class_family:
+            yield "select"
+
+        if member is Block.view_class:
+            exported_views = set()
+            for cls in Block.schema_tree():
+                for view in cls.views:
+                    if view not in exported_views:
+                        yield "values." + view
+                        exported_views.add(view)
+        elif (
+            member.translatable_enumeration
+            and member.enumeration
+            and isinstance(member.enumeration, Iterable)
+        ):
+            for value in member.enumeration:
+                yield (
+                    "values." + str(value),
+                    member.translate_value(value)
+                )
 
     def export_display(self, display):
         if isinstance(display, tuple):
