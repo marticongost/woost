@@ -929,12 +929,18 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
         if (context.insideBlockEditPanel) {
             return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/close-block.svg`);
         }
+        else if (context.node.relation) {
+            return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
+        }
         return super.getIconURL(context);
     }
 
     translate(context) {
         if (context.insideBlockEditPanel) {
             return cocktail.ui.translations[`${this.translationPrefix}.close-block`];
+        }
+        else if (context.node.relation) {
+            return cocktail.ui.translations[`${this.translationPrefix}.cancel`];
         }
         return super.translate(context);
     }
@@ -1081,21 +1087,6 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
     }
 }
 
-woost.admin.actions.CancelSelectionAction = class CancelSelectionAction extends woost.admin.actions.CloseAction {
-
-    get translationKey() {
-        return `${this.translationPrefix}.cancel`;
-    }
-
-    getIconURL(context) {
-        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
-    }
-
-    compatibleWith(context) {
-        return context.node.relation && super.compatibleWith(context);
-    }
-}
-
 woost.admin.actions.WriteClipboardAction = class WriteClipboardAction extends woost.admin.actions.Action {
 
     get min() {
@@ -1237,7 +1228,7 @@ woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar"
         new cocktail.ui.ActionSet("navigation", {
             entries: [
                 new woost.admin.actions.AcceptSelectionAction("accept-selection"),
-                new woost.admin.actions.CancelSelectionAction("cancel-selection")
+                new woost.admin.actions.CloseAction("close")
             ]
         })
     ]
