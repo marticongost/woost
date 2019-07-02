@@ -41,8 +41,6 @@ schema.SchemaObject.admin_item_card = None
 @exports_member(schema.Schema)
 class SchemaExport(MemberExport):
 
-    locales = ()
-
     permissions = {
         "create": (
             lambda model:
@@ -79,10 +77,6 @@ class SchemaExport(MemberExport):
         if not nested:
             writer.replace_line("%s;")
             writer.linejump()
-
-            if not nested and self.locales:
-                for locale in self.locales:
-                    self.write_translations(member, locale, writer)
 
     def get_instantiation(self, member, nested):
         if nested:
@@ -203,97 +197,28 @@ class SchemaExport(MemberExport):
             and member.visible
         )
 
-    def write_translations(self, model, locale, writer):
+    def iter_member_translation_keys(self, model):
 
-        prefix = model.get_qualified_name(include_ns = True)
-        client_prefix = get_model_dotted_name(model)
+        yield from super().iter_member_translation_keys(model)
 
-        def trans(entry):
-
-            if isinstance(entry, tuple):
-                suffix = entry[0]
-                value = entry[1]()
-            else:
-                suffix = entry
-                value = translations(prefix + suffix)
-
-            if value:
-                writer.write(
-                    "cocktail.ui.translations['%s'] = %s;" % (
-                        client_prefix + suffix,
-                        dumps(value)
-                    )
-                )
+        yield "plural"
+        yield "groups.item"
 
         exported_groups = set()
 
-        with language_context(locale):
-            trans("")
-            trans(".plural")
-            trans(".groups.item")
-
-            for member in self.get_members(model, True):
-                if member.member_group:
-                    parts = member.member_group.split(".")
-                    while parts:
-                        group = ".".join(parts)
-                        if group not in exported_groups:
-                            exported_groups.add(group)
-                            if member.schema is model:
-                                trans((
-                                    ".groups." + group,
-                                    lambda: model.translate_group(group)
-                                ))
-                        parts.pop(-1)
-
-            for member in self.get_members(model):
-                for entry in self.iter_member_translation_keys(member):
-                    trans(entry)
-
-        writer.linejump()
-        writer.linejump()
-
-    def iter_member_translation_keys(self, member):
-
-        prefix = ".members." + member.name
-        yield (prefix, lambda: translations(member))
-        yield (
-            prefix + ".none",
-            lambda: translations(member, suffix = ".none")
-        )
-        yield (
-            prefix + ".explanation",
-            lambda: translations(member, suffix = ".explanation")
-        )
-
-        if isinstance(member, schema.Collection):
-            yield (
-                prefix + ".add",
-                lambda: translations(member, suffix = ".add")
-            )
-        elif isinstance(member, schema.Reference) and not member.class_family:
-            yield (
-                prefix + ".select",
-                lambda: translations(member, suffix = ".select")
-            )
-
-        if member is Block.view_class:
-            exported_views = set()
-            for cls in Block.schema_tree():
-                for view in cls.views:
-                    if view not in exported_views:
-                        yield prefix + ".values." + view
-                        exported_views.add(view)
-        elif (
-            member.translatable_enumeration
-            and member.enumeration
-            and isinstance(member.enumeration, Iterable)
-        ):
-            for value in member.enumeration:
-                yield (
-                    prefix + ".values." + str(value),
-                    lambda: member.translate_value(value)
-                )
+        for member in self.get_members(model, True):
+            if member.member_group:
+                parts = member.member_group.split(".")
+                while parts:
+                    group = ".".join(parts)
+                    if group not in exported_groups:
+                        exported_groups.add(group)
+                        if member.schema is model:
+                            yield (
+                                "groups." + group,
+                                model.translate_group(group)
+                            )
+                    parts.pop(-1)
 
     def get_permissions(self, member):
         if issubclass(member, Item):

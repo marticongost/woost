@@ -408,7 +408,7 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 return super.title;
             }
             else {
-                return this.adaptedModel.translate(".plural");
+                return this.adaptedModel.translate("plural");
             }
         }
 
@@ -517,8 +517,12 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 extraMembers.push(
                     new class ThumbnailColumn extends cocktail.schema.String {
 
-                        get translationKey() {
-                            return "woost.admin.ui.Listing.thumbnailColumn";
+                        translate(suffix = "") {
+                            let key = "woost.admin.ui.Listing.thumbnailColumn";
+                            if (suffix) {
+                                key += suffix;
+                            }
+                            return cocktail.ui.translations[key];
                         }
 
                         get [cocktail.ui.dataSourceFields]() {
@@ -541,8 +545,12 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 extraMembers.push(
                     new class ElementColumn extends cocktail.schema.String {
 
-                        get translationKey() {
-                            return "woost.admin.ui.Listing.labelColumn";
+                        translate(suffix = "") {
+                            let key = "woost.admin.ui.Listing.labelColumn";
+                            if (suffix) {
+                                key += suffix;
+                            }
+                            return cocktail.ui.translations[key];
                         }
 
                         get [cocktail.ui.dataSourceFields]() {
