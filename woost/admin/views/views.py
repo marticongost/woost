@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Sequence
 from collections import OrderedDict, defaultdict
 
 from cocktail.schema.expressions import Expression
@@ -312,6 +313,7 @@ class View(object):
     partitioning_methods = None
     count_enabled = True
     default_partitioning_method = None
+    default_members: Sequence[str] = ()
     default_order: str = None
 
     def __init__(
@@ -388,7 +390,8 @@ class View(object):
             "partitioning_methods": self.partitioning_methods,
             "count_enabled": self.count_enabled,
             "default_partitioning_method": self.default_partitioning_method,
-            "default_order": self.default_order
+            "default_order": self.default_order,
+            "default_members": self.default_members
         }
 
     def get_export_parameters(self) -> dict:
