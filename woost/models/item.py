@@ -1,21 +1,16 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			June 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
 from datetime import date, datetime
 from contextlib import contextmanager
+
 from cocktail.iteration import first
 from cocktail.modeling import copy_mutable_containers
-from cocktail.events import event_handler, when, Event, EventInfo
-from cocktail.urls import URL
+from cocktail.events import event_handler, when
 from cocktail import schema
-from cocktail.translations import translations
-from cocktail.caching import whole_cache, get_cache_tags, get_cache_expiration
+from cocktail.caching import get_cache_tags, get_cache_expiration
 from cocktail.caching.utils import nearest_expiration
 from cocktail.persistence import (
     datastore,
@@ -25,10 +20,9 @@ from cocktail.persistence import (
     MaxValue
 )
 from cocktail.controllers import resolve_object_ref
+
 from woost import app
 from .changesets import ChangeSet, Change
-
-_protocol_regexp = re.compile(r"^[a-z][\-a-z0-9]*:")
 
 # Extension property to determine which members should trigger a cache
 # invalidation request
@@ -44,8 +38,10 @@ schema.Member.affects_cache_expiration = False
 
 
 class Item(PersistentObject):
-    """Base class for all CMS items. Provides basic functionality such as
-    authorship, modification timestamps and versioning.
+    """Base class for all the objects managed by the CMS.
+
+    Provides basic functionality such as authorship, modification timestamps
+    and versioning.
     """
     type_group = "setup"
     instantiable = False
@@ -76,25 +72,25 @@ class Item(PersistentObject):
     # Unique qualified name
     #--------------------------------------------------------------------------
     qname = schema.String(
-        unique = True,
-        indexed = True,
-        text_search = False,
-        listed_by_default = False,
-        member_group = "administration"
+        unique=True,
+        indexed=True,
+        text_search=False,
+        listed_by_default=False,
+        member_group="administration"
     )
 
     # Synchronization
     #------------------------------------------------------------------------------
     global_id = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = False,
-        invalidates_cache = False,
-        listed_by_default = False,
-        text_search = False,
-        copy_mode = schema.DO_NOT_COPY,
-        member_group = "administration"
+        required=True,
+        unique=True,
+        indexed=True,
+        normalized_index=False,
+        invalidates_cache=False,
+        listed_by_default=False,
+        text_search=False,
+        copy_mode=schema.DO_NOT_COPY,
+        member_group="administration"
     )
 
     def _generate_global_id(self):
@@ -141,46 +137,46 @@ class Item(PersistentObject):
     versioned = True
 
     changes = schema.Collection(
-        required = True,
-        versioned = False,
-        editable = schema.NOT_EDITABLE,
-        items = "woost.models.Change",
-        bidirectional = True,
-        invalidates_cache = False,
-        visible = False,
-        affects_last_update_time = False
+        required=True,
+        versioned=False,
+        editable=schema.NOT_EDITABLE,
+        items="woost.models.Change",
+        bidirectional=True,
+        invalidates_cache=False,
+        visible=False,
+        affects_last_update_time=False
     )
 
     creation_time = schema.DateTime(
-        versioned = False,
-        indexed = True,
-        editable = schema.READ_ONLY,
-        invalidates_cache = False,
-        listed_by_default = False,
-        member_group = "administration"
+        versioned=False,
+        indexed=True,
+        editable=schema.READ_ONLY,
+        invalidates_cache=False,
+        listed_by_default=False,
+        member_group="administration"
     )
 
     last_update_time = schema.DateTime(
-        indexed = True,
-        versioned = False,
-        editable = schema.READ_ONLY,
-        invalidates_cache = False,
-        affects_last_update_time = False,
-        member_group = "administration"
+        indexed=True,
+        versioned=False,
+        editable=schema.READ_ONLY,
+        invalidates_cache=False,
+        affects_last_update_time=False,
+        member_group="administration"
     )
 
     last_translation_update_time = schema.DateTime(
-        translated = True,
-        indexed = True,
-        versioned = False,
-        editable = schema.READ_ONLY,
-        invalidates_cache = False,
-        affects_last_update_time = False,
-        listed_by_default = False,
-        member_group = "administration"
+        translated=True,
+        indexed=True,
+        versioned=False,
+        editable=schema.READ_ONLY,
+        invalidates_cache=False,
+        affects_last_update_time=False,
+        listed_by_default=False,
+        member_group="administration"
     )
 
-    def consolidate_translations(self, root_language = None, members = None):
+    def consolidate_translations(self, root_language=None, members=None):
 
         # Exclude last_translation_update_time by default
         if members is None:
@@ -392,24 +388,25 @@ class Item(PersistentObject):
     # Authorship
     #--------------------------------------------------------------------------
     author = schema.Reference(
-        versioned = False,
-        indexed = True,
-        editable = schema.READ_ONLY,
-        type = "woost.models.User",
-        listed_by_default = False,
-        invalidates_cache = False,
-        member_group = "administration"
+        versioned=False,
+        indexed=True,
+        editable=schema.READ_ONLY,
+        type="woost.models.User",
+        listed_by_default=False,
+        invalidates_cache=False,
+        member_group="administration"
     )
 
     # URLs
     #--------------------------------------------------------------------------
-    def get_image_uri(self,
-        image_factory = None,
-        parameters = None,
-        include_extension = True,
-        host = None,
-        check_can_render = False
-    ):
+    def get_image_uri(
+            self,
+            image_factory=None,
+            parameters=None,
+            include_extension=True,
+            host=None,
+            check_can_render=False):
+
         image = self.resolve_representative_image(image_factory)
         return image._get_image_uri(
             image_factory = image_factory,
@@ -419,13 +416,14 @@ class Item(PersistentObject):
             check_can_render = check_can_render
         )
 
-    def _get_image_uri(self,
-        image_factory = None,
-        parameters = None,
-        include_extension = True,
-        host = None,
-        check_can_render = False
-    ):
+    def _get_image_uri(
+        self,
+        image_factory=None,
+        parameters=None,
+        include_extension=True,
+        host=None,
+        check_can_render=False):
+
         ext = None
 
         if not image_factory:
@@ -484,7 +482,7 @@ class Item(PersistentObject):
     def image_id(self):
         return str(self.id) if self.id else None
 
-    def resolve_representative_image(self, image_factory = None):
+    def resolve_representative_image(self, image_factory=None):
 
         image = self
 
@@ -494,7 +492,7 @@ class Item(PersistentObject):
                 return image
             image = next_image
 
-    def get_representative_image(self, image_factory = None):
+    def get_representative_image(self, image_factory=None):
         try:
             return self.image
         except AttributeError:
@@ -535,7 +533,7 @@ class Item(PersistentObject):
         """
         return "%s-%s" % (self.__class__.__name__, self.id)
 
-    def get_cache_tags(self, language = None, cache_part = None):
+    def get_cache_tags(self, language=None, cache_part=None):
         """Obtains the list of cache tags that apply to this item.
 
         :param language: Indicates the language for which the cache
@@ -596,8 +594,8 @@ class Item(PersistentObject):
                     instance = first(
                         cls.select(
                             member.greater(threshold),
-                            order = member,
-                            cached = False
+                            order=member,
+                            cached=False
                         )
                     )
 
@@ -609,7 +607,7 @@ class Item(PersistentObject):
 
         return expiration
 
-    def clear_cache(self, language = None, cache_part = None):
+    def clear_cache(self, language=None, cache_part=None):
         """Remove all the cached pages that are based on this item.
 
         :param language: Indicates the language for which the cache
@@ -623,13 +621,13 @@ class Item(PersistentObject):
             `~woost.views.depends_on` extension method.
         """
         app.cache.clear(
-            scope = self.get_cache_invalidation_scope(
-                language = language,
-                cache_part = cache_part
+            scope=self.get_cache_invalidation_scope(
+                language=language,
+                cache_part=cache_part
             )
         )
 
-    def clear_cache_after_commit(self, language = None, cache_part = None):
+    def clear_cache_after_commit(self, language=None, cache_part=None):
         """Remove all the cached pages that are based on this item, as soon as
         the current database transaction is committed.
 
@@ -648,13 +646,13 @@ class Item(PersistentObject):
             `~woost.views.depends_on` extension method.
         """
         app.cache.clear_after_commit(
-            scope = self.get_cache_invalidation_scope(
-                language = language,
-                cache_part = cache_part
+            scope=self.get_cache_invalidation_scope(
+                language=language,
+                cache_part=cache_part
             )
         )
 
-    def get_cache_invalidation_scope(self, language = None, cache_part = None):
+    def get_cache_invalidation_scope(self, language=None, cache_part=None):
         """Determine the scope of a cache invalidation request for this item.
 
         :param language: Indicates the language for which the cache
@@ -676,12 +674,11 @@ class Item(PersistentObject):
         if language:
             languages = list(self.iter_derived_translations(
                 language,
-                include_self = True
+                include_self=True
             ))
 
         # Tags per type
-        for cls in \
-        self.__class__.ascend_inheritance(include_self = True):
+        for cls in self.__class__.ascend_inheritance(include_self=True):
             selector = cls.full_name
 
             if cache_part:
@@ -722,7 +719,7 @@ def resolve_item_ref(cls, ref):
     try:
         ref = int(ref)
     except ValueError:
-        return cls.get_instance(global_id = ref)
+        return cls.get_instance(global_id=ref)
     else:
         return cls.get_instance(ref)
 
@@ -745,8 +742,8 @@ def _clear_cache_after_change(e):
         and e.source.is_inserted
     ):
         e.source.clear_cache_after_commit(
-            language = e.language,
-            cache_part = e.member.cache_part
+            language=e.language,
+            cache_part=e.member.cache_part
         )
 
 @when(Item.adding_translation)
@@ -759,22 +756,22 @@ def _clear_cache_after_change(e):
 from cocktail.persistence import PersistentClass
 
 @get_cache_tags.implementation_for(PersistentClass)
-def get_cache_tags_for_persistent_class(obj, cache_part = None):
+def get_cache_tags_for_persistent_class(obj, cache_part=None):
     tag = obj.full_name
     if cache_part:
         tag += "-" + cache_part
     yield tag
 
 @get_cache_expiration.implementation_for(PersistentClass)
-def get_cache_expiration_for_persistent_class(obj, cache_part = None):
+def get_cache_expiration_for_persistent_class(obj, cache_part=None):
     return obj.get_cache_expiration_for_type()
 
 @get_cache_tags.implementation_for(Item)
-def get_cache_tags_for_item(obj, cache_part = None):
-    for tag in obj.get_cache_tags(cache_part = cache_part):
+def get_cache_tags_for_item(obj, cache_part=None):
+    for tag in obj.get_cache_tags(cache_part=cache_part):
         yield tag
 
 @get_cache_expiration.implementation_for(Item)
-def get_cache_expiration_for_item(obj, cache_part = None):
+def get_cache_expiration_for_item(obj, cache_part=None):
     return obj.get_cache_expiration()
 
