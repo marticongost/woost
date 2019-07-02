@@ -11,16 +11,19 @@ from cocktail.urls import URL
 from cocktail.events import event_handler
 from woost.models import Publishable, with_default_controller
 
-ISSUU_DOCUMENT_URL_PATTERN = \
-    re.compile(r"http://issuu.com/(.+)/docs/([^/\?]+)/?(\d+)?(\?e=(\d+/\d+))?.*")
+ISSUU_DOCUMENT_URL_PATTERN = re.compile(
+    r"http://issuu.com/""(?P<username>.+)/docs/"
+    r"(?P<docname>[^/\?]+)"
+    r"(/?(\d+)?(\?e=(?P<configid>\d+/\d+))?.*)?"
+)
 
 def extract_issuu_document_metadata(url):
     match = re.match(ISSUU_DOCUMENT_URL_PATTERN, url)
     if match:
         return {
-            "username": match.group(1),
-            "docname": match.group(2),
-            "configid": match.group(5)
+            "username": match.group("username"),
+            "docname": match.group("docname"),
+            "configid": match.group("configid")
         }
     else:
         return {}
@@ -77,7 +80,8 @@ class IssuuDocument(Publishable):
         editable = schema.NOT_EDITABLE,
         searchable = False,
         member_group = "content",
-        listed_by_default = False
+        listed_by_default = False,
+        visible = False
     )
 
     def get_issuu_uri(self, page_number = None):

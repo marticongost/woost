@@ -16,6 +16,8 @@
     </py:ready>
 
     <py:cocktail.html.IssuuViewer
+        py:document_name="@{self.block.issuu_document.issuu_document_name}"
+        py:username="@{self.block.issuu_document.issuu_document_username}"
         py:config_id="@{self.block.issuu_document.issuu_config_id}"
         py:page_number="@{self.block.issuu_document.thumbnail_page}"
         py:width="@{self.block.width}"

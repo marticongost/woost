@@ -85,6 +85,8 @@ class IssuuExtension(Extension):
 
         def issuu_viewer(item, parameters):
             viewer = templates.new("cocktail.html.IssuuViewer")
+            viewer.document_name = item.issuu_document_name
+            viewer.username = item.issuu_document_username
             viewer.config_id = item.issuu_config_id
             viewer.page_number = item.thumbnail_page
             return viewer
