@@ -557,6 +557,10 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                 );
             }
 
+            if (this.view && this.view.extra_members) {
+                extraMembers.push(...this.view.extra_members);
+            }
+
             return extraMembers;
         }
 

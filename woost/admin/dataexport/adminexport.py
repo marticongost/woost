@@ -19,12 +19,6 @@ def admin_fields(exporter, model, ref = False):
             ("_root_section", obj.get_root_section().export_data())
         )
         yield (lambda obj, path:
-            ("_views", [
-                view.export_data()
-                for view in views.available_views()
-            ])
-        )
-        yield (lambda obj, path:
             ("_partitioning_methods", [
                 method.export_data()
                 for method in partitioning.available_methods()

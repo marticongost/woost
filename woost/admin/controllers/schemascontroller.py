@@ -12,6 +12,7 @@ from cocktail.persistence import PersistentObject
 
 from woost import app
 from woost.admin.schemaexport import SchemaExport
+from woost.admin.views import available_views
 from woost.admin.filters import (
     get_filters,
     get_filter_templates_by_member_type,
@@ -89,4 +90,9 @@ class SchemasController(Cached, Controller):
         # Model declarations
         for model in models:
             yield export.get_declaration(model).encode("utf-8")
+
+        # View declarations
+        for view in available_views():
+            params = view.export_data()
+            yield "woost.admin.views.addView(%s);\n" % dumps(params)
 

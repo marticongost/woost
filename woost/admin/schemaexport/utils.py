@@ -4,7 +4,7 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.javascriptserializer import dumps
-from woost.admin.views import available_views
+
 
 def iter_last(items):
     iterator = iter(items)
@@ -18,7 +18,9 @@ def iter_last(items):
             prev = item
         yield prev, True
 
+
 def export_view_names(target):
+    from woost.admin.views import available_views
     return (
         "[woost.admin.views.views]",
         dumps([
