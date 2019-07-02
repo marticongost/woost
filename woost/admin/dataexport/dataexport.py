@@ -3,10 +3,11 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Sequence
 import json
 from datetime import date, time, datetime
 from decimal import Decimal
-from collections import Sequence, Set, Mapping, ChainMap, Counter
+from collections import Set, Mapping, ChainMap, Counter
 
 from cocktail.modeling import ListWrapper, SetWrapper, DictWrapper
 from cocktail.typemapping import ChainTypeMapping
@@ -74,14 +75,15 @@ class Export(metaclass = ExportMetaclass):
 
     def __init__(
         self,
-        _parent = None,
-        languages = None,
-        model_exporters = None,
-        member_expansion = None,
-        member_fields = None,
-        excluded_members = excluded_members,
-        thumbnail_factory = "admin_thumbnail",
-        children_export = None
+        _parent=None,
+        languages=None,
+        model_exporters=None,
+        member_expansion=None,
+        member_fields=None,
+        extra_members: Sequence[schema.Member] = (),
+        excluded_members=excluded_members,
+        thumbnail_factory="admin_thumbnail",
+        children_export=None
     ):
         self.__model_fields = {}
         self.__languages = set(languages or Configuration.instance.languages)
@@ -103,6 +105,7 @@ class Export(metaclass = ExportMetaclass):
         else:
             self.__member_permissions = {}
 
+        self.extra_members = extra_members
         self.excluded_members = set(excluded_members)
 
         if isinstance(thumbnail_factory, str):
@@ -112,6 +115,17 @@ class Export(metaclass = ExportMetaclass):
 
         self.thumbnail_factory = thumbnail_factory
         self.children_export = children_export
+
+    def iter_members(self, model):
+
+        for member in model.iter_members():
+            if self.should_include_member(member):
+                yield member
+
+        if model is self.model:
+            for member in self.extra_members:
+                if self.should_include_member(member):
+                    yield member
 
     def select_members(self, model, included_members):
         for member in model.iter_members():
@@ -318,6 +332,18 @@ class Export(metaclass = ExportMetaclass):
             )
 
     def get_member_value(self, obj, member, language = None, path = ()):
+
+        if member.schema is None:
+            if member.expression:
+                return member.resolve_expression(obj, language)
+            else:
+                raise ValueError(
+                    "Can't produce the value of %r for %r; the member must "
+                    "either belong to the exported schema or define an "
+                    "expression"
+                    % (member, obj)
+                )
+
         return obj.get(member, language)
 
     def export_value(self, value):
@@ -365,9 +391,12 @@ class Export(metaclass = ExportMetaclass):
         try:
             return self.__member_permissions[member]
         except KeyError:
-            has_permission = app.user.has_permission(
-                ReadMemberPermission,
-                member = member
+            has_permission = (
+                member.schema is None
+                or app.user.has_permission(
+                    ReadMemberPermission,
+                    member = member
+                )
             )
             self.__member_permissions[member] = member
             return has_permission
@@ -410,10 +439,9 @@ def object_fields(exporter, model, ref = False):
     if ref:
         yield (lambda obj, path: ("id", obj.id))
     else:
-        for member in model.iter_members():
-            if exporter.should_include_member(member):
-                for field in exporter.iter_member_fields(member, ref):
-                    yield field
+        for member in exporter.iter_members(model):
+            for field in exporter.iter_member_fields(member, ref):
+                yield field
 
     if exporter.exported_permissions:
         yield make_permissions_field(exporter)

@@ -8,6 +8,7 @@ from io import BytesIO
 
 import cherrypy
 from cocktail.translations import translations, get_language
+from cocktail import schema
 from cocktail.schema.expressions import (
     Self,
     TranslationExpression,
@@ -327,6 +328,27 @@ class ListingController(Controller):
 
         return value or [get_language()]
 
+    def get_member(self, key: str) -> schema.Member:
+
+        model = self.model
+        if not model:
+            raise cherrypy.HTTPError(
+                400,
+                "Can't select members without specifying a model"
+            )
+
+        member = model.get_member(key)
+        if member is not None:
+            return member
+
+        view = self.view
+        if view is not None:
+            for member in view.extra_members:
+                if member.name == key:
+                    return member
+
+        raise KeyError("Unknown member " + key)
+
     @request_property
     def members(self):
 
@@ -340,26 +362,7 @@ class ListingController(Controller):
             keys = (keys,)
 
         if keys:
-            model = self.model
-            if not model:
-                raise cherrypy.HTTPError(
-                    400,
-                    "Can't select members without specifying a model"
-                )
-
-            members = []
-
-            for key in keys:
-                member = model.get_member(key)
-                if not member:
-                    raise cherrypy.HTTPError(
-                        400,
-                        "Unknown member %r" % key
-                    )
-
-                members.append(member)
-
-            return members
+            return [self.get_member(key) for key in keys]
 
         return None
 
@@ -428,7 +431,7 @@ class ListingController(Controller):
             member_name = order[:pos]
             lang = order[pos + 1:]
 
-        member = self.model.get_member(member_name)
+        member = self.get_member(member_name)
         if member is None:
             raise cherrypy.HTTPError(400, "Invalid order criteria")
 

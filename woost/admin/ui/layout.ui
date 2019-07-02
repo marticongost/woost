@@ -120,10 +120,6 @@
             .then(() => {
                 woost.admin.models.Admin.dataSource.loadObject(woost.admin.id, {"export": "admin"}).then((admin) => {
 
-                    for (let viewData of admin._views) {
-                        woost.admin.views.addView(viewData);
-                    }
-
                     for (let partMethodData of admin._partitioning_methods) {
                         woost.admin.partitioning.addMethod(partMethodData);
                     }
@@ -145,7 +141,7 @@
         return expandedEntry;
     }
     ?>
-    
+
     <?on-window click
     instance.closeMenu();
     ?>

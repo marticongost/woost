@@ -41,7 +41,7 @@
         const newView = this.navigationNode.view;
         this.view = newView;
         const currentComponent = prevView && prevView.ui_component;
-        const newComponent = newView && newView.ui_component;
+        let newComponent = newView && newView.ui_component;
 
         if (newComponent !== currentComponent) {
 
@@ -50,6 +50,9 @@
             }
 
             if (newComponent) {
+                if (!newComponent.create) {
+                    newComponent = newComponent();
+                }
                 this.viewDisplay = newComponent.create();
                 this.viewContainer.appendChild(this.viewDisplay);
                 this.viewDisplay.listing = this;

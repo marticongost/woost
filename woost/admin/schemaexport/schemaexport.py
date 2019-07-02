@@ -52,16 +52,16 @@ class MemberExport(object):
     permissions = {
         "read": (
             lambda member:
-                member.schema
-                and app.user.has_permission(
+                member.schema is None
+                or app.user.has_permission(
                     ReadMemberPermission,
                     member = member
                 )
         ),
         "modify": (
             lambda member:
-                member.schema
-                and app.user.has_permission(
+                member.schema is None
+                or app.user.has_permission(
                     ModifyMemberPermission,
                     member = member
                 )

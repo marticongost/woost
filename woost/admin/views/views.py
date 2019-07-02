@@ -6,15 +6,17 @@
 from typing import Sequence, Set
 from collections import OrderedDict, defaultdict
 
-from cocktail.schema.expressions import Expression
 from cocktail.pkgutils import get_full_name
+from cocktail.javascriptserializer import JS
 from cocktail.translations import translations
 from cocktail import schema
+from cocktail.schema.expressions import Expression
 from cocktail.persistence import PersistentClass
 
 from woost.models import Item
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import Export
+from woost.admin.schemaexport import get_declaration
 from woost.admin.controllers.listingcontroller import ListingController
 
 translations.load_bundle("woost.admin.views.views")
@@ -309,6 +311,7 @@ class View(object):
     allows_partitioning = True
     allows_member_selection = True
     allows_locale_selection = True
+    extra_members: Sequence[schema.Member] = ()
     extra_filters: Sequence[Expression] = ()
     pagination = True
     partitioning_methods = None
@@ -387,7 +390,7 @@ class View(object):
             "label": translations(self),
             "name": self.__name,
             "model": get_model_dotted_name(self.model) if self.model else None,
-            "ui_component": self.ui_component,
+            "ui_component": JS(f"() => {self.ui_component}"),
             "allows_sorting": self.allows_sorting,
             "allows_partitioning": self.allows_partitioning,
             "allows_member_selection": self.allows_member_selection,
@@ -398,6 +401,10 @@ class View(object):
             "default_partitioning_method": self.default_partitioning_method,
             "default_order": self.default_order,
             "default_members": self.default_members,
+            "extra_members": [
+                JS(get_declaration(member))
+                for member in self.extra_members
+            ],
             "disabled_actions": self.disabled_actions
         }
 
@@ -409,7 +416,9 @@ class View(object):
         :return: A dictionary with keyword parameters to supply to the object
             exporter.
         """
-        return {}
+        return {
+            "extra_members": self.extra_members
+        }
 
     def get_default_order(self) -> str:
         return self.default_order
