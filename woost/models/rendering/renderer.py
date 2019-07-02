@@ -11,7 +11,6 @@ from woost.models.item import Item
 class Renderer(Item):
 
     instantiable = False
-    visible_from_root = False
 
     title = schema.String(
         descriptive = True,

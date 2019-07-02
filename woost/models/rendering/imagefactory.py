@@ -15,8 +15,6 @@ from woost.models.rendering.renderer import Renderer
 
 class ImageFactory(Item):
 
-    visible_from_root = False
-
     members_order = [
         "title",
         "identifier",

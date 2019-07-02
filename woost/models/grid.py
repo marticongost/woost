@@ -78,7 +78,6 @@ class Grid(Item):
 
 class GridSize(Item):
 
-    visible_from_root = False
     type_group = "customization"
 
     members_order = [

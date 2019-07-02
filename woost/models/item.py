@@ -67,54 +67,11 @@ class Item(PersistentObject):
     # indexes).
     full_text_indexed = True
 
-    # Extension property that indicates if content types should be visible from
-    # the backoffice root view
-    visible_from_root = True
-
-    # Extension property that indicates if the backoffice should show child
-    # entries for this content type in the type selector
-    collapsed_backoffice_menu = False
-
-    # Show/hide the descriptive text column on backoffice listings
-    backoffice_listing_includes_element_column = True
-
-    # Show/hide the thumbnail column on backoffice listings
-    backoffice_listing_includes_thumbnail_column = True
-
-    # When creating listings, the backoffice will attempt to only display icons
-    # if it thinks they will be useful. Setting this hint to True tells the
-    # backoffice that the icons for this model provide relevant information,
-    # and so shouldn't be hidden.
-    icon_conveys_information = False
-
-    # Customization of the backoffice preview action
-    preview_view = "woost.views.BackOfficePreviewView"
-    preview_controller = "woost.controllers.backoffice." \
-        "previewcontroller.PreviewController"
-
-    # Segment backoffice listings using tabs
-    @classmethod
-    def backoffice_listing_default_tab(cls):
-        return None
-
-    @classmethod
-    def backoffice_listing_tabs(cls):
-        if False:
-            yield (tab_id, tab_label, tab_filter)
-
     @event_handler
     def handle_inherited(e):
         if isinstance(e.schema, schema.SchemaClass):
-
             if "instantiable" not in e.schema.__dict__:
                 e.schema.instantiable = True
-
-            for key in (
-                "backoffice_listing_includes_element_column",
-                "backoffice_listing_includes_thumbnail_column"
-            ):
-                if key not in e.schema.__dict__:
-                    setattr(e.schema, key, False)
 
     # Unique qualified name
     #--------------------------------------------------------------------------

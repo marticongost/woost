@@ -28,7 +28,6 @@ class Permission(Item):
 
     type_group = "access"
     instantiable = False
-    visible_from_root = False
 
     authorized = schema.Boolean(
         required = True,
