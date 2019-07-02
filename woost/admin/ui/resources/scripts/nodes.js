@@ -610,9 +610,14 @@ woost.admin.nodes.Section = class Section extends woost.admin.nodes.BaseSectionN
                     const members = this.queryParameters.members;
                     const model = this.adaptedModel;
                     members.items.sourceSchema = model;
-                    members.defaultValue = Array.from(model.orderedMembers()).filter(
-                        (member) => member[cocktail.ui.listedByDefault]
-                    );
+                    if (value.default_members.length) {
+                        members.defaultValue = Array.from(value.default_members, (key) => model.getMember(key));
+                    }
+                    else {
+                        members.defaultValue = Array.from(model.orderedMembers()).filter(
+                            (member) => member[cocktail.ui.listedByDefault]
+                        );
+                    }
 
                     // Partitioning methods
                     const partition = this.queryParameters.partition;
