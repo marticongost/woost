@@ -21,7 +21,6 @@ from woost.models.rendering.request import clear_image_cache_after_commit
 class ImageEffect(Item):
 
     instantiable = False
-    visible_from_root = False
 
     image_factory = schema.Reference(
         type = "woost.models.rendering.ImageFactory",

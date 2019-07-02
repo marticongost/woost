@@ -14,7 +14,6 @@ class VideoPlayerSettings(Item):
 
     instantiable = True
     admin_show_descriptions = False
-    visible_from_root = False
     player_initialization = TypeMapping()
 
     members_order = [

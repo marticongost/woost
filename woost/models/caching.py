@@ -16,7 +16,6 @@ from .item import Item
 
 class CachingPolicy(Item):
 
-    visible_from_root = False
     admin_show_descriptions = False
     groups_order = ["cache"]
     members_order = [
