@@ -55,6 +55,17 @@ woost.admin.actions.Action = class Action extends cocktail.ui.Action {
         return true;
     }
 
+    getState(context) {
+        if (
+            context.node
+            && context.node.view
+            && context.node.view.disabled_actions.includes(this.id)
+        ) {
+            return "hidden";
+        }
+        return super.getState(context);
+    }
+
     get requiredPermission() {
         return null;
     }

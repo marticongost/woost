@@ -3,7 +3,7 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from typing import Sequence
+from typing import Sequence, Set
 from collections import OrderedDict, defaultdict
 
 from cocktail.schema.expressions import Expression
@@ -315,6 +315,7 @@ class View(object):
     default_partitioning_method = None
     default_members: Sequence[str] = ()
     default_order: str = None
+    disabled_actions: Set[str] = set()
 
     def __init__(
         self,
@@ -322,7 +323,8 @@ class View(object):
         ui_component = DEFAULT,
         controller = DEFAULT,
         model = DEFAULT,
-        export_class = DEFAULT
+        export_class = DEFAULT,
+        disabled_actions = DEFAULT
     ):
         if _views.get(name):
             raise ValueError(
@@ -343,6 +345,9 @@ class View(object):
 
         if export_class is not DEFAULT:
             self.export_class = export_class
+
+        if disabled_actions is not DEFAULT:
+            self.disabled_actions = disabled_actions
 
     def __repr__(self):
         return "%s(%r)" % (
@@ -391,7 +396,8 @@ class View(object):
             "count_enabled": self.count_enabled,
             "default_partitioning_method": self.default_partitioning_method,
             "default_order": self.default_order,
-            "default_members": self.default_members
+            "default_members": self.default_members,
+            "disabled_actions": self.disabled_actions
         }
 
     def get_export_parameters(self) -> dict:
