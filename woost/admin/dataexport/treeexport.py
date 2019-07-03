@@ -33,6 +33,11 @@ class TreeExport(Export):
             if related_type:
                 yield IsInstanceExpression(Self, related_type)
 
+    def select_members(self, model, included_members):
+        included_members = set(included_members)
+        included_members.update(self.tree_relations)
+        super().select_members(model, included_members)
+
     def select_objects(self):
 
         self.__filter_match_cache = {}
