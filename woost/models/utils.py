@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -9,6 +8,7 @@ import shutil
 import re
 from collections import Sequence, Set
 from difflib import SequenceMatcher
+
 from ZODB.broken import Broken
 from cocktail.styled import styled
 from cocktail.modeling import ListWrapper, SetWrapper
@@ -28,6 +28,7 @@ from cocktail.persistence.utils import (
     is_broken,
     remove_broken_type as cocktail_remove_broken_type
 )
+
 from woost import app
 from .item import Item
 from .configuration import Configuration
@@ -42,10 +43,10 @@ from . import objectio
 
 def remove_broken_type(
     full_name,
-    existing_bases = (),
-    relations = (),
-    excluded_relations = None,
-    languages = None
+    existing_bases=(),
+    relations=(),
+    excluded_relations=None,
+    languages=None
 ):
     if languages is None:
         languages = Configuration.instance.languages
@@ -55,10 +56,10 @@ def remove_broken_type(
 
     cocktail_remove_broken_type(
         full_name,
-        existing_bases = existing_bases,
-        relations = relations,
-        excluded_relations = excluded_relations,
-        languages = languages
+        existing_bases=existing_bases,
+        relations=relations,
+        excluded_relations=excluded_relations,
+        languages=languages
     )
 
     for permission in list(ContentPermission.select()):
@@ -94,9 +95,9 @@ def restore_deleted_item(obj):
                 isinstance(member, schema.Collection)
                 and obj.get(member) is None
             ):
-                obj.set(member, member.produce_default(instance = obj))
+                obj.set(member, member.produce_default(instance=obj))
 
-def iter_text(objects = None):
+def iter_text(objects=None):
 
     if objects is None:
         objects = Item.select()
@@ -114,7 +115,7 @@ def iter_text(objects = None):
                     if value:
                         yield obj, member, language, value
 
-def grep(expr, objects = None):
+def grep(expr, objects=None):
 
     if isinstance(expr, str):
         expr = re.compile(expr)
@@ -124,11 +125,11 @@ def grep(expr, objects = None):
         if matches:
             yield obj, member, language, value, matches
 
-def hl(expr, objects = None):
+def hl(expr, objects=None):
 
     for obj, member, language, value, matches in grep(expr, objects):
-        print(styled("-" * 100, style = "bold"))
-        print(styled(repr(obj), style = "bold"), end=' ')
+        print(styled("-" * 100, style="bold"))
+        print(styled(repr(obj), style="bold"), end=' ')
         print(styled(member.name, "slate_blue"), end=' ')
 
         if language:
@@ -152,7 +153,7 @@ def hl(expr, objects = None):
 
         print(hl_value)
 
-def replace(expr, replacement, objects = None, mode = "apply"):
+def replace(expr, replacement, objects=None, mode="apply"):
 
     if isinstance(expr, str):
         expr = re.compile(expr)
@@ -177,8 +178,8 @@ def replace(expr, replacement, objects = None, mode = "apply"):
             continue
 
         if show:
-            print(styled("-" * 100, style = "bold"))
-            print(styled(translations(obj), style = "bold"), end=' ')
+            print(styled("-" * 100, style="bold"))
+            print(styled(translations(obj), style="bold"), end=' ')
             print(styled(member.name, "slate_blue"), end=' ')
 
             if language:
@@ -186,7 +187,7 @@ def replace(expr, replacement, objects = None, mode = "apply"):
             else:
                 print()
 
-            diff = SequenceMatcher(a = value, b = modified_value)
+            diff = SequenceMatcher(a=value, b=modified_value)
             chunks = []
 
             for op, start_a, end_a, start_b, end_b in diff.get_opcodes():
@@ -217,12 +218,12 @@ def replace(expr, replacement, objects = None, mode = "apply"):
 
 def search(
     query_text,
-    objects = None,
-    languages = None,
-    match_mode = "pattern",
-    stemming = None,
-    **search_kwargs
-):
+    objects=None,
+    languages=None,
+    match_mode="pattern",
+    stemming=None,
+    **search_kwargs):
+
     if objects is None:
         query = Item.select()
     elif isinstance(objects, (schema.SchemaClass, Query)):
@@ -237,9 +238,9 @@ def search(
     query.add_filter(
         Self.search(
             query_text,
-            languages = languages,
-            match_mode = match_mode,
-            stemming = stemming,
+            languages=languages,
+            match_mode=match_mode,
+            stemming=stemming,
             **search_kwargs
         )
     )
@@ -251,8 +252,8 @@ def search(
         query_text,
         languages,
         lambda text: styled(text, "magenta"),
-        match_mode = match_mode,
-        stemming = stemming
+        match_mode=match_mode,
+        stemming=stemming
     )
 
     for result in query:
@@ -261,7 +262,7 @@ def search(
         if highlights:
             print(highlights)
 
-def any_translation(obj, language_chain = None, **kwargs):
+def any_translation(obj, language_chain=None, **kwargs):
 
     if language_chain is None:
         user = app.user
@@ -281,21 +282,13 @@ def any_translation(obj, language_chain = None, **kwargs):
             chain_kwargs = kwargs
 
         for language in language_chain:
-            label = translations(
-                obj,
-                language = language,
-                **chain_kwargs
-            )
+            label = translations(obj, language=language, **chain_kwargs)
             if label:
                 return label
         else:
-            return translations(
-                obj,
-                language = language_chain[0],
-                **kwargs
-            )
+            return translations(obj, language=language_chain[0], **kwargs)
 
-def rebase_id(base_id, verbose = False):
+def rebase_id(base_id, verbose=False):
 
     # Remove all static publication links
     if verbose:
@@ -308,7 +301,7 @@ def rebase_id(base_id, verbose = False):
     id_map = {}
 
     # Change ids in the database
-    for root_model in PersistentObject.derived_schemas(recursive = False):
+    for root_model in PersistentObject.derived_schemas(recursive=False):
         if root_model.indexed:
 
             if verbose:
@@ -334,13 +327,10 @@ def rebase_id(base_id, verbose = False):
                     model.keys.insert(id_map[old_id])
 
             # Rebuild indexes
-            root_model.rebuild_indexes(
-                recursive = True,
-                verbose = verbose
-            )
+            root_model.rebuild_indexes(recursive=True, verbose=verbose)
             root_model.rebuild_full_text_indexes(
-                recursive = True,
-                verbose = verbose
+                recursive=True,
+                verbose=verbose
             )
 
     if verbose:
@@ -375,9 +365,9 @@ def rebase_id(base_id, verbose = False):
         staticpublication.create_links(file)
 
 def show_translation_coverage(
-    objects = None,
-    languages = None,
-    styles = (
+    objects=None,
+    languages=None,
+    styles=(
         (100, {'foreground': 'bright_green'}),
         (90,  {'foreground': 'yellow'}),
         (66,  {'foreground': 'brown'}),
@@ -454,8 +444,8 @@ def show_translation_coverage(
 
 def export_json(
     obj,
-    exporter = None,
-    json_encoder_settings = None,
+    exporter=None,
+    json_encoder_settings=None,
     **kwargs
 ):
     kwargs.setdefault("verbose", True)
@@ -477,7 +467,7 @@ def export_json(
     json = exporter.dumps(**json_encoder_settings)
     return json
 
-def import_json(json, importer = None, **kwargs):
+def import_json(json, importer=None, **kwargs):
 
     kwargs.setdefault(
         "unknown_member_policy",
@@ -510,9 +500,9 @@ def paste_from_clipboard(**kwargs):
 
 def import_remote(
     expr,
-    ssh_command = ("/usr/bin/ssh",),
-    host = None,
-    python_executable = None
+    ssh_command=("/usr/bin/ssh",),
+    host=None,
+    python_executable=None
 ):
     from subprocess import check_output
 
@@ -535,7 +525,7 @@ def import_remote(
         expr = "req(%d)" % expr
 
     remote_command = (
-        "%s -c 'from %s.scripts.shell import *; print export_json(%s, verbose = False)'"
+        "%s -c 'from %s.scripts.shell import *; print export_json(%s, verbose=False)'"
         % (python_executable, app.package, expr)
     )
     json = check_output(list(ssh_command) + [host, remote_command])
@@ -563,7 +553,7 @@ def get_matching_website(item):
 
 def get_model_dotted_name(model):
 
-    name = model.get_qualified_name(include_ns = True)
+    name=model.get_qualified_name(include_ns=True)
     parts = name.split(".")
 
     if (

@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
 from cocktail.html import templates
+
 from .rendering import ImageFactory
 from .block import Block
 from .slot import Slot
@@ -40,64 +40,64 @@ class SlideShowBlock(Block):
     slides = Slot()
 
     autoplay = schema.Boolean(
-        required = True,
-        default = True,
-        member_group = "transition_settings"
+        required=True,
+        default=True,
+        member_group="transition_settings"
     )
 
     interval = schema.Integer(
-        required = autoplay,
-        default = 3000,
-        min = 0,
-        member_group = "transition_settings"
+        required=autoplay,
+        default=3000,
+        min=0,
+        member_group="transition_settings"
     )
 
     transition_effect = schema.String(
-        required = True,
-        default = "fade",
-        enumeration = ["fade", "topBottomSlide"],
-        member_group = "transition_settings"
+        required=True,
+        default="fade",
+        enumeration=["fade", "topBottomSlide"],
+        member_group="transition_settings"
     )
 
     transition_duration = schema.Integer(
-        required = True,
-        default = 500,
-        min = 0,
-        member_group = "transition_settings"
+        required=True,
+        default=500,
+        min=0,
+        member_group="transition_settings"
     )
 
     navigation_controls = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "controls"
+        required=True,
+        default=False,
+        member_group="controls"
     )
 
     bullet_controls = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "controls"
+        required=True,
+        default=False,
+        member_group="controls"
     )
 
     bullet_view_class = schema.String(
-        required = True,
-        default = "woost.views.SlideShowButtonBullet",
-        enumeration = [
+        required=True,
+        default="woost.views.SlideShowButtonBullet",
+        enumeration=[
             "woost.views.SlideShowButtonBullet",
             "woost.views.SlideShowTextBullet",
             "woost.views.SlideShowImageBullet",
             "woost.views.SlideShowTextAndImageBullet"
         ],
-        member_group = "controls"
+        member_group="controls"
     )
 
     bullet_image_factory = schema.Reference(
-        type = ImageFactory,
-        related_end = schema.Collection(),
-        required = True,
-        default = schema.DynamicDefault(
-            lambda: ImageFactory.get_instance(identifier = "image_gallery_thumbnail")
+        type=ImageFactory,
+        related_end=schema.Collection(),
+        required=True,
+        default=schema.DynamicDefault(
+            lambda: ImageFactory.get_instance(identifier="image_gallery_thumbnail")
         ),
-        member_group = "controls"
+        member_group="controls"
     )
 
     def init_view(self, view):

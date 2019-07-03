@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
-from woost.models import Publishable
+
+from .publishable import Publishable
 from .block import Block
 
 
@@ -35,54 +35,54 @@ class TweetButton(Block):
     ]
 
     tw_target = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "tweet"
+        type=Publishable,
+        related_end=schema.Collection(),
+        member_group="tweet"
     )
 
     tw_via = schema.String(
-        member_group = "tweet"
+        member_group="tweet"
     )
 
     tw_related = schema.String(
-        member_group = "tweet"
+        member_group="tweet"
     )
 
     tw_hashtags = schema.String(
-        member_group = "tweet"
+        member_group="tweet"
     )
 
     tw_text = schema.String(
-        translated = True,
-        edit_control = "cocktail.html.TextArea",
-        member_group = "tweet"
+        translated=True,
+        edit_control="cocktail.html.TextArea",
+        member_group="tweet"
     )
 
     tw_dnt = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "tweet"
+        required=True,
+        default=False,
+        member_group="tweet"
     )
 
     tw_size = schema.String(
-        required = True,
-        default = "medium",
-        enumeration = ["medium", "big"],
-        edit_control = "cocktail.html.RadioSelector",
-        member_group = "appearence"
+        required=True,
+        default="medium",
+        enumeration=["medium", "big"],
+        edit_control="cocktail.html.RadioSelector",
+        member_group="appearence"
     )
 
     tw_count = schema.String(
-        required = True,
-        default = "horizontal",
-        enumeration = ["none", "horizontal", "vertical"],
-        edit_control = "cocktail.html.RadioSelector",
-        member_group = "appearence"
+        required=True,
+        default="horizontal",
+        enumeration=["none", "horizontal", "vertical"],
+        edit_control="cocktail.html.RadioSelector",
+        member_group="appearence"
     )
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.url = self.tw_target and self.tw_target.get_uri(host = "!")
+        view.url = self.tw_target and self.tw_target.get_uri(host="!")
         view.via = self.tw_via
         view.related = self.tw_related
         view.hashtags = self.tw_hashtags

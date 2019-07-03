@@ -1,16 +1,12 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			July 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
 from cocktail.events import event_handler
 from cocktail.controllers import redirect
+
 from .publishable import Publishable
-from .controller import Controller
 from .theme import Theme
 from .style import Style
 from .metatags import MetaTags
@@ -41,29 +37,29 @@ class Document(Publishable):
     )
 
     title = schema.String(
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        required = True,
-        spellcheck = True,
-        member_group = "content"
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        required=True,
+        spellcheck=True,
+        member_group="content"
     )
 
     inner_title = schema.HTML(
-        translated = True,
-        tinymce_params = {
+        translated=True,
+        tinymce_params={
             "forced_root_block": "",
             "force_p_newlines": False,
             "height": "70px"
         },
-        listed_by_default = False,
-        ui_form_control = (
+        listed_by_default=False,
+        ui_form_control=(
             "cocktail.ui.HTMLEditor",
             {"multiline": False}
         ),
-        member_group = "content"
+        member_group="content"
     )
 
     summary = schema.HTML(
@@ -74,41 +70,41 @@ class Document(Publishable):
     )
 
     meta_tags = MetaTags(
-        member_group = "meta"
+        member_group="meta"
     )
 
     template = schema.Reference(
-        type = "woost.models.Template",
-        bidirectional = True,
-        listed_by_default = False,
-        after_member = "controller",
-        shadows_attribute = True,
-        member_group = "presentation.behavior"
+        type="woost.models.Template",
+        bidirectional=True,
+        listed_by_default=False,
+        after_member="controller",
+        shadows_attribute=True,
+        member_group="presentation.behavior"
     )
 
     theme = schema.Reference(
-        type = Theme,
-        related_end = schema.Collection(),
-        listed_by_default = False,
-        member_group = "presentation.behavior",
-        shadows_attribute = True
+        type=Theme,
+        related_end=schema.Collection(),
+        listed_by_default=False,
+        member_group="presentation.behavior",
+        shadows_attribute=True
     )
 
     styles = schema.Collection(
-        items = schema.Reference(type = Style),
-        related_end = schema.Collection(),
-        relation_constraints = {"applicable_to_documents": True},
-        after_member = "template",
-        member_group = "presentation.behavior"
+        items=schema.Reference(type=Style),
+        related_end=schema.Collection(),
+        relation_constraints={"applicable_to_documents": True},
+        after_member="template",
+        member_group="presentation.behavior"
     )
 
     children = schema.Collection(
-        items = "woost.models.Publishable",
-        bidirectional = True,
-        related_key = "parent",
-        cascade_delete = True,
-        after_member = "parent",
-        member_group = "navigation"
+        items="woost.models.Publishable",
+        bidirectional=True,
+        related_key="parent",
+        cascade_delete=True,
+        after_member="parent",
+        member_group="navigation"
     )
 
     def _update_path(self, parent, path):
@@ -119,7 +115,7 @@ class Document(Publishable):
             for child in self.children:
                 child._update_path(self, child.path)
 
-    def descend_tree(self, include_self = False):
+    def descend_tree(self, include_self=False):
 
         if include_self:
             yield self

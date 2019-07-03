@@ -1,23 +1,20 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Javier Marrero
-@contact:		javier.marrero@whads.com
-@organization:	Whads/Accent SL
-@since:			February 2010
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from mimetypes import guess_type
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
 from email.mime.base import MIMEBase
 from email.header import Header
 from email.utils import formatdate, parseaddr, formataddr
 from email.encoders import encode_base64
+
 from pkg_resources import iter_entry_points
 from cocktail import schema
 from cocktail.translations import language_context
 from cocktail.controllers.renderingengines import get_rendering_engine
+
 from .item import Item
 from .configuration import Configuration
 from .file import File
@@ -44,79 +41,79 @@ class EmailTemplate(Item):
     ]
 
     title = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True
+        required=True,
+        unique=True,
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True
     )
 
     mime_type = schema.String(
-        required = True,
-        default = "html",
-        listed_by_default = False,
-        enumeration = [
+        required=True,
+        default="html",
+        listed_by_default=False,
+        enumeration=[
             "plain",
             "html"
         ],
-        translatable_enumeration = False,
-        text_search = False
+        translatable_enumeration=False,
+        text_search=False
     )
 
     sender = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     receivers = schema.CodeBlock(
-        language = "python",
-        required = True
+        language="python",
+        required=True
     )
 
     bcc = schema.CodeBlock(
-        language = "python",
-        listed_by_default = False
+        language="python",
+        listed_by_default=False
     )
 
     template_engine = schema.String(
-        enumeration = [
+        enumeration=[
             engine.name
             for engine in iter_entry_points("python.templating.engines")
         ],
-        translatable_enumeration = False,
-        text_search = False,
-        listed_by_default = False
+        translatable_enumeration=False,
+        text_search=False,
+        listed_by_default=False
     )
 
     subject = schema.String(
-        translated = True,
-        edit_control = "cocktail.html.TextArea",
-        spellcheck = True,
-        listed_by_default = False
+        translated=True,
+        edit_control="cocktail.html.TextArea",
+        spellcheck=True,
+        listed_by_default=False
     )
 
     body = schema.CodeBlock(
-        language = "html",
-        translated = True,
-        listed_by_default = False,
-        spellcheck = True
+        language="html",
+        translated=True,
+        listed_by_default=False,
+        spellcheck=True
     )
 
     initialization_code = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     language_expression = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     condition = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
-    def send(self, context = None):
+    def send(self, context=None):
 
         if context is None:
             context = {}
@@ -166,7 +163,7 @@ class EmailTemplate(Item):
             if self.template_engine:
                 engine = get_rendering_engine(
                     self.template_engine,
-                    options = {"mako.output_encoding": self.encoding}
+                    options={"mako.output_encoding": self.encoding}
                 )
 
                 def render(field_name):
@@ -176,7 +173,7 @@ class EmailTemplate(Item):
                             "EmailTemplate." + field_name,
                             self.get(field_name)
                         )
-                        return engine.render(context, template = template)
+                        return engine.render(context, template=template)
                     else:
                         return ""
 
@@ -186,7 +183,7 @@ class EmailTemplate(Item):
                 subject = self.subject
                 body = self.body
 
-            message = MIMEText(body, _subtype = mime_type, _charset = self.encoding)
+            message = MIMEText(body, _subtype=mime_type, _charset=self.encoding)
 
             # Attachments
             attachments = context.get("attachments")

@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .item import Item
 
 
@@ -20,28 +20,28 @@ class Grid(Item):
     ]
 
     title = schema.String(
-        required = True,
-        translated = True,
-        descriptive = True,
-        indexed = True,
-        unique = True
+        required=True,
+        translated=True,
+        descriptive=True,
+        indexed=True,
+        unique=True
     )
 
     column_count = schema.Integer(
-        required = True,
-        default = 12
+        required=True,
+        default=12
     )
 
     side_margin = schema.Integer(
-        required = True,
-        default = 50
+        required=True,
+        default=50
     )
 
     sizes = schema.Collection(
-        items = "woost.models.GridSize",
-        bidirectional = True,
-        integral = True,
-        listed_by_default = True
+        items="woost.models.GridSize",
+        bidirectional=True,
+        integral=True,
+        listed_by_default=True
     )
 
     def get_sass_code(self):
@@ -89,24 +89,24 @@ class GridSize(Item):
     ]
 
     grid = schema.Reference(
-        type = "woost.models.Grid",
-        bidirectional = True
+        type="woost.models.Grid",
+        bidirectional=True
     )
 
     identifier = schema.String(
-        required = True,
-        descriptive = True
+        required=True,
+        descriptive=True
     )
 
     min_width = schema.Integer(
-        min = 0
+        min=0
     )
 
     column_width = schema.Integer(
-        min = 0
+        min=0
     )
 
     column_spacing = schema.Integer(
-        min = 0
+        min=0
     )
 

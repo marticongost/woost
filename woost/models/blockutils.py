@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .block import Block
 from .slot import Slot
 
@@ -26,10 +26,10 @@ def schema_tree_has_block_container(cls):
 
     return any(
         schema_tree_has_block_container(subclass)
-        for subclass in cls.derived_schemas(recursive = False)
+        for subclass in cls.derived_schemas(recursive=False)
     )
 
-def find_blocks(obj, slots = None):
+def find_blocks(obj, slots=None):
 
     if isinstance(obj, Block):
         yield obj
@@ -46,7 +46,7 @@ def find_blocks(obj, slots = None):
                 for descendant in find_blocks(block):
                     yield descendant
 
-def add_block(block, parent, slot, positioning = "append", anchor = None):
+def add_block(block, parent, slot, positioning="append", anchor=None):
     if isinstance(slot, schema.Reference):
         parent.set(slot, block)
     elif isinstance(slot, schema.Collection):

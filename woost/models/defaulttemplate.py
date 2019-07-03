@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
 from cocktail import schema
+
 from .settings import add_setting
 from .configuration import Configuration
 from .template import Template
@@ -31,10 +31,9 @@ def with_default_template(template_name, **field_kwargs):
         add_setting(
             schema.Reference(
                 field_name,
-                type = Template,
-                template_owner = cls,
-                custom_translation_key =
-                    "woost.models.defaulttemplate.field",
+                type=Template,
+                template_owner=cls,
+                custom_translation_key="woost.models.defaulttemplate.field",
                 **field_kwargs
             )
         )

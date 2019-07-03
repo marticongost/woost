@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -6,6 +5,7 @@
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
 from cocktail.iteration import first
+
 from .rendering import ImageFactory
 
 def _block_image_factories_enumeration(ctx):

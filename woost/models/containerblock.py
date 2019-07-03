@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .slot import Slot
 from .block import Block
 from .file import File
@@ -30,44 +30,44 @@ class ContainerBlock(Block):
     ]
 
     list_type = schema.String(
-        required = True,
-        default = "div",
-        enumeration = [
+        required=True,
+        default="div",
+        enumeration=[
             "div",
             "ul",
             "ol",
             "dl"
         ],
-        member_group = "content"
+        member_group="content"
     )
 
     background_image = schema.Reference(
-        type = File,
-        related_end = schema.Collection(),
-        relation_constraints = {"resource_type": "image"},
-        member_group = "background"
+        type=File,
+        related_end=schema.Collection(),
+        relation_constraints={"resource_type": "image"},
+        member_group="background"
     )
 
     background_image_factory = BlockImageFactoryReference(
-        member_group = "background"
+        member_group="background"
     )
 
     link_destination = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "link",
-        invalidates_cache = True
+        type=Publishable,
+        related_end=schema.Collection(),
+        member_group="link",
+        invalidates_cache=True
     )
 
     link_parameters = schema.String(
-        edit_control = "cocktail.html.TextArea",
-        text_search = False,
-        member_group = "link"
+        edit_control="cocktail.html.TextArea",
+        text_search=False,
+        member_group="link"
     )
 
     link_opens_in_new_window = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "link"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="link"
     )
 
     blocks = Slot()

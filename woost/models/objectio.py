@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -211,7 +210,7 @@ class ObjectExporter:
         self.json_encoder_defaults = self.json_encoder_defaults.copy()
 
     @contextmanager
-    def _description(self, message, visible = True):
+    def _description(self, message, visible=True):
 
         if self.verbose and message and visible:
             if self.verbose:
@@ -306,7 +305,7 @@ class ObjectExporter:
             styled(
                 repr(obj),
                 self.__model_colors[obj.__class__],
-                style = self.__model_styles[obj.__class__]
+                style=self.__model_styles[obj.__class__]
             )
             if self.verbose
             else None
@@ -329,9 +328,9 @@ class ObjectExporter:
                     member_node = ExportNode(
                         self,
                         obj.get(member, lang),
-                        parent = node,
-                        member = member,
-                        language = lang
+                        parent=node,
+                        member=member,
+                        language=lang
                     )
                     if member_node.export_mode != ExportMode.ignore:
                         translated_values[lang] = self._export_value(
@@ -344,8 +343,8 @@ class ObjectExporter:
                 member_node = ExportNode(
                     self,
                     obj.get(member),
-                    parent = node,
-                    member = member
+                    parent=node,
+                    member=member
                 )
                 if member_node.export_mode != ExportMode.ignore:
                     data[member.name] = self._export_value(
@@ -380,7 +379,7 @@ class ObjectExporter:
                 if expand_object:
                     with self._description(
                         node.member and node.member.name,
-                        visible = node.member
+                        visible=node.member
                     ):
                         self.add(node)
             elif isinstance(node.member, schema.Tuple):
@@ -389,9 +388,9 @@ class ObjectExporter:
                         ExportNode(
                             self,
                             item,
-                            parent = node,
-                            member = item_member,
-                            index = index
+                            parent=node,
+                            member=item_member,
+                            index=index
                         )
                     )
                     for index, (item, item_member) in enumerate(
@@ -421,10 +420,10 @@ class ObjectExporter:
                         item_node = ExportNode(
                             self,
                             item,
-                            parent = node,
-                            member = node.member.items,
-                            language = node.language,
-                            index = index
+                            parent=node,
+                            member=node.member.items,
+                            language=node.language,
+                            index=index
                         )
                         if item_node.export_mode != ExportMode.ignore:
                             item_nodes.append(item_node)
@@ -457,18 +456,18 @@ class ObjectExporter:
                     v_node = ExportNode(
                         self,
                         v,
-                        parent = node,
-                        member = node.member.values,
-                        language = node.language,
-                        index = k
+                        parent=node,
+                        member=node.member.values,
+                        language=node.language,
+                        index=k
                     )
                     if v_node.export_mode != ExportMode.ignore:
                         k_node = ExportNode(
                             self,
                             k,
-                            parent = node,
-                            member = node.member.keys,
-                            language = node.language
+                            parent=node,
+                            member=node.member.keys,
+                            language=node.language
                         )
                         k = self._export_value(k_node)
                         v = self._export_value(
@@ -700,19 +699,19 @@ class ObjectExporter:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "file",
-            nargs = "?",
-            type = argparse.FileType("w"),
-            default = sys.stdout
+            nargs="?",
+            type=argparse.FileType("w"),
+            default=sys.stdout
         )
         parser.add_argument(
             "--verbose", "-v",
-            action = "store_true",
-            default = self.verbose
+            action="store_true",
+            default=self.verbose
         )
         parser.add_argument(
             "--pretty-print", "-p",
-            action = "store_true",
-            default = False
+            action="store_true",
+            default=False
         )
         return parser
 
@@ -847,7 +846,7 @@ class ObjectImporter:
         if string is not None:
             self.loads(string)
 
-    def load(self, file, encoding = "utf-8"):
+    def load(self, file, encoding="utf-8"):
 
         if isinstance(file, str):
             with open(file, "r") as file:
@@ -1173,7 +1172,7 @@ class ObjectImporter:
         def load_files():
 
             if args.author:
-                author = User.require_instance(email = args.author)
+                author = User.require_instance(email=args.author)
             else:
                 author = None
 
@@ -1185,14 +1184,14 @@ class ObjectImporter:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "files",
-            nargs = "+",
-            type = argparse.FileType("r"),
-            default = sys.stdout
+            nargs="+",
+            type=argparse.FileType("r"),
+            default=sys.stdout
         )
         parser.add_argument(
             "--verbose", "-v",
-            action = "store_true",
-            default = self.verbose
+            action="store_true",
+            default=self.verbose
         )
         parser.add_argument(
             "--author"
@@ -1202,7 +1201,7 @@ class ObjectImporter:
         )
         parser.add_argument(
             "--missing-objects",
-            choices = [
+            choices=[
                 choice
                 for choice in MissingObjectPolicy.__members__
                 if choice != "create"
@@ -1210,7 +1209,7 @@ class ObjectImporter:
         )
         parser.add_argument(
             "--unknown-members",
-            choices = list(UnknownMemberPolicy.__members__.keys())
+            choices=list(UnknownMemberPolicy.__members__.keys())
         )
         return parser
 

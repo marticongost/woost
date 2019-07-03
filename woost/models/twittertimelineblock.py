@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .block import Block
 
 
@@ -23,31 +23,31 @@ class TwitterTimelineBlock(Block):
     ]
 
     widget_id = schema.String(
-        required = True,
-        member_group = "content"
+        required=True,
+        member_group="content"
     )
 
     theme = schema.String(
-        required = True,
-        default = "light",
-        enumeration = ("light", "dark"),
-        member_group = "appearence"
+        required=True,
+        default="light",
+        enumeration=("light", "dark"),
+        member_group="appearence"
     )
 
     link_color = schema.Color(
-        member_group = "appearence"
+        member_group="appearence"
     )
 
     width = schema.Integer(
-        member_group = "appearence"
+        member_group="appearence"
     )
 
     height = schema.Integer(
-        member_group = "appearence"
+        member_group="appearence"
     )
 
     related_accounts = schema.String(
-        member_group = "tweet"
+        member_group="tweet"
     )
 
     def init_view(self, view):

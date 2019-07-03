@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .block import Block
 from .publishable import Publishable
 
@@ -27,47 +27,47 @@ class FacebookLikeButton(Block):
     ]
 
     fb_href = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "content"
+        type=Publishable,
+        related_end=schema.Collection(),
+        member_group="content"
     )
 
     fb_layout = schema.String(
-        required = True,
-        default = "standard",
-        enumeration = ["standard", "button_count", "box_count"],
-        member_group = "appearence"
+        required=True,
+        default="standard",
+        enumeration=["standard", "button_count", "box_count"],
+        member_group="appearence"
     )
 
     fb_send = schema.Boolean(
-        default = False,
-        required = True,
-        member_group = "appearence"
+        default=False,
+        required=True,
+        member_group="appearence"
     )
 
     fb_show_faces = schema.Boolean(
-        default = False,
-        required = True,
-        member_group = "appearence"
+        default=False,
+        required=True,
+        member_group="appearence"
     )
 
     fb_width = schema.Integer(
-        required = True,
-        default = 450,
-        member_group = "appearence"
+        required=True,
+        default=450,
+        member_group="appearence"
     )
 
     fb_action = schema.String(
-        required = True,
-        default = "like",
-        enumeration = ["like", "recommend"],
-        member_group = "appearence"
+        required=True,
+        default="like",
+        enumeration=["like", "recommend"],
+        member_group="appearence"
     )
 
     fb_font = schema.String(
-        required = True,
-        default = "arial",
-        enumeration = [
+        required=True,
+        default="arial",
+        enumeration=[
             "arial",
             "lucida grande",
             "segoe ui",
@@ -75,24 +75,24 @@ class FacebookLikeButton(Block):
             "trebuchet ms",
             "verdana"
         ],
-        translatable_enumeration = False,
-        member_group = "appearence"
+        translatable_enumeration=False,
+        member_group="appearence"
     )
 
     fb_colorscheme = schema.String(
-        required = True,
-        default = "light",
-        enumeration = ["light", "dark"],
-        member_group = "appearence"
+        required=True,
+        default="light",
+        enumeration=["light", "dark"],
+        member_group="appearence"
     )
 
     fb_ref = schema.String(
-        member_group = "content"
+        member_group="content"
     )
 
     def init_view(self, view):
         Block.init_view(self, view)
-        view.href = self.fb_href and self.fb_href.get_uri(host = "!")
+        view.href = self.fb_href and self.fb_href.get_uri(host="!")
         view.send = self.fb_send
         view.layout = self.fb_layout
         view.show_faces = self.fb_show_faces

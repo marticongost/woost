@@ -1,10 +1,11 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import urllib.request, urllib.error, urllib.parse
+
 from bs4 import BeautifulSoup
+
 from woost.models.configuration import Configuration
 from woost.models.uri import URI, File
 
@@ -24,7 +25,7 @@ class URLImporter(object):
     def append_handler(self, handler):
         self.__handlers.append(handler)
 
-    def create_publishable(self, url, languages = None, timeout = 10):
+    def create_publishable(self, url, languages=None, timeout=10):
 
         url_import = URLImport(self, url, languages, timeout)
 
@@ -46,7 +47,7 @@ class URLImport(object):
     response_content = None
     soup = None
 
-    def __init__(self, importer, url, languages, timeout = 10):
+    def __init__(self, importer, url, languages, timeout=10):
 
         self.importer = importer
         self.url = url
@@ -92,7 +93,7 @@ class URLImport(object):
                 if image_tag:
                     self.image_url = image_tag["content"]
 
-    def apply_scraped_info(self, publishable, image_member = "image"):
+    def apply_scraped_info(self, publishable, image_member="image"):
         publishable.mime_type = self.mime_type
         self.apply_title(publishable)
         self.apply_image(publishable, image_member)
@@ -102,7 +103,7 @@ class URLImport(object):
         for language in languages:
             publishable.set("title", self.title, language)
 
-    def apply_image(self, publishable, image_member = "image"):
+    def apply_image(self, publishable, image_member="image"):
         if (
             self.image_url
             and image_member

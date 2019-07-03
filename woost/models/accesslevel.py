@@ -1,11 +1,11 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
 from cocktail import schema
-from woost.models import Item
+
+from .item import Item
 
 
 class AccessLevel(Item):
@@ -19,24 +19,24 @@ class AccessLevel(Item):
     ]
 
     title = schema.String(
-        translated = True,
-        unique = True,
-        indexed = True,
-        spellcheck = True,
-        normalized_index = False,
-        listed_by_default = False
+        translated=True,
+        unique=True,
+        indexed=True,
+        spellcheck=True,
+        normalized_index=False,
+        listed_by_default=False
     )
 
     roles_with_access = schema.Collection(
-        items = "woost.models.Role",
-        listed_by_default = True,
-        bidirectional = True
+        items="woost.models.Role",
+        listed_by_default=True,
+        bidirectional=True
     )
 
     restricted_content = schema.Collection(
-        items = "woost.models.Publishable",
-        bidirectional = True,
-        visible = False
+        items="woost.models.Publishable",
+        bidirectional=True,
+        visible=False
     )
 
 
@@ -50,7 +50,7 @@ def translate_access_level(access_level, **kwargs):
         return translations(
             "woost.models.accesslevel.AccessLevel."
             "default_instance_translation",
-            access_level = access_level
+            access_level=access_level
         )
 
     return None

@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -7,6 +6,7 @@ import pkgutil
 import importlib
 import os.path
 from threading import RLock
+
 from cocktail.events import Event
 from cocktail.translations import translations
 from cocktail.ui import components
@@ -15,6 +15,7 @@ from cocktail.persistence import (
     transaction,
     PersistentSet
 )
+
 from woost import app
 from woost import extensions as ext_root
 from .configuration import Configuration
@@ -118,7 +119,7 @@ class ExtensionsManager(object):
             if load_ext:
                 load_ext()
 
-            self.extension_loaded(extension = extension)
+            self.extension_loaded(extension=extension)
             self.__loaded_extensions.add(extension)
 
         return True
@@ -200,9 +201,9 @@ class ExtensionAssets:
             asset_name
         )
 
-        asset = cls.get_instance(qname = qname)
+        asset = cls.get_instance(qname=qname)
         if asset is None:
-            asset = cls.new(qname = qname)
+            asset = cls.new(qname=qname)
 
         if kwargs:
             for key, value in kwargs.items():

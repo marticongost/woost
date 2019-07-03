@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -10,6 +9,7 @@ from cocktail.controllers import (
     get_parameter,
     Pagination
 )
+
 from .block import Block
 from .publishableobject import PublishableObject
 
@@ -30,19 +30,19 @@ class ListingMetaclass(type(Block)):
                 )
 
             members["subset"] = schema.Collection(
-                name = "subset",
-                items = schema.Reference(type = cls.listed_model),
-                related_end = schema.Collection(),
-                before_member = "pagination_method",
+                name="subset",
+                items=schema.Reference(type=cls.listed_model),
+                related_end=schema.Collection(),
+                before_member="pagination_method",
                 custom_translation_key =
                     "woost.models.listing.Listing.members.subset",
-                member_group = "listing"
+                member_group="listing"
             )
 
         type(Block).__init__(cls, name, bases, members)
 
 
-class Listing(Block, metaclass = ListingMetaclass):
+class Listing(Block, metaclass=ListingMetaclass):
     type_group = "blocks.listings"
     instantiable = False
     listed_model = None
@@ -68,29 +68,29 @@ class Listing(Block, metaclass = ListingMetaclass):
     ]
 
     pagination_method = schema.String(
-        enumeration = [
+        enumeration=[
             "pager",
             "infinite_scroll"
         ],
-        member_group = "pagination"
+        member_group="pagination"
     )
 
     item_accessibility = schema.String(
-        required = True,
-        enumeration = [
+        required=True,
+        enumeration=[
             "accessible",
             "published",
             "any"
         ],
-        default = "accessible",
-        edit_control = "cocktail.html.RadioSelector",
-        member_group = "listing"
+        default="accessible",
+        edit_control="cocktail.html.RadioSelector",
+        member_group="listing"
     )
 
     page_size = schema.Integer(
-        min = 1,
-        required = pagination_method,
-        member_group = "pagination"
+        min=1,
+        required=pagination_method,
+        member_group="pagination"
     )
 
     def init_view(self, view):
@@ -128,16 +128,16 @@ class Listing(Block, metaclass = ListingMetaclass):
         if not self.pagination_method and self.page_size:
             items.range = (0, self.page_size)
 
-        e = self.selecting_items(items = items)
+        e = self.selecting_items(items=items)
         return e.items
 
     @request_property
     def pagination(self):
         return get_parameter(
             self.pagination_member,
-            errors = "set_default",
-            prefix = self.name_prefix,
-            suffix = self.name_suffix
+            errors="set_default",
+            prefix=self.name_prefix,
+            suffix=self.name_suffix
         )
 
     @request_property

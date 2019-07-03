@@ -1,25 +1,20 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			July 2009
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.styled import styled
 
-def permission_separator_style(char = "-", width = 80):
+def permission_separator_style(char="-", width=80):
     return styled(char * width, "violet")
 
-def permission_check_style(t, width = 80):
+def permission_check_style(t, width=80):
     return "\n" + styled(t.ljust(width, " "), "white", "violet")
 
 def permission_param_style(key, value):
-    return " " * 4 + styled(key + ":", style = "bold") \
-         + " " + str(value)
+    return " " * 4 + styled(key + ":", style="bold") + " " + str(value)
 
 def role_style(t):
-    return "\n" + (" " * 4) + styled(t, style = "underline")
+    return "\n" + (" " * 4) + styled(t, style="underline")
 
 def permission_style(t):
     return " " * 4 + styled(t, "light_gray")
@@ -37,8 +32,7 @@ def trigger_style(t):
     return styled(t.ljust(80), "white", "brown")
 
 def trigger_context_style(k, v):
-    return styled(" " * 4 + (k + ":").ljust(15), style = "bold") \
-        + " " + str(v)
+    return styled(" " * 4 + (k + ":").ljust(15), style="bold") + " " + str(v)
 
 def trigger_doesnt_match_style(t):
     return styled(" " * 4 + t, "yellow")

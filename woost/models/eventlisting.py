@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from datetime import date, datetime, timedelta
+
 from cocktail.dateutils import add_time
 from cocktail import events
 from cocktail import schema
@@ -13,6 +13,7 @@ from cocktail.controllers import (
     get_parameter,
     Pagination
 )
+
 from .event import Event
 from .block import Block
 
@@ -52,30 +53,30 @@ class EventListing(Block):
     ]
 
     include_expired = schema.Boolean(
-        required = True,
-        default = True,
-        member_group = "listing"
+        required=True,
+        default=True,
+        member_group="listing"
     )
 
     listing_order = schema.String(
-        default = "-event_start",
-        enumeration = [
+        default="-event_start",
+        enumeration=[
             "-event_start",
             "event_start"
         ],
-        member_group = "listing"
+        member_group="listing"
     )
 
     paginated = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "listing"
+        required=True,
+        default=False,
+        member_group="listing"
     )
 
     page_size = schema.Integer(
-        min = 1,
-        required = paginated,
-        member_group = "listing"
+        min=1,
+        required=paginated,
+        member_group="listing"
     )
 
     views_paging_type = {
@@ -121,10 +122,12 @@ class EventListing(Block):
             )
 
             subset.update(
-                Event.select(filters = [
-                    Event.event_end.equal(None),
-                    Event.event_start.greater(datetime.now())
-                ])
+                Event.select(
+                    filters=[
+                        Event.event_end.equal(None),
+                        Event.event_start.greater(datetime.now())
+                    ]
+                )
             )
 
             events.base_collection = subset
@@ -134,7 +137,7 @@ class EventListing(Block):
         if not self.paginated and self.page_size:
             events.range = (0, self.page_size)
 
-        e = self.selecting_items(items = events)
+        e = self.selecting_items(items=events)
         return e.items
 
     def _apply_listing_order(self, events):
@@ -145,9 +148,9 @@ class EventListing(Block):
     def pagination(self):
         return get_parameter(
             self.pagination_member,
-            errors = "set_default",
-            prefix = self.name_prefix,
-            suffix = self.name_suffix
+            errors="set_default",
+            prefix=self.name_prefix,
+            suffix=self.name_suffix
         )
 
     @request_property
@@ -161,7 +164,7 @@ class EventListing(Block):
     @request_property
     def calendar_page_member(self):
         return schema.CalendarPage("calendar_page",
-            default = schema.DynamicDefault(
+            default=schema.DynamicDefault(
                 lambda: schema.CalendarPage.type.current()
             )
         )

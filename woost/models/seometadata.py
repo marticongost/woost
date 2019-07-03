@@ -1,5 +1,4 @@
-#-*- coding: utf-8 -*-
-u"""
+"""
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
@@ -18,31 +17,31 @@ class SEOMetadata(schema.SchemaObject):
     custom_document_title = schema.String(
         translated=True,
         spellcheck=True,
-        listed_by_default = False,
-        member_group = "meta"
+        listed_by_default=False,
+        member_group="meta"
     )
 
     meta_description = schema.String(
         translated=True,
         spellcheck=True,
         edit_control="cocktail.html.TextArea",
-        listed_by_default = False,
-        member_group = "meta"
+        listed_by_default=False,
+        member_group="meta"
     )
 
     keywords = schema.String(
-        translated = True,
-        spellcheck = True,
-        edit_control = "cocktail.html.TextArea",
-        listed_by_default = False,
-        member_group = "meta"
+        translated=True,
+        spellcheck=True,
+        edit_control="cocktail.html.TextArea",
+        listed_by_default=False,
+        member_group="meta"
     )
 
     robots_should_follow = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False,
-        member_group = "meta.robots",
+        required=True,
+        default=True,
+        listed_by_default=False,
+        member_group="meta.robots",
     )
 
 

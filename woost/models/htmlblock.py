@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .block import Block
 
 
@@ -14,14 +14,14 @@ class HTMLBlock(Block):
     views = ["cocktail.html.Element"]
 
     html = schema.CodeBlock(
-        language = "html",
-        member_group = "content"
+        language="html",
+        member_group="content"
     )
 
     translated_html = schema.CodeBlock(
-        translated = True,
-        language = "html",
-        member_group = "content"
+        translated=True,
+        language="html",
+        member_group="content"
     )
 
     def init_view(self, view):

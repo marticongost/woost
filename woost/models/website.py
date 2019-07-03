@@ -1,12 +1,12 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.events import event_handler
 from cocktail import schema
-from woost.models.item import Item
-from woost.models.publishable import Publishable
+
+from .item import Item
+from .publishable import Publishable
 
 
 class Website(Item):
@@ -24,31 +24,31 @@ class Website(Item):
     # website
     #--------------------------------------------------------------------------
     site_name = schema.String(
-        translated = True,
-        descriptive = True
+        translated=True,
+        descriptive=True
     )
 
     identifier = schema.String(
-        required = True,
-        indexed = True,
-        normalized_index = False,
-        unique = True
+        required=True,
+        indexed=True,
+        normalized_index=False,
+        unique=True
     )
 
     hosts = schema.Collection(
-        items = schema.String(required = True),
-        min = 1
+        items=schema.String(required=True),
+        min=1
     )
 
     specific_content = schema.Collection(
-        items = schema.Reference(type = Publishable),
-        default_type = set,
-        bidirectional = True,
-        visible = False,
-        related_key = "websites"
+        items=schema.Reference(type=Publishable),
+        default_type=set,
+        bidirectional=True,
+        visible=False,
+        related_key="websites"
     )
 
-    def get_published_languages(self, languages = None):
+    def get_published_languages(self, languages=None):
 
         from woost.models import Configuration
         config = Configuration.instance

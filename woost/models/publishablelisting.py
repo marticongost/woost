@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Jordi Fernández <jordi.fernandez@whads.com>
@@ -10,6 +9,7 @@ from cocktail.controllers import (
     get_parameter,
     Pagination
 )
+
 from .block import Block
 from .publishable import Publishable
 
@@ -51,51 +51,51 @@ class PublishableListing(Block):
     ]
 
     publishables = schema.Collection(
-        items = schema.Reference(type = Publishable),
-        related_end = schema.Collection(),
-        invalidates_cache = True,
-        member_group = "listing"
+        items=schema.Reference(type=Publishable),
+        related_end=schema.Collection(),
+        invalidates_cache=True,
+        member_group="listing"
     )
 
     item_accessibility = schema.String(
-        required = True,
-        enumeration = [
+        required=True,
+        enumeration=[
             "accessible",
             "published",
             "any"
         ],
-        default = "accessible",
-        member_group = "listing"
+        default="accessible",
+        member_group="listing"
     )
 
     listing_order = schema.String(
-        default = "arbitrary",
-        enumeration = ["arbitrary", "-last_update_time"],
-        member_group = "listing"
+        default="arbitrary",
+        enumeration=["arbitrary", "-last_update_time"],
+        member_group="listing"
     )
 
     links_open_in_new_window = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "listing"
+        required=True,
+        default=False,
+        member_group="listing"
     )
 
     links_force_download = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "listing"
+        required=True,
+        default=False,
+        member_group="listing"
     )
 
     paginated = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "listing"
+        required=True,
+        default=False,
+        member_group="listing"
     )
 
     page_size = schema.Integer(
-        min = 1,
-        required = paginated,
-        member_group = "listing"
+        min=1,
+        required=paginated,
+        member_group="listing"
     )
 
     def init_view(self, view):
@@ -125,7 +125,7 @@ class PublishableListing(Block):
         publishables.base_collection = self.publishables
         self._apply_order(publishables)
 
-        e = self.selecting_items(items = publishables)
+        e = self.selecting_items(items=publishables)
         return e.items
 
     def _apply_order(self, publishables):
@@ -136,9 +136,9 @@ class PublishableListing(Block):
     def pagination(self):
         return get_parameter(
             self.pagination_member,
-            errors = "set_default",
-            prefix = self.name_prefix,
-            suffix = self.name_suffix
+            errors="set_default",
+            prefix=self.name_prefix,
+            suffix=self.name_suffix
         )
 
     @request_property

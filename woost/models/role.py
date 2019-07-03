@@ -1,13 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			August 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory, MULTIPLE_SELECTION
+
 from .item import Item
 
 
@@ -38,52 +35,52 @@ class Role(Item):
     ]
 
     title = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True
+        required=True,
+        unique=True,
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True
     )
 
     base_roles = schema.Collection(
-        items = "woost.models.Role",
-        bidirectional = True
+        items="woost.models.Role",
+        bidirectional=True
     )
 
     child_roles = schema.Collection(
-        items = "woost.models.Role",
-        bidirectional = True,
-        editable = schema.NOT_EDITABLE
+        items="woost.models.Role",
+        bidirectional=True,
+        editable=schema.NOT_EDITABLE
     )
 
     permissions = schema.Collection(
-        items = "woost.models.Permission",
-        bidirectional = True,
-        integral = True
+        items="woost.models.Permission",
+        bidirectional=True,
+        integral=True
     )
 
     implicit = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True,
-        editable = schema.NOT_EDITABLE
+        required=True,
+        default=False,
+        indexed=True,
+        editable=schema.NOT_EDITABLE
     )
 
     access_levels = schema.Collection(
-        items = "woost.models.AccessLevel",
-        bidirectional = True
+        items="woost.models.AccessLevel",
+        bidirectional=True
     )
 
     users = schema.Collection(
-        items = "woost.models.User",
-        bidirectional = True,
-        member_group = "users"
+        items="woost.models.User",
+        bidirectional=True,
+        member_group="users"
     )
 
-    def iter_roles(self, include_self = True, recursive = True):
+    def iter_roles(self, include_self=True, recursive=True):
         """Iterates over the role and its bases.
 
         Roles are sorted from most specific to most general.
@@ -112,7 +109,7 @@ class Role(Item):
             for base in self.base_roles:
                 yield base
 
-    def iter_permissions(self, permission_type = None):
+    def iter_permissions(self, permission_type=None):
         """Iterates over the permissions granted to the role.
 
         Both the role's own permissions and those inherited from its bases are

@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -10,6 +9,7 @@ from cocktail.controllers import (
     get_parameter,
     Pagination
 )
+
 from .block import Block
 from .news import News
 
@@ -48,15 +48,15 @@ class NewsListing(Block):
     ]
 
     paginated = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "listing"
+        required=True,
+        default=False,
+        member_group="listing"
     )
 
     page_size = schema.Integer(
-        min = 1,
-        required = paginated,
-        member_group = "listing"
+        min=1,
+        required=paginated,
+        member_group="listing"
     )
 
     def init_view(self, view):
@@ -71,21 +71,21 @@ class NewsListing(Block):
             view.news = self.select_news()
 
     def select_news(self):
-        news = News.select_accessible(order = "-news_date")
+        news = News.select_accessible(order="-news_date")
 
         if not self.paginated and self.page_size:
             news.range = (0, self.page_size)
 
-        e = self.selecting_items(items = news)
+        e = self.selecting_items(items=news)
         return e.items
 
     @request_property
     def pagination(self):
         return get_parameter(
             self.pagination_member,
-            errors = "set_default",
-            prefix = self.name_prefix,
-            suffix = self.name_suffix
+            errors="set_default",
+            prefix=self.name_prefix,
+            suffix=self.name_suffix
         )
 
     @request_property

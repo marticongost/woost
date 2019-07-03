@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from woost.models.block import Block
 
 
@@ -20,18 +20,18 @@ class IFrameBlock(Block):
     ]
 
     src = schema.URL(
-        required = True,
-        member_group = "content"
+        required=True,
+        member_group="content"
     )
 
     width = schema.Integer(
-        min = 0,
-        member_group = "content"
+        min=0,
+        member_group="content"
     )
 
     height = schema.Integer(
-        min = 0,
-        member_group = "content"
+        min=0,
+        member_group="content"
     )
 
     def init_view(self, view):

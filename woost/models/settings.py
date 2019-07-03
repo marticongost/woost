@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import re
+
 from cocktail import schema
 from cocktail.translations import translations
+
 from .configuration import Configuration
 from .website import Website
 from .file import File
@@ -22,9 +23,9 @@ def get_setting(key):
 
 def add_setting(
     member,
-    scopes = (Configuration, Website),
-    related_end = "auto",
-    inheritable = True
+    scopes=(Configuration, Website),
+    related_end="auto",
+    inheritable=True
 ):
     member.is_setting = True
     if not member.custom_translation_key:
@@ -69,47 +70,47 @@ def add_setting(
 add_setting(
     schema.Collection(
         "icons",
-        items = schema.Reference(type = File),
-        relation_constraints = [File.resource_type.equal("image")]
+        items=schema.Reference(type=File),
+        relation_constraints=[File.resource_type.equal("image")]
     )
 )
 
 add_setting(
     schema.Reference(
         "logo",
-        type = File,
-        relation_constraints = [File.resource_type.equal("image")]
+        type=File,
+        relation_constraints=[File.resource_type.equal("image")]
     )
 )
 
 add_setting(
     schema.String(
         "keywords",
-        translated = True,
-        spellcheck = True,
-        ui_form_control = "cocktail.ui.TextArea"
+        translated=True,
+        spellcheck=True,
+        ui_form_control="cocktail.ui.TextArea"
     )
 )
 
 add_setting(
     schema.String(
         "description",
-        translated = True,
-        spellcheck = True,
-        ui_form_control = "cocktail.ui.TextArea"
+        translated=True,
+        spellcheck=True,
+        ui_form_control="cocktail.ui.TextArea"
     )
 )
 
 add_setting(
     MetaTags("meta_tags"),
-    inheritable = False
+    inheritable=False
 )
 
 add_setting(
     schema.Boolean(
         "robots_should_index",
-        required = True,
-        default = True
+        required=True,
+        default=True
     )
 )
 
@@ -118,7 +119,7 @@ add_setting(
 add_setting(
     schema.String(
         "organization_name",
-        translated = True
+        translated=True
     )
 )
 
@@ -131,21 +132,21 @@ add_setting(
 add_setting(
     schema.String(
         "address",
-        ui_form_control = "cocktail.ui.TextArea"
+        ui_form_control="cocktail.ui.TextArea"
     )
 )
 
 add_setting(
     schema.String(
         "town",
-        translated = True
+        translated=True
     )
 )
 
 add_setting(
     schema.String(
         "region",
-        translated = True
+        translated=True
     )
 )
 
@@ -158,7 +159,7 @@ add_setting(
 add_setting(
     schema.String(
         "country",
-        translated = True
+        translated=True
     )
 )
 
@@ -191,9 +192,9 @@ add_setting(
 add_setting(
     schema.Collection(
         "caching_policies",
-        items = schema.Reference(type = CachingPolicy),
-        bidirectional = True,
-        integral = True
+        items=schema.Reference(type=CachingPolicy),
+        bidirectional=True,
+        integral=True
     )
 )
 
@@ -202,45 +203,45 @@ add_setting(
 add_setting(
     schema.Reference(
         "home",
-        type = Publishable,
-        required = True
+        type=Publishable,
+        required=True
     ),
-    scopes = [Website],
-    related_end = schema.Reference(block_delete = True)
+    scopes=[Website],
+    related_end=schema.Reference(block_delete=True)
 )
 
 add_setting(
     schema.Reference(
         "login_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
 add_setting(
     schema.Reference(
         "generic_error_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
 add_setting(
     schema.Reference(
         "not_found_error_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
 add_setting(
     schema.Reference(
         "gone_error_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
 add_setting(
     schema.Reference(
         "forbidden_error_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
@@ -249,23 +250,23 @@ add_setting(
 add_setting(
     schema.Boolean(
         "down_for_maintenance",
-        required = True,
-        default = False
+        required=True,
+        default=False
     )
 )
 
 add_setting(
     schema.Reference(
         "maintenance_page",
-        type = Publishable
+        type=Publishable
     )
 )
 
 add_setting(
     schema.Collection(
         "maintenance_addresses",
-        items = schema.String(),
-        searchable = False
+        items=schema.String(),
+        searchable=False
     )
 )
 
@@ -274,93 +275,93 @@ add_setting(
 add_setting(
     schema.Collection(
         "languages",
-        items = schema.String(
-            format = "^[a-z]{2}(-[A-Z]{2})?(-[a-z]+)?$"
+        items=schema.String(
+            format="^[a-z]{2}(-[A-Z]{2})?(-[a-z]+)?$"
         ),
-        min = 1,
-        searchable = False
+        min=1,
+        searchable=False
     ),
-    scopes = [Configuration]
+    scopes=[Configuration]
 )
 
 add_setting(
     schema.Collection(
         "virtual_languages",
-        items = schema.String(),
-        searchable = False
+        items=schema.String(),
+        searchable=False
     ),
-    scopes = [Configuration]
+    scopes=[Configuration]
 )
 
 
 add_setting(
     schema.Collection(
         "fallback_languages",
-        items = (
+        items=(
             schema.Tuple(
-                items = (
+                items=(
                     schema.String(),
                     schema.Collection(
-                        type = tuple,
-                        items = schema.String(),
-                        request_value_separator = ","
+                        type=tuple,
+                        items=schema.String(),
+                        request_value_separator=","
                     )
                 ),
-                request_value_separator = ":"
+                request_value_separator=":"
             )
         ),
-        request_value_separator = "\n",
-        searchable = False,
-        ui_form_control = "cocktail.ui.TextArea"
+        request_value_separator="\n",
+        searchable=False,
+        ui_form_control="cocktail.ui.TextArea"
     ),
-    scopes = [Configuration]
+    scopes=[Configuration]
 )
 
 add_setting(
     schema.Collection(
         "published_languages",
-        items = schema.String(),
-        searchable = False
+        items=schema.String(),
+        searchable=False
     )
 )
 
 add_setting(
     schema.String(
         "default_language",
-        required = True,
-        text_search = False,
-        searchable = False
+        required=True,
+        text_search=False,
+        searchable=False
     )
 )
 
 add_setting(
     schema.Boolean(
         "heed_client_language",
-        required = True,
-        default = True,
-        listed_by_default = False,
-        member_group = "language"
+        required=True,
+        default=True,
+        listed_by_default=False,
+        member_group="language"
     )
 )
 
 add_setting(
     LocaleMember(
         "backoffice_language",
-        required = True,
-        enumeration = ["en", "es", "ca"],
-        default = "en",
-        text_search = False
+        required=True,
+        enumeration=["en", "es", "ca"],
+        default="en",
+        text_search=False
     ),
-    scopes = [Configuration]
+    scopes=[Configuration]
 )
 
 add_setting(
     schema.Collection(
         "backoffice_language_chain",
-        items = schema.String(),
-        searchable = False
+        items=schema.String(),
+        searchable=False
     ),
-    scopes = [Configuration]
+    scopes=[Configuration]
 )
 
 # Look and feel
@@ -368,16 +369,16 @@ add_setting(
 add_setting(
     schema.Reference(
         "theme",
-        type = Theme
+        type=Theme
     )
 )
 
 add_setting(
     schema.CodeBlock(
         "global_styles",
-        language = "scss",
-        listed_by_default = False,
-        member_group = "presentation.appearence"
+        language="scss",
+        listed_by_default=False,
+        member_group="presentation.appearence"
     )
 )
 
@@ -386,9 +387,9 @@ add_setting(
 add_setting(
     schema.String(
         "https_policy",
-        required = True,
-        default = "never",
-        enumeration = [
+        required=True,
+        default="never",
+        enumeration=[
             "always",
             "never",
             "per_page",
@@ -399,8 +400,8 @@ add_setting(
 add_setting(
     schema.Boolean(
         "https_persistence",
-        required = True,
-        default = False
+        required=True,
+        default=False
     )
 )
 
@@ -409,33 +410,33 @@ add_setting(
 add_setting(
     schema.String(
         "timezone",
-        required = False,
-        format = re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
-        text_search = False
+        required=False,
+        format=re.compile(r'^["GMT"|"UTC"|"PST"|"MST"|"CST"|"EST"]{3}$|^[+-]\d{4}$'),
+        text_search=False
     )
 )
 
 add_setting(
     schema.String(
         "smtp_host",
-        default = "localhost",
-        listed_by_default = False,
-        text_search = False,
-        member_group = "system.smtp"
+        default="localhost",
+        listed_by_default=False,
+        text_search=False,
+        member_group="system.smtp"
     )
 )
 
 add_setting(
     schema.String(
         "smtp_user",
-        text_search = False
+        text_search=False
     )
 )
 
 add_setting(
     schema.String(
         "smtp_password",
-        text_search = False
+        text_search=False
     )
 )
 

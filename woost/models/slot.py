@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -17,7 +16,7 @@ class Slot(schema.Collection):
     def __init__(self, *args, **kwargs):
 
         if "items" not in kwargs:
-            kwargs["items"] = schema.Reference(type = block.Block)
+            kwargs["items"] = schema.Reference(type=block.Block)
 
         related_end = kwargs.get("related_end")
 

@@ -1,12 +1,13 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
 from cocktail.html.datadisplay import display_factory
-from woost.models import Publishable, File
-from woost.models.rendering import ImageFactory
+
+from .publishable import Publishable
+from .file import File
+from .rendering import ImageFactory
 from .block import Block
 from .blockimagefactoryreference import BlockImageFactoryReference
 
@@ -47,21 +48,21 @@ class TextBlock(Block):
     ]
 
     text = schema.HTML(
-        translated = True,
-        spellcheck = True,
-        member_group = "content"
+        translated=True,
+        spellcheck=True,
+        member_group="content"
     )
 
     images = schema.Collection(
-        items = schema.Reference(type = File),
-        related_end = schema.Collection(),
-        relation_constraints = [File.resource_type.equal("image")],
-        member_group = "images",
-        invalidates_cache = True
+        items=schema.Reference(type=File),
+        related_end=schema.Collection(),
+        relation_constraints=[File.resource_type.equal("image")],
+        member_group="images",
+        invalidates_cache=True
     )
 
     image_alignment = schema.String(
-        enumeration = [
+        enumeration=[
             "float_top_left",
             "float_top_right",
             "column_left",
@@ -76,41 +77,41 @@ class TextBlock(Block):
             "background",
             "fallback"
         ],
-        text_search = False,
-        member_group = "images.layout"
+        text_search=False,
+        member_group="images.layout"
     )
 
     image_thumbnail_factory = BlockImageFactoryReference(
-        member_group = "images.layout"
+        member_group="images.layout"
     )
 
     image_close_up_enabled = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "images.close_up"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="images.close_up"
     )
 
     image_close_up_factory = BlockImageFactoryReference(
-        member_group = "images.close_up"
+        member_group="images.close_up"
     )
 
     image_close_up_preload = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "images.close_up"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="images.close_up"
     )
 
     image_labels_visible = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "images.fields"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="images.fields"
     )
 
     image_footnotes_visible = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "images.fields"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="images.fields"
     )
 
     image_original_link_visible = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "images.fields"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="images.fields"
     )
 
     def get_block_image(self):
@@ -120,28 +121,28 @@ class TextBlock(Block):
             return Block.get_block_image(self)
 
     link_destination = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "link",
-        invalidates_cache = True
+        type=Publishable,
+        related_end=schema.Collection(),
+        member_group="link",
+        invalidates_cache=True
     )
 
     link_parameters = schema.String(
-        edit_control = "cocktail.html.TextArea",
-        text_search = False,
-        member_group = "link"
+        edit_control="cocktail.html.TextArea",
+        text_search=False,
+        member_group="link"
     )
 
     link_opens_in_new_window = schema.Boolean(
-        edit_control = "cocktail.html.DropdownSelector",
-        member_group = "link"
+        edit_control="cocktail.html.DropdownSelector",
+        member_group="link"
     )
 
     heading_alignment = schema.String(
-        enumeration = ["top", "inside"],
-        text_search = False,
-        after_member = "heading_type",
-        member_group = "html"
+        enumeration=["top", "inside"],
+        text_search=False,
+        after_member="heading_type",
+        member_group="html"
     )
 
     def init_view(self, view):

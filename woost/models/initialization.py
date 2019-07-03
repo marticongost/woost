@@ -1,15 +1,11 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			October 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-
 from random import choice
 from optparse import OptionParser
 from getpass import getpass
+
 from cocktail.stringutils import random_string
 from cocktail.translations import translations
 from cocktail.iteration import first
@@ -18,6 +14,7 @@ from cocktail.persistence import (
     mark_all_migrations_as_executed,
     reset_incremental_id
 )
+
 from woost import app
 from woost.models import (
     changeset_context,
@@ -67,7 +64,7 @@ translations.load_bundle("woost.models.initialization")
 
 class TranslatedValues(object):
 
-    def __init__(self, key = None, **kwargs):
+    def __init__(self, key=None, **kwargs):
         self.key = key
         self.kwargs = kwargs
 
@@ -154,18 +151,18 @@ class SiteInitializer(object):
     def main(self):
 
         parser = OptionParser()
-        parser.add_option("-u", "--user", help = "Administrator email")
-        parser.add_option("-p", "--password", help = "Administrator password")
+        parser.add_option("-u", "--user", help="Administrator email")
+        parser.add_option("-p", "--password", help="Administrator password")
         parser.add_option("-l", "--languages",
-            help = "Comma separated list of languages")
-        parser.add_option("--hostname", help = "Hostname for the website")
+            help="Comma separated list of languages")
+        parser.add_option("--hostname", help="Hostname for the website")
         parser.add_option("-b", "--base-id",
-            type = int,
-            help = "Seed the incremental ID sequence at a non-zero value")
+            type=int,
+            help="Seed the incremental ID sequence at a non-zero value")
         parser.add_option("-i", "--installation-id",
-            default = "DEV",
-            help = "A unique prefix for this installation, used to assign "
-                   "globally unique identifiers for objects."
+            default="DEV",
+            help="A unique prefix for this installation, used to assign "
+                 "globally unique identifiers for objects."
         )
 
         options, args = parser.parse_args()
@@ -340,11 +337,11 @@ class SiteInitializer(object):
     def create_configuration(self):
         config = self._create(
             Configuration,
-            qname = "woost.configuration",
-            secret_key = random_string(10),
-            default_language = self.languages[0],
-            languages = self.languages,
-            backoffice_language =
+            qname="woost.configuration",
+            secret_key=random_string(10),
+            default_language=self.languages[0],
+            languages=self.languages,
+            backoffice_language=
                 first(
                     language
                     for language in self.languages
@@ -355,9 +352,9 @@ class SiteInitializer(object):
         config.footer_blocks = [
             self._create(
                 CustomBlock,
-                qname = "woost.vcard",
-                heading = TranslatedValues(),
-                view_class = "woost.views.VCard"
+                qname="woost.vcard",
+                heading=TranslatedValues(),
+                view_class="woost.views.VCard"
             )
         ]
         return config
@@ -365,46 +362,46 @@ class SiteInitializer(object):
     def create_administrator(self):
         return self._create(
             User,
-            qname = "woost.administrator",
-            email = self.admin_email,
-            password = self.admin_password
+            qname="woost.administrator",
+            email=self.admin_email,
+            password=self.admin_password
         )
 
     def create_website(self):
         return self._create(
             Website,
-            site_name = TranslatedValues("website.site_name"),
-            identifier = self.hosts[0].split(".")[0],
-            hosts = self.hosts
+            site_name=TranslatedValues("website.site_name"),
+            identifier=self.hosts[0].split(".")[0],
+            hosts=self.hosts
         )
 
     def create_anonymous_role(self):
         return self._create(
             Role,
-            qname = "woost.anonymous",
-            implicit = True,
-            title = TranslatedValues()
+            qname="woost.anonymous",
+            implicit=True,
+            title=TranslatedValues()
         )
 
     def create_anonymous_user(self):
         return self._create(
             User,
-            qname = "woost.anonymous_user",
-            email = "anonymous@localhost",
-            role = self.anonymous_role,
-            anonymous = True
+            qname="woost.anonymous_user",
+            email="anonymous@localhost",
+            role=self.anonymous_role,
+            anonymous=True
         )
 
     def create_administrator_role(self):
         return self._create(
             Role,
-            qname = "woost.administrators",
-            title = TranslatedValues(),
-            permissions = [
-                self._create(ReadPermission, content_type = Item),
-                self._create(CreatePermission, content_type = Item),
-                self._create(ModifyPermission, content_type = Item),
-                self._create(DeletePermission, content_type = Item),
+            qname="woost.administrators",
+            title=TranslatedValues(),
+            permissions=[
+                self._create(ReadPermission, content_type=Item),
+                self._create(CreatePermission, content_type=Item),
+                self._create(ModifyPermission, content_type=Item),
+                self._create(DeletePermission, content_type=Item),
                 self._create(ReadMemberPermission),
                 self._create(ModifyMemberPermission),
                 self._create(ReadHistoryPermission),
@@ -415,14 +412,14 @@ class SiteInitializer(object):
     def create_everybody_role(self):
         role = self._create(
             Role,
-            implicit = True,
-            qname = "woost.everybody",
-            title = TranslatedValues(),
-            permissions = [
-                self._create(RenderPermission, content_type = Item),
+            implicit=True,
+            qname="woost.everybody",
+            title=TranslatedValues(),
+            permissions=[
+                self._create(RenderPermission, content_type=Item),
                 self._create(
                     ReadPermission,
-                    content_type = Publishable,
+                    content_type=Publishable,
                     content_expression =
                         "from woost.models import user_has_access_level\n"
                         "items.add_filter(user_has_access_level)"
@@ -435,8 +432,8 @@ class SiteInitializer(object):
             role.permissions.append(
                 self._create(
                     ReadMemberPermission,
-                    authorized = False,
-                    matching_members = self.restricted_members
+                    authorized=False,
+                    matching_members=self.restricted_members
                 )
             )
 
@@ -447,8 +444,8 @@ class SiteInitializer(object):
             role.permissions.append(
                 self._create(
                     ModifyMemberPermission,
-                    authorized = False,
-                    matching_members = self.read_only_members
+                    authorized=False,
+                    matching_members=self.read_only_members
                 )
             )
 
@@ -467,16 +464,16 @@ class SiteInitializer(object):
     def create_authenticated_role(self):
         return self._create(
             Role,
-            qname = "woost.authenticated",
-            implicit = True,
-            title = TranslatedValues()
+            qname="woost.authenticated",
+            implicit=True,
+            title=TranslatedValues()
         )
 
     def create_editor_role(self):
         role = self._create(
             Role,
-            qname = "woost.editors",
-            title = TranslatedValues()
+            qname="woost.editors",
+            title=TranslatedValues()
         )
 
         # Restrict readable types
@@ -491,8 +488,8 @@ class SiteInitializer(object):
                     role.permissions.append(
                         self._create(
                             permission_type,
-                            authorized = False,
-                            content_type = restricted_type
+                            authorized=False,
+                            content_type=restricted_type
                         )
                     )
 
@@ -507,8 +504,8 @@ class SiteInitializer(object):
                     role.permissions.append(
                         self._create(
                             permission_type,
-                            authorized = False,
-                            content_type = read_only_type
+                            authorized=False,
+                            content_type=read_only_type
                         )
                     )
 
@@ -520,10 +517,7 @@ class SiteInitializer(object):
             ReadHistoryPermission
         ):
             role.permissions.append(
-                self._create(
-                    permission_type,
-                    content_type = Item
-                )
+                self._create(permission_type, content_type=Item)
             )
 
         role.permissions.append(self._create(DebugPermission))
@@ -533,56 +527,56 @@ class SiteInitializer(object):
     def create_editor_access_level(self):
         return self._create(
             AccessLevel,
-            qname = "woost.editor_access_level",
-            roles_with_access = [self.editor_role]
+            qname="woost.editor_access_level",
+            roles_with_access=[self.editor_role]
         )
 
     def create_default_theme(self):
         return self._create(
             Theme,
-            qname = "woost.default_theme",
-            title = TranslatedValues(),
-            identifier = "default",
-            grid = self.create_default_grid()
+            qname="woost.default_theme",
+            title=TranslatedValues(),
+            identifier="default",
+            grid=self.create_default_grid()
         )
 
     def create_default_grid(self):
         return self._create(
             Grid,
-            title = TranslatedValues(),
-            qname = "woost.default_grid",
-            column_count = 12,
-            sizes = [
+            title=TranslatedValues(),
+            qname="woost.default_grid",
+            column_count=12,
+            sizes=[
                 self._create(
                     GridSize,
-                    identifier = "XL",
-                    min_width = 1389,
-                    column_width = 80
+                    identifier="XL",
+                    min_width=1389,
+                    column_width=80
                 ),
                 self._create(
                     GridSize,
-                    identifier = "L",
-                    min_width = 1159,
-                    column_width = 59
+                    identifier="L",
+                    min_width=1159,
+                    column_width=59
                 ),
                 self._create(
                     GridSize,
-                    identifier = "M",
-                    min_width = 929,
-                    column_width = 60
+                    identifier="M",
+                    min_width=929,
+                    column_width=60
                 ),
                 self._create(
                     GridSize,
-                    identifier = "S",
-                    min_width = 713,
-                    column_width = 42
+                    identifier="S",
+                    min_width=713,
+                    column_width=42
                 ),
                 self._create(
                     GridSize,
-                    identifier = "XS",
-                    min_width = 0,
-                    column_width = 32,
-                    column_spacing = 8
+                    identifier="XS",
+                    min_width=0,
+                    column_width=32,
+                    column_spacing=8
                 )
             ]
         )
@@ -600,9 +594,9 @@ class SiteInitializer(object):
         ):
             controller = self._create(
                 Controller,
-                qname = "woost.%s_controller" % controller_name.lower(),
-                title = TranslatedValues(),
-                python_name = "woost.controllers.%scontroller.%sController" % (
+                qname="woost.%s_controller" % controller_name.lower(),
+                title=TranslatedValues(),
+                python_name="woost.controllers.%scontroller.%sController" % (
                     controller_name.lower(),
                     controller_name
                 )
@@ -612,53 +606,53 @@ class SiteInitializer(object):
         # Setup default controllers
         self.configuration.default_publishable_controller = (
             Controller.require_instance(
-                qname = "woost.publishable_controller"
+                qname="woost.publishable_controller"
             )
         )
         self.configuration.default_file_controller = (
             Controller.require_instance(
-                qname = "woost.file_controller"
+                qname="woost.file_controller"
             )
         )
         self.configuration.default_uri_controller = (
             Controller.require_instance(
-                qname = "woost.uri_controller"
+                qname="woost.uri_controller"
             )
         )
 
     def create_default_page_template(self):
         return self._create(
             Template,
-            qname = "woost.default_page_template",
-            title = TranslatedValues(),
-            identifier = "woost.views.GenericSiteLayout",
+            qname="woost.default_page_template",
+            title=TranslatedValues(),
+            identifier="woost.views.GenericSiteLayout",
         )
 
     def create_default_news_template(self):
         return self._create(
             Template,
-            qname = "woost.default_news_template",
-            title = TranslatedValues(),
-            identifier = "woost.views.GenericSiteLayout",
+            qname="woost.default_news_template",
+            title=TranslatedValues(),
+            identifier="woost.views.GenericSiteLayout",
         )
 
     def create_default_event_template(self):
         return self._create(
             Template,
-            qname = "woost.default_event_template",
-            title = TranslatedValues(),
-            identifier = "woost.views.GenericSiteLayout",
+            qname="woost.default_event_template",
+            title=TranslatedValues(),
+            identifier="woost.views.GenericSiteLayout",
         )
 
     def create_home(self):
         return self._create(
             Page,
-            title = TranslatedValues("home.title"),
-            inner_title = TranslatedValues("home.inner_title"),
-            blocks = [
+            title=TranslatedValues("home.title"),
+            inner_title=TranslatedValues("home.inner_title"),
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("home.body")
+                    text=TranslatedValues("home.body")
                 )
             ]
         )
@@ -666,19 +660,19 @@ class SiteInitializer(object):
     def create_user_stylesheet(self):
         return self._create(
             Document,
-            qname = "woost.user_styles",
-            title = TranslatedValues(),
-            per_language_publication = False,
-            controller = self.styles_controller,
-            path = "user_styles",
-            hidden = True,
-            mime_type = "text/css",
-            caching_policies = [
+            qname="woost.user_styles",
+            title=TranslatedValues(),
+            per_language_publication=False,
+            controller=self.styles_controller,
+            path="user_styles",
+            hidden=True,
+            mime_type="text/css",
+            caching_policies=[
                 self._create(
                     CachingPolicy,
                     cache_tags_expression =
                         "tags.add('woost.models.style.Style')\n",
-                    server_side_cache = True
+                    server_side_cache=True
                 )
             ]
         )
@@ -686,26 +680,26 @@ class SiteInitializer(object):
     def create_generic_error_page(self):
         return self._create(
             Page,
-            qname = "woost.generic_error_page",
-            title = TranslatedValues(),
-            hidden = True,
-            blocks = [
+            qname="woost.generic_error_page",
+            title=TranslatedValues(),
+            hidden=True,
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("generic_error_page.body"),
+                    text=TranslatedValues("generic_error_page.body"),
                     initialization =
                         "from woost.models import Configuration\n"
-                        "setting = Configuration.instance.get_setting\n"
-                        "email = setting('technical_contact_email') or setting('email')\n"
+                        "setting=Configuration.instance.get_setting\n"
+                        "email=setting('technical_contact_email') or setting('email')\n"
                         "if email:\n"
-                        "    repl = '(<a href=\"mailto:' + email + '\">' + email + '</a>)'\n"
+                        "    repl='(<a href=\"mailto:' + email + '\">' + email + '</a>)'\n"
                         "else:\n"
-                        "    repl = ''\n"
-                        "view.text = view.text.replace('[CONTACT]', repl)"
+                        "    repl=''\n"
+                        "view.text=view.text.replace('[CONTACT]', repl)"
                 ),
                 self._create(
                     CustomBlock,
-                    view_class = "woost.views.Traceback"
+                    view_class="woost.views.Traceback"
                 )
             ]
         )
@@ -713,13 +707,13 @@ class SiteInitializer(object):
     def create_not_found_error_page(self):
         return self._create(
             Page,
-            qname = "woost.not_found_error_page",
-            title = TranslatedValues(),
-            hidden = True,
-            blocks = [
+            qname="woost.not_found_error_page",
+            title=TranslatedValues(),
+            hidden=True,
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("not_found_error_page.body")
+                    text=TranslatedValues("not_found_error_page.body")
                 )
             ]
         )
@@ -727,13 +721,13 @@ class SiteInitializer(object):
     def create_forbidden_error_page(self):
         return self._create(
             Page,
-            qname = "woost.forbidden_error_page",
-            title = TranslatedValues(),
-            hidden = True,
-            blocks = [
+            qname="woost.forbidden_error_page",
+            title=TranslatedValues(),
+            hidden=True,
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("forbidden_error_page.body")
+                    text=TranslatedValues("forbidden_error_page.body")
                 )
             ]
         )
@@ -741,23 +735,23 @@ class SiteInitializer(object):
     def create_password_change_page(self):
         return self._create(
             Page,
-            qname = "woost.password_change_page",
-            title = TranslatedValues(),
-            controller = self.passwordchange_controller,
-            hidden = True,
-            blocks = [
+            qname="woost.password_change_page",
+            title=TranslatedValues(),
+            controller=self.passwordchange_controller,
+            hidden=True,
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues("password_change_page.body"),
+                    text=TranslatedValues("password_change_page.body"),
                     initialization =
                         'import cherrypy\n'
                         'if cherrypy.request.method == "POST":\n'
-                        '    view.visible = False'
+                        '    view.visible=False'
                 ),
                 self._create(
                     CustomBlock,
-                    heading = TranslatedValues("password_change_page.form_title"),
-                    view_class = "woost.views.PasswordChangeRequestForm",
+                    heading=TranslatedValues("password_change_page.form_title"),
+                    view_class="woost.views.PasswordChangeRequestForm",
                     controller =
                         "woost.controllers.passwordchangecontroller."
                         "PasswordChangeBlockController"
@@ -768,27 +762,27 @@ class SiteInitializer(object):
     def create_password_change_confirmation_page(self):
         return self._create(
             Page,
-            qname = "woost.password_change_confirmation_page",
-            title = TranslatedValues(),
-            controller = self.passwordchangeconfirmation_controller,
-            hidden = True,
-            blocks = [
+            qname="woost.password_change_confirmation_page",
+            title=TranslatedValues(),
+            controller=self.passwordchangeconfirmation_controller,
+            hidden=True,
+            blocks=[
                 self._create(
                     TextBlock,
-                    text = TranslatedValues(
+                    text=TranslatedValues(
                         "password_change_confirmation_page.body"
                     ),
                     initialization =
                         'import cherrypy\n'
                         'if cherrypy.request.method == "POST":\n'
-                        '    view.visible = False'
+                        '    view.visible=False'
                 ),
                 self._create(
                     CustomBlock,
-                    heading = TranslatedValues(
+                    heading=TranslatedValues(
                         "password_change_confirmation_page.form_title"
                     ),
-                    view_class = "woost.views.PasswordChangeConfirmationForm",
+                    view_class="woost.views.PasswordChangeConfirmationForm",
                     controller =
                         "woost.controllers.passwordchangecontroller."
                         "PasswordChangeConfirmationBlockController"
@@ -799,22 +793,22 @@ class SiteInitializer(object):
     def create_password_change_email_template(self):
         return self._create(
             EmailTemplate,
-            qname = "woost.password_change_email_template",
-            template_engine = "mako",
-            title = TranslatedValues(),
-            subject = TranslatedValues(),
-            body = TranslatedValues(),
-            sender = 'u"noreply@' + self.hosts[0] + '"',
-            receivers = "[user.email]"
+            qname="woost.password_change_email_template",
+            template_engine="mako",
+            title=TranslatedValues(),
+            subject=TranslatedValues(),
+            body=TranslatedValues(),
+            sender='u"noreply@' + self.hosts[0] + '"',
+            receivers="[user.email]"
         )
 
     def create_login_page(self):
         return self._create(
             Page,
-            qname = "woost.login_page",
-            title = TranslatedValues(),
-            hidden = True,
-            blocks = [
+            qname="woost.login_page",
+            title=TranslatedValues(),
+            hidden=True,
+            blocks=[
                 self._create(LoginBlock)
             ]
         )
@@ -822,9 +816,9 @@ class SiteInitializer(object):
     def create_content_renderer(self):
         return self._create(
             rendering.ChainRenderer,
-            qname = "woost.content_renderer",
-            title = TranslatedValues(),
-            renderers = [
+            qname="woost.content_renderer",
+            title=TranslatedValues(),
+            renderers=[
                 self._create(rendering.ImageFileRenderer),
                 self._create(rendering.PDFRenderer),
                 self._create(rendering.VideoFileRenderer),
@@ -835,83 +829,83 @@ class SiteInitializer(object):
     def create_icon16_renderer(self):
         return self._create(
             rendering.IconRenderer,
-            qname = "woost.icon16_renderer",
-            title = TranslatedValues(),
-            icon_size = 16
+            qname="woost.icon16_renderer",
+            title=TranslatedValues(),
+            icon_size=16
         )
 
     def create_icon32_renderer(self):
         return self._create(
             rendering.IconRenderer,
-            qname = "woost.icon32_renderer",
-            title = TranslatedValues(),
-            icon_size = 32
+            qname="woost.icon32_renderer",
+            title=TranslatedValues(),
+            icon_size=32
         )
 
     def create_default_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.default_image_factory",
-            title = TranslatedValues(),
-            identifier = "default"
+            qname="woost.default_image_factory",
+            title=TranslatedValues(),
+            identifier="default"
         )
 
     def create_icon16_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.icon16_image_factory",
-            title = TranslatedValues(),
-            identifier = "icon16",
-            renderer = self.icon16_renderer,
-            applicable_to_blocks = False
+            qname="woost.icon16_image_factory",
+            title=TranslatedValues(),
+            identifier="icon16",
+            renderer=self.icon16_renderer,
+            applicable_to_blocks=False
         )
 
     def create_icon32_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.icon32_image_factory",
-            title = TranslatedValues(),
-            identifier = "icon32",
-            renderer = self.icon32_renderer,
-            applicable_to_blocks = False
+            qname="woost.icon32_image_factory",
+            title=TranslatedValues(),
+            identifier="icon32",
+            renderer=self.icon32_renderer,
+            applicable_to_blocks=False
         )
 
     def create_edit_blocks_thumbnail_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.edit_blocks_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "edit_blocks_thumbnail",
-            effects = [
+            qname="woost.edit_blocks_thumbnail_image_factory",
+            title=TranslatedValues(),
+            identifier="edit_blocks_thumbnail",
+            effects=[
                 self._create(
                     rendering.Thumbnail,
-                    width = "75",
-                    height = "75"
+                    width="75",
+                    height="75"
                 ),
                 self._create(
                     rendering.Frame,
-                    edge_width = 1,
-                    edge_color = "ccc",
-                    vertical_padding = "4",
-                    horizontal_padding = "4",
-                    background = "eee"
+                    edge_width=1,
+                    edge_color="ccc",
+                    vertical_padding="4",
+                    horizontal_padding="4",
+                    background="eee"
                 )
             ],
-            applicable_to_blocks = False
+            applicable_to_blocks=False
         )
 
     def create_close_up_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.close_up_image_factory",
-            title = TranslatedValues(),
-            identifier = "image_gallery_close_up",
-            effects = [
+            qname="woost.close_up_image_factory",
+            title=TranslatedValues(),
+            identifier="image_gallery_close_up",
+            effects=[
                 self._create(
                     rendering.Fill,
-                    width = "900",
-                    height = "700",
-                    preserve_vertical_images = True
+                    width="900",
+                    height="700",
+                    preserve_vertical_images=True
                 )
             ]
         )
@@ -919,15 +913,15 @@ class SiteInitializer(object):
     def create_default_thumbnail_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.default_thumbnail_image_factory",
-            title = TranslatedValues(),
-            identifier = "image_gallery_thumbnail",
-            effects = [
+            qname="woost.default_thumbnail_image_factory",
+            title=TranslatedValues(),
+            identifier="image_gallery_thumbnail",
+            effects=[
                 self._create(
                     rendering.Fill,
-                    width = "200",
-                    height = "150",
-                    preserve_vertical_images = True
+                    width="200",
+                    height="150",
+                    preserve_vertical_images=True
                 )
             ]
         )
@@ -935,14 +929,14 @@ class SiteInitializer(object):
     def create_collage_image_factory(self):
         return self._create(
             rendering.ImageFactory,
-            qname = "woost.collage_image_factory",
-            title = TranslatedValues(),
-            identifier = "collage",
-            effects = [
+            qname="woost.collage_image_factory",
+            title=TranslatedValues(),
+            identifier="collage",
+            effects=[
                 self._create(
                     rendering.Thumbnail,
-                    height = "350",
-                    upscale = True
+                    height="350",
+                    upscale=True
                 )
             ]
         )
