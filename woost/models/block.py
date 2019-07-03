@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """Defines the `Block` model.
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import sys
 from datetime import datetime
+
 import sass
 from cocktail.modeling import extend, call_base
 from cocktail.events import when, Event
@@ -16,6 +16,7 @@ from cocktail.html import templates, Element
 from cocktail.html.resources import SASSCompilation
 from cocktail.html.utils import is_sectioning_content
 from cocktail.html.uigeneration import display_factory
+
 from .enabledtranslations import auto_enables_translations
 from .item import Item
 from .localemember import LocaleMember
@@ -80,9 +81,9 @@ class Block(Item):
     # content
 
     view_class = schema.String(
-        required = True,
-        text_search = False,
-        translate_value = (lambda value, language = None, **kwargs:
+        required=True,
+        text_search=False,
+        translate_value=(lambda value, language=None, **kwargs:
             "" if not value
             else (
                 translations(
@@ -93,44 +94,44 @@ class Block(Item):
                 or value
             )
         ),
-        member_group = "content"
+        member_group="content"
     )
 
     @extend(view_class)
-    def produce_default(member, instance = None):
+    def produce_default(member, instance=None):
         default = call_base(instance)
         if default is None and instance is not None and instance.views:
             default = instance.views[0]
         return default
 
     heading = schema.String(
-        descriptive = True,
-        translated = True,
-        spellcheck = True,
-        member_group = "content"
+        descriptive=True,
+        translated=True,
+        spellcheck=True,
+        member_group="content"
     )
 
     heading_display = schema.String(
-        required = True,
-        default = "off",
-        enumeration = [
+        required=True,
+        default="off",
+        enumeration=[
             "off",
             "hidden",
             "on",
             "custom"
         ],
-        edit_control = display_factory(
+        edit_control=display_factory(
             "cocktail.html.DropdownSelector",
-            empty_option_displayed = False
+            empty_option_displayed=False
         ),
-        text_search = False,
-        member_group = "content"
+        text_search=False,
+        member_group="content"
     )
 
     custom_heading = schema.HTML(
-        translated = True,
-        member_group = "content",
-        tinymce_params = {
+        translated=True,
+        member_group="content",
+        tinymce_params={
             "forced_root_block": "",
             "height": "70px"
         }
@@ -138,55 +139,55 @@ class Block(Item):
 
     # publication
     clones = schema.Collection(
-        items = "woost.models.BlockClone",
-        bidirectional = True,
-        related_key = "source_block",
-        integral = True,
-        editable = schema.READ_ONLY,
-        member_group = "publication"
+        items="woost.models.BlockClone",
+        bidirectional=True,
+        related_key="source_block",
+        integral=True,
+        editable=schema.READ_ONLY,
+        member_group="publication"
     )
 
     enabled = schema.Boolean(
-        required = True,
-        default = True,
-        member_group = "publication"
+        required=True,
+        default=True,
+        member_group="publication"
     )
 
     per_language_publication = schema.Boolean(
-        required = True,
-        default = False,
-        member_group = "publication"
+        required=True,
+        default=False,
+        member_group="publication"
     )
 
     enabled_translations = schema.Collection(
-        items = LocaleMember(),
-        default_type = set,
-        ui_form_control = "cocktail.ui.SplitSelector",
-        member_group = "publication"
+        items=LocaleMember(),
+        default_type=set,
+        ui_form_control="cocktail.ui.SplitSelector",
+        member_group="publication"
     )
 
     start_date = schema.DateTime(
-        indexed = True,
-        affects_cache_expiration = True,
-        member_group = "publication"
+        indexed=True,
+        affects_cache_expiration=True,
+        member_group="publication"
     )
 
     end_date = schema.DateTime(
-        indexed = True,
-        min = start_date,
-        affects_cache_expiration = True,
-        member_group = "publication"
+        indexed=True,
+        min=start_date,
+        affects_cache_expiration=True,
+        member_group="publication"
     )
 
     controller = schema.String(
-        text_search = False,
-        member_group = "publication"
+        text_search=False,
+        member_group="publication"
     )
 
     # html
 
     element_type = schema.String(
-        enumeration = [
+        enumeration=[
             "div",
             "section",
             "article",
@@ -198,12 +199,12 @@ class Block(Item):
             "nav",
             "dd"
         ],
-        text_search = False,
-        member_group = "html"
+        text_search=False,
+        member_group="html"
     )
 
     heading_type = schema.String(
-        enumeration = [
+        enumeration=[
             "div",
             "h1",
             "h2",
@@ -214,40 +215,40 @@ class Block(Item):
             "dt",
             "figcaption"
         ],
-        text_search = False,
-        member_group = "html"
+        text_search=False,
+        member_group="html"
     )
 
     styles = schema.Collection(
-        items = schema.Reference(type = Style),
-        relation_constraints = {"applicable_to_blocks": True},
-        related_end = schema.Collection(),
-        member_group = "html"
+        items=schema.Reference(type=Style),
+        relation_constraints={"applicable_to_blocks": True},
+        related_end=schema.Collection(),
+        member_group="html"
     )
 
     embedded_styles_initialization = schema.CodeBlock(
-        language = "scss",
-        member_group = "html"
+        language="scss",
+        member_group="html"
     )
 
     embedded_styles = schema.CodeBlock(
-        language = "scss",
-        member_group = "html"
+        language="scss",
+        member_group="html"
     )
 
     html_attributes = schema.String(
-        listed_by_default = False,
-        edit_control = "cocktail.html.TextArea",
-        text_search = False,
-        member_group = "html"
+        listed_by_default=False,
+        edit_control="cocktail.html.TextArea",
+        text_search=False,
+        member_group="html"
     )
 
     # administration
 
     initialization = schema.CodeBlock(
-        language = "python",
-        text_search = False,
-        member_group = "administration"
+        language="python",
+        text_search=False,
+        member_group="administration"
     )
 
     def get_block_image(self):
@@ -338,7 +339,7 @@ class Block(Item):
 
     def customize_view(self, view):
 
-        self.initializing_view(view = view)
+        self.initializing_view(view=view)
 
         if self.controller:
             controller_class = import_object(self.controller)
@@ -376,7 +377,7 @@ class Block(Item):
                 self.id,
                 self.embedded_styles
             )
-        return SASSCompilation().compile(string = sass_code)
+        return SASSCompilation().compile(string=sass_code)
 
     def get_block_proxy(self, view):
         return view
@@ -536,8 +537,8 @@ def setup_translation_of_default_values_for_block_type(block_type):
 
     def setup_translation_of_default_values_for_member(member):
         @extend(member)
-        def translate_value(member, value, language = None, **kwargs):
-            trans = call_base(value, language = language, **kwargs)
+        def translate_value(member, value, language=None, **kwargs):
+            trans = call_base(value, language=language, **kwargs)
             if not trans and value is None:
                 return translations(
                     "woost.models.block.Block.default_value",
@@ -545,7 +546,7 @@ def setup_translation_of_default_values_for_block_type(block_type):
                 )
             return trans
 
-    for member in block_type.iter_members(recursive = False):
+    for member in block_type.iter_members(recursive=False):
         setup_translation_of_default_values_for_member(member)
 
     @when(block_type.member_added)

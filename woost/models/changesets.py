@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 @author:		Martí Congost
@@ -9,6 +8,7 @@
 from datetime import datetime
 from threading import local
 from contextlib import contextmanager
+
 from BTrees.IIBTree import IIBTree
 from cocktail.modeling import classgetter
 from cocktail.events import event_handler
@@ -20,7 +20,7 @@ from cocktail.persistence import PersistentObject, datastore
 CHANGES_INDEX_KEY = "woost.models.changesets.ChangeSet.changes-index"
 
 @contextmanager
-def changeset_context(author = None):
+def changeset_context(author=None):
     """A context manager that eases item versioning. All changes performed on
     CMS items within the call to the manager will be tracked and made part of a
     L{ChangeSet}.
@@ -85,22 +85,22 @@ class ChangeSet(PersistentObject):
     full_text_indexed = True
 
     changes = schema.Mapping(
-        searchable = False,
-        get_item_key = lambda change: change.target and change.target.id,
-        keys = schema.Integer(required = True),
-        values = schema.Reference(type = "woost.models.Change")
+        searchable=False,
+        get_item_key=lambda change: change.target and change.target.id,
+        keys=schema.Integer(required=True),
+        values=schema.Reference(type="woost.models.Change")
     )
 
     author = schema.Reference(
-        required = True,
-        type = "woost.models.User",
-        search_control = "cocktail.html.DropdownSelector",
-        text_search = True
+        required=True,
+        type="woost.models.User",
+        search_control="cocktail.html.DropdownSelector",
+        text_search=True
     )
 
     date = schema.DateTime(
-        required = True,
-        default = schema.DynamicDefault(datetime.now)
+        required=True,
+        default=schema.DynamicDefault(datetime.now)
     )
 
     _thread_data = local()
@@ -152,38 +152,38 @@ class Change(PersistentObject):
     full_text_indexed = True
 
     changeset = schema.Reference(
-        required = True,
-        indexed = True,
-        type = "woost.models.ChangeSet"
+        required=True,
+        indexed=True,
+        type="woost.models.ChangeSet"
     )
 
     action = schema.String(
-        required = True,
-        indexed = True,
-        enumeration = ["create", "modify", "delete"]
+        required=True,
+        indexed=True,
+        enumeration=["create", "modify", "delete"]
     )
 
     target = schema.Reference(
-        required = True,
-        type = "woost.models.Item",
-        indexed = True,
-        bidirectional = True
+        required=True,
+        type="woost.models.Item",
+        indexed=True,
+        bidirectional=True
     )
 
     changed_members = schema.Collection(
-        type = set,
-        items = schema.String(),
-        indexed = True
+        type=set,
+        items=schema.String(),
+        indexed=True
     )
 
     item_state = schema.Mapping(
-        required = False
+        required=False
     )
 
     is_explicit_change = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True
+        required=True,
+        default=False,
+        indexed=True
     )
 
     def get_previous_change(self):
@@ -194,12 +194,12 @@ class Change(PersistentObject):
             if index > 0:
                 return changes[index - 1]
 
-    def diff(self,
-        other_change = None,
-        diff_schema = None,
-        exclude = None,
-        language_subset = None
-    ):
+    def diff(
+        self,
+        other_change=None,
+        diff_schema=None,
+        exclude=None,
+        language_subset=None):
 
         if other_change is None:
             other_change = self.get_previous_change()
@@ -223,8 +223,8 @@ class Change(PersistentObject):
             self.item_state,
             other_change.item_state,
             diff_schema,
-            exclude = exclude,
-            language_subset = language_subset
+            exclude=exclude,
+            language_subset=language_subset
         )
 
     @event_handler
@@ -256,7 +256,7 @@ class Change(PersistentObject):
 
 class ChangeSetHasChangeExpression(schema.expressions.Expression):
 
-    def __init__(self, target = None, action = None, include_implicit = True):
+    def __init__(self, target=None, action=None, include_implicit=True):
         self.target = target
         self.action = action
         self.include_implicit = include_implicit
@@ -388,11 +388,11 @@ def _translate_change_en(action, target):
     return target_desc + " " + action_desc
 
 translations.define("woost.models.changesets.Change.instance",
-    ca = lambda change, **kwargs:
+    ca=lambda change, **kwargs:
         _translate_change_ca(change.action, change.target),
-    es = lambda change, **kwargs:
+    es=lambda change, **kwargs:
         _translate_change_es(change.action, change.target),
-    en = lambda change, **kwargs:
+    en=lambda change, **kwargs:
         _translate_change_en(change.action, change.target)
 )
 

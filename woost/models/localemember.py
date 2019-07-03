@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -15,21 +14,21 @@ class LocaleMember(schema.String):
         kwargs.setdefault("enumeration", _locales_enumeration)
         schema.String.__init__(self, *args, **kwargs)
 
-    def translate_value(self, value, language = None, **kwargs):
+    def translate_value(self, value, language=None, **kwargs):
         if not value:
             return schema.String.translate_value(
                 self,
                 value,
-                language = language,
+                language=language,
                 **kwargs
             )
         else:
-            return translate_locale(value, language = language)
+            return translate_locale(value, language=language)
 
 def _locales_enumeration(ctx):
     from woost.models.configuration import Configuration
     return sorted(
         Configuration.instance.languages,
-        key = lambda locale: normalize(translate_locale(locale))
+        key=lambda locale: normalize(translate_locale(locale))
     )
 

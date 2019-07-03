@@ -1,14 +1,11 @@
-#-*- coding: utf-8 -*-
 """
 Provides base and default content types for the woost CMS.
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			June 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from cocktail import schema
 from cocktail.events import when
+from cocktail import schema
+
 from . import memberextensions
 
 # Register the 'text/javascript' MIME type
@@ -23,7 +20,7 @@ def _hide_self_contained_relations(event):
         event.source.visible = False
         event.source.versioned = False
 
-from woost.models.typegroups import (
+from .typegroups import (
     TypeGroup,
     type_groups,
     block_type_groups

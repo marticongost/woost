@@ -1,10 +1,6 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			June 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from .page import (
     Page as StandardPage,

@@ -1,10 +1,6 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			July 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from warnings import warn
 import os
@@ -14,10 +10,12 @@ from mimetypes import guess_type
 from shutil import copy, copyfileobj
 import urllib.request, urllib.error, urllib.parse
 from tempfile import mkdtemp
+
 from cocktail.events import event_handler
 from cocktail.memoryutils import format_bytes
 from cocktail import schema
 from cocktail.persistence import datastore
+
 from woost import app
 from .publishable import Publishable
 from .controller import Controller
@@ -45,38 +43,38 @@ class File(Publishable):
     ]
 
     title = schema.String(
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True,
-        member_group = "content"
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True,
+        member_group="content"
     )
 
     file_name = schema.String(
-        required = True,
-        editable = schema.NOT_EDITABLE,
-        member_group = "content"
+        required=True,
+        editable=schema.NOT_EDITABLE,
+        member_group="content"
     )
 
     file_size = schema.Integer(
-        required = True,
-        editable = schema.NOT_EDITABLE,
-        translate_value = lambda size, language = None, **kwargs:
+        required=True,
+        editable=schema.NOT_EDITABLE,
+        translate_value=lambda size, language=None, **kwargs:
             "" if size in (None, "") else format_bytes(size),
-        min = 0,
-        member_group = "content"
+        min=0,
+        member_group="content"
     )
 
     file_hash = schema.String(
-        visible = False,
-        searchable = False,
-        text_search = False,
-        member_group = "content"
+        visible=False,
+        searchable=False,
+        text_search=False,
+        member_group="content"
     )
 
-    def __init__(self, file = None, **kwargs):
+    def __init__(self, file=None, **kwargs):
 
         Publishable.__init__(self, **kwargs)
 
@@ -109,15 +107,15 @@ class File(Publishable):
     def import_file(
         self,
         source,
-        dest = None,
-        guess_mime_type = True,
-        compute_hash = True,
-        compute_size = True,
-        assign_file_name = True,
-        encoding = "utf-8",
-        download_temp_folder = None,
-        user_agent = None,
-        redownload = False
+        dest=None,
+        guess_mime_type=True,
+        compute_hash=True,
+        compute_size=True,
+        assign_file_name=True,
+        encoding="utf-8",
+        download_temp_folder=None,
+        user_agent=None,
+        redownload=False
     ):
         is_path = isinstance(source, str)
 
@@ -153,7 +151,7 @@ class File(Publishable):
                 self.file_size = os.stat(source).st_size
 
             if guess_mime_type:
-                mime_type = guess_type(file_name, strict = False)
+                mime_type = guess_type(file_name, strict=False)
                 if mime_type:
                     self.mime_type = mime_type[0]
         else:
@@ -182,12 +180,12 @@ class File(Publishable):
     def from_path(
         cls,
         path,
-        dest = None,
-        languages = None,
-        hash = None,
-        encoding = "utf-8",
-        download_temp_folder = None,
-        redownload = False
+        dest=None,
+        languages=None,
+        hash=None,
+        encoding="utf-8",
+        download_temp_folder=None,
+        redownload=False
     ):
         """Imports a file into the site.
 
@@ -209,17 +207,17 @@ class File(Publishable):
             "File.from_path() is deprecated, use File.import_file() or the "
             "'file' argument of the File constructor",
             DeprecationWarning,
-            stacklevel = 2
+            stacklevel=2
         )
 
         file = cls()
         file.import_file(
             path,
-            dest = dest,
-            compute_hash = not hash,
-            encoding = encoding,
-            download_temp_folder = download_temp_folder,
-            redownload = redownload
+            dest=dest,
+            compute_hash=not hash,
+            encoding=encoding,
+            download_temp_folder=download_temp_folder,
+            redownload=redownload
         )
 
         if hash:
@@ -294,7 +292,7 @@ def _duplicate_files_after_commit(success, dup_files):
             if clone.is_inserted:
                 copy(source.file_path, clone.file_path)
 
-def file_hash(source, algorithm = "md5", chunk_size = 1024):
+def file_hash(source, algorithm="md5", chunk_size=1024):
     """Obtains a hash for the contents of the given file.
 
     @param source: The file to obtain the hash for. Can be given as a file

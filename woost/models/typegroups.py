@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -10,9 +9,9 @@ translations.load_bundle("woost.models.typegroups")
 _undefined = object()
 
 
-class TypeGroup(object):
+class TypeGroup:
 
-    def __init__(self, id, children = None):
+    def __init__(self, id, children=None):
         self.id = id
         self.__children = []
         if children is not None:
@@ -44,7 +43,8 @@ class TypeGroup(object):
 
         self.__children.insert(position, child)
 
-    def pop(self, child_id, default = _undefined):
+    def pop(self, child_id, default=_undefined):
+
         child = None
 
         for index, existing_child in enumerate(self.__children):

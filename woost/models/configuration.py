@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 @author:		Martí Congost
@@ -7,6 +6,7 @@
 @since:			July 2008
 """
 from decimal import Decimal
+
 from cocktail.modeling import classgetter
 from cocktail.translations import (
     require_language,
@@ -15,6 +15,7 @@ from cocktail.translations import (
 )
 from cocktail.persistence import datastore
 from cocktail import schema
+
 from woost import app
 from .item import Item
 from .website import Website
@@ -35,7 +36,7 @@ class Configuration(Item):
     def instance(cls):
         instance = datastore.get_transaction_value("woost.configuration")
         if instance is None:
-            instance = cls.get_instance(qname = "woost.configuration")
+            instance = cls.get_instance(qname="woost.configuration")
             datastore.set_transaction_value("woost.configuration", instance)
         return instance
 
@@ -71,7 +72,7 @@ class Configuration(Item):
     def _is_significant_setting_value(self, key, value):
         return value or isinstance(value, _numerical_types)
 
-    def language_is_enabled(self, language = None):
+    def language_is_enabled(self, language=None):
         language_subset = self.get_setting("published_languages")
         if not language_subset:
             return True

@@ -1,13 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			February 2009
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
 from cocktail.urls import URL
+
 from woost import app
 from .publishable import Publishable
 from .file import File
@@ -28,56 +25,56 @@ class URI(Publishable):
     ]
 
     title = schema.String(
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True,
-        member_group = "content"
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True,
+        member_group="content"
     )
 
     uri = schema.String(
-        indexed = True,
-        member_group = "content"
+        indexed=True,
+        member_group="content"
     )
 
     language_specific_uri = schema.String(
-        translated = True,
-        member_group = "content"
+        translated=True,
+        member_group="content"
     )
 
     image = schema.Reference(
-        type = File,
-        related_end = schema.Collection(),
-        relation_constraints = {"resource_type": "image"},
-        listed_by_default = False,
-        member_group = "content"
+        type=File,
+        related_end=schema.Collection(),
+        relation_constraints={"resource_type": "image"},
+        listed_by_default=False,
+        member_group="content"
     )
 
     def get_uri(
         self,
-        language = None,
-        path = None,
-        parameters = None,
+        language=None,
+        path=None,
+        parameters=None,
         **kwargs
     ):
         url = URL(self.get("language_specific_uri", language) or self.uri)
 
         if not url.hostname and url.hierarchical:
             url = (
-                app.url_mapping.get_url(language = language, **kwargs)
+                app.url_mapping.get_url(language=language, **kwargs)
                 .merge(url)
             )
 
         if path or parameters:
-            url = url.merge(URL(path = path, query = parameters))
+            url = url.merge(URL(path=path, query=parameters))
 
         return url
 
-    def is_internal_content(self, language = None):
+    def is_internal_content(self, language=None):
 
-        uri = self.get_uri(host = "!", language = language)
+        uri = self.get_uri(host="!", language=language)
 
         if not uri.hostname:
             return True

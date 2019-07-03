@@ -1,16 +1,17 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
+
 from cocktail.styled import styled
 from cocktail.events import when
 from cocktail.persistence import datastore
+
 from woost import app
-from woost.models.publishable import Publishable
-from woost.models.file import File
-from woost.models.user import User
+from .publishable import Publishable
+from .file import File
+from .user import User
 
 debug = True
 enabled = True
@@ -27,17 +28,17 @@ members_affecting_static_publication = set([
     Publishable.access_level
 ])
 
-def encode_filename(link, encoding = None):
+def encode_filename(link, encoding=None):
     if encoding is None:
         encoding = filesystem_encoding
     return link.encode(encoding) if isinstance(link, str) else link
 
-def create_links(file, links = None, encoding = None):
+def create_links(file, links=None, encoding=None):
 
     if not file.is_inserted:
         return
 
-    anonymous = User.require_instance(qname = "woost.anonymous_user")
+    anonymous = User.require_instance(qname="woost.anonymous_user")
     if not file.is_accessible(anonymous):
         return
 
@@ -54,7 +55,7 @@ def create_links(file, links = None, encoding = None):
         if debug:
             print(styled("STATIC PUBLICATION", "white", "green"), end=' ')
             print("Adding link for #%s (%s -> %s)" % (
-                styled(file.id, style = "bold"),
+                styled(file.id, style="bold"),
                 styled(link, "yellow"),
                 styled(linked_file, "brown")
             ))
@@ -76,7 +77,7 @@ def _make_dir(path):
             _make_dir(parent)
         os.mkdir(path)
 
-def remove_links(file, links = None, encoding = None):
+def remove_links(file, links=None, encoding=None):
 
     if links is None:
         links = get_links(file)
@@ -87,7 +88,7 @@ def remove_links(file, links = None, encoding = None):
             if debug:
                 print(styled("STATIC PUBLICATION", "white", "red"), end=' ')
                 print("Removing link for #%s (%s)" % (
-                    styled(file.id, style = "bold"),
+                    styled(file.id, style="bold"),
                     styled(link, "yellow")
                 ))
             os.remove(link)
@@ -96,7 +97,7 @@ def get_links(file):
     return [
         app.path(
             "static",
-            *app.url_mapping.get_url(file, language = language).path.segments
+            *app.url_mapping.get_url(file, language=language).path.segments
         )
         for language in (file.translations or [None])
     ]

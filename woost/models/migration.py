@@ -356,8 +356,8 @@ def make_slots_integral_and_add_block_catalogs(e):
     def create_catalogs(
         source,
         qname_prefix,
-        old_slots = (),
-        website = None
+        old_slots=(),
+        website=None
     ):
         catalog_defs = list(old_slots)
 
@@ -371,13 +371,13 @@ def make_slots_integral_and_add_block_catalogs(e):
                             **dict(
                                 (
                                     language,
-                                    translations(member, language = language)
+                                    translations(member, language=language)
                                     + (
                                         (
                                             " - "
                                             + translations(
                                                 website,
-                                                language = language
+                                                language=language
                                             )
                                         )
                                         if website else ""
@@ -411,9 +411,9 @@ def make_slots_integral_and_add_block_catalogs(e):
     footer_def = (
         "footer_blocks", {
             "title": T(
-                ca = "Peu de pàgina",
-                es = "Pie de página",
-                en = "Footer"
+                ca="Peu de pàgina",
+                es="Pie de página",
+                en="Footer"
             )
         }
     )
@@ -421,9 +421,9 @@ def make_slots_integral_and_add_block_catalogs(e):
     create_catalogs(config, "woost.block_catalogs", [
         ("common_blocks", {
             "title": T(
-                ca = "Blocs comuns",
-                es = "Bloques comunes",
-                en = "Common blocks"
+                ca="Blocs comuns",
+                es="Bloques comunes",
+                en="Common blocks"
             )
         }),
         footer_def
@@ -465,7 +465,7 @@ def make_slots_integral_and_add_block_catalogs(e):
     for model in Item.schema_tree():
         if issubclass(model, (Configuration, Website, BlocksCatalog)):
             continue
-        for member in model.iter_members(recursive = False):
+        for member in model.iter_members(recursive=False):
             if isinstance(member, Slot):
                 slot_keys.append("_" + member.related_end.name)
 
@@ -543,7 +543,7 @@ def convert_user_roles_collection_to_single_reference(e):
 @migration_step
 def remove_login_controller(e):
     from woost.models import Controller
-    controller = Controller.get_instance(qname = "woost.login_controller")
+    controller = Controller.get_instance(qname="woost.login_controller")
     controller.delete()
 
 
@@ -568,12 +568,12 @@ def create_admin(e):
     from woost.models import Document, Controller
     from woost.admin.initialization import create_admin
 
-    old_admin = Document.get_instance(qname = "woost.backoffice")
+    old_admin = Document.get_instance(qname="woost.backoffice")
     if old_admin:
         old_admin.delete()
 
     old_admin_controller = Controller.get_instance(
-        qname = "woost.backoffice_controller"
+        qname="woost.backoffice_controller"
     )
     if old_admin_controller:
         old_admin_controller.delete()

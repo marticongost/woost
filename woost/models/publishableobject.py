@@ -1,12 +1,13 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor::  <Martí Congost <marti.congost@whads.com>
 """
 from datetime import datetime
+
 from cocktail.pkgutils import import_object
 from cocktail.translations import translations, get_language
 from cocktail.schema.expressions import Expression
+
 from woost import app
 from .item import Item
 from .permission import (
@@ -105,14 +106,14 @@ class PublishableObject(object):
             the indicated depth.
         @rtype: L{PublishableObject}
         """
-        tree_line = list(self.ascend_tree(include_self = True))
+        tree_line = list(self.ascend_tree(include_self=True))
         tree_line.reverse()
         try:
             return tree_line[depth]
         except IndexError:
             return None
 
-    def ascend_tree(self, include_self = False):
+    def ascend_tree(self, include_self=False):
         """Iterate over the item's ancestors, moving towards the root of the
         document tree.
 
@@ -128,7 +129,7 @@ class PublishableObject(object):
             yield publishable
             publishable = publishable.parent
 
-    def descend_tree(self, include_self = False):
+    def descend_tree(self, include_self=False):
         """Iterate over the item's descendants.
 
         @param include_self: Indicates if the object itself should be included
@@ -180,7 +181,7 @@ class PublishableObject(object):
         :rtype: `PublishableObject`
         """
         if self.navigation_point_qname:
-            return Item.require_instance(qname = self.navigation_point_qname)
+            return Item.require_instance(qname=self.navigation_point_qname)
         else:
             return self
 
@@ -190,7 +191,7 @@ class PublishableObject(object):
         """
         return False
 
-    def is_internal_content(self, language = None):
+    def is_internal_content(self, language=None):
         """Indicates if the object represents content from this site.
         @rtype: bool
         """
@@ -203,9 +204,9 @@ class PublishableObject(object):
 
     def is_published(
         self,
-        language = None,
-        website = None,
-        _user = None
+        language=None,
+        website=None,
+        _user=None
     ):
         if not self.enabled:
             return False
@@ -235,21 +236,18 @@ class PublishableObject(object):
 
         return True
 
-    def is_accessible(self, user = None, language = None, website = None):
+    def is_accessible(self, user=None, language=None, website=None):
 
         if user is None:
             user = app.user
 
         return (
             self.is_published(
-                language = language,
-                website = website,
-                _user = user
+                language=language,
+                website=website,
+                _user=user
             )
-            and user.has_permission(
-                ReadPermission,
-                target = self
-            )
+            and user.has_permission(ReadPermission, target=self)
         )
 
     @classmethod
@@ -260,10 +258,7 @@ class PublishableObject(object):
 
         query = cls.select(*args, **kwargs)
         query.add_filter(
-            cls.IsPublishedExpression(
-                language = language,
-                website = website
-            )
+            cls.IsPublishedExpression(language=language, website=website)
         )
         return query
 
@@ -312,7 +307,7 @@ class PublishableObject(object):
             "have children"
         )
 
-    def get_uri(self, resolve_redirections = None, **kwargs):
+    def get_uri(self, resolve_redirections=None, **kwargs):
         if not self.id:
             return None
         publishable = self
@@ -323,13 +318,13 @@ class PublishableObject(object):
         return app.url_mapping.get_url(publishable, **kwargs)
 
 
-    def translate_file_type(self, language = None):
+    def translate_file_type(self, language=None):
 
         trans = ""
 
         mime_type = self.mime_type
         if mime_type:
-            trans = translations("woost.mime." + mime_type, language = language)
+            trans = translations("woost.mime." + mime_type, language=language)
 
         if not trans:
 
@@ -337,7 +332,7 @@ class PublishableObject(object):
             if res_type:
                 trans = self.__class__.resource_type.translate_value(
                     res_type,
-                    language = language
+                    language=language
                 )
 
                 if trans and res_type != "other":
@@ -361,22 +356,17 @@ class PublishableObject(object):
     class IsPublishedExpression(Expression):
         """An expression that tests if items are published."""
 
-        def __init__(
-            self,
-            language = None,
-            website = None,
-            _user = None
-        ):
+        def __init__(self, language=None, website=None, _user=None):
             Expression.__init__(self, language, website)
             self.language = language
             self.website = website
             self._user = None
 
-        def eval(self, context, accessor = None):
+        def eval(self, context, accessor=None):
             return context.is_published(
-                language = self.language,
-                website = self.website,
-                _user = self._user
+                language=self.language,
+                website=self.website,
+                _user=self._user
             )
 
     class IsAccessibleExpression(Expression):
@@ -389,13 +379,13 @@ class PublishableObject(object):
         @type user: L{User<woost.models.user.User>}
         """
 
-        def __init__(self, user = None, language = None, website = None):
+        def __init__(self, user=None, language=None, website=None):
             Expression.__init__(self)
             self.user = user
             self.language = language
             self.website = website
 
-        def eval(self, context, accessor = None):
+        def eval(self, context, accessor=None):
             return context.is_accessible(
                 language = self.language,
                 website = self.website,
@@ -481,7 +471,7 @@ def get_category_from_mime_type(mime_type):
     return mime_type_categories.get(mime_type, "other")
 
 
-def resolve_websites(website, publishable = None):
+def resolve_websites(website, publishable=None):
 
     from woost.models import Configuration, Website
 
@@ -504,8 +494,8 @@ def resolve_websites(website, publishable = None):
 def resolve_languages(
     language,
     websites,
-    publishable = None,
-    user = None
+    publishable=None,
+    user=None
 ):
     language = language or get_language() or PublishableObject.any_language
 

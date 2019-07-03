@@ -1,15 +1,12 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			June 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+from cocktail.html import templates
+
 from .item import Item
 from .theme import Theme
-from cocktail.html import templates
 
 
 class Template(Item):
@@ -25,36 +22,36 @@ class Template(Item):
     ]
 
     title = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True
+        required=True,
+        unique=True,
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True
     )
 
     identifier = schema.String(
-        required = True,
-        text_search = False
+        required=True,
+        text_search=False
     )
 
     theme = schema.Reference(
-        type = Theme,
-        related_end = schema.Collection(),
-        listed_by_default = False
+        type=Theme,
+        related_end=schema.Collection(),
+        listed_by_default=False
     )
 
     documents = schema.Collection(
-        items = "woost.models.Document",
-        bidirectional = True,
-        editable = schema.NOT_EDITABLE,
-        visible = False
+        items="woost.models.Document",
+        bidirectional=True,
+        editable=schema.NOT_EDITABLE,
+        visible=False
     )
 
     view_initialization = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     def create_view(self):

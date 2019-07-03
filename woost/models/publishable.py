@@ -1,12 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			January 2010
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from datetime import datetime
+
 from cocktail.modeling import classgetter
 from cocktail.events import event_handler
 from cocktail.pkgutils import import_object
@@ -19,6 +16,7 @@ from cocktail import schema
 from cocktail.schema.expressions import Expression
 from cocktail.persistence import datastore, MultipleValuesIndex
 from cocktail.html.datadisplay import display_factory
+
 from woost import app
 from .publishableobject import (
     PublishableObject,
@@ -93,20 +91,20 @@ class Publishable(Item, PublishableObject):
     ]
 
     mime_type = schema.String(
-        required = True,
-        default = "text/html",
-        text_search = False,
-        format = r"^[^/]+/[^/]+$",
-        listed_by_default = False,
-        member_group = "presentation.format",
-        shadows_attribute = True
+        required=True,
+        default="text/html",
+        text_search=False,
+        format=r"^[^/]+/[^/]+$",
+        listed_by_default=False,
+        member_group="presentation.format",
+        shadows_attribute=True
     )
 
     resource_type = schema.String(
-        indexed = True,
-        text_search = False,
-        editable = schema.READ_ONLY,
-        enumeration = (
+        indexed=True,
+        text_search=False,
+        editable=schema.READ_ONLY,
+        enumeration=(
             "document",
             "image",
             "audio",
@@ -115,198 +113,198 @@ class Publishable(Item, PublishableObject):
             "html_resource",
             "other"
         ),
-        listed_by_default = False,
-        member_group = "presentation.format",
-        shadows_attribute = True
+        listed_by_default=False,
+        member_group="presentation.format",
+        shadows_attribute=True
     )
 
     encoding = schema.String(
-        listed_by_default = False,
-        text_search = False,
-        default = "utf-8",
-        member_group = "presentation.format",
-        shadows_attribute = True
+        listed_by_default=False,
+        text_search=False,
+        default="utf-8",
+        member_group="presentation.format",
+        shadows_attribute=True
     )
 
     controller = schema.Reference(
-        type = "woost.models.Controller",
-        indexed = True,
-        bidirectional = True,
-        listed_by_default = False,
-        member_group = "presentation.behavior",
-        shadows_attribute = True
+        type="woost.models.Controller",
+        indexed=True,
+        bidirectional=True,
+        listed_by_default=False,
+        member_group="presentation.behavior",
+        shadows_attribute=True
     )
 
     parent = schema.Reference(
-        type = "woost.models.Document",
-        bidirectional = True,
-        related_key = "children",
-        indexed = True,
-        listed_by_default = False,
-        member_group = "navigation",
-        shadows_attribute = True
+        type="woost.models.Document",
+        bidirectional=True,
+        related_key="children",
+        indexed=True,
+        listed_by_default=False,
+        member_group="navigation",
+        shadows_attribute=True
     )
 
     login_page = schema.Reference(
-        listed_by_default = False,
-        member_group = "navigation",
-        shadows_attribute = True
+        listed_by_default=False,
+        member_group="navigation",
+        shadows_attribute=True
     )
 
     path = schema.String(
-        max = 1024,
-        indexed = True,
-        listed_by_default = False,
-        text_search = False,
-        member_group = "navigation",
-        shadows_attribute = True
+        max=1024,
+        indexed=True,
+        listed_by_default=False,
+        text_search=False,
+        member_group="navigation",
+        shadows_attribute=True
     )
 
     full_path = schema.String(
-        indexed = True,
-        unique = True,
-        editable = schema.READ_ONLY,
-        text_search = False,
-        listed_by_default = False,
-        member_group = "navigation",
-        shadows_attribute = True
+        indexed=True,
+        unique=True,
+        editable=schema.READ_ONLY,
+        text_search=False,
+        listed_by_default=False,
+        member_group="navigation",
+        shadows_attribute=True
     )
 
     menu_title = schema.String(
-        translated = True,
-        listed_by_default = False,
-        spellcheck = True,
-        member_group = "navigation.menu",
-        shadows_attribute = True
+        translated=True,
+        listed_by_default=False,
+        spellcheck=True,
+        member_group="navigation.menu",
+        shadows_attribute=True
     )
 
     hidden = schema.Boolean(
-        required = True,
-        default = False,
-        listed_by_default = False,
-        member_group = "navigation.menu",
-        shadows_attribute = True
+        required=True,
+        default=False,
+        listed_by_default=False,
+        member_group="navigation.menu",
+        shadows_attribute=True
     )
 
     redirection_mode = schema.String(
-        enumeration = ["first_child", "custom_target"],
-        listed_by_default = False,
-        text_search = False,
-        member_group = "navigation.redirection",
-        shadows_attribute = True
+        enumeration=["first_child", "custom_target"],
+        listed_by_default=False,
+        text_search=False,
+        member_group="navigation.redirection",
+        shadows_attribute=True
     )
 
     redirection_target = schema.Reference(
-        required = redirection_mode.equal("custom_target"),
-        listed_by_default = False,
-        member_group = "navigation.redirection",
-        shadows_attribute = True
+        required=redirection_mode.equal("custom_target"),
+        listed_by_default=False,
+        member_group="navigation.redirection",
+        shadows_attribute=True
     )
 
     redirection_method = schema.String(
-        required = True,
-        default = "temp",
-        enumeration = ["temp", "perm", "client"],
-        listed_by_default = False,
-        text_search = False,
-        member_group = "navigation.redirection",
-        shadows_attribute = True
+        required=True,
+        default="temp",
+        enumeration=["temp", "perm", "client"],
+        listed_by_default=False,
+        text_search=False,
+        member_group="navigation.redirection",
+        shadows_attribute=True
     )
 
     robots_should_index = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False,
-        indexed = True,
-        member_group = "meta.robots",
-        shadows_attribute = True
+        required=True,
+        default=True,
+        listed_by_default=False,
+        indexed=True,
+        member_group="meta.robots",
+        shadows_attribute=True
     )
 
     enabled = schema.Boolean(
-        required = True,
-        default = True,
-        indexed = True,
-        listed_by_default = False,
-        member_group = "publication",
-        shadows_attribute = True
+        required=True,
+        default=True,
+        indexed=True,
+        listed_by_default=False,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     per_language_publication = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True,
-        listed_by_default = False,
-        member_group = "publication",
-        shadows_attribute = True
+        required=True,
+        default=False,
+        indexed=True,
+        listed_by_default=False,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     enabled_translations = schema.Collection(
-        items = LocaleMember(),
-        default_type = set,
-        indexed = True,
-        edit_control = "woost.views.EnabledTranslationsSelector",
-        ui_form_control = "cocktail.ui.SplitSelector",
-        listed_by_default = False,
-        member_group = "publication",
-        shadows_attribute = True
+        items=LocaleMember(),
+        default_type=set,
+        indexed=True,
+        edit_control="woost.views.EnabledTranslationsSelector",
+        ui_form_control="cocktail.ui.SplitSelector",
+        listed_by_default=False,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     websites = schema.Collection(
-        items = "woost.models.Website",
-        default_type = set,
-        bidirectional = True,
-        related_key = "specific_content",
-        edit_control = "cocktail.html.CheckList",
-        ui_form_control = "cocktail.ui.CheckList",
-        member_group = "publication",
-        shadows_attribute = True
+        items="woost.models.Website",
+        default_type=set,
+        bidirectional=True,
+        related_key="specific_content",
+        edit_control="cocktail.html.CheckList",
+        ui_form_control="cocktail.ui.CheckList",
+        member_group="publication",
+        shadows_attribute=True
     )
 
     access_level = schema.Reference(
-        type = "woost.models.AccessLevel",
-        bidirectional = True,
-        indexed = True,
-        edit_control = display_factory(
+        type="woost.models.AccessLevel",
+        bidirectional=True,
+        indexed=True,
+        edit_control=display_factory(
             "cocktail.html.RadioSelector",
-            empty_option_displayed = True
+            empty_option_displayed=True
         ),
-        listed_by_default = False,
-        member_group = "publication",
-        shadows_attribute = True
+        listed_by_default=False,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     start_date = schema.DateTime(
-        indexed = True,
-        listed_by_default = False,
-        affects_cache_expiration = True,
-        member_group = "publication",
-        shadows_attribute = True
+        indexed=True,
+        listed_by_default=False,
+        affects_cache_expiration=True,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     end_date = schema.DateTime(
-        indexed = True,
-        min = start_date,
-        listed_by_default = False,
-        affects_cache_expiration = True,
-        member_group = "publication",
-        shadows_attribute = True
+        indexed=True,
+        min=start_date,
+        listed_by_default=False,
+        affects_cache_expiration=True,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     requires_https = schema.Boolean(
-        required = True,
-        default = False,
-        listed_by_default = False,
-        member_group = "publication",
-        shadows_attribute = True
+        required=True,
+        default=False,
+        listed_by_default=False,
+        member_group="publication",
+        shadows_attribute=True
     )
 
     caching_policies = schema.Collection(
-        items = schema.Reference(type = CachingPolicy),
-        bidirectional = True,
-        integral = True,
-        related_end = schema.Reference(),
-        member_group = "publication",
-        shadows_attribute = True
+        items=schema.Reference(type=CachingPolicy),
+        bidirectional=True,
+        integral=True,
+        related_end=schema.Reference(),
+        member_group="publication",
+        shadows_attribute=True
     )
 
     def __init__(self, *args, **kwargs):
@@ -411,10 +409,10 @@ class Publishable(Item, PublishableObject):
 
     @event_handler
     def handle_rebuilding_indexes(e):
-        Publishable.rebuild_per_website_publication_index(verbose = e.verbose)
+        Publishable.rebuild_per_website_publication_index(verbose=e.verbose)
 
     @classmethod
-    def rebuild_per_website_publication_index(cls, verbose = False):
+    def rebuild_per_website_publication_index(cls, verbose=False):
         if verbose:
             print("Rebuilding the Publishable/Website index")
         del datastore.root[WEBSITE_PUB_INDEX_KEY]
@@ -458,10 +456,10 @@ class Publishable(Item, PublishableObject):
                 # Per website / language publication
                 matching_subset = set()
 
-                website_neutral = set(per_website_index.values(key = None))
-                language_dependant = set(per_lang_pub_index.values(key = True))
+                website_neutral = set(per_website_index.values(key=None))
+                language_dependant = set(per_lang_pub_index.values(key=True))
                 language_neutral = set(
-                    per_lang_pub_index.values(key = False)
+                    per_lang_pub_index.values(key=False)
                 )
 
                 for website in resolve_websites(self.website):
@@ -472,7 +470,7 @@ class Publishable(Item, PublishableObject):
                     for language in resolve_languages(
                         self.language,
                         {website,},
-                        user = self._user
+                        user=self._user
                     ):
                         website_subset.update(
                             enabled_trans_index.values(key=language)
@@ -484,7 +482,7 @@ class Publishable(Item, PublishableObject):
                     # Content that can be published on the active website
                     website_subset.intersection_update(
                         website_neutral
-                        | set(per_website_index.values(key = website.id))
+                        | set(per_website_index.values(key=website.id))
                     )
 
                     matching_subset.update(website_subset)
@@ -495,16 +493,16 @@ class Publishable(Item, PublishableObject):
                 now = datetime.now()
                 dataset.difference_update(
                     Publishable.start_date.index.values(
-                        min = Publishable.start_date.get_index_value(now),
-                        exclude_min = True
+                        min=Publishable.start_date.get_index_value(now),
+                        exclude_min=True
                     )
                 )
                 dataset.difference_update(
                     Publishable.end_date.index.values(
-                        min = None,
-                        exclude_min = True,
-                        max = Publishable.end_date.get_index_value(now),
-                        exclude_max = True
+                        min=None,
+                        exclude_min=True,
+                        max=Publishable.end_date.get_index_value(now),
+                        exclude_max=True
                     )
                 )
 
@@ -534,11 +532,11 @@ class UserHasAccessLevelExpression(Expression):
     @ivar user: The user to test; defaults to the active user.
     @type user: L{User<woost.models.user.User>}
     """
-    def __init__(self, user = None):
+    def __init__(self, user=None):
         Expression.__init__(self)
         self.user = user
 
-    def eval(self, context, accessor = None):
+    def eval(self, context, accessor=None):
 
         if accessor is None:
             accessor = schema.get_accessor(context)
@@ -563,7 +561,7 @@ class UserHasAccessLevelExpression(Expression):
             for role in user.iter_roles():
                 for access_level in role.access_levels:
                     restricted_content.difference_update(
-                        index.values(key = access_level.id)
+                        index.values(key=access_level.id)
                     )
 
             dataset.difference_update(restricted_content)
@@ -576,7 +574,7 @@ class UserHasAccessLevelExpression(Expression):
 user_has_access_level = UserHasAccessLevelExpression()
 
 def _resolve_publishable_by_full_path(full_path):
-    return Publishable.get_instance(full_path = full_path)
+    return Publishable.get_instance(full_path=full_path)
 
 publishable_full_path_resolvers.append(
     _resolve_publishable_by_full_path

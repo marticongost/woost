@@ -1,20 +1,18 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			July 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from hashlib import sha1
+
 from cocktail.events import event_handler
 from cocktail.translations import translations, get_language
 from cocktail import schema
 from cocktail.html.uigeneration import display_factory
-from woost.models.item import Item
-from woost.models.role import Role
-from woost.models.localemember import LocaleMember
-from woost.models.messagestyles import (
+
+from .item import Item
+from .role import Role
+from .localemember import LocaleMember
+from .messagestyles import (
     role_style,
     permission_style,
     permission_check_style,
@@ -71,49 +69,49 @@ class User(Item):
     ]
 
     email = schema.String(
-        required = True,
-        unique = True,
-        descriptive = True,
-        max = 255,
-        indexed = True,
-        format = "^.+@.+$",
-        member_group = "user_data",
-        ui_column_width = 20
+        required=True,
+        unique=True,
+        descriptive=True,
+        max=255,
+        indexed=True,
+        format="^.+@.+$",
+        member_group="user_data",
+        ui_column_width=20
     )
 
-    def _apply_imported_password(obj, value, language = None):
+    def _apply_imported_password(obj, value, language=None):
         obj._password = value
 
     password = schema.String(
-        required = True,
-        listable = False,
-        listed_by_default = False,
-        searchable = False,
-        text_search = False,
-        min = 8,
-        edit_control = display_factory(
+        required=True,
+        listable=False,
+        listed_by_default=False,
+        searchable=False,
+        text_search=False,
+        min=8,
+        edit_control=display_factory(
             "cocktail.html.PasswordBox",
-            autocomplete = "off"
+            autocomplete="off"
         ),
-        ui_form_control = "cocktail.ui.PasswordInput",
-        apply_imported_value = _apply_imported_password,
-        member_group = "user_data"
+        ui_form_control="cocktail.ui.PasswordInput",
+        apply_imported_value=_apply_imported_password,
+        member_group="user_data"
     )
 
     del _apply_imported_password
 
     enabled = schema.Boolean(
-        required = True,
-        default = True,
-        listed_by_default = False,
-        member_group = "user_data"
+        required=True,
+        default=True,
+        listed_by_default=False,
+        member_group="user_data"
     )
 
     role = schema.Reference(
-        type = "woost.models.Role",
-        bidirectional = True,
-        listed_by_default = True,
-        member_group = "user_data"
+        type="woost.models.Role",
+        bidirectional=True,
+        listed_by_default=True,
+        member_group="user_data"
     )
 
     def _preferred_language_default():
@@ -129,35 +127,35 @@ class User(Item):
         return Configuration.backoffice_language.enumeration
 
     preferred_language = LocaleMember(
-        required = True,
-        default = schema.DynamicDefault(get_language),
-        text_search = False,
-        listed_by_default = False,
-        member_group = "language_preferences"
+        required=True,
+        default=schema.DynamicDefault(get_language),
+        text_search=False,
+        listed_by_default=False,
+        member_group="language_preferences"
     )
 
     backoffice_language = LocaleMember(
-        enumeration = _backoffice_language_enumeration,
-        text_search = False,
-        listed_by_default = False,
-        member_group = "language_preferences"
+        enumeration=_backoffice_language_enumeration,
+        text_search=False,
+        listed_by_default=False,
+        member_group="language_preferences"
     )
 
     backoffice_language_chain = schema.Collection(
-        items = LocaleMember(),
-        searchable = False,
-        listed_by_default = False,
-        member_group = "language_preferences"
+        items=LocaleMember(),
+        searchable=False,
+        listed_by_default=False,
+        member_group="language_preferences"
     )
 
     del _backoffice_language_default
     del _backoffice_language_enumeration
 
     backoffice_visible_translations = schema.Collection(
-        items = LocaleMember(),
-        edit_control = "cocktail.html.SplitSelector",
-        searchable = False,
-        member_group = "language_preferences"
+        items=LocaleMember(),
+        edit_control="cocktail.html.SplitSelector",
+        searchable=False,
+        member_group="language_preferences"
     )
 
     @classmethod
@@ -194,7 +192,7 @@ class User(Item):
         else:
             return not self.password
 
-    def iter_roles(self, recursive = True):
+    def iter_roles(self, recursive=True):
         """Obtains all the roles that apply to the user.
 
         The following roles can be yielded:
@@ -224,9 +222,9 @@ class User(Item):
     def iter_implicit_roles(self):
 
         if not self.anonymous:
-            yield Role.require_instance(qname = "woost.authenticated")
+            yield Role.require_instance(qname="woost.authenticated")
 
-        yield Role.require_instance(qname = "woost.everybody")
+        yield Role.require_instance(qname="woost.everybody")
 
     def has_role(self, role):
         """Determines if the user has been granted the indicated role.
@@ -242,7 +240,7 @@ class User(Item):
 
         return False
 
-    def iter_permissions(self, permission_type = None):
+    def iter_permissions(self, permission_type=None):
         """Iterates over the permissions granted to the user's roles.
 
         This method yields all permissions that are granted to any of the
@@ -262,10 +260,7 @@ class User(Item):
             for permission in role.iter_permissions(permission_type):
                 yield permission
 
-    def has_permission(self,
-        permission_type,
-        verbose = None,
-        **context):
+    def has_permission(self, permission_type, verbose=None, **context):
         """Determines if the user is given permission to perform an action.
 
         @param permission_type: The kind of permission to assert.
@@ -321,11 +316,11 @@ class User(Item):
 
         return permission_type.permission_not_found(
             self,
-            verbose = verbose,
+            verbose=verbose,
             **context
         )
 
-    def require_permission(self, permission_type, verbose = None, **context):
+    def require_permission(self, permission_type, verbose=None, **context):
         """Asserts the user has permission to perform an action.
 
         This method is similar to L{has_permission}, but instead of returning a
@@ -353,13 +348,13 @@ class User(Item):
         """
         if not self.has_permission(
             permission_type,
-            verbose = verbose,
+            verbose=verbose,
             **context
         ):
             raise AuthorizationError(
-                user = self,
-                permission_type = permission_type,
-                context = context
+                user=self,
+                permission_type=permission_type,
+                context=context
             )
 
 
@@ -381,7 +376,7 @@ class AuthorizationError(Exception):
     permission_type = None
     context = None
 
-    def __init__(self, user = None, permission_type = None, context = None):
+    def __init__(self, user=None, permission_type=None, context=None):
         self.user = user
         self.permission_type = permission_type
         self.context = context

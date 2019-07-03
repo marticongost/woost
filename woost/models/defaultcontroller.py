@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
 from cocktail import schema
+
 from .settings import add_setting
 from .configuration import Configuration
 from .controller import Controller
@@ -31,10 +31,9 @@ def with_default_controller(controller_name, **field_kwargs):
         add_setting(
             schema.Reference(
                 field_name,
-                type = Controller,
-                controller_owner = cls,
-                custom_translation_key =
-                    "woost.models.defaultcontroller.field",
+                type=Controller,
+                controller_owner=cls,
+                custom_translation_key="woost.models.defaultcontroller.field",
                 **field_kwargs
             )
         )

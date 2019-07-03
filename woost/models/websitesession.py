@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from warnings import warn
+
 from woost import app
 
 def get_current_website():
@@ -17,7 +17,7 @@ def get_current_website():
     warn(
         "get_current_website() has been deprecated; use app.website instead",
         DeprecationWarning,
-        stacklevel = 2
+        stacklevel=2
     )
     return app.website
 
@@ -31,7 +31,7 @@ def set_current_website(website):
     warn(
         "set_current_website() has been deprecated; use app.website instead",
         DeprecationWarning,
-        stacklevel = 2
+        stacklevel=2
     )
     app.website = website
 

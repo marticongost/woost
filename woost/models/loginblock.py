@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
 from cocktail import schema
+
 from .block import Block
 from .publishable import Publishable
 
@@ -16,9 +16,9 @@ class LoginBlock(Block):
     views = ["woost.views.LoginBlockView"]
 
     login_target = schema.Reference(
-        type = Publishable,
-        related_end = schema.Collection(),
-        member_group = "content"
+        type=Publishable,
+        related_end=schema.Collection(),
+        member_group="content"
     )
 
     def init_view(self, view):

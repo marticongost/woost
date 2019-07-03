@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .block import Block
 from .publishable import Publishable
 
@@ -26,47 +26,47 @@ class FacebookLikeBox(Block):
     ]
 
     fb_href = schema.URL(
-        required = True,
-        member_group = "content"
+        required=True,
+        member_group="content"
     )
 
     fb_show_faces = schema.Boolean(
-        default = True,
-        required = True,
-        member_group = "appearence"
+        default=True,
+        required=True,
+        member_group="appearence"
     )
 
     fb_stream = schema.Boolean(
-        default = False,
-        required = True,
-        member_group = "appearence"
+        default=False,
+        required=True,
+        member_group="appearence"
     )
 
     fb_header = schema.Boolean(
-        default = False,
-        required = True,
-        member_group = "appearence"
+        default=False,
+        required=True,
+        member_group="appearence"
     )
 
     fb_width = schema.Integer(
-        required = True,
-        default = 292,
-        member_group = "appearence"
+        required=True,
+        default=292,
+        member_group="appearence"
     )
 
     fb_height = schema.Integer(
-        member_group = "appearence"
+        member_group="appearence"
     )
 
     fb_border_color = schema.Color(
-        member_group = "appearence"
+        member_group="appearence"
     )
 
     fb_colorscheme = schema.String(
-        required = True,
-        default = "light",
-        enumeration = ["light", "dark"],
-        member_group = "appearence"
+        required=True,
+        default="light",
+        enumeration=["light", "dark"],
+        member_group="appearence"
     )
 
     def init_view(self, view):

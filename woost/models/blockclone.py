@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+
 from .item import Item
 from .block import Block
 
@@ -17,14 +17,14 @@ class BlockClone(Block):
     ]
 
     source_block = schema.Reference(
-        type = "woost.models.Block",
-        bidirectional = True,
-        related_key = "clones",
-        required = True,
-        text_search = True,
-        editable = schema.READ_ONLY,
-        member_group = "content",
-        shadows_attribute = True
+        type="woost.models.Block",
+        bidirectional=True,
+        related_key="clones",
+        required=True,
+        text_search=True,
+        editable=schema.READ_ONLY,
+        member_group="content",
+        shadows_attribute=True
     )
 
     def is_published(self):

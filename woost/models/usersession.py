@@ -1,12 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			July 2009
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from warnings import warn
+
 from woost import app
 
 def get_current_user():
@@ -20,7 +17,7 @@ def get_current_user():
     warn(
         "get_current_user() has been deprecated; use app.user instead",
         DeprecationWarning,
-        stacklevel = 2
+        stacklevel=2
     )
     return app.user
 
@@ -34,7 +31,7 @@ def set_current_user(user):
     warn(
         "set_current_user() has been deprecated; use app.user instead",
         DeprecationWarning,
-        stacklevel = 2
+        stacklevel=2
     )
     app.user = user
 

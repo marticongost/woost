@@ -1,15 +1,16 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import os
 from datetime import datetime, timedelta
+
 from cocktail import schema
 from cocktail.translations import get_language
 from cocktail.caching import Cache
 from cocktail.persistence import datastore, PersistentMapping
 from cocktail.controllers import get_request_url_builder
+
 from woost import app
 from .item import Item
 
@@ -30,42 +31,42 @@ class CachingPolicy(Item):
     ]
 
     description = schema.String(
-        descriptive = True,
-        translated = True,
-        spellcheck = True,
-        listed_by_default = False
+        descriptive=True,
+        translated=True,
+        spellcheck=True,
+        listed_by_default=False
     )
 
     important = schema.Boolean(
-        required = True,
-        default = False
+        required=True,
+        default=False
     )
 
     cache_enabled = schema.Boolean(
-        required = True,
-        default = True
+        required=True,
+        default=True
     )
 
     server_side_cache = schema.Boolean(
-        required = True,
-        default = False,
-        listed_by_default = False
+        required=True,
+        default=False,
+        listed_by_default=False
     )
 
     expiration_expression = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     condition = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     cache_key_expression = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     cache_tags_expression = schema.CodeBlock(
-        language = "python"
+        language="python"
     )
 
     def applies_to(self, publishable, **context):
@@ -108,7 +109,7 @@ class CachingPolicy(Item):
 
         return cache_key
 
-    def get_content_expiration(self, publishable, base = None, **context):
+    def get_content_expiration(self, publishable, base=None, **context):
 
         expression = self.expiration_expression
         expiration = base
@@ -124,10 +125,10 @@ class CachingPolicy(Item):
 
         return expiration
 
-    def get_content_tags(self, publishable, base = None, **context):
+    def get_content_tags(self, publishable, base=None, **context):
 
         tags = publishable.get_cache_tags(
-            language = context.get("language") or get_language()
+            language=context.get("language") or get_language()
         )
 
         tags.add(self.main_cache_tag)
@@ -172,8 +173,8 @@ def latest(selectable, *args, **kwargs):
 
     return (
         selectable.select(
-            order = Item.last_update_time.negative(),
-            range = (0, 1)
+            order=Item.last_update_time.negative(),
+            range=(0, 1)
         )
         .select(*args, **kwargs)
     )

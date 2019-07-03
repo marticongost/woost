@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -10,11 +9,11 @@ class MetaTags(schema.Collection):
 
     def __init__(self, *args, **kwargs):
         kwargs["items"] = schema.Tuple(
-            items = (
-                schema.String("key", required = True),
+            items=(
+                schema.String("key", required=True),
                 schema.String("value")
             ),
-            request_value_separator = "="
+            request_value_separator="="
         )
         kwargs.setdefault("searchable", False)
         kwargs.setdefault("edit_control", "cocktail.html.TextArea")

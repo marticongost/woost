@@ -1,13 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
-@author:		Martí Congost
-@contact:		marti.congost@whads.com
-@organization:	Whads/Accent SL
-@since:			October 2008
+.. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.events import event_handler
 from cocktail import schema
+
 from .item import Item
 
 
@@ -30,65 +27,65 @@ class Style(Item):
     ]
 
     title = schema.String(
-        required = True,
-        unique = True,
-        indexed = True,
-        normalized_index = True,
-        full_text_indexed = True,
-        descriptive = True,
-        translated = True,
-        spellcheck = True
+        required=True,
+        unique=True,
+        indexed=True,
+        normalized_index=True,
+        full_text_indexed=True,
+        descriptive=True,
+        translated=True,
+        spellcheck=True
     )
 
     applicable_to_text = schema.Boolean(
-        required = True,
-        indexed = True,
-        default = True,
-        listed_by_default = False
+        required=True,
+        indexed=True,
+        default=True,
+        listed_by_default=False
     )
 
     applicable_to_blocks = schema.Boolean(
-        required = True,
-        default = True,
-        indexed = True,
-        listed_by_default = False
+        required=True,
+        default=True,
+        indexed=True,
+        listed_by_default=False
     )
 
     applicable_to_documents = schema.Boolean(
-        required = True,
-        default = False,
-        indexed = True,
-        listed_by_default = False
+        required=True,
+        default=False,
+        indexed=True,
+        listed_by_default=False
     )
 
     custom_class_name = schema.String(
-        indexed = True,
-        unique = True,
-        normalized_index = False,
-        listed_by_default = False
+        indexed=True,
+        unique=True,
+        normalized_index=False,
+        listed_by_default=False
     )
 
     html_tag = schema.String(
-        listed_by_default = False
+        listed_by_default=False
     )
 
     editor_keyboard_shortcut = schema.String(
-        listed_by_default = False
+        listed_by_default=False
     )
 
     declarations_initialization = schema.CodeBlock(
-        language = "scss",
-        listed_by_default = False
+        language="scss",
+        listed_by_default=False
     )
 
     declarations = schema.CodeBlock(
-        language = "scss",
-        listed_by_default = False
+        language="scss",
+        listed_by_default=False
     )
 
     admin_declarations = schema.CodeBlock(
-        language = "scss",
-        listed_by_default = False
+        language="scss",
+        listed_by_default=False
     )
 
     @property
