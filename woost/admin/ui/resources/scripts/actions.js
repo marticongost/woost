@@ -929,7 +929,7 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
         if (context.insideBlockEditPanel) {
             return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/close-block.svg`);
         }
-        else if (context.node.relation) {
+        else if (context.node && context.node.relation) {
             return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
         }
         return super.getIconURL(context);
@@ -939,7 +939,7 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
         if (context.insideBlockEditPanel) {
             return cocktail.ui.translations[`${this.translationPrefix}.close-block`];
         }
-        else if (context.node.relation) {
+        else if (context.node && context.node.relation) {
             return cocktail.ui.translations[`${this.translationPrefix}.cancel`];
         }
         return super.translate(context);
