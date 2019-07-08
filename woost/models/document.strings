@@ -33,6 +33,26 @@ en: Document
         es: Encabezado personalizado
         en: Custom heading
 
+            [explanation]
+            ca:
+                El text que es mostrarà com a títol principal al contingut del
+                document. Deixar en blanc per utilitzar el títol general del document.
+                A més de permetre establir un títol alternatiu pel contingut, aquest
+                camp també permet incloure marcat HTML per personalitzar l'aparença
+                del títol.
+            es:
+                El texto que se mostrará como título principal en el contenido del
+                documento. Dejar en blanco para utilizar el título general del documento.
+                Además de permitir establecer un título alternativo para el contenido,
+                este campo también permite incluir marcado HTML para personalizar la
+                apariencia del título.
+            en:
+                The text that will be displayed in the main heading when showing the
+                document's content. Leave blank to use the document's standard title.
+                As well as enabling an alternate title for the document's content, this
+                field also allows HTML markup, which makes it possible to customize the
+                appearence of the generated heading.
+
         [summary]
         ca: Sumari
         es: Sumario
