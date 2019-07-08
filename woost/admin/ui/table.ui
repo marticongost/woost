@@ -47,14 +47,16 @@
 
         let options = super.getDataSourceOptions(page);
         const listing = this.listing;
+        const view = listing.view;
+        const node = listing.navigationNode;
 
-        if (listing.view) {
-            options.url = listing.view.dataURL;
+        if (view) {
+            options.url = view.dataURL;
             options.parameters.model = this.model.originalMember.name;
         }
 
         if (listing.partition) {
-            options.parameters.partition = listing.navigationNode.queryParameters.partition.serializeValue(listing.partition);
+            options.parameters.partition = node.queryParameters.partition.serializeValue(listing.partition);
         }
 
         if (listing.search) {
@@ -68,7 +70,7 @@
         if (listing.filters.length) {
             Object.assign(
                 options.parameters,
-                cocktail.navigation.node.getQueryValuesForFilters(listing.filters)
+                node.getQueryValuesForFilters(listing.filters)
             )
         }
 
@@ -82,7 +84,7 @@
             }
         }
 
-        options = cocktail.navigation.node.getDataSourceOptions(options) || options;
+        options = node.getDataSourceOptions(options) || options;
         return options;
     }
 
