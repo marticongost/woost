@@ -63,6 +63,8 @@
             this[UPDATED_AT_LEAST_ONCE] = true;
             cocktail.ui.trigger(this.viewDisplay, "listingReset");
         }
+
+        this.actionList.actionSetup();
     }
 
     getDefaultControl() {
@@ -90,6 +92,10 @@
     finally {
         this[NAVIGATING] = false;
     }
+    ?>
+
+    <?on isStackRoot:changed
+    this.actionList.updateActions();
     ?>
 
     <ui:property
@@ -180,7 +186,6 @@
         reflected="false">
         <?on changed
         this.actionList.actionContext.model = newValue;
-        this.actionList.actionSetup();
         ?>
     </ui:property>
 
