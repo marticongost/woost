@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<div
+<py:cocktail.html.DropdownPanel
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://www.whads.com/ns/cocktail/templates">
 
@@ -8,15 +8,36 @@
     self.add_resource("/current_user", mime_type = "text/javascript")
     ?>
 
+    <?py-class
+    allows_login = False
+    panel_alignment = "right"
+    arrow_type = "none"
+    ?>
+
+    <?resource woost://styles/identitybox.scss.css ?>
     <?resource woost://scripts/identitybox.js ?>
 
-    <div py:id="box" py:client_model="woost.views.IdentityBox.box">
-        <strong py:id="user_label"/>
+    <py:ready>
+        <?py
+        if self.allows_login:
+            self.add_class("allows_login")
+        ?>
+    </py:ready>
+
+    <py:with py:element="self.label">
+        <?inline-svg woost://images/icons/scalable/type-woost-models-user-User.svg ?>
+    </py:with>
+
+    <py:woost.views.LoginBlockView py:id="login_form" py:client_model=".login_form"/>
+
+    <div py:id="current_user_info" py:client_model=".current_user_info">
+        <span py:id="user_label"/>
         <form py:id="logout_form" method="post" action="/" target="_top">
             <button py:id="logout_button" name="logout" type="submit">
                 ${translations("woost.views.IdentityBox.logout_button")}
             </button>
         </form>
     </div>
-</div>
+
+</py:cocktail.html.DropdownPanel>
 
