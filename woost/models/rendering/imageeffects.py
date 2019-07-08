@@ -119,28 +119,20 @@ def resolve_color(value):
 
 
 def requires_rgb(func):
-    """A decorator that temporarily converts images to RGB.
+    """A decorator that makes sure input images are in RGB / RGBA mode.
 
     The decorator is intended to be applied to the `ImageFactory.apply` method.
-    It converts palette based images into RGB, so they can be worked on, and
-    then back to their original mode.
+    It non RGB modes (such as palette based images) into RGB, so they can be
+    worked on using the full color spectrum.
     """
 
     @wraps(func)
     def decorated(self, image):
 
-        original_mode = image.mode
-        uses_palette = original_mode in "PL1"
-
-        if uses_palette:
+        if image.mode not in ("RGB", "RGBA"):
             image = image.convert("RGB")
 
-        image = func(self, image)
-
-        if uses_palette:
-            image = image.convert(original_mode)
-
-        return image
+        return func(self, image)
 
     return decorated
 
