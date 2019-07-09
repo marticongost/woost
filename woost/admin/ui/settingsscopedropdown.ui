@@ -5,7 +5,7 @@
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
     buttonStyle="textOnly">
 
-    <?on action:changed
+    <?on actionSource:changed
     cocktail.ui.request({
         url: woost.admin.url + "/data/settings_scopes",
         responseType: "json"
@@ -31,7 +31,7 @@
         };
 
         // Show the current selection
-        const entry = this.scopeList.getEntry(newValue.view.navigationNode.itemKey);
+        const entry = this.scopeList.getEntry(this.getActionContext().node.itemKey);
         if (entry) {
             this.scopeList.setElementSelected(entry, true);
         }
