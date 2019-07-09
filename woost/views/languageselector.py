@@ -41,14 +41,13 @@ class LanguageSelector(LinkSelector):
             entry.append(link)
 
         if self.missing_translations != "redirect":
-            publishable = app.original_publishable or app.publishable
             value = self.get_item_value(item)
-            if not publishable.is_accessible(language = value):
-                if self.missing_translations == "hide":
-                    entry.visible = False
-                elif self.missing_translations == "disable":
-                    link.tag = "span"
-                    link["href"] = None
+            if (
+                self.missing_translations == "disable"
+                and not self.language_is_accessible(value)
+            ):
+                link.tag = "span"
+                link["href"] = None
 
         return entry
 
@@ -65,7 +64,15 @@ class LanguageSelector(LinkSelector):
                 ReadTranslationPermission,
                 language = language
             )
+            and not (
+                self.missing_translations == "hide"
+                and not self.language_is_accessible(language)
+            )
         ]
+
+    def language_is_accessible(self, language):
+        publishable = app.original_publishable or app.publishable
+        return publishable.is_accessible(language=language)
 
     def _ready(self):
 
