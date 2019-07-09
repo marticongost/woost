@@ -11,6 +11,9 @@ from woost.models import Configuration, BlocksCatalog
     py:tag="div">
 
     <?py-class
+    def get_home_page(self):
+        return self._website.home
+
     def get_site_logo(self):
         return self._website.logo or Configuration.instance.logo
 
@@ -27,7 +30,7 @@ from woost.models import Configuration, BlocksCatalog
     <py:ready>
         <?py
         self._website = app.website
-        self._home = self._website.home
+        self._home = self.get_home_page()
         self._site_title = self.get_site_title()
         self._site_logo = self.get_site_logo()
 
