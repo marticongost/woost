@@ -186,10 +186,6 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
 
     woost.admin.actions.NewAction = class NewAction extends woost.admin.actions.Action {
 
-        get requiredPermission() {
-            return "create";
-        }
-
         getEligibleModels(context) {
             return Array.from(context.model.schemaTree()).filter((model) => this.modelIsEligible(model, context));
         }
@@ -203,6 +199,13 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
                     && !context.instantiableModels.includes(model)
                 )
             );
+        }
+
+        getState(context) {
+            if (!this.getEligibleModels(context).length) {
+                return "hidden";
+            }
+            return super.getState(context);
         }
 
         getComponent(context) {
