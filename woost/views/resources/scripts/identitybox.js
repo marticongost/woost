@@ -10,6 +10,9 @@
 cocktail.bind(".IdentityBox", function ($box) {
 
     var $panel = $box.find(".panel");
+    if (!$panel.length) {
+        $panel = $box;
+    }
 
     if (woost.user) {
         if (woost.user.anonymous) {
