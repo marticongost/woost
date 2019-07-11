@@ -2,7 +2,7 @@
 [woost.admin.sections]
 
     [crud.CRUD.instance(instance)]
-    *: t{instance.model, suffix = ".plural"}
+    *: ${translations(instance.model, suffix=".admin.menu_entry") or translations(instance.model, suffix=".plural")}
 
     [sitetreesection.SiteTreeSection.instance]
     ca: Arbre de pàgines
