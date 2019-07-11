@@ -85,7 +85,10 @@ class SchemaExport(MemberExport):
             return "%s.declare" % self.get_class(member)
 
     def get_class(self, member):
-        if issubclass(member, Filter):
+        if (
+            isinstance(member, schema.SchemaClass)
+            and issubclass(member, Filter)
+        ):
             return "woost.admin.filters.Filter"
         else:
             return "woost.models.Model"
@@ -124,45 +127,39 @@ class SchemaExport(MemberExport):
 
             yield members_prop
 
-        yield (
-            "[woost.admin.ui.modelIconURL]",
-            dumps(app.icon_resolver.find_icon_url(member, "scalable"))
-        )
+        if isinstance(member, schema.SchemaClass):
 
-        if member.admin_show_descriptions:
-            yield ("[woost.admin.ui.showDescriptions]", "true")
-
-        if member.admin_show_thumbnails:
-            yield ("[woost.admin.ui.showThumbnails]", "true")
-
-        if member.admin_edit_view:
-            yield ("[woost.admin.ui.editView]", "() => %s" % member.admin_edit_view)
-
-        if issubclass(member, Block):
-            yield ("views", dumps(member.views))
-            yield ("blockSubsets", dumps(member.block_subsets))
-
-        if issubclass(member, PublishableObject):
-            yield ("isPublishable", dumps(True))
-
-        if member.admin_item_card:
             yield (
-                "[woost.admin.ui.itemCard]",
-                "() => %s" % member.admin_item_card
+                "[woost.admin.ui.modelIconURL]",
+                dumps(app.icon_resolver.find_icon_url(member, "scalable"))
             )
 
-        if member.ui_autofocus_member:
-            yield (
-                "[cocktail.ui.autofocusMember]",
-                dumps(member.ui_autofocus_member)
-            )
+            if member.admin_show_descriptions:
+                yield ("[woost.admin.ui.showDescriptions]", "true")
 
-        if (
-            isinstance(member, schema.SchemaClass)
-            and issubclass(member, Filter)
-        ):
-            yield ("filterId", dumps(member.filter_id))
-        elif isinstance(member, PersistentClass):
+            if member.admin_show_thumbnails:
+                yield ("[woost.admin.ui.showThumbnails]", "true")
+
+            if member.admin_edit_view:
+                yield ("[woost.admin.ui.editView]", "() => %s" % member.admin_edit_view)
+
+            if member.admin_item_card:
+                yield (
+                    "[woost.admin.ui.itemCard]",
+                    "() => %s" % member.admin_item_card
+                )
+
+            if issubclass(member, Block):
+                yield ("views", dumps(member.views))
+                yield ("blockSubsets", dumps(member.block_subsets))
+
+            if issubclass(member, PublishableObject):
+                yield ("isPublishable", dumps(True))
+
+            if issubclass(member, Filter):
+                yield ("filterId", dumps(member.filter_id))
+
+        if isinstance(member, PersistentClass):
             yield ("instantiable", dumps(member.instantiable))
 
             yield ("[woost.admin.views.views]", dumps([
@@ -184,6 +181,12 @@ class SchemaExport(MemberExport):
                     "[woost.admin.partitioning.defaultMethod]",
                     dumps(default_part_method.name)
                 )
+
+        if member.ui_autofocus_member:
+            yield (
+                "[cocktail.ui.autofocusMember]",
+                dumps(member.ui_autofocus_member)
+            )
 
     def get_members(self, model, recursive = False):
         for group, members in model.grouped_members(recursive):
@@ -220,9 +223,9 @@ class SchemaExport(MemberExport):
                             )
                     parts.pop(-1)
 
-    def get_permissions(self, member):
-        if issubclass(member, Item):
-            return MemberExport.get_permissions(self, member)
-        else:
-            return None
+    def should_export_permissions(self, member):
+        return (
+            isinstance(member, schema.SchemaClass)
+            and issubclass(member, Item)
+        )
 
