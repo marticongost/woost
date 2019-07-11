@@ -2,6 +2,7 @@
 
 .. moduleauthor::  <Martí Congost <marti.congost@whads.com>
 """
+from typing import Set, Type
 from datetime import datetime
 
 from cocktail.pkgutils import import_object
@@ -16,8 +17,10 @@ from .permission import (
     PermissionExpression
 )
 
+_publishable_models = set()
 
-class PublishableObject(object):
+
+class PublishableObject:
     """Abstract mixin class for all classes with instances that can be
     published.
     """
@@ -55,6 +58,14 @@ class PublishableObject(object):
     redirection_method = None
     navigation_point_qname = None
     resolve_redirections = False
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        for parent in cls.__mro__:
+            if parent in _publishable_models:
+                break
+        else:
+            _publishable_models.add(cls)
 
     def get_controller(self):
         return self.controller or self.get_default_controller()
@@ -400,6 +411,11 @@ class PublishableObject(object):
                 website = self.website,
                 _user = user
             )
+
+
+def get_publishable_models() -> Set[Type[PublishableObject]]:
+    """List all persistent models that inherit from `PublishableObject`."""
+    return _publishable_models
 
 
 mime_type_categories = {}

@@ -44,6 +44,7 @@ from .grid import Grid, GridSize
 from .style import Style
 from .publishableobject import (
     PublishableObject,
+    get_publishable_models,
     get_publishable,
     get_publishable_by_full_path
 )
