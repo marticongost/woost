@@ -396,6 +396,8 @@ Cached.cache = Application.cache
 app = Application()
 sys.modules["woost.app"] = app
 
+app.ContextualProperty = ContextualProperty
+
 app.add_resources_repository(
     "woost",
     resource_filename("woost.views", "resources")
