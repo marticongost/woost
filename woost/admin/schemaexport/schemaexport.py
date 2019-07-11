@@ -210,13 +210,11 @@ class MemberExport(object):
                 dumps(member.ui_column_width)
             )
 
-        if self.permissions:
-            permissions = self.get_permissions(member)
-            if permissions:
-                yield (
-                    "[woost.models.permissions]",
-                    dumps(permissions)
-                )
+        if self.permissions and self.should_export_permissions(member):
+            yield (
+                "[woost.models.permissions]",
+                dumps(self.get_permissions(member))
+            )
 
         if not (
             isinstance(member, schema.SchemaClass)
@@ -324,12 +322,16 @@ class MemberExport(object):
         export = Export()
         return dumps([export.export_value(value) for value in enumeration])
 
+    def should_export_permissions(self, member):
+        return (
+            member.name
+            and member.schema
+            and isinstance(member.schema, schema.SchemaClass)
+        )
+
     def get_permissions(self, member):
-        if member.name:
-            return dict(
-                (perm_id, check(member))
-                for perm_id, check in self.permissions.items()
-            )
-        else:
-            return None
+        return dict(
+            (perm_id, check(member))
+            for perm_id, check in self.permissions.items()
+        )
 
