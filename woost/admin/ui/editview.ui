@@ -219,6 +219,7 @@
 
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
+            this.parentInstance.actionList.actionContext.modified = this.modified;
             this.parentInstance.actionList.updateActions();
 
             cocktail.ui.request({
