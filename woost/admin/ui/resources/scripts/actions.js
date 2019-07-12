@@ -34,10 +34,13 @@ woost.admin.actions.attempt = function (promise, options = null) {
 
 woost.admin.actions.Action = class Action extends cocktail.ui.Action {
 
-    constructor(id, parameters = null, context = null) {
+    constructor(id, parameters = null) {
         super(id, parameters && parameters.position);
-        for (let key in context) {
-            this[key] = context[key];
+        if (parameters) {
+            delete parameters.position;
+        }
+        for (let key in parameters) {
+            this[key] = parameters[key];
         }
     }
 
@@ -922,9 +925,18 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
     getState(context) {
+
         if (context.view.isStackRoot || context.editingBlocks) {
             return "hidden";
         }
+
+        if (this.requiresModified !== undefined) {
+            const modified = context.modified === undefined ? false : context.modified;
+            if (this.requiresModified !== modified) {
+                return "hidden";
+            }
+        }
+
         return super.getState(context);
     }
 
@@ -955,24 +967,12 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
 
 woost.admin.actions.CancelAction = class CancelAction extends woost.admin.actions.CloseAction {
 
-    constructor(id, parameters = null, context = null) {
-        super(id, parameters, context);
-        this.requiresPendingChanges = parameters && parameters.requiresPendingChanges || false;
-    }
-
     getIconURL(context) {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/cancel.svg`);
     }
 
     get translationKey() {
         return `${this.translationPrefix}.cancel`;
-    }
-
-    getState(context) {
-        if (this.requiresPendingChanges && !context.pendingChanges) {
-            return "hidden";
-        }
-        return super.getState(context);
     }
 }
 
@@ -1279,9 +1279,11 @@ woost.admin.actions.editToolbar = new cocktail.ui.ActionSet("edit-toolbar", {
                 new woost.admin.actions.SaveAction("save"),
                 new woost.admin.actions.SaveIntegralChildAction("save-integral-child"),
                 new woost.admin.actions.CancelAction("cancel-edit", {
-                    requiresPendingChanges: true
+                    requiresModified: true
                 }),
-                new woost.admin.actions.CloseAction("close")
+                new woost.admin.actions.CloseAction("close", {
+                    requiresModified: false
+                })
             ]
         })
     ]
@@ -1313,9 +1315,11 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
         new cocktail.ui.ActionSet("navigation", {
             entries: [
                 new woost.admin.actions.CancelAction("cancel-edit", {
-                    requiresPendingChanges: true
+                    requiresModified: true
                 }),
-                new woost.admin.actions.CloseAction("close")
+                new woost.admin.actions.CloseAction("close", {
+                    requiresModified: false
+                })
             ]
         })
     ]
