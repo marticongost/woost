@@ -39,12 +39,16 @@ cocktail.declare("woost.admin.filters");
 
         // Template based filters, based on the member's type
         if (includeTemplates) {
+            const visited = new Set();
             let memberType = member.constructor;
             while (memberType) {
                 const templates = memberType[woost.admin.filters.templates];
                 if (templates) {
                     for (let template of templates) {
-                        yield woost.admin.filters.fromTemplate(template, member);
+                        if (!visited.has(template.id)) {
+                            visited.add(template.id);
+                            yield woost.admin.filters.fromTemplate(template, member);
+                        }
                     }
                 }
                 if (memberType === cocktail.schema.Member) {
