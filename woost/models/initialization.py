@@ -364,7 +364,8 @@ class SiteInitializer(object):
             User,
             qname="woost.administrator",
             email=self.admin_email,
-            password=self.admin_password
+            password=self.admin_password,
+            preferred_language=self.languages[0]
         )
 
     def create_website(self):
