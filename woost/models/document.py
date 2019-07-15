@@ -57,7 +57,7 @@ class Document(Publishable):
         listed_by_default=False,
         ui_form_control=(
             "cocktail.ui.HTMLEditor",
-            {"multiline": False}
+            {"inlineContent": True}
         ),
         member_group="content"
     )
