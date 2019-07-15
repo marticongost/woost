@@ -136,6 +136,7 @@ class User(Item):
 
     backoffice_language = LocaleMember(
         enumeration=_backoffice_language_enumeration,
+        default=schema.DynamicDefault(_backoffice_language_default),
         text_search=False,
         listed_by_default=False,
         member_group="language_preferences"
