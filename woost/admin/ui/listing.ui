@@ -252,6 +252,7 @@
     <ui:property
         name="empty"
         type="boolean"
+        default="true"
         reflected="true"/>
 
     <ui:property
