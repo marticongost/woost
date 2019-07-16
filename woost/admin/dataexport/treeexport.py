@@ -23,6 +23,11 @@ class TreeExport(Export):
     __filtered = False
     __filter_match_cache = None
 
+    def select_members(self, model, included_members):
+        included_members = set(included_members)
+        included_members.update(self.tree_relations)
+        super().select_members(model, included_members)
+
     def hard_filter_expressions(self):
 
         for expr in Export.hard_filter_expressions(self):
