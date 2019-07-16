@@ -268,7 +268,7 @@
     if (!oldValue) {
 
         const context = {
-            node: this.previewNode,
+            node: this.navigationNode,
             selection: [newValue.item],
             model: newValue.model,
             item: newValue.item
