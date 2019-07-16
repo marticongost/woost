@@ -94,7 +94,7 @@
 
     <div id="dropArea">
         <ui:translation/>
-        
+
         <?on dragover
         e.preventDefault();
         this.classList.add("dropArea--highlight")
@@ -128,7 +128,7 @@
     <input
         id="fileInput"
         type="file">
-        
+
         <?on change
         instance[UPLOAD_TEMP_FILE](this.files[0]);
         ?>
