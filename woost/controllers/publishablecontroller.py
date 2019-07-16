@@ -5,21 +5,26 @@
 """
 from types import GeneratorType
 from time import time
+
 import cherrypy
 from cocktail.caching import CacheKeyError
 from cocktail.translations import get_language, translations
+from cocktail.html.utils import add_html5_outline_classes
 from cocktail.controllers import (
     request_property,
     Cached,
     redirect,
     get_request_url
 )
+
 from woost import app
 from .basecmscontroller import BaseCMSController
 
 
 class PublishableController(BaseCMSController, Cached):
     """Base controller for all publishable items (documents, files, etc)."""
+
+    add_html5_outline_classes = True
 
     def __call__(self, **kwargs):
         self._apply_publishable_redirection()
@@ -88,7 +93,14 @@ class PublishableController(BaseCMSController, Cached):
         if theme:
             app.theme = theme
 
-        return BaseCMSController.__call__(self, **kwargs)
+        content = BaseCMSController.__call__(self, **kwargs)
+
+        if self.add_html5_outline_classes:
+            ct = cherrypy.response.headers["Content-Type"]
+            if ct and ct.split(";", 1)[0] == "text/html":
+                content = add_html5_outline_classes(content)
+
+        return content
 
     def get_theme(self):
 
