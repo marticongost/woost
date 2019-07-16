@@ -14,15 +14,9 @@ woost.admin.actions.attempt = function (promise, options = null) {
             }
         })
         .catch((e) => {
-            if (
-                options
-                && options.errorNotice
-                && (
-                    !options.showErrorNotice
-                    || options.showErrorNotice(e)
-                )
-            ) {
-                cocktail.ui.Notice.show(options.errorNotice);
+            const errorNotice = options && (options.getErrorNotice ? options.getErrorNotice(e) : options.errorNotice);
+            if (errorNotice && (!options.showErrorNotice || options.showErrorNotice(e))) {
+                cocktail.ui.Notice.show(errorNotice);
             }
         })
         .finally(() => {
