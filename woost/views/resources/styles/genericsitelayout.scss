@@ -16,6 +16,15 @@
     }
 }
 
+@mixin link {
+    text-decoration: underline;
+    color: #3159a7;
+
+    &:hover {
+        color: #4e699c;
+    }
+}
+
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -108,26 +117,19 @@ body {
     }
 
     .identity {
-        color: white;
 
-        * {
-            display: inline-block;
-        }
+        .current_user_info {
+            padding: 10px;
+            text-align: center;
 
-        form {
-            margin: 0;
-            padding: 0;
-        }
+            .user_label {
+                font-size: 1.2em;
+            }
 
-        strong {
-            font-size: 1.2em;
-        }
-
-        button {
-            font-size: 1.2em;
-            margin-left: 0.7em;
-            color: white;
-            text-decoration: underline;
+            .logout_button {
+                @include button;
+                margin-top: 10px;
+            }
         }
     }
 
@@ -201,6 +203,10 @@ body {
             p {
                 font-size: 1.7em;
                 color: #333;
+            }
+
+            .text_container a {
+                @include link;
             }
         }
     }
@@ -284,6 +290,7 @@ body {
         }
 
         a.forgot_password_link {
+            @include link;
             font-size: 1.3em;
             margin-right: auto;
         }
