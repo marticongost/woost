@@ -1,13 +1,23 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import (
+    Callable,
+    Mapping,
+    Optional as Opt,
+    Pattern,
+    Sequence,
+    Set,
+    Type
+)
 import re
+
 from cocktail.stringutils import normalize
 from cocktail.translations import translations, get_language, require_language
 from cocktail.urls import URL, URLBuilder
 from cocktail.controllers import get_request_url
+
 from woost import app
 from woost.models import (
     Configuration,
@@ -23,23 +33,25 @@ NO_MATCH = 0
 IGNORED = 1
 MATCH = 2
 
+component_result = int
 
-class URLMapping(object):
 
-    def __init__(self, schemes = None):
+class URLMapping:
+
+    def __init__(self, schemes: Sequence["URLComponent"] = None):
         self.schemes = [] if schemes is None else schemes
 
     def get_url(
         self,
-        publishable = None,
-        language = None,
-        website = None,
-        scheme = None,
-        host = "?",
-        path = None,
-        parameters = None,
-        **kwargs
-    ):
+        publishable: PublishableObject = None,
+        language: str = None,
+        website: Website = None,
+        scheme: str = None,
+        host: str = "?",
+        path: Sequence[str] = None,
+        parameters: Mapping[str, str] = None,
+        **kwargs) -> URL:
+
         # Language
         if not language:
             if publishable and publishable.per_language_publication:
@@ -77,18 +89,15 @@ class URLMapping(object):
         # Composition
         for url_scheme in self.schemes:
 
-            url_builder = URLBuilder(
-                scheme = scheme,
-                hostname = hostname
-            )
+            url_builder = URLBuilder(scheme=scheme, hostname=hostname)
 
             result = url_scheme.build_url(
                 url_builder,
-                publishable = publishable,
-                language = language,
-                website = website,
-                host = host,
-                scheme = scheme,
+                publishable=publishable,
+                language=language,
+                website=website,
+                host=host,
+                scheme=scheme,
                 **kwargs
             )
 
@@ -104,7 +113,7 @@ class URLMapping(object):
 
         return None
 
-    def resolve(self, url):
+    def resolve(self, url: URL) -> Opt["URLResolution"]:
 
         url = URL(url)
 
@@ -116,7 +125,7 @@ class URLMapping(object):
 
         return None
 
-    def transform_request_url(self, **context):
+    def transform_request_url(self, **context) -> URL:
 
         url = get_request_url()
         url_resolution = app.url_resolution
@@ -124,7 +133,7 @@ class URLMapping(object):
         if not url_resolution:
             url_resolution = self.resolve(url)
             if url_resolution is None:
-                raise ValueError("Can't resolve %s" % url)
+                raise ValueError(f"Can't resolve {url}")
 
         context.setdefault("website", app.website)
         context.setdefault("language", get_language())
@@ -138,20 +147,20 @@ class URLMapping(object):
             or url.query
         ):
             translation_url = translation_url.copy(
-                path = translation_url.path.append(
+                path=translation_url.path.append(
                     url_resolution.remaining_segments
                 ),
-                query = url.query.merge(translation_url.query)
+                query=url.query.merge(translation_url.query)
             )
 
         return translation_url
 
     def get_canonical_url(
         self,
-        url,
-        url_resolution = None,
-        **kwargs
-    ):
+        url: URL,
+        url_resolution: "URLResolution" = None,
+        **kwargs) -> URL:
+
         if url_resolution is None:
             url_resolution = self.resolve(url)
 
@@ -179,43 +188,47 @@ class URLMapping(object):
         return canonical_url
 
 
-class URLComponent(object):
+class URLComponent:
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            **kwargs) -> component_result:
+
         raise TypeError(
             "%r doesn't implement its apply() method"
             % self.__class__
         )
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
+
         raise TypeError(
             "%r doesn't implement its resolve() method"
             % self.__class__
         )
 
 
-class URLResolution(object):
-    publishable = None
-    website = None
-    language = None
-    canonical_validation = True
-    canonical_parameters = None
+class URLResolution:
+    publishable: PublishableObject = None
+    website: Website = None
+    language: str = None
+    canonical_validation: bool = True
+    canonical_parameters: Set[str] = None
 
-    def __init__(self, path_segments):
+    def __init__(self, path_segments: Sequence[str]):
         self.__consumed_segments = []
         self.__remaining_segments = list(path_segments)
         self.canonical_parameters = set()
 
     @property
-    def consumed_segments(self):
+    def consumed_segments(self) -> Sequence[str]:
         return self.__consumed_segments
 
     @property
-    def remaining_segments(self):
+    def remaining_segments(self) -> Sequence[str]:
         return self.__remaining_segments
 
     def consume_segment(self):
@@ -224,22 +237,19 @@ class URLResolution(object):
 
 class Sequence(URLComponent):
 
-    def __init__(self, components = None):
-        URLComponent.__init__(self)
+    def __init__(self, components: Sequence[URLComponent] = None):
+        super().__init__()
         self.components = [] if components is None else components
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            **kwargs):
+
         sequence_result = NO_MATCH
 
         for component in self.components:
-            result = component.build_url(
-                url_builder,
-                **kwargs
-            )
+            result = component.build_url(url_builder, **kwargs)
             if result == NO_MATCH:
                 return result
             else:
@@ -247,7 +257,10 @@ class Sequence(URLComponent):
 
         return sequence_result
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         sequence_result = NO_MATCH
 
@@ -264,14 +277,14 @@ class Sequence(URLComponent):
 class OneOf(URLComponent):
 
     def __init__(self, components):
-        URLComponent.__init__(self)
+        super().__init__()
         self.components = components
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            **kwargs) -> component_result:
+
         for component in self.components:
             result = component.build_url(
                 url_builder,
@@ -282,7 +295,10 @@ class OneOf(URLComponent):
 
         return NO_MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         for component in self.components:
             result = component.resolve(url, resolution)
@@ -294,26 +310,26 @@ class OneOf(URLComponent):
 
 class Optional(URLComponent):
 
-    def __init__(self, component):
-        URLComponent.__init__(self)
+    def __init__(self, component: URLComponent):
+        super().__init__()
         self.component = component
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
-        result = self.component.build_url(
-            url_builder,
-            **kwargs
-        )
+            self,
+            url_builder: URLBuilder,
+            **kwargs) -> component_result:
+
+        result = self.component.build_url(url_builder, **kwargs)
 
         if result == NO_MATCH:
             return IGNORED
         else:
             return result
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         result = self.component.resolve(url, resolution)
 
@@ -325,20 +341,21 @@ class Optional(URLComponent):
 
 class Conditional(URLComponent):
 
-    def __init__(self, condition, component):
-        URLComponent.__init__(self)
+    def __init__(
+            self,
+            condition: Callable[[], bool],
+            component: URLComponent):
+
+        super().__init__()
         self.condition = condition
         self.component = component
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
-        result = self.component.build_url(
-            url_builder,
-            **kwargs
-        )
+            self,
+            url_builder: URLBuilder,
+            **kwargs) -> component_result:
+
+        result = self.component.build_url(url_builder, **kwargs)
 
         if result == NO_MATCH:
             if self.condition(**kwargs):
@@ -348,7 +365,10 @@ class Conditional(URLComponent):
         else:
             return result
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         result = self.component.resolve(url, resolution)
 
@@ -362,23 +382,27 @@ class FixedHostname(URLComponent):
 
     hostname = None
 
-    def __init__(self, hostname):
-        URLComponent.__init__(self)
+    def __init__(self, hostname: str):
+        super().__init__()
         self.hostname = hostname
 
     def build_url(
-        self,
-        url_builder,
-        host = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            host: str = None,
+            **kwargs) -> component_result:
+
         if host == "!":
             url_builder.hostname = self.hostname
             return MATCH
         else:
             return IGNORED
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
+
         if url.hostname == self.hostname:
             return MATCH
         else:
@@ -399,13 +423,13 @@ class WebsiteInHostname(URLComponent):
         return hosts[0]
 
     def build_url(
-        self,
-        url_builder,
-        website = None,
-        host = None,
-        scheme = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            website: Website = None,
+            host: str = None,
+            scheme: str = None,
+            **kwargs) -> component_result:
+
         if website and (
             host == "!"
             or (
@@ -419,7 +443,10 @@ class WebsiteInHostname(URLComponent):
         else:
             return IGNORED
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         if url.hostname:
             website = Configuration.instance.get_website_by_host(url.hostname)
@@ -433,12 +460,12 @@ class WebsiteInHostname(URLComponent):
 class LocaleInPath(URLComponent):
 
     def build_url(
-        self,
-        url_builder,
-        publishable = None,
-        language = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            publishable: PublishableObject = None,
+            language: str = None,
+            **kwargs) -> component_result:
+
         if publishable and publishable.per_language_publication:
             code = self.get_code_for_locale(language)
             if code:
@@ -449,7 +476,10 @@ class LocaleInPath(URLComponent):
         else:
             return IGNORED
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         if resolution.remaining_segments:
             code = resolution.remaining_segments[0]
@@ -461,30 +491,34 @@ class LocaleInPath(URLComponent):
 
         return NO_MATCH
 
-    def get_code_for_locale(self, locale):
+    def get_code_for_locale(self, locale: str) -> str:
         return locale
 
-    def get_locale_from_code(self, code):
+    def get_locale_from_code(self, code: str) -> str:
         return code
 
 
 class PathLiteral(URLComponent):
 
-    literal = None
+    literal: str = None
 
-    def __init__(self, literal):
-        URLComponent.__init__(self)
+    def __init__(self, literal: str):
+        super().__init__()
         self.literal = literal
 
     def build_url(
-        self,
-        url_builder,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            **kwargs) -> component_result:
+
         url_builder.path.append(self.literal)
         return MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
+
         if (
             resolution.remaining_segments
             and resolution.remaining_segments[0] == self.literal
@@ -498,11 +532,11 @@ class PathLiteral(URLComponent):
 class Home(URLComponent):
 
     def build_url(
-        self,
-        url_builder,
-        publishable = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            publishable: PublishableObject = None,
+            **kwargs) -> component_result:
+
         if publishable:
             for website in Website.select():
                 if publishable is website.home:
@@ -510,7 +544,10 @@ class Home(URLComponent):
 
         return NO_MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         if not resolution.remaining_segments:
             website = resolution.website or app.website
@@ -523,27 +560,27 @@ class Home(URLComponent):
 
 class IdInPath(URLComponent):
 
-    prefix = None
-    model = None
-    include_file_extensions = True
+    prefix: str = None
+    model: Type[Item] = None
+    include_file_extensions: bool = True
 
     def __init__(
-        self,
-        prefix = None,
-        model = None,
-        include_file_extensions = True
-    ):
-        URLComponent.__init__(self)
+            self,
+            prefix: str = None,
+            model: Type[Item] = None,
+            include_file_extensions: bool = True):
+
+        super().__init__()
         self.prefix = prefix
         self.model = model
         self.include_file_extensions = include_file_extensions
 
     def build_url(
-        self,
-        url_builder,
-        publishable = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            publishable: PublishableObject = None,
+            **kwargs) -> component_result:
+
         if (
             publishable
             and publishable.id
@@ -567,7 +604,10 @@ class IdInPath(URLComponent):
         else:
             return NO_MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         if (
             resolution.remaining_segments
@@ -602,29 +642,32 @@ class IdInPath(URLComponent):
 
         return NO_MATCH
 
-    def get_file_extension(self, publishable):
+    def get_file_extension(
+            self,
+            publishable: PublishableObject) -> Opt[str]:
+
         return getattr(publishable, "file_extension", None)
 
 
 class DescriptiveIdInPath(URLComponent):
 
-    id_separator = "_"
-    word_separator = "-"
-    title_splitter_regexp = re.compile(r"\W+", re.UNICODE)
-    normalized = True
-    include_file_extensions = True
-    allow_slashes_in_title = False
+    id_separator: str = "_"
+    word_separator: str = "-"
+    title_splitter_regexp: Pattern = re.compile(r"\W+", re.UNICODE)
+    normalized: bool = True
+    include_file_extensions: bool = True
+    allow_slashes_in_title: bool = False
 
-    def applies_to_publishable(self, publishable):
+    def applies_to_publishable(self, publishable: PublishableObject) -> bool:
         return True
 
     def build_url(
-        self,
-        url_builder,
-        publishable = None,
-        language = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            publishable: PublishableObject = None,
+            language: str = None,
+            **kwargs) -> component_result:
+
         if publishable and self.applies_to_publishable(publishable):
             title = self.get_title(publishable, language)
 
@@ -643,7 +686,10 @@ class DescriptiveIdInPath(URLComponent):
         else:
             return NO_MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         if resolution.remaining_segments:
 
@@ -681,12 +727,12 @@ class DescriptiveIdInPath(URLComponent):
 
         return NO_MATCH
 
-    def get_title(self, publishable, language):
+    def get_title(self, publishable: PublishableObject, language: str) -> str:
 
         title = translations(
             publishable,
             language,
-            discard_generic_translation = True
+            discard_generic_translation=True
         )
 
         if title:
@@ -694,7 +740,7 @@ class DescriptiveIdInPath(URLComponent):
 
         return title
 
-    def escape_title(self, title):
+    def escape_title(self, title: str) -> str:
 
         if self.normalized:
             title = normalize(title)
@@ -706,19 +752,22 @@ class DescriptiveIdInPath(URLComponent):
 
         return title
 
-    def get_file_extension(self, publishable):
+    def get_file_extension(
+            self,
+            publishable: PublishableObject) -> Opt[str]:
+
         return getattr(publishable, "file_extension", None)
 
 
 class HierarchyInPath(URLComponent):
 
     def build_url(
-        self,
-        url_builder,
-        publishable = None,
-        language = None,
-        **kwargs
-    ):
+            self,
+            url_builder: URLBuilder,
+            publishable: PublishableObject = None,
+            language: str = None,
+            **kwargs) -> component_result:
+
         if publishable:
             path = self.get_path(publishable, **kwargs)
 
@@ -730,7 +779,10 @@ class HierarchyInPath(URLComponent):
         else:
             return NO_MATCH
 
-    def resolve(self, url, resolution):
+    def resolve(
+            self,
+            url: URL,
+            resolution: "URLResolution") -> component_result:
 
         path = list(resolution.remaining_segments)
 
@@ -746,11 +798,15 @@ class HierarchyInPath(URLComponent):
 
         return NO_MATCH
 
-    def get_path(self, publishable, **kwargs):
+    def get_path(
+            self,
+            publishable: PublishableObject,
+            **kwargs) -> Opt[str]:
+
         return publishable.full_path
 
 
-def strip_extension(string):
+def strip_extension(string: str) -> str:
     pos = string.find(".")
     if pos != -1:
         string = string[:pos]
