@@ -24,25 +24,43 @@
     [UPLOAD_TEMP_FILE](file) {
        this.uploadState = "uploading";
 
-        cocktail.ui.request({
-            url: "/async_upload",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/octet-stream",
-                "X-File-Name": file.name
-            },
-            data: file,
-            progressBar:this.progressBar,
-            responseType: "json"
-        })
-            .then((xhr) => {
-               this.value = xhr.response.id;
-               this.fileNameLabel.innerText = xhr.response.name;
-               this.fileSizeLabel.innerText = xhr.response.size_desc;
-               this.empty = false;
+        woost.admin.actions.attempt(
+            cocktail.ui.request({
+                url: "/async_upload",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                    "X-File-Name": file.name
+                },
+                data: file,
+                progressBar:this.progressBar,
+                responseType: "json"
             })
+                .then((xhr) => {
+                    console.log(xhr);
+                    this.value = xhr.response.id;
+                    this.fileNameLabel.innerText = xhr.response.name;
+                    this.fileSizeLabel.innerText = xhr.response.size_desc;
+                    this.empty = false;
+                }),
+            {
+                getErrorNotice(e) {
+                    let key;
+                    if (e.xhr && e.xhr.status == 413) {
+                        key = ".fileTooLargeErrorNotice";
+                    }
+                    else {
+                        key = ".errorNotice";
+                    }
+                    return {
+                        category: "error",
+                        summary: cocktail.ui.translations[cls.fullName + ".errorNotice"]
+                    };
+                }
+            }
+        )
             .finally(() => {
-               this.uploadState = "idle";
+                this.uploadState = "idle";
             });
     }
     ?>
