@@ -6,3 +6,13 @@
     es: Suelta el fichero aquí para cargarlo
     en: Drop your file here to upload it
 
+    [errorNotice]
+    ca: S'ha produit un error que no ha permès completar la pujada del fitxer
+    es: Se ha producido un error que no ha permitido completar la subida del fichero
+    en: An error prevented the upload from being completed
+
+    [fileTooLargeErrorNotice]
+    ca: El fitxer té una mida superior a la permesa
+    es: El fichero tiene un tamaño superior al permitido
+    en: Sorry, the file is too big
+
