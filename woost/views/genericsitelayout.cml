@@ -23,6 +23,8 @@ from woost import app
         py:root_visibility="@{element.MERGED_ROOT}"
         py:expanded="@{True}"/>
 
+    <py:with py:element="self.identity" py:allows_login="${True}"/>
+
     <div py:id="main_layout" py:after="self.site_header">
         <?py
         element.append(self.site_navigation)
