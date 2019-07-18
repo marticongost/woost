@@ -6,6 +6,7 @@
 import os
 import re
 import datetime
+import subprocess
 from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen, PIPE
@@ -14,40 +15,32 @@ from woost.models.file import File
 from woost.models.rendering.renderer import Renderer
 
 
+def _which(executable):
+    try:
+        out = subprocess.check_output(["which", executable])
+    except subprocess.CalledProcessError:
+        return None
+    else:
+        return out.decode("utf-8").strip()
+
+
 class VideoFileRenderer(Renderer):
     """A content renderer that handles video files."""
 
     instantiable = True
-
-    try:
-        p = Popen(["which", "ffmpeg"], stdout=PIPE)
-        ffmpeg_path = p.communicate()[0].replace("\n", "") or None
-    except:
-        ffmpeg_path = None
-    try:
-        p = Popen(["which", "grep"], stdout=PIPE)
-        grep_path = p.communicate()[0].replace("\n", "") or None
-    except:
-        grep_path = None
-    try:
-        p = Popen(["which", "cut"], stdout=PIPE)
-        cut_path = p.communicate()[0].replace("\n", "") or None
-    except:
-        cut_path = None
-    try:
-        p = Popen(["which", "sed"], stdout=PIPE)
-        sed_path = p.communicate()[0].replace("\n", "") or None
-    except:
-        sed_path = None
+    ffmpeg_path = _which("ffmpeg")
+    grep_path = _which("grep")
+    sed_path = _which("sed")
+    cut_path = _which("cut")
 
     def _secs2time(self, s):
         ms = int((s - int(s)) * 1000000)
         s = int(s)
         # Get rid of this line if s will never exceed 86400
         while s >= 24*60*60: s -= 24*60*60
-        h = s / (60*60)
-        s -= h*60*60
-        m = s / 60
+        h = s // (60 * 60)
+        s -= h * 60 * 60
+        m = s // 60
         s -= m*60
         return datetime.time(h, m, s, ms)
 
@@ -80,7 +73,7 @@ class VideoFileRenderer(Renderer):
             )
             p1 = Popen(command1, shell=True, stderr=PIPE)
             p2 = Popen(command2, shell=True, stdin=p1.stderr, stdout=PIPE)
-            duration = p2.communicate()[0]
+            duration = p2.communicate()[0].decode("utf-8")
 
             duration_list = re.split("[.:]", duration)
             video_length = datetime.time(
