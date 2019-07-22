@@ -37,7 +37,6 @@
                 responseType: "json"
             })
                 .then((xhr) => {
-                    console.log(xhr);
                     this.value = xhr.response.id;
                     this.fileNameLabel.innerText = xhr.response.name;
                     this.fileSizeLabel.innerText = xhr.response.size_desc;
