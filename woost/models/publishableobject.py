@@ -450,6 +450,8 @@ for category, mime_types in (
         "application/postscript",
         "application/x-latex",
         "application/vnd.oasis.opendocument.database",
+        "application/vnd.openxmlformats-",
+            "officedocument.presentationml.slideshow
         "application/vnd.openxmlformats-"
             "officedocument.presentationml.presentation"
     )),
