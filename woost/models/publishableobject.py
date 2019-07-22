@@ -449,7 +449,9 @@ for category, mime_types in (
         "application/x-pdf",
         "application/postscript",
         "application/x-latex",
-        "application/vnd.oasis.opendocument.database"
+        "application/vnd.oasis.opendocument.database",
+        "application/vnd.openxmlformats-"
+            "officedocument.presentationml.presentation"
     )),
     ("package", (
         "application/zip",
