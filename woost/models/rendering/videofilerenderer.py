@@ -10,9 +10,12 @@ import subprocess
 from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen, PIPE
+
 from PIL import Image
+
 from woost.models.file import File
 from woost.models.rendering.renderer import Renderer
+from woost import app
 
 
 def _which(executable):
@@ -64,8 +67,9 @@ class VideoFileRenderer(Renderer):
 
         try:
             temp_image_file = os.path.join(temp_path, "thumbnail.png")
+            file_path = self.get_file_path(item)
 
-            command1 = "%s -i %s" % (self.ffmpeg_path, item.file_path)
+            command1 = "%s -i %s" % (self.ffmpeg_path, file_path)
             command2 = "%s Duration | %s -d ' ' -f 4 | %s 's/,//'" % (
                 self.grep_path,
                 self.cut_path,
@@ -95,7 +99,7 @@ class VideoFileRenderer(Renderer):
             command = "%s -y -ss %s -i %s -vframes 1 -an -vcodec png -f rawvideo %s " % (
                 self.ffmpeg_path,
                 time.strftime("%H:%M:%S"),
-                item.file_path,
+                file_path,
                 temp_image_file
             )
 
@@ -106,4 +110,10 @@ class VideoFileRenderer(Renderer):
 
         finally:
             rmtree(temp_path)
+
+    def get_file_path(self, item):
+        if item._v_upload_id:
+            return app.async_uploader.get_temp_path(item._v_upload_id)
+        else:
+            return item.file_path
 
