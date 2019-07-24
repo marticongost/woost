@@ -7,7 +7,9 @@ from cocktail.modeling import overrides
 from cocktail import schema
 from woost.models.utils import get_model_dotted_name
 from woost.admin.dataexport import TreeExport
-from .views import View, DEFAULT
+from .views import View
+
+DEFAULT = object()
 
 
 class Tree(View):

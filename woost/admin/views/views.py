@@ -296,9 +296,6 @@ def _order_views(registrations):
     return views
 
 
-DEFAULT = object()
-
-
 class View(object):
     """An admin view."""
 
@@ -314,22 +311,15 @@ class View(object):
     extra_members: Sequence[schema.Member] = ()
     extra_filters: Sequence[Expression] = ()
     pagination = True
-    partitioning_methods = None
     count_enabled = True
+    partitioning_methods = None
     default_partitioning_method = None
     default_members: Sequence[str] = ()
     default_order: str = None
     disabled_actions: Set[str] = set()
 
-    def __init__(
-        self,
-        name,
-        ui_component = DEFAULT,
-        controller = DEFAULT,
-        model = DEFAULT,
-        export_class = DEFAULT,
-        disabled_actions = DEFAULT
-    ):
+    def __init__(self, name, **kwargs):
+
         if _views.get(name):
             raise ValueError(
                 "A view called %r already exists" % name
@@ -338,20 +328,8 @@ class View(object):
         self.__name = name
         _views[name] = self
 
-        if ui_component is not DEFAULT:
-            self.ui_component = ui_component
-
-        if controller is not DEFAULT:
-            self.controller = controller
-
-        if model is not DEFAULT:
-            self.model = model
-
-        if export_class is not DEFAULT:
-            self.export_class = export_class
-
-        if disabled_actions is not DEFAULT:
-            self.disabled_actions = disabled_actions
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __repr__(self):
         return "%s(%r)" % (
