@@ -804,20 +804,20 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
 
         const transaction = woost.models.transaction({
             objects: [state],
-            dry_run: context.editingIntegralChild
+            dry_run: this.editingIntegralChild
         })
             .then((response) => {
 
                 // New object
                 if (isNew) {
                     const newState = response.changes.created[id];
-                    newState._new = context.editingIntegralChild;
+                    newState._new = this.editingIntegralChild;
 
                     if (!newState.id) {
                         newState.id = id;
                     }
 
-                    if (context.editingIntegralChild) {
+                    if (this.editingIntegralChild) {
                         woost.admin.actions.addToParent([newState]);
                     }
                     else {
@@ -852,7 +852,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                     form.errors = [];
                     form.acceptModifications();
                     if (cocktail.navigation.node.objectPath) {
-                        woost.admin.actions.addToParent([newState], null, context.editingIntegralChild);
+                        woost.admin.actions.addToParent([newState], null, this.editingIntegralChild);
                     }
                 }
             })
@@ -866,7 +866,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
         const options = {};
         options.showErrorNotice = (e) => !(e instanceof woost.models.ValidationError);
 
-        if (context.editingIntegralChild) {
+        if (this.editingIntegralChild) {
             options.successNotice = null;
         }
         else {
