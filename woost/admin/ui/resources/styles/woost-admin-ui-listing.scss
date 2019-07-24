@@ -56,11 +56,8 @@
     }
 }
 
-#resultCountLabel {
-    font-size: 1.2em;
-    margin-right: 1em;
+.resultCountLabel {
     min-width: 6em;
-    text-align: center;
     transition: all 0.4s ease;
 
     :host([empty='true']),

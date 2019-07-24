@@ -64,7 +64,12 @@
             cocktail.ui.trigger(this.viewDisplay, "listingReset");
         }
 
-        this.actionList.actionSetup();
+        if (!previousNode) {
+            this.actionList.actionSetup();
+        }
+        else {
+            this.actionList.updateActions();
+        }
     }
 
     getDefaultControl() {
