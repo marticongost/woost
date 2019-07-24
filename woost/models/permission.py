@@ -523,8 +523,7 @@ class PermissionExpression(Expression):
                         authorized_subset = set()
                 else:
                     if query.verbose:
-                        permission_query.description = \
-                            repr(permission).decode("utf8")
+                        permission_query.description = repr(permission)
                         permission_query.verbose = True
                         permission_query.nesting = query.nesting + 1
 
