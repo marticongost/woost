@@ -79,14 +79,14 @@ class Document(Publishable):
         listed_by_default=False,
         after_member="controller",
         shadows_attribute=True,
-        member_group="presentation.behavior"
+        member_group="presentation"
     )
 
     theme = schema.Reference(
         type=Theme,
         related_end=schema.Collection(),
         listed_by_default=False,
-        member_group="presentation.behavior",
+        member_group="presentation",
         shadows_attribute=True
     )
 
@@ -95,7 +95,7 @@ class Document(Publishable):
         related_end=schema.Collection(),
         relation_constraints={"applicable_to_documents": True},
         after_member="template",
-        member_group="presentation.behavior"
+        member_group="presentation"
     )
 
     children = schema.Collection(
@@ -104,7 +104,7 @@ class Document(Publishable):
         related_key="parent",
         cascade_delete=True,
         after_member="parent",
-        member_group="navigation"
+        member_group="navigation.tree"
     )
 
     def _update_path(self, parent, path):
