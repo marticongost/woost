@@ -30,8 +30,9 @@ from woost.models import Item, ModifyPermission
 
         if not (
             not app.editing
-            and self.admin
             and self.publishable
+            and self.admin
+            and self.admin.is_accessible()
             and app.user.has_permission(
                 ModifyPermission,
                 target = self.publishable
