@@ -55,39 +55,61 @@ class Publishable(Item, PublishableObject):
     groups_order = [
         "content",
         "navigation",
+        "navigation.tree",
         "navigation.menu",
         "navigation.redirection",
-        "presentation",
-        "presentation.behavior",
-        "presentation.format",
         "meta",
         "meta.robots",
-        "publication"
+        "presentation",
+        "publication.state",
+        "publication.url",
+        "publication.behavior",
+        "publication.access",
+        "publication.format"
     ]
 
     members_order = [
-        "controller",
-        "mime_type",
-        "resource_type",
-        "encoding",
+
+        # navigation.tree
         "parent",
-        "login_page",
-        "path",
-        "full_path",
+
+        # navigation.menu
         "menu_title",
         "hidden",
+
+        # navigation.redirection
         "redirection_mode",
         "redirection_target",
         "redirection_method",
+
+        # meta.robots
+        "robots_should_index",
+
+        # publication.state
         "enabled",
         "per_language_publication",
         "enabled_translations",
         "websites",
-        "access_level",
         "start_date",
         "end_date",
+
+        # publication.url
+        "path",
+        "full_path",
+
+        # publication.behavior
+        "controller",
         "requires_https",
-        "caching_policies"
+        "caching_policies",
+
+        # publication.access
+        "access_level",
+        "login_page",
+
+        # publication.format
+        "mime_type",
+        "resource_type",
+        "encoding"
     ]
 
     mime_type = schema.String(
@@ -96,7 +118,7 @@ class Publishable(Item, PublishableObject):
         text_search=False,
         format=r"^[^/]+/[^/]+$",
         listed_by_default=False,
-        member_group="presentation.format",
+        member_group="publication.format",
         shadows_attribute=True
     )
 
@@ -114,7 +136,7 @@ class Publishable(Item, PublishableObject):
             "other"
         ),
         listed_by_default=False,
-        member_group="presentation.format",
+        member_group="publication.format",
         shadows_attribute=True
     )
 
@@ -122,7 +144,7 @@ class Publishable(Item, PublishableObject):
         listed_by_default=False,
         text_search=False,
         default="utf-8",
-        member_group="presentation.format",
+        member_group="publication.format",
         shadows_attribute=True
     )
 
@@ -131,7 +153,7 @@ class Publishable(Item, PublishableObject):
         indexed=True,
         bidirectional=True,
         listed_by_default=False,
-        member_group="presentation.behavior",
+        member_group="publication.behavior",
         shadows_attribute=True
     )
 
@@ -141,13 +163,13 @@ class Publishable(Item, PublishableObject):
         related_key="children",
         indexed=True,
         listed_by_default=False,
-        member_group="navigation",
+        member_group="navigation.tree",
         shadows_attribute=True
     )
 
     login_page = schema.Reference(
         listed_by_default=False,
-        member_group="navigation",
+        member_group="publication.access",
         shadows_attribute=True
     )
 
@@ -156,7 +178,7 @@ class Publishable(Item, PublishableObject):
         indexed=True,
         listed_by_default=False,
         text_search=False,
-        member_group="navigation",
+        member_group="publication.url",
         shadows_attribute=True
     )
 
@@ -166,7 +188,7 @@ class Publishable(Item, PublishableObject):
         editable=schema.READ_ONLY,
         text_search=False,
         listed_by_default=False,
-        member_group="navigation",
+        member_group="publication.url",
         shadows_attribute=True
     )
 
@@ -225,7 +247,7 @@ class Publishable(Item, PublishableObject):
         default=True,
         indexed=True,
         listed_by_default=False,
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -234,7 +256,7 @@ class Publishable(Item, PublishableObject):
         default=False,
         indexed=True,
         listed_by_default=False,
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -245,7 +267,7 @@ class Publishable(Item, PublishableObject):
         edit_control="woost.views.EnabledTranslationsSelector",
         ui_form_control="cocktail.ui.SplitSelector",
         listed_by_default=False,
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -256,7 +278,7 @@ class Publishable(Item, PublishableObject):
         related_key="specific_content",
         edit_control="cocktail.html.CheckList",
         ui_form_control="cocktail.ui.CheckList",
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -269,7 +291,7 @@ class Publishable(Item, PublishableObject):
             empty_option_displayed=True
         ),
         listed_by_default=False,
-        member_group="publication",
+        member_group="publication.access",
         shadows_attribute=True
     )
 
@@ -277,7 +299,7 @@ class Publishable(Item, PublishableObject):
         indexed=True,
         listed_by_default=False,
         affects_cache_expiration=True,
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -286,7 +308,7 @@ class Publishable(Item, PublishableObject):
         min=start_date,
         listed_by_default=False,
         affects_cache_expiration=True,
-        member_group="publication",
+        member_group="publication.state",
         shadows_attribute=True
     )
 
@@ -294,7 +316,7 @@ class Publishable(Item, PublishableObject):
         required=True,
         default=False,
         listed_by_default=False,
-        member_group="publication",
+        member_group="publication.behavior",
         shadows_attribute=True
     )
 
@@ -303,7 +325,7 @@ class Publishable(Item, PublishableObject):
         bidirectional=True,
         integral=True,
         related_end=schema.Reference(),
-        member_group="publication",
+        member_group="publication.behavior",
         shadows_attribute=True
     )
 
