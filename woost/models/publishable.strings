@@ -22,20 +22,15 @@
             es: Presentación
             en: Presentation
 
-                [behavior]
-                ca: Comportament
-                es: Comportamiento
-                en: Behavior
-
-                [format]
-                ca: Format
-                es: Formato
-                en: Format
-
             [navigation]
             ca: Navegació
             es: Navegación
             en: Navigation
+
+                [tree]
+                ca: Arbre
+                es: Árbol
+                en: Tree
 
                 [menu]
                 ca: Menú
@@ -52,15 +47,38 @@
             es: Metadatos
             en: Metadata
 
-            [meta.robots]
-            ca: Robots
-            es: Robots
-            en: Robots
+                [robots]
+                ca: Robots
+                es: Robots
+                en: Robots
 
             [publication]
             ca: Publicació
             es: Publicación
             en: Publication
+
+                [state]
+                ca: Estat
+                es: Estado
+                en: State
+
+                [behavior]
+                ca: Comportament
+                es: Comportamiento
+                en: Behavior
+
+                [format]
+                ca: Format
+                es: Formato
+                en: Format
+
+                [url]
+                *: URL
+
+                [access]
+                ca: Accés
+                es: Acceso
+                en: Access
 
         [members]
 
