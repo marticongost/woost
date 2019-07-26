@@ -1002,10 +1002,10 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
     get title() {
         let suffix;
         if (this.relation instanceof cocktail.schema.Collection) {
-            suffix = ".add";
+            suffix = "add";
         }
         else if (this.relation instanceof cocktail.schema.Reference) {
-            suffix = ".select";
+            suffix = "select";
         }
         return this.relation.translate(suffix);
     }
