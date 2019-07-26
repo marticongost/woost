@@ -215,6 +215,7 @@
         <ui:symbol name="UPDATE_DELAY"/>
 
         <?on modified:changed
+        this.parentInstance.actionList.actionContext.modified = newValue;
         this.parentInstance.actionList.updateActions();
         ?>
 
@@ -223,7 +224,6 @@
 
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
-            this.parentInstance.actionList.actionContext.modified = this.modified;
 
             cocktail.ui.request({
                 url: woost.admin.url + "/data/values",
