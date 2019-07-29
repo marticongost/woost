@@ -328,6 +328,14 @@ class ListingController(Controller):
 
         return value or [get_language()]
 
+    @request_property
+    def include_slots(self):
+        return get_parameter(
+            schema.Boolean("slots", default=False),
+            undefined="set_default",
+            errors="raise"
+        )
+
     def get_member(self, key: str) -> schema.Member:
 
         model = self.model
@@ -384,7 +392,10 @@ class ListingController(Controller):
         if not export_class:
             raise ValueError("Missing export class")
 
-        kwargs = {"languages": self.locales}
+        kwargs = {
+            "languages": self.locales,
+            "include_slots": self.include_slots
+        }
 
         if self.view:
             kwargs.update(self.view.get_export_parameters())

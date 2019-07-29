@@ -347,26 +347,25 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
         return 1;
     }
 
-    getState(context) {
+    matchesModel(model) {
 
-        if (context.editingSettings) {
-            return "hidden";
-        }
-
-        const model = context.selection[0]._class;
-        let hasSlots = false;
-
-        for (let member of model.members()) {
-            if (
-                member instanceof woost.models.Slot
-                && woost.models.hasPermission(member, "read")
-            ) {
-                hasSlots = true;
-                break;
+        if (super.matchesModel(model)) {
+            for (let member of model.members()) {
+                if (
+                    member instanceof woost.models.Slot
+                    && woost.models.hasPermission(member, "read")
+                ) {
+                    return true;
+                }
             }
         }
 
-        if (!hasSlots) {
+        return false;
+    }
+
+    getState(context) {
+
+        if (context.editingSettings) {
             return "hidden";
         }
 
@@ -374,7 +373,12 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
     }
 
     invoke(context) {
-        cocktail.navigation.extendPath("blocks");
+        if (cocktail.navigation.node instanceof woost.admin.nodes.EditNode) {
+            cocktail.navigation.extendPath("blocks");
+        }
+        else {
+            cocktail.navigation.extendPath("edit-blocks", context.selection[0].id);
+        }
     }
 }
 
@@ -916,6 +920,61 @@ woost.admin.actions.SaveIntegralChildAction = class SaveIntegralChildAction exte
     }
 }
 
+woost.admin.actions.SaveBlocksAction = class SaveBlocksAction extends woost.admin.actions.Action {
+
+    getIconURL(context) {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/save.svg`);
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.save`;
+    }
+
+    getState(context) {
+        let state = super.getState(context);
+        if (state == "visible" && context.view.modified) {
+            return "emphasized";
+        }
+        return state;
+    }
+
+    invoke(context) {
+
+        const item = woost.admin.editState.get(context.item);
+        const model = item._class;
+        const state = model.toJSONValue(item, {
+            includeMember: (member) => {
+                return (
+                    member.primary
+                    || (
+                        member instanceof woost.models.Slot
+                        && member[woost.models.permissions].read
+                        && member[woost.models.permissions].modify
+                    )
+                );
+            }
+        });
+        const id = item.id
+        state.id = id;
+
+        const transaction = woost.models.transaction({objects: [state]})
+            .then((response) => {
+                context.view.modified = false;
+            });
+
+        const options = {};
+        options.showErrorNotice = (e) => !(e instanceof woost.models.ValidationError);
+
+        options.successNotice = {
+            summary: cocktail.ui.translations[
+                this.translationKey + ".savedNotice"
+            ],
+        };
+
+        return this.attempt(transaction, options);
+    }
+}
+
 woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.Action {
 
     getState(context) {
@@ -1178,6 +1237,7 @@ woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
         new cocktail.ui.ActionSet("main", {
             entries: [
                 new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.EditBlocksAction("blocks"),
                 new woost.admin.actions.OpenURLAction("open-url"),
                 new woost.admin.actions.DeleteAction("delete")
             ]
@@ -1197,6 +1257,7 @@ woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar"
                 new woost.admin.actions.SelectViewAction("select-view"),
                 new woost.admin.actions.NewAction("new"),
                 new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.EditBlocksAction("blocks"),
                 new woost.admin.actions.OpenURLAction("open-url"),
                 new woost.admin.actions.DeleteAction("delete")
             ]
@@ -1236,7 +1297,8 @@ woost.admin.actions.referenceToolbar = new cocktail.ui.ActionSet("reference-tool
         new woost.admin.actions.NewAction("new"),
         new woost.admin.actions.ListAction("list"),
         new woost.admin.actions.ClearAction("clear"),
-        new woost.admin.actions.EditAction("edit")
+        new woost.admin.actions.EditAction("edit"),
+        new woost.admin.actions.EditBlocksAction("blocks"),
     ]
 });
 
@@ -1246,6 +1308,7 @@ woost.admin.actions.collectionToolbar = new cocktail.ui.ActionSet("collection-to
         new woost.admin.actions.AddAction("add"),
         new woost.admin.actions.RemoveAction("remove"),
         new woost.admin.actions.EditAction("edit"),
+        new woost.admin.actions.EditBlocksAction("blocks"),
         new woost.admin.actions.OpenURLAction("open-url"),
         new woost.admin.actions.DeleteAction("delete")
     ]
@@ -1308,6 +1371,7 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
         }),
         new cocktail.ui.ActionSet("navigation", {
             entries: [
+                new woost.admin.actions.SaveBlocksAction("save-blocks"),
                 new woost.admin.actions.CancelAction("cancel-edit", {
                     requiresModified: true
                 }),

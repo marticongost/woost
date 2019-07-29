@@ -119,7 +119,7 @@ cocktail.declare("woost.admin.ui");
         }
     }
 
-    woost.models.Slot.prototype[woost.admin.ui.hiddenInEditView] = true;
+    woost.models.Slot.prototype[cocktail.ui.editable] = cocktail.ui.NOT_EDITABLE;
 
     woost.models.ModelDataSource = class ModelDataSource extends cocktail.ui.HTTPDataSource {
 

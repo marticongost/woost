@@ -740,13 +740,16 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
     }
 
     defineParameters() {
-        let modelRelations = Array.from(this.model.members()).filter((member) => member.relatedType);
         return [
             new woost.admin.nodes.ObjectPath({
                 name: "objectPath",
-                rootObject: woost.admin.editState.get(this.item)
+                rootObject: this.getEditState()
             })
         ];
+    }
+
+    getEditState() {
+        return this.parent.getEditState();
     }
 
     getExistingObject(key) {
@@ -777,7 +780,7 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
                 super.children,
                 {
                     "rel": woost.admin.nodes.RelationNode,
-                    "blocks": woost.admin.nodes.BlocksNode
+                    "blocks": woost.admin.nodes.ItemBlocksNode
                 }
             );
         }
@@ -808,6 +811,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
                 };
                 return heading;
             }
+        }
+
+        getEditState() {
+            return woost.admin.editState.get(this.item);
         }
 
         get component() {
@@ -1047,26 +1054,26 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
     }
 }
 
-woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
+woost.admin.nodes.BaseBlocksNode = class BaseBlocksNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {
 
     get iconURL() {
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/blocks.svg`);
     }
 
     get title() {
-        return cocktail.ui.translations["woost.admin.actions.blocks"];
+        return cocktail.ui.translations["woost.admin.nodes.blocks"].replace("{ITEM}", this.item._label);
     }
 
     get defaultComponent() {
         return woost.admin.ui.BlocksView;
     }
 
-    get item() {
-        return woost.admin.editState.get(this.parent.item);
+    getEditState() {
+        return woost.admin.editState.get(this.item);
     }
 
     get model() {
-        return this.parent.model;
+        return this.item._class;
     }
 
     static get children() {
@@ -1078,6 +1085,31 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.ItemCo
     activate() {
         super.activate();
         this.stackNode.blockEditorNavigationNode = null;
+    }
+}
+
+woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.BaseBlocksNode {
+
+    defineParameters() {
+        return [
+            new cocktail.schema.Reference({
+                name: "item",
+                type: woost.models.Item,
+                parseValue(value) {
+                    if (value) {
+                        return this.type.getInstance(Number(value), {slots: "true"});
+                    }
+                    return null;
+                }
+            })
+        ];
+    }
+}
+
+woost.admin.nodes.ItemBlocksNode = class ItemBlocksNode extends woost.admin.nodes.BaseBlocksNode {
+
+    async initialize() {
+        this.item = await woost.models.Item.getInstance(this.parent.item.id, {slots: "true"});
     }
 }
 
@@ -1344,4 +1376,6 @@ woost.admin.nodes.LogoutSection = class LogoutSection extends woost.admin.nodes.
         form.submit();
     }
 }
+
+woost.admin.nodes.globalEntries["edit-blocks"] = woost.admin.nodes.BlocksNode;
 
