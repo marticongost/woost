@@ -114,7 +114,7 @@
     <?class
     disconnectedCallback() {
         super.disconnectedCallback();
-        woost.admin.editState.clear(this.editedItem);
+        woost.admin.editState.pop(this.editedItem);
     }
 
     get editedItem() {
@@ -234,6 +234,7 @@
                 .then((xhr) => {
                     const newValue = cocktail.schema.objectFromJSONValue(xhr.response.objects[0]);
                     this.parentInstance.headingElement.firstChild.value = newValue;
+                    woost.admin.editState.replace(newValue);
                     cocktail.ui.trigger(this.parentInstance, "newEditState", {oldValue, newValue});
                 });
         });
@@ -246,7 +247,13 @@
         ?>
 
         <?on value:changed
-        woost.admin.editState.set(newValue);
+        if (oldValue === undefined) {
+            woost.admin.editState.push(newValue);
+        }
+        else {
+            woost.admin.editState.replace(newValue);
+        }
+
         if (this.fieldsReady) {
             if (!this[PREVIOUS_STATE]) {
                 this[PREVIOUS_STATE] = oldValue;
