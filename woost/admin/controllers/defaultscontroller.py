@@ -5,7 +5,7 @@
 """
 import cherrypy
 from cocktail.persistence import PersistentObject
-from cocktail.controllers import Controller, json_out
+from cocktail.controllers import Controller, json_out, read_json
 from woost import app
 from woost.models import (
     Configuration,
@@ -13,22 +13,23 @@ from woost.models import (
     CreateTranslationPermission
 )
 from woost.models.utils import get_model_from_dotted_name
+from woost.admin.dataimport import Import
 from woost.admin.dataexport import Export
 
 
 class DefaultsController(Controller):
 
     @json_out
-    def __call__(self, model_name, locales = ()):
+    def __call__(self, model_name, locales=(), slots=False):
 
         if not model_name:
             raise cherrypy.HTTPError(400, "No model specified")
 
         model = get_model_from_dotted_name(model_name)
         locales = self._resolve_locales(locales)
-        app.user.require_permission(CreatePermission, target = model)
+
         obj = model()
-        obj.require_id()
+        data = read_json()
 
         for locale in locales:
             app.user.require_permission(
@@ -37,7 +38,10 @@ class DefaultsController(Controller):
             )
             obj.new_translation(locale)
 
-        export = Export()
+        Import(data, obj)
+        obj.require_id()
+
+        export = Export(include_slots=bool(slots))
         export.languages = locales
         state = export.export_object(obj)
         return state
