@@ -119,7 +119,7 @@ cocktail.declare("woost.admin.ui");
         }
     }
 
-    woost.models.Slot.prototype[cocktail.ui.editable] = cocktail.ui.NOT_EDITABLE;
+    woost.models.Slot.prototype[woost.admin.ui.hiddenInEditView] = true;
 
     woost.models.ModelDataSource = class ModelDataSource extends cocktail.ui.HTTPDataSource {
 
@@ -169,20 +169,26 @@ cocktail.declare("woost.admin.ui");
             this[DATA_SOURCE] = value;
         }
 
-        newInstance(locales = null) {
-            return this.loadDefaults(locales)
+        newInstance(parameters = null) {
+            return this.loadDefaults(parameters)
                 .then((obj) => {
                     obj._new = true;
+                    obj._withSlots = parameters && parameters.slots || false;
                     obj._deleted_translations = [];
                     return obj;
                 });
         }
 
-        loadDefaults(locales = null) {
+        loadDefaults(parameters = null) {
             return cocktail.ui.request({
                 url: woost.admin.url + "/data/defaults/" + this.name,
+                method: "POST",
                 responseType: "json",
-                parameters: locales ? {locales: locales.join(" ")} : null
+                data: parameters && parameters.data || {},
+                parameters: {
+                    locales: parameters.locales ? parameters.locales.join(" ") : undefined,
+                    slots: parameters && parameters.slots || undefined
+                }
             })
                 .then((xhr) => cocktail.schema.objectFromJSONValue(xhr.response));
         }

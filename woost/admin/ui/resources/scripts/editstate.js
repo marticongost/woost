@@ -14,25 +14,26 @@ cocktail.declare("woost.admin.editState");
 
     woost.admin.editState.get = function (item) {
         let id, obj;
-        if (typeof(item) == "number") {
-            id = item;
-            obj = null;
-        }
-        else {
+        if (typeof(item) == "object") {
             id = item.id;
             obj = item;
+        }
+        else {
+            id = item;
+            obj = null;
         }
         const stack = editStates[id];
         return stack && stack[stack.length - 1] || obj;
     }
 
     woost.admin.editState.push = function (item) {
-        if (!item.id) {
-            throw "Trying to push an edit state for an object with no ID";
+        const key = item && (item._key || item.id);
+        if (!key) {
+            throw "Trying to push an edit state for an object with no key";
         }
-        let stack = editStates[item.id];
+        let stack = editStates[key];
         if (!stack) {
-            editStates[item.id] = [item];
+            editStates[key] = [item];
         }
         else {
             stack.push(item);
@@ -41,9 +42,10 @@ cocktail.declare("woost.admin.editState");
     }
 
     woost.admin.editState.replace = function (item) {
-        const stack = editStates[item.id];
+        const key = item && (item._key || item.id);
+        const stack = editStates[key];
         if (!stack) {
-            throw `Missing edit state stack for ${item._class.name} #${item.id}`;
+            throw `Missing edit state stack for ${item._class.name} #${key}`;
         }
         const prevState = stack[stack.length - 1];
         for (let key in prevState) {
@@ -56,14 +58,14 @@ cocktail.declare("woost.admin.editState");
     }
 
     woost.admin.editState.pop = function (item) {
-        const id = typeof(item) == "number" ? item : item.id;
-        const stack = editStates[id];
+        const key = typeof(item) == "object" ? (item._key || item.id) : item;
+        const stack = editStates[key];
         if (!stack) {
-            throw `Missing edit state stack for ${item._class.name} #${item.id}`;
+            throw `Missing edit state stack for ${item._class.name} #${key}`;
         }
         if (stack.length == 1) {
             const state = stack[stack.length - 1];
-            delete editStates[id];
+            delete editStates[key];
             return state;
         }
         return stack.pop();

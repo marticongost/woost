@@ -247,10 +247,7 @@
         ?>
 
         <?on value:changed
-        if (oldValue === undefined) {
-            woost.admin.editState.push(newValue);
-        }
-        else {
+        if (oldValue !== undefined) {
             woost.admin.editState.replace(newValue);
         }
 
