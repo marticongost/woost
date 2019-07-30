@@ -208,7 +208,9 @@
     <?class
     disconnectedCallback() {
         super.disconnectedCallback();
-        woost.admin.editState.pop(this.editedItem);
+        if (!this.editedItem._new) {
+            woost.admin.editState.pop(this.editedItem);
+        }
     }
 
     loadPreview() {
@@ -274,7 +276,6 @@
 
     <?on navigationNode:changed
     if (!oldValue) {
-        const state = woost.admin.editState.push(newValue.item);
 
         const context = {
             node: this.navigationNode,
@@ -288,7 +289,7 @@
             actionList.actionSetup();
         }
 
-        this.blocksTree.item = state;
+        this.blocksTree.item = woost.admin.editState.get(newValue.item);
     }
     ?>
 

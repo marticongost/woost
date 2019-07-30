@@ -214,17 +214,84 @@ woost.admin.actions.SelectPartitioningMethodAction = class SelectPartitioningMet
             }
         }
 
-        invoke(context) {
-            const relation = context.reference || context.collection;
+        async invoke(context) {
+
+            // Create a new instance of the selected model
             const model = context.selectedModel || context.model.originalMember;
 
-            // Create an object and add it to a relation
-            if (relation) {
-                cocktail.navigation.extendPath("rel", relation.name, "new", model.name);
+            const item = await model.newInstance({
+                locales: [cocktail.getLanguage()],
+                slots: true
+            });
+
+            // Save the new instance in the edit state stack
+            woost.admin.editState.push(item);
+
+            // Relate the item to its parent
+            for (let node of cocktail.navigation.node.towardsRoot()) {
+                if (node instanceof woost.admin.nodes.RelationNode) {
+                    const lastStep = node.objectPath[node.objectPath.length - 1];
+                    const parentRel = lastStep.member.relatedEnd;
+                    if (parentRel) {
+                        const parentObj = lastStep.item;
+                        if (parentRel instanceof cocktail.schema.Reference) {
+                            item[parentRel.name] = parentObj;
+                        }
+                        else {
+                            item[parentRel.name].push(parentObj);
+                        }
+                    }
+                    break;
+                }
             }
-            // Create an object outside a relation context
+
+            // Set its parent based on the listing selection
+            // (ie. selecting a single page and clicking 'New' will automatically
+            // set the 'parent' for the page).
+            let stackNode = cocktail.ui.root.stack.stackTop;
+            while (stackNode) {
+                if (stackNode.selectable) {
+                    const selection = stackNode.selectable.selectedValues;
+                    if (selection.length == 1) {
+                        const relations = stackNode.selectable.treeRelations;
+                        if (relations) {
+                            for (let rel of relations) {
+                                if (
+                                    rel.relatedEnd
+                                    && selection[0]._class.isSchema(rel.relatedEnd.relatedType)
+                                    && model.isSchema(rel.relatedType)
+                                ) {
+                                    const key = rel.relatedEnd.name;
+                                    if (rel.relatedEnd instanceof cocktail.schema.Reference) {
+                                        item[key] = selection[0];
+                                    }
+                                    else {
+                                        let items = item[key];
+                                        if (!items) {
+                                            items = [selection[0]];
+                                        }
+                                        else {
+                                            items.push(selection[0]);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+                stackNode = stackNode.stackParent;
+            }
+
+            // The new object is being added to a relation
+            const relation = context.reference || context.collection;
+            if (relation) {
+                cocktail.navigation.extendPath("rel", relation.name, item.id);
+            }
+            // The new object is not bound to a specific relation
             else {
-                cocktail.navigation.extendPath("new", model.name);
+                cocktail.navigation.extendPath(item.id);
             }
         }
     }
@@ -816,6 +883,7 @@ woost.admin.actions.BaseSaveAction = class BaseSaveAction extends woost.admin.ac
                 if (isNew) {
                     const newState = response.changes.created[id];
                     newState._new = this.editingIntegralChild;
+                    woost.admin.editState.replace(newState);
 
                     if (!newState.id) {
                         newState.id = id;
@@ -930,6 +998,10 @@ woost.admin.actions.SaveBlocksAction = class SaveBlocksAction extends woost.admi
         return `${this.translationPrefix}.save`;
     }
 
+    compatibleWith(context) {
+        return !context.item._new && super.compatibleWith(context);
+    }
+
     getState(context) {
         let state = super.getState(context);
         if (state == "visible" && context.view.modified) {
@@ -979,18 +1051,21 @@ woost.admin.actions.CloseAction = class CloseAction extends woost.admin.actions.
 
     getState(context) {
 
-        if (context.view.isStackRoot || context.editingBlocks) {
+        if (context.view.isStackRoot || context.editingBlocks || !this.matchesModified(context)) {
             return "hidden";
         }
 
+        return super.getState(context);
+    }
+
+    matchesModified(context) {
         if (this.requiresModified !== undefined) {
             const modified = context.modified === undefined ? false : context.modified;
             if (this.requiresModified !== modified) {
-                return "hidden";
+                return false;
             }
         }
-
-        return super.getState(context);
+        return true;
     }
 
     getIconURL(context) {
@@ -1026,6 +1101,36 @@ woost.admin.actions.CancelAction = class CancelAction extends woost.admin.action
 
     get translationKey() {
         return `${this.translationPrefix}.cancel`;
+    }
+}
+
+woost.admin.actions.CancelBlocksAction = class CancelBlocksAction extends woost.admin.actions.CancelAction {
+
+    compatibleWith(context) {
+        return !context.item._new && super.compatibleWith(context);
+    }
+
+    get requiresModified() {
+        return true;
+    }
+}
+
+woost.admin.actions.CloseBlocksAction = class CloseBlocksAction extends woost.admin.actions.CloseAction {
+
+    getIconURL(context) {
+        return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/close.svg`);
+    }
+
+    get translationKey() {
+        return `${this.translationPrefix}.close`;
+    }
+
+    matchesModified(context) {
+        return context.item._new || super.matchesModified(context);
+    }
+
+    get requiresModified() {
+        return false;
     }
 }
 
@@ -1371,13 +1476,9 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
         }),
         new cocktail.ui.ActionSet("navigation", {
             entries: [
-                new woost.admin.actions.SaveBlocksAction("save-blocks"),
-                new woost.admin.actions.CancelAction("cancel-edit", {
-                    requiresModified: true
-                }),
-                new woost.admin.actions.CloseAction("close", {
-                    requiresModified: false
-                })
+                new woost.admin.actions.SaveBlocksAction("save"),
+                new woost.admin.actions.CancelBlocksAction("cancel"),
+                new woost.admin.actions.CloseBlocksAction("close")
             ]
         })
     ]
