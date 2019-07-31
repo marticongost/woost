@@ -60,7 +60,7 @@ class TransactionController(Controller):
                 try:
                     datastore.commit()
                 except ConflictError as conflict_error:
-                    if attempts > self.max_transaction_attempts:
+                    if attempt > self.max_transaction_attempts:
                         raise
                     attempt += 1
                     datastore.sync()
