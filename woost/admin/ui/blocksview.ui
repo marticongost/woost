@@ -290,6 +290,7 @@
         }
 
         this.blocksTree.item = woost.admin.editState.get(newValue.item);
+        this.blocksTree.selectDefaultSlot();
     }
     ?>
 
