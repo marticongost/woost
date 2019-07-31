@@ -22,7 +22,7 @@
 
     <?class
     [UPLOAD_TEMP_FILE](file) {
-       this.uploadState = "uploading";
+        this.uploadState = "uploading";
 
         woost.admin.actions.attempt(
             cocktail.ui.request({
