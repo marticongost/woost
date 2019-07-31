@@ -213,6 +213,33 @@ cocktail.declare("woost.admin.ui");
             });
     }
 
+    woost.models.save = async function (obj, parameters = null) {
+
+        const serializationParameters = {
+            includeMember: (member) => {
+                return obj[member.name] !== undefined && (
+                    member.primary
+                    || woost.models.getMemberEditMode(member) === cocktail.ui.EDITABLE
+                );
+            },
+            getMemberParameters: (member) => serializationParameters
+        };
+
+        const objData = obj._class.toJSONValue(obj, serializationParameters);
+        const response = await woost.models.transaction({objects: [objData], parameters});
+
+        if (obj._new) {
+            for (let id in response.changes.created) {
+                return response.changes.created[id];
+            }
+        }
+        else {
+            for (let id in response.changes.modified) {
+                return response.changes.modified[id];
+            }
+        }
+    }
+
     woost.models.processChanges = function (changes, invalidation = true) {
 
         // Issue invalidations for new objects
