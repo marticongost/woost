@@ -1020,8 +1020,12 @@ woost.admin.nodes.BlocksNode = class BlocksNode extends woost.admin.nodes.BaseBl
 
     applyParameter(param, value) {
         super.applyParameter(param, value);
+
         if (param.name == "item") {
-            woost.admin.editState.push(value);
+            const state = woost.admin.editState.get(value.id);
+            if (!state || !state._withSlots) {
+                woost.admin.editState.push(value);
+            }
         }
     }
 }
