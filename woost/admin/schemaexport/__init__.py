@@ -18,6 +18,7 @@ from . import reference
 from . import collection
 from . import mapping
 from . import tuple
+from . import color
 from . import codeblock
 from . import html
 from . import localemember
