@@ -153,6 +153,17 @@ cocktail.declare("woost.admin.ui");
             return value && value._label || super.translateValue(value, params);
         }
 
+        getInstance(id, parameters = null) {
+            let promise = super.getInstance(id, parameters);
+            if (parameters && parameters.slots) {
+                promise = promise.then((obj) => {
+                    obj._withSlots = true;
+                    return obj;
+                });
+            }
+            return promise;
+        }
+
         get dataSource() {
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
