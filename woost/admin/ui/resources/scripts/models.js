@@ -153,6 +153,17 @@ cocktail.declare("woost.admin.ui");
             return value && value._label || super.translateValue(value, params);
         }
 
+        getInstance(id, parameters = null) {
+            let promise = super.getInstance(id, parameters);
+            if (parameters && parameters.slots) {
+                promise = promise.then((obj) => {
+                    obj._withSlots = true;
+                    return obj;
+                });
+            }
+            return promise;
+        }
+
         get dataSource() {
             let dataSource = this[DATA_SOURCE];
             if (dataSource === undefined && this.name) {
@@ -169,20 +180,26 @@ cocktail.declare("woost.admin.ui");
             this[DATA_SOURCE] = value;
         }
 
-        newInstance(locales = null) {
-            return this.loadDefaults(locales)
+        newInstance(parameters = null) {
+            return this.loadDefaults(parameters)
                 .then((obj) => {
                     obj._new = true;
+                    obj._withSlots = parameters && parameters.slots || false;
                     obj._deleted_translations = [];
                     return obj;
                 });
         }
 
-        loadDefaults(locales = null) {
+        loadDefaults(parameters = null) {
             return cocktail.ui.request({
                 url: woost.admin.url + "/data/defaults/" + this.name,
+                method: "POST",
                 responseType: "json",
-                parameters: locales ? {locales: locales.join(" ")} : null
+                data: parameters && parameters.data || {},
+                parameters: {
+                    locales: parameters.locales ? parameters.locales.join(" ") : undefined,
+                    slots: parameters && parameters.slots || undefined
+                }
             })
                 .then((xhr) => cocktail.schema.objectFromJSONValue(xhr.response));
         }
@@ -205,6 +222,33 @@ cocktail.declare("woost.admin.ui");
                 const changes = woost.models.processChanges(response.changes, invalidation);
                 return response;
             });
+    }
+
+    woost.models.save = async function (obj, parameters = null) {
+
+        const serializationParameters = {
+            includeMember: (member) => {
+                return obj[member.name] !== undefined && (
+                    member.primary
+                    || woost.models.getMemberEditMode(member) === cocktail.ui.EDITABLE
+                );
+            },
+            getMemberParameters: (member) => serializationParameters
+        };
+
+        const objData = obj._class.toJSONValue(obj, serializationParameters);
+        const response = await woost.models.transaction({objects: [objData], parameters});
+
+        if (obj._new) {
+            for (let id in response.changes.created) {
+                return response.changes.created[id];
+            }
+        }
+        else {
+            for (let id in response.changes.modified) {
+                return response.changes.modified[id];
+            }
+        }
     }
 
     woost.models.processChanges = function (changes, invalidation = true) {

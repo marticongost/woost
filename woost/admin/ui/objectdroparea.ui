@@ -4,6 +4,12 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui">
 
+    <ui:property
+        name="acceptsFileDrops"
+        type="boolean"
+        reflected="true"
+        default="false"/>
+
     <?class
     objectDraggedOver(e) {
     }
@@ -30,13 +36,13 @@
     ?>
 
     <?on dragover
-    if (e.dataTransfer.types.includes("application/x-woost-object")) {
-        this.objectDraggedOver(e);
-        e.preventDefault();
-    }
+    this.objectDraggedOver(e);
+    e.preventDefault();
     ?>
 
     <?on drop
+
+    // Dropping a Woost object; deserialize it
     const jsonData = e.dataTransfer.getData("application/x-woost-object");
     if (jsonData) {
         const data = JSON.parse(jsonData);
@@ -45,6 +51,48 @@
         data.event = e;
         if (this.acceptsDrop(data) && this.objectDropped(data)) {
             e.preventDefault();
+        }
+    }
+    // Dropping one or more files: create a woost.models.File for each
+    else if (this.acceptsFileDrops) {
+        const files = [];
+
+        for (let item of e.dataTransfer.items) {
+            if (item.kind == "file") {
+                files.push(item.getAsFile());
+            }
+        }
+
+        if (files) {
+            e.preventDefault();
+            let i = 0;
+
+            const handleNextFile = () => {
+                if (i < files.length) {
+                    const file = files[i];
+                    i++;
+                    const values = {title: {[cocktail.getLanguage()]: file.name}};
+                    woost.admin.actions.attempt(
+                        woost.models.File.upload(file, {values})
+                            .then((obj) => {
+                                const data = {
+                                    model: woost.models.File,
+                                    item: obj,
+                                    event: e
+                                };
+                                if (this.acceptsDrop(data)) {
+                                    this.objectDropped(data);
+                                }
+                            })
+                    )
+                        // The timeout is added as a workaround for a bug where AsyncUploader
+                        // can't handle uploadingmultiple files in rapid succession (probably
+                        // an issue with the session backend)
+                        .finally(() => setTimeout(handleNextFile, 100));
+                }
+            }
+
+            handleNextFile();
         }
     }
     ?>

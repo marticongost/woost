@@ -51,46 +51,38 @@
                 this.blockEditor.animationState = "opening";
 
                 // Each time the block edit form changes
-                const form = this.blockEditor.editForm;
-                form.addEventListener("valueChanged", (e) => {
+                this.blockEditor.addEventListener("newEditState", (e) => {
 
-                    const blockDisplay = this.blocksTree.getBlockDisplay(this.blockEditor.editedItem);
-                    const slotDisplay = blockDisplay.slotDisplay;
+                    instance.modified = true;
 
-                    // Update the state of the block on the parent edit form
+                    const newState = e.detail.newValue;
+
+                    // Update the block displays on the blocks view after a block
+                    // is edited
+                    const blockDisplay = this.blocksTree.getBlockDisplay(newState);
+                    blockDisplay.item = newState;
+
+                    // Update the state of the block on the object tree
                     woost.models.setValueAtPath(
-                        woost.admin.editState.get(this.navigationNode.item),
+                        this.navigationNode.getEditState(),
                         this.blockEditorNavigationNode.objectPath,
-                        e.detail.newValue
-                    );
-
-                    // Update the state of the block on the blocks view
-                    woost.models.setValueAtPath(
-                        this.navigationNode.item,
-                        this.blockEditorNavigationNode.objectPath,
-                        e.detail.newValue
+                        newState
                     );
 
                     // Update blocks on the preview view
+                    const slotDisplay = blockDisplay.slotDisplay;
                     const changedMembers = Array.from(
-                        form.dataBinding.member.diff(e.detail.oldValue, e.detail.newValue),
+                        this.blockEditor.editForm.dataBinding.member.diff(e.detail.oldValue, newState),
                         (change) => change.member.originalMember.fullName
                     );
                     instance[POST_MESSAGE]({
                         type: "updateBlock",
-                        blockData: e.detail.newValue,
+                        blockData: newState,
                         editState: instance.getEditState(),
                         slotName: slotDisplay.slot.name,
                         containerId: slotDisplay.item.id,
                         changedMembers
                     });
-                });
-
-                // Update the block displays on the blocks view after a block
-                // is edited
-                this.blockEditor.addEventListener("newEditState", (e) => {
-                    const blockDisplay = this.blocksTree.getBlockDisplay(e.detail.newValue);
-                    blockDisplay.item = e.detail.newValue;
                 });
 
                 this.editingBlock = true;
@@ -202,7 +194,25 @@
         ?>
     </ui:property>
 
+    <ui:property
+        name="modified"
+        type="boolean"
+        reflected="true"
+        default="false">
+        <?on changed
+        this.actionList.actionContext.modified = newValue;
+        this.actionList.updateActions();
+        ?>
+    </ui:property>
+
     <?class
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (!this.editedItem._new) {
+            woost.admin.editState.pop(this.editedItem);
+        }
+    }
+
     loadPreview() {
 
         // Load the current edit state into the preview iframe
@@ -238,7 +248,7 @@
     }
 
     getEditState() {
-        return this.navigationNode.parent.editForm.getJSONValue();
+        return this.editedModel.toJSONValue(this.editedItem);
     }
 
     closeNode() {
@@ -279,7 +289,8 @@
             actionList.actionSetup();
         }
 
-        this.blocksTree.item = newValue.item;
+        this.blocksTree.item = woost.admin.editState.get(newValue.item);
+        this.blocksTree.selectDefaultSlot();
     }
     ?>
 
@@ -410,14 +421,12 @@
                     addDirtyLocation(newBlock);
                 }
 
-                const editState = instance.getEditState();
-
                 for (let dirtyLocation of dirtyLocations) {
                     instance[POST_MESSAGE]({
                         type: "updateSlot",
                         containerId: dirtyLocation.container.id,
                         slotName: dirtyLocation.slot.name,
-                        editState: editState
+                        editState: instance.getEditState()
                     });
                 }
                 ?>

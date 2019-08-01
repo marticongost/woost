@@ -115,6 +115,12 @@
     );
     this.mixedContentTypes = Boolean(relatedType && relatedType.derivedSchemas.length);
     this.meaningfulIcons = Boolean(this.mixedContentTypes || (relatedType && relatedType[woost.admin.ui.showThumbnails]));
+    this.acceptsFileDrops = Boolean(
+        relatedType && (
+            woost.models.File.isSchema(relatedType)
+            || relatedType.isSchema(woost.models.File)
+        )
+    );
 
     this.toolbar.actionContext.model = newValue.member.items.type;
     this.toolbar.actionContext.collection = newValue.member;

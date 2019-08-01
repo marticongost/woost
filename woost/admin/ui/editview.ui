@@ -114,7 +114,7 @@
     <?class
     disconnectedCallback() {
         super.disconnectedCallback();
-        woost.admin.editState.clear(this.editedItem);
+        woost.admin.editState.pop(this.editedItem);
     }
 
     get editedItem() {
@@ -215,6 +215,7 @@
         <ui:symbol name="UPDATE_DELAY"/>
 
         <?on modified:changed
+        this.parentInstance.actionList.actionContext.modified = newValue;
         this.parentInstance.actionList.updateActions();
         ?>
 
@@ -223,7 +224,6 @@
 
             const oldValue = this[PREVIOUS_STATE];
             delete this[PREVIOUS_STATE];
-            this.parentInstance.actionList.actionContext.modified = this.modified;
 
             cocktail.ui.request({
                 url: woost.admin.url + "/data/values",
@@ -234,6 +234,7 @@
                 .then((xhr) => {
                     const newValue = cocktail.schema.objectFromJSONValue(xhr.response.objects[0]);
                     this.parentInstance.headingElement.firstChild.value = newValue;
+                    woost.admin.editState.replace(newValue);
                     cocktail.ui.trigger(this.parentInstance, "newEditState", {oldValue, newValue});
                 });
         });
@@ -246,7 +247,10 @@
         ?>
 
         <?on value:changed
-        woost.admin.editState.set(newValue);
+        if (oldValue !== undefined) {
+            woost.admin.editState.replace(newValue);
+        }
+
         if (this.fieldsReady) {
             if (!this[PREVIOUS_STATE]) {
                 this[PREVIOUS_STATE] = oldValue;
