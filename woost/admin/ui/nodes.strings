@@ -6,3 +6,8 @@
     es: No se puede resolver la dirección indicada
     en: Couldn't resolve the requested address
 
+    [blocks]
+    ca: Blocs a {ITEM}
+    es: Bloques en {ITEM}
+    en: Blocks of {ITEM}
+

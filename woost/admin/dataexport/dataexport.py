@@ -19,7 +19,8 @@ from woost.models import (
     ReadPermission,
     ReadMemberPermission,
     ModifyPermission,
-    PermissionExpression
+    PermissionExpression,
+    Slot
 )
 from woost.models.rendering import ImageFactory
 from woost.models.utils import any_translation, get_model_dotted_name
@@ -51,6 +52,7 @@ class Export(metaclass = ExportMetaclass):
     model_exporters = ChainTypeMapping()
     member_expansion = ChainMap()
     member_fields = ChainMap()
+    include_slots: bool = False
 
     model = None
     base_collection = None
@@ -83,7 +85,8 @@ class Export(metaclass = ExportMetaclass):
         extra_members: Sequence[schema.Member] = (),
         excluded_members=excluded_members,
         thumbnail_factory="admin_thumbnail",
-        children_export=None
+        children_export=None,
+        include_slots: bool = None
     ):
         self.__model_fields = {}
         self.__languages = set(languages or Configuration.instance.languages)
@@ -115,6 +118,9 @@ class Export(metaclass = ExportMetaclass):
 
         self.thumbnail_factory = thumbnail_factory
         self.children_export = children_export
+
+        if include_slots is not None:
+            self.include_slots = include_slots
 
     def iter_members(self, model):
 
@@ -375,6 +381,10 @@ class Export(metaclass = ExportMetaclass):
             and not (
                 isinstance(member, schema.RelationMember)
                 and member.anonymous
+            )
+            and (
+                self.include_slots
+                or not isinstance(member, Slot)
             )
             and self._has_member_permission(member)
         )

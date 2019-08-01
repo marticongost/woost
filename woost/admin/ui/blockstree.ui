@@ -308,6 +308,20 @@
 
         return row.slotDisplay.slot;
     }
+
+    selectDefaultSlot() {
+        const model = this.item && this.item._class;
+        if (model) {
+            for (let member of model.members()) {
+                if (member instanceof woost.models.Slot) {
+                    const display = this.getSlotDisplay(this.item, member);
+                    this.selectedElements = [display.row];
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     ?>
 
     <?on-window dragend
