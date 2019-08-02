@@ -6,9 +6,12 @@
     display: block;
     position: relative;
     width: $item-selector-width;
+    display: inline-flex;
+    flex-direction: column;
 }
 
 #toolbar {
+    flex: 0 0 auto;
     margin-bottom: 0.2em;
     font-size: 0.85em;
     --action-list-icon-width: 1.8em;
@@ -19,10 +22,12 @@
 }
 
 #list {
+    flex: 1 1 auto;
     border: 1px solid #ddd;
     display: inline-flex;
     flex-direction: column;
     min-width: 100%;
+    overflow: auto;
 
     :host([empty='true']) & {
         display: none;

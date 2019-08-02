@@ -1337,37 +1337,29 @@ woost.admin.actions.PasteBlocksAction = class PasteBlocksAction extends woost.ad
 
 /* Action sets
 -----------------------------------------------------------------------------*/
-{
-    const menu = () => {
-        return {
-            create() {
-                const element = cocktail.ui.ActionList.create();
-                element.classList.add("vertical");
-                return element;
-            }
-        };
-    };
-
-    woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
-        entries: [
-            new cocktail.ui.ActionSet("main", {
-                component: menu,
-                entries: [
-                    new woost.admin.actions.EditAction("edit"),
-                    new woost.admin.actions.EditBlocksAction("blocks"),
-                    new woost.admin.actions.OpenURLAction("open-url"),
-                    new woost.admin.actions.DeleteAction("delete")
-                ]
+woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            component: () => cocktail.ui.ActionList.withProperties({
+                classList: ["vertical"]
             }),
-            new cocktail.ui.ActionSet("extra", {
-                component: menu,
-                entries: [
-                    new woost.admin.actions.ClearCacheAction("clear-cache")
-                ]
-            })
-        ]
-    });
-}
+            entries: [
+                new woost.admin.actions.EditAction("edit"),
+                new woost.admin.actions.EditBlocksAction("blocks"),
+                new woost.admin.actions.OpenURLAction("open-url"),
+                new woost.admin.actions.DeleteAction("delete")
+            ]
+        }),
+        new cocktail.ui.ActionSet("extra", {
+            component: () => cocktail.ui.ActionList.withProperties({
+                classList: ["vertical", "separator"]
+            }),
+            entries: [
+                new woost.admin.actions.ClearCacheAction("clear-cache")
+            ]
+        })
+    ]
+});
 
 woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar", {
     entries: [
@@ -1482,6 +1474,9 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
             ]
         }),
         new cocktail.ui.ActionSet("copy-paste", {
+            component: () => cocktail.ui.ActionList.withProperties({
+                classList: ["separator"]
+            }),
             entries: [
                 new woost.admin.actions.CopyAction("copy"),
                 new woost.admin.actions.CutAction("cut"),
