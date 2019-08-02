@@ -76,7 +76,7 @@
         menu.actionList.actionContext.model = objectSource.model;
         menu.actionList.actionContext.selection = [objectSource.item];
         menu.actionList.actionContext.objectPath = objectSource.target.objectPath;
-        menu.actionSetup();
+        menu.actionList.actionSetup();
 
         if (objectSource.position) {
             menu.style.left = objectSource.position.x + "px";
