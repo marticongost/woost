@@ -153,14 +153,14 @@ class Export(metaclass = ExportMetaclass):
             self.__model_fields[(model, ref)] = fields
             return fields
 
-    def get_results(self):
+    def get_results(self, ref=False):
 
         objects, count = self.resolve_results()
 
         if self.range:
             objects = objects[self.range[0]:self.range[1]]
 
-        return (self.export_object(obj) for obj in objects), count
+        return (self.export_object(obj, ref=ref) for obj in objects), count
 
     def resolve_results(self):
         query = self.select_objects()

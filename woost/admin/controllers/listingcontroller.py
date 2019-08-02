@@ -102,7 +102,10 @@ class ListingController(Controller):
             ):
                 raise cherrypy.HTTPError(403, "Unauthorized object access")
 
-            object_data = self.export.export_object(self.instance)
+            object_data = self.export.export_object(
+                self.instance,
+                ref=self.refs_only
+            )
 
             # Export the object path, if it defines one
             obj_path = get_path(self.instance)
@@ -127,7 +130,7 @@ class ListingController(Controller):
                 self.export.order = self.order
 
             self.export.range = self.range
-            results, count = self.export.get_results()
+            results, count = self.export.get_results(ref=self.refs_only)
 
             return {
                 "count": self._get_count_object(count),
@@ -332,6 +335,14 @@ class ListingController(Controller):
     def include_slots(self):
         return get_parameter(
             schema.Boolean("slots", default=False),
+            undefined="set_default",
+            errors="raise"
+        )
+
+    @request_property
+    def refs_only(self):
+        return get_parameter(
+            schema.Boolean("ref", default=False),
             undefined="set_default",
             errors="raise"
         )
