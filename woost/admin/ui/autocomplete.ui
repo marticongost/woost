@@ -24,6 +24,7 @@
             relation = this.dataBinding.member.originalMember.fullName;
         }
         parameters.parameters.relation = relation;
+        parameters.parameters.ref = "true";
         return parameters;
     }
     ?>
