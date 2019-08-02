@@ -1337,23 +1337,37 @@ woost.admin.actions.PasteBlocksAction = class PasteBlocksAction extends woost.ad
 
 /* Action sets
 -----------------------------------------------------------------------------*/
-woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
-    entries: [
-        new cocktail.ui.ActionSet("main", {
-            entries: [
-                new woost.admin.actions.EditAction("edit"),
-                new woost.admin.actions.EditBlocksAction("blocks"),
-                new woost.admin.actions.OpenURLAction("open-url"),
-                new woost.admin.actions.DeleteAction("delete")
-            ]
-        }),
-        new cocktail.ui.ActionSet("extra", {
-            entries: [
-                new woost.admin.actions.ClearCacheAction("clear-cache")
-            ]
-        })
-    ]
-});
+{
+    const menu = () => {
+        return {
+            create() {
+                const element = cocktail.ui.ActionList.create();
+                element.classList.add("vertical");
+                return element;
+            }
+        };
+    };
+
+    woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
+        entries: [
+            new cocktail.ui.ActionSet("main", {
+                component: menu,
+                entries: [
+                    new woost.admin.actions.EditAction("edit"),
+                    new woost.admin.actions.EditBlocksAction("blocks"),
+                    new woost.admin.actions.OpenURLAction("open-url"),
+                    new woost.admin.actions.DeleteAction("delete")
+                ]
+            }),
+            new cocktail.ui.ActionSet("extra", {
+                component: menu,
+                entries: [
+                    new woost.admin.actions.ClearCacheAction("clear-cache")
+                ]
+            })
+        ]
+    });
+}
 
 woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar", {
     entries: [
