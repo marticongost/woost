@@ -75,6 +75,7 @@ class SiteInitializer(object):
     admin_password = ""
     languages = ["en"]
     hosts = ["localhost"]
+    https_policy = "never"
     base_id = None
 
     read_only_types = [
@@ -156,6 +157,15 @@ class SiteInitializer(object):
         parser.add_option("-l", "--languages",
             help="Comma separated list of languages")
         parser.add_option("--hostname", help="Hostname for the website")
+        parser.add_option(
+            "--https",
+            default="never",
+            choices=["always", "never", "per_page"],
+            help="""
+                The HTTPS policy for the website. Can be one of always, never
+                or per_page.
+                """
+        )
         parser.add_option("-b", "--base-id",
             type=int,
             help="Seed the incremental ID sequence at a non-zero value")
@@ -179,6 +189,8 @@ class SiteInitializer(object):
 
         if options.hostname:
             self.hosts = [options.hostname]
+
+        self.https_policy = options.https
 
         languages = options.languages \
             and options.languages.replace(",", " ") \
@@ -373,7 +385,8 @@ class SiteInitializer(object):
             Website,
             site_name=TranslatedValues("website.site_name"),
             identifier=self.hosts[0].split(".")[0],
-            hosts=self.hosts
+            hosts=self.hosts,
+            https_policy=self.https_policy
         )
 
     def create_anonymous_role(self):
