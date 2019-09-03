@@ -101,6 +101,7 @@ $submenu-transition: 0.4s ease;
                 width: $icon-size;
                 max-height: $icon-size;
                 fill: #999;
+                margin-right: 1em;
             }
 
             &:hover {
@@ -122,7 +123,6 @@ $submenu-transition: 0.4s ease;
             }
 
             .heading {
-                margin-left: 1em;
                 font-size: 1.3em;
                 width: 75%;
                 overflow: hidden;
