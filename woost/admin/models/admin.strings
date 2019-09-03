@@ -61,6 +61,22 @@ en: Administration panel
                 The <em>cocktail.ui</em> component to use to generate the user interface for
                 the admin.
 
+        [main_ui_component]
+        ca: Component visual principal
+        es: Componente visual principal
+        en: Main UI component
+
+            [explanation]
+            ca:
+                El nom del component de <em>cocktail.ui</em> que s'utilitzarà com a arrel
+                de la interfície d'usuari pel panell d'administració.
+            es:
+                El nombre del componente <em>cocktail.ui</em> que se utilizará como raíz
+                de la interfaz de usuario para el panel de administración.
+            en:
+                The name of a <em>cocktail.ui</em> component that will be used as the root
+                element of the user interface for the administration panel.
+
         [ui_components]
         ca: Components visuals
         es: Componentes visuales
