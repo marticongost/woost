@@ -249,8 +249,12 @@ class Section:
         return False
 
     def required_ui_components(self):
+
         if self.ui_component:
             yield components.resolve(self.ui_component)
+
+        if self.menu_entry_component:
+            yield components.resolve(self.menu_entry_component)
 
     def export_data(self):
 
