@@ -255,12 +255,14 @@ woost.admin.nodes.BaseSectionNode = (base) => class Section extends base {
 
     static get children() {
 
-        let map = Object.assign({}, super.children);
+        const map = Object.assign({}, super.children);
 
         for (let section of this.section.children) {
-            let baseSectionClass = cocktail.getVariable(section.node);
-            let sectionClass = baseSectionClass.createSectionClass(section);
-            map[section.id] = sectionClass;
+            if (section.node) {
+                const baseSectionClass = cocktail.getVariable(section.node);
+                const sectionClass = baseSectionClass.createSectionClass(section);
+                map[section.id] = sectionClass;
+            }
         }
 
         return map;
