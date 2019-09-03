@@ -183,7 +183,10 @@
             }
 
             for (let subsection of newValue.children) {
-                let subsectionEntry = woost.admin.ui.Layout.MenuEntry.create();
+                const entryClass = subsection.menu_entry_component ?
+                    cocktail.getVariable(subsection.menu_entry_component)
+                    : woost.admin.ui.Layout.MenuEntry;
+                const subsectionEntry = entryClass.create();
                 subsectionEntry.section = subsection;
                 subsectionEntry.parentEntry = this;
                 this.subsectionsList.append(subsectionEntry);
