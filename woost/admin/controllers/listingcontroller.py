@@ -545,6 +545,18 @@ class ListingController(Controller):
 
         filter_expressions = []
 
+        # User defined expressions via the Admin.filters code block
+        admin = app.publishable
+        if admin.filters:
+            filter_expressions = admin.__class__.filters.execute(
+                admin,
+                {
+                    "self": admin,
+                    "listing": self,
+                    "filters": filter_expressions
+                }
+            )["filters"]
+
         if self.search:
             filter_expressions.append(
                 Self.search(

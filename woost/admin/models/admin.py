@@ -25,7 +25,8 @@ class Admin(Publishable):
         "python_package",
         "root_section",
         "main_ui_component",
-        "ui_components"
+        "ui_components",
+        "filters"
     ]
 
     default_access_level = schema.DynamicDefault(lambda:
@@ -60,6 +61,10 @@ class Admin(Publishable):
 
     ui_components = schema.Collection(
         items = schema.String()
+    )
+
+    filters = schema.CodeBlock(
+        language="python"
     )
 
     def create_root_section(self):
