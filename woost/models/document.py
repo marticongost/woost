@@ -103,6 +103,7 @@ class Document(Publishable):
         bidirectional=True,
         related_key="parent",
         cascade_delete=True,
+        copy_mode=schema.DEEP_COPY,
         after_member="parent",
         member_group="navigation.tree"
     )
