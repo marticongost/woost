@@ -967,6 +967,10 @@ woost.admin.nodes.RelationSelectorNode = class RelationSelectorNode extends woos
     get defaultComponent() {
         return woost.admin.ui.RelationSelector;
     }
+
+    get toolbar() {
+        return woost.admin.actions.selectionToolbar;
+    }
 }
 
 woost.admin.nodes.BaseBlocksNode = class BaseBlocksNode extends woost.admin.nodes.ItemContainer(woost.admin.nodes.StackNode) {

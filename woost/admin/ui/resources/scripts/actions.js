@@ -1217,10 +1217,6 @@ woost.admin.actions.AcceptSelectionAction = class AcceptSelectionAction extends 
         return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/accept.svg`);
     }
 
-    compatibleWith(context) {
-        return context.node.relation && super.compatibleWith(context);
-    }
-
     getState(context) {
 
         const filteredSelection = this.filterSelection(context.selection);
@@ -1379,6 +1375,41 @@ woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar"
                 new woost.admin.actions.RefreshAction("refresh"),
                 new woost.admin.actions.ClearCacheAction("clear-cache"),
                 new woost.admin.actions.ExcelAction("excel")
+            ]
+        }),
+        new cocktail.ui.ActionSet("controls", {
+            component: () => cocktail.ui.ActionList.withProperties({
+                buttonStyle: "textOnly"
+            }),
+            entries: [
+                new woost.admin.actions.SelectPartitioningMethodAction("select-partitioning-method"),
+                new woost.admin.actions.FieldsAction("fields"),
+                new woost.admin.actions.LocalesAction("locales"),
+                new woost.admin.actions.FiltersAction("filters"),
+                new woost.admin.actions.SearchAction("search"),
+                new woost.admin.actions.ResultCountAction("result-count")
+            ]
+        }),
+        new cocktail.ui.ActionSet("navigation", {
+            entries: [
+                new woost.admin.actions.CloseAction("close")
+            ]
+        })
+    ]
+});
+
+woost.admin.actions.selectionToolbar = new cocktail.ui.ActionSet("selection-toolbar", {
+    entries: [
+        new cocktail.ui.ActionSet("main", {
+            entries: [
+                new woost.admin.actions.SelectViewAction("select-view"),
+                new woost.admin.actions.OpenURLAction("open-url")
+            ]
+        }),
+        new cocktail.ui.ActionSet("extra", {
+            component: () => cocktail.ui.ExtraActionList,
+            entries: [
+                new woost.admin.actions.RefreshAction("refresh")
             ]
         }),
         new cocktail.ui.ActionSet("controls", {
