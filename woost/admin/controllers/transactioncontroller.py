@@ -126,27 +126,36 @@ class TransactionController(Controller):
             if states:
                 for state in states:
                     new = state.get("_new")
+                    source = state.get("_source")
                     id = state.get("id")
 
-                    if not new and not id:
+                    if not new and not source and not id:
                         raise cherrypy.HTTPError(
                             400,
-                            "Expected a _new flag or the id of an existing "
-                            "object"
+                            "Expected a _new flag, a _source flag or the id "
+                            "of an existing object"
                         )
 
-                    if new:
+                    if source:
+                        obj = resolve_object_ref(source)
+                        obj = obj.create_copy()
+                        obj.insert()
+                        user.require_permission(
+                            CreatePermission,
+                            target=obj
+                        )
+                    elif new:
                         model = get_model_from_state(state)
                         obj = model()
                         user.require_permission(
                             CreatePermission,
-                            target = obj
+                            target=obj
                         )
                     else:
                         obj = resolve_object_ref(id)
                         user.require_permission(
                             ModifyPermission,
-                            target = obj
+                            target=obj
                         )
 
                     imports.append(self._import_object(obj, state))
