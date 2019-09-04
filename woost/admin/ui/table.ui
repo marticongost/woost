@@ -90,8 +90,14 @@
 
     async invalidation(changes) {
 
-        // TODO: invalidation of hierarchical tables
+        // TODO: proper invalidation of hierarchical tables
         // TODO: invalidation animations (collapse removed rows, pulse new / modified rows)
+
+        // Hierarchical tables are fully reloaded
+        if (this.treeRelations) {
+            this.reload();
+            return;
+        }
 
         // Remove the rows representing deleted objects
         for (let [id, object] of changes.deleted) {
