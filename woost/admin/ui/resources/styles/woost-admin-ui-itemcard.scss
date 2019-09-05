@@ -89,6 +89,7 @@ $icon-height: $card-height - $icon-padding * 2;
 
 #imageFrame {
     flex: 0 0;
+    position: relative;
 
     :host-context([meaningfulIcons='false']) & {
         display: none;
