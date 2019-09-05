@@ -230,11 +230,16 @@ woost.admin.nodes.Root = class Root extends woost.admin.nodes.ItemContainer() {
     }
 
     activate() {
-        for (let k in this.children) {
-            let uri = URI(location.href).query("");
-            uri = uri.segment([...uri.segment(), k]);
-            cocktail.navigation.replace(uri.normalizePath().toString());
-            break;
+        if (woost.admin.data._root_section.default_child) {
+            cocktail.navigation.extendPath(woost.admin.data._root_section.default_child);
+        }
+        else {
+            for (let k in this.children) {
+                let uri = URI(location.href).query("");
+                uri = uri.segment([...uri.segment(), k]);
+                cocktail.navigation.replace(uri.normalizePath().toString());
+                break;
+            }
         }
     }
 }
@@ -281,9 +286,14 @@ woost.admin.nodes.Folder = class Folder extends woost.admin.nodes.BaseSectionNod
     }
 
     activate() {
-        for (let k in this.children) {
-            cocktail.navigation.extendPath(k);
-            break;
+        if (this.section && this.section.default_child) {
+            cocktail.navigation.extendPath(this.section.default_child);
+        }
+        else {
+            for (let k in this.children) {
+                cocktail.navigation.extendPath(k);
+                break;
+            }
         }
     }
 }
