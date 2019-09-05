@@ -23,6 +23,7 @@ class Section:
     node = None
     ui_component = None
     menu_entry_component = None
+    default_child = None
 
     def __init__(self, id, **kwargs):
 
@@ -273,7 +274,8 @@ class Section:
                 child.export_data()
                 for child in self.__children
                 if self.should_export_child(child)
-            ]
+            ],
+            "default_child": self.default_child
         }
 
     def should_export_child(self, child):
