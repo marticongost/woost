@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:woost.admin.ui.ItemCard
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <ui:property
+        name="authorized"
+        type="boolean"
+        reflected="true"/>
+
+    <?class
+    getIconURL() {
+        if (this.value._class.isSchema(woost.models.permission.ContentPermission)) {
+            return this.value.content_type[woost.admin.ui.modelIconURL];
+        }
+        return super.getIconURL();
+    }
+    ?>
+
+    <?on value:changed
+    this.authorized = newValue && newValue.authorized;
+    let actionIcon = null;
+
+    if (newValue && newValue._class.isSchema(woost.models.permission.ContentPermission)) {
+        if (newValue._class.isSchema(woost.models.permission.ReadPermission)) {
+            actionIcon = "woost.admin.ui://images/permissions/read.svg";
+        }
+        else if (newValue._class.isSchema(woost.models.permission.CreatePermission)) {
+            actionIcon = "woost.admin.ui://images/permissions/create.svg";
+        }
+        else if (newValue._class.isSchema(woost.models.permission.ModifyPermission)) {
+            actionIcon = "woost.admin.ui://images/permissions/modify.svg";
+        }
+        else if (newValue._class.isSchema(woost.models.permission.DeletePermission)) {
+            actionIcon = "woost.admin.ui://images/permissions/delete.svg";
+        }
+    }
+
+    this.actionIcon.src = actionIcon;
+    ?>
+
+    <ui:with ui:element="imageFrame">
+        <ui:cocktail.ui.SVG id="actionIcon"/>
+    </ui:with>
+
+</ui:woost.admin.ui.ItemCard>
+

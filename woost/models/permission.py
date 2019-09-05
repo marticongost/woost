@@ -26,6 +26,7 @@ class Permission(Item):
 
     type_group = "access"
     instantiable = False
+    admin_item_card = "woost.admin.ui.PermissionItemCard"
 
     authorized = schema.Boolean(
         required=True,
