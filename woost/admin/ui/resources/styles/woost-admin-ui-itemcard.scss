@@ -151,6 +151,7 @@ $icon-height: $card-height - $icon-padding * 2;
 #icon {
     flex: 0 0;
     --height: #{$icon-height};
+    --width: #{$icon-height};
     color: #999;
 
     :host(:hover):host-context(.cocktail-ui-selected) & {
