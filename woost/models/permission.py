@@ -234,7 +234,7 @@ def _eligible_members():
     for cls in [Item] + list(Item.derived_schemas()):
         for name, member in cls.members(recursive=False).items():
             if member.visible and member.name != "translations":
-                yield cls.full_name + "." + name
+                yield member.original_member.schema.full_name + "." + name
 
 
 def _translate_member_permission_matching_members(
