@@ -12,6 +12,7 @@ from woost.models import (
     AccessLevel,
     LocaleMember
 )
+from woost import app
 
 _root_sections = {}
 _root_sections_lock = Lock()
@@ -72,7 +73,7 @@ class Admin(Publishable):
         return section_cls(None)
 
     def get_root_section(self):
-        key = (self.root_section, self.id)
+        key = (self.root_section, app.user.role.id, self.id)
         try:
             return _root_sections[key]
         except KeyError:
