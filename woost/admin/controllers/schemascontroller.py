@@ -56,6 +56,7 @@ class SchemasController(Cached, Controller):
             model
             for model in PersistentObject.schema_tree()
             if model.translation_source is None
+            and model.visible
         ]
 
         # Schema declarations for custom admin filters
