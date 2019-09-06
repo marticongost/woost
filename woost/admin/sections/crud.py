@@ -41,7 +41,7 @@ class CRUD(Section):
         data["model"] = get_model_dotted_name(self.model)
         data["views"] = self.views
 
-        if self.instantiable_models:
+        if self.instantiable_models is not None:
             data["instantiable_models"] = [
                 get_model_dotted_name(model)
                 for model in (self.instantiable_models)
