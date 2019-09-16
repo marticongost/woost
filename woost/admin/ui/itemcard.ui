@@ -63,7 +63,10 @@
     }
 
     getLabelText() {
-        return this.dataBinding.member.translateValue(this.value);
+        if (this.dataBinding && this.dataBinding.member) {
+            return this.dataBinding.member.translateValue(this.value);
+        }
+        return this.value ? this.value._class.translateValue(this.value) : "";
     }
 
     describeType() {
