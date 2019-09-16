@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -20,6 +19,8 @@ _root_sections_lock = Lock()
 
 class Admin(Publishable):
 
+    admin_show_descriptions = False
+
     members_order = [
         "title",
         "default_language",
@@ -31,41 +32,48 @@ class Admin(Publishable):
     ]
 
     default_access_level = schema.DynamicDefault(lambda:
-        AccessLevel.get_instance(qname = "woost.editor_access_level")
+        AccessLevel.get_instance(qname="woost.editor_access_level")
     )
 
     default_controller = schema.DynamicDefault(lambda:
-        AccessLevel.get_instance(qname = "woost.admin.admin_controller")
+        AccessLevel.get_instance(qname="woost.admin.admin_controller")
     )
 
     title = schema.String(
-        required = True,
-        descriptive = True,
-        translated = True
+        required=True,
+        descriptive=True,
+        translated=True
     )
 
     default_language = LocaleMember(
-        required = True
+        required = True,
+        listed_by_default=False
     )
 
-    python_package = schema.String()
+    python_package = schema.String(
+        listed_by_default=False
+    )
 
     root_section = schema.String(
-        required = True,
-        default = "woost.admin.sections.rootsection.RootSection"
+        required=True,
+        default="woost.admin.sections.rootsection.RootSection",
+        listed_by_default=False
     )
 
     main_ui_component = schema.String(
-        required = True,
-        default = "woost.admin.ui.Layout"
+        required=True,
+        default="woost.admin.ui.Layout",
+        listed_by_default=False
     )
 
     ui_components = schema.Collection(
-        items = schema.String()
+        items=schema.String(),
+        listed_by_default=False
     )
 
     filters = schema.CodeBlock(
-        language="python"
+        language="python",
+        listed_by_default=False
     )
 
     def create_root_section(self):
