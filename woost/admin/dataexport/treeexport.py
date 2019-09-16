@@ -82,7 +82,7 @@ class TreeExport(Export):
                 match the soft filters; no descendant of the node matches both
                 hard and soft filters either.
 
-            - "N+": Filtered, with descendants.
+            - "F+": Filtered, with descendants.
                 The node matches the listing's hard filters, but it doesn't
                 match the soft filters; one or more of its descendants matches
                 both hard and soft filters.
