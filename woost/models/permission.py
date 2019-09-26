@@ -469,6 +469,8 @@ class PermissionExpression(Expression):
 
             for permission in user.iter_permissions(self.permission_type):
                 permission_query = permission.select_items(user=user)
+                permission_query.verbose = query.verbose
+                permission_query.nesting = query.nesting + 1
                 covers_whole_set = (
                     not permission_query.is_subset()
                     and issubclass(query.type, permission_query.type)
