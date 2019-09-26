@@ -38,7 +38,6 @@ from woost.models.utils import (
 )
 from woost.admin.dataexport import Export
 from woost.admin.dataexport.adminexport import AdminExport
-from woost.admin.path import get_path
 from woost.admin.partitioning import parse_partition_parameter
 from woost.admin.filters import get_filters
 from .utils import resolve_object_ref
@@ -102,20 +101,10 @@ class ListingController(Controller):
             ):
                 raise cherrypy.HTTPError(403, "Unauthorized object access")
 
-            object_data = self.export.export_object(
+            return self.export.export_object(
                 self.instance,
                 ref=self.refs_only
             )
-
-            # Export the object path, if it defines one
-            obj_path = get_path(self.instance)
-            if obj_path is not None:
-                object_data["_path"] = self.export.export_object_list(
-                    obj_path,
-                    ref = True
-                )
-
-            return object_data
 
         # Returning a list of objects
         else:
@@ -340,6 +329,14 @@ class ListingController(Controller):
         )
 
     @request_property
+    def include_paths(self):
+        return get_parameter(
+            schema.Boolean("paths", default=False),
+            undefined="set_default",
+            errors="raise"
+        )
+
+    @request_property
     def refs_only(self):
         return get_parameter(
             schema.Boolean("ref", default=False),
@@ -405,7 +402,8 @@ class ListingController(Controller):
 
         kwargs = {
             "languages": self.locales,
-            "include_slots": self.include_slots
+            "include_slots": self.include_slots,
+            "include_paths": self.include_paths
         }
 
         if self.view:
