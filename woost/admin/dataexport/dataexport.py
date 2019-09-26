@@ -24,6 +24,7 @@ from woost.models import (
 )
 from woost.models.rendering import ImageFactory
 from woost.models.utils import any_translation, get_model_dotted_name
+from woost.admin.path import get_path
 
 excluded_members = set()
 auto = object()
@@ -53,6 +54,7 @@ class Export(metaclass = ExportMetaclass):
     member_expansion = ChainMap()
     member_fields = ChainMap()
     include_slots: bool = False
+    include_paths: bool = False
 
     model = None
     base_collection = None
@@ -86,7 +88,8 @@ class Export(metaclass = ExportMetaclass):
         excluded_members=excluded_members,
         thumbnail_factory="admin_thumbnail",
         children_export=None,
-        include_slots: bool = None
+        include_slots: bool = None,
+        include_paths: bool = None
     ):
         self.__model_fields = {}
         self.__languages = set(languages or Configuration.instance.languages)
@@ -121,6 +124,9 @@ class Export(metaclass = ExportMetaclass):
 
         if include_slots is not None:
             self.include_slots = include_slots
+
+        if include_paths is not None:
+            self.include_paths = include_paths
 
     def iter_members(self, model):
 
@@ -437,6 +443,30 @@ def make_permissions_field(exporter):
 
     return permissions_field
 
+
+def make_path_field(exporter):
+
+    def field(obj, path):
+
+        # Only include the '_path' attribute for objects at the root of the
+        # listing
+        if len(path) < 2:
+            obj_path = get_path(obj)
+            if obj_path is not None:
+                return (
+                    "_path",
+                    exporter.export_object_list(
+                        obj_path,
+                        ref=True,
+                        path=path
+                    )
+                )
+
+        return None
+
+    return field
+
+
 @Export.fields_for(PersistentObject)
 def object_fields(exporter, model, ref = False):
 
@@ -452,6 +482,9 @@ def object_fields(exporter, model, ref = False):
         for member in exporter.iter_members(model):
             for field in exporter.iter_member_fields(member, ref):
                 yield field
+
+    if exporter.include_paths:
+        yield make_path_field(exporter)
 
     if exporter.exported_permissions:
         yield make_permissions_field(exporter)

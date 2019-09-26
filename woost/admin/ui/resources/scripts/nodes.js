@@ -196,7 +196,7 @@ woost.admin.nodes.ItemContainer = (cls = cocktail.navigation.Node) => class Item
     }
 
     get objectRetrievalOptions() {
-        return null;
+        return {paths: true};
     }
 
     getItemNodeClass(model, item) {
@@ -1146,7 +1146,10 @@ woost.admin.nodes.Settings = class Settings extends woost.admin.nodes.BaseSectio
     get objectRetrievalOptions() {
         const scope = woost.admin.ui.settingsScope || "config";
         const model = scope == "config" ? woost.models.Configuration : woost.models.Website;
-        return {members: this.members.filter((key) => model.getMember(key))};
+        return Object.assign(
+            super.objectRetrievalOptions,
+            {members: this.members.filter((key) => model.getMember(key))}
+        );
     }
 
     activate() {
