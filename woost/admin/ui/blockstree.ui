@@ -95,7 +95,9 @@
 
         const locales = params && params.locales;
 
-        return blockType.newInstance(locales).then((block) => {
+        return blockType.newInstance({
+            locales, slots: true
+        }).then((block) => {
             return this.placeBlocks(
                 [block],
                 placement,

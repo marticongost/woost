@@ -13,6 +13,8 @@ from .dataexport import Export
 
 class ClipboardExport(Export):
 
+    include_slots = True
+
     def should_include_member(self, member):
         return (
             member.name != "translations"

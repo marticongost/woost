@@ -946,7 +946,11 @@ class Align(ImageEffect):
                         "or 'bottom', got %s" % self.vertical_alignment
                     )
 
-            copy.paste(image, (x, y), image if image.mode == "RGBA" else None)
+            copy.paste(
+                image,
+                (int(x), int(y)),
+                image if image.mode == "RGBA" else None
+            )
             return copy
 
         return image
