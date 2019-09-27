@@ -282,6 +282,24 @@ class Export(metaclass = ExportMetaclass):
                         return self.export_object(value, path)
                     else:
                         return self.export_object(value, path, ref = True)
+            elif (
+                isinstance(member, schema.Schema)
+                and not isinstance(member, schema.Date)
+                and not isinstance(member, schema.DateTime)
+                and not isinstance(member, schema.Time)
+            ):
+                return dict(
+                    (
+                        schema_member.name,
+                        self.export_member(
+                            value,
+                            schema_member,
+                            path=path,
+                            value=value.get(schema_member.name)
+                        )
+                    )
+                    for schema_member in member.iter_members()
+                )
             elif isinstance(member, schema.Mapping):
                 keys_export, values_export = \
                     self.get_mapping_exports(member, value)
