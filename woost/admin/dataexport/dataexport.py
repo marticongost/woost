@@ -140,12 +140,20 @@ class Export(metaclass = ExportMetaclass):
                     yield member
 
     def select_members(self, model, included_members):
+
         for member in model.iter_members():
             if (
                 not member.primary
                 and member not in included_members
             ):
                 self.excluded_members.add(member)
+
+        for cls in model.derived_schemas():
+            self.excluded_members.update(
+                member
+                for member in cls.iter_members(recursive=False)
+                if member not in included_members
+            )
 
     def get_fields(self, model, ref = False):
         try:

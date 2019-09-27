@@ -20,7 +20,7 @@ class PasteController(Controller):
 
         user = app.user
         data = read_json()
-        exp = Export()
+        exp = Export(include_slots=True)
         objects = []
 
         for obj_data in data["objects"]:
