@@ -159,6 +159,7 @@ class URLMapping:
         self,
         url: URL,
         url_resolution: "URLResolution" = None,
+        preserve_extra_path: bool = False,
         **kwargs) -> URL:
 
         if url_resolution is None:
@@ -173,6 +174,10 @@ class URLMapping:
         kwargs.setdefault("host", "!")
 
         canonical_url = app.url_mapping.get_url(**kwargs)
+
+        if preserve_extra_path and url_resolution.remaining_segments:
+            canonical_url = \
+                canonical_url.append(url_resolution.remaining_segments)
 
         if url_resolution.canonical_parameters:
             params = {}
