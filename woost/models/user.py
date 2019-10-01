@@ -2,6 +2,8 @@
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Dict
+from datetime import datetime
 from hashlib import sha1
 
 from cocktail.events import event_handler
@@ -51,6 +53,7 @@ class User(Item):
     admin_edit_view = "woost.admin.ui.UserEditView"
     encryption_method = sha1
     anonymous = False
+    _auth_tokens: Dict[str, datetime] = None
 
     groups_order = [
         "user_data",
