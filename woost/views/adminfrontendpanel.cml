@@ -18,6 +18,18 @@ from woost.models import Item, ModifyPermission
 
     def get_edit_uri(self, publishable):
         return self.admin.get_uri(path = [str(publishable.id)])
+
+    def should_display(self):
+        return (
+            not app.editing
+            and self.publishable
+            and self.admin
+            and self.admin.is_accessible()
+            and app.user.has_permission(
+                ModifyPermission,
+                target=self.publishable
+            )
+        )
     ?>
 
     <py:ready>
@@ -28,16 +40,7 @@ from woost.models import Item, ModifyPermission
         if self.publishable is None:
             self.publishable = app.publishable
 
-        if not (
-            not app.editing
-            and self.publishable
-            and self.admin
-            and self.admin.is_accessible()
-            and app.user.has_permission(
-                ModifyPermission,
-                target = self.publishable
-            )
-        ):
+        if not self.should_display():
             element.visible = False
         ?>
     </py:ready>
