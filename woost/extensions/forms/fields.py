@@ -181,6 +181,9 @@ class Field(Item):
 
     def create_member(self):
 
+        if self.member_type is None:
+            raise TypeError("%r doesn't define its member_type" % self)
+
         member = self.member_type(
             self.field_name or "field%d" % self.id
         )
