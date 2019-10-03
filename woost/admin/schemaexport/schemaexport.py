@@ -25,6 +25,7 @@ from .utils import iter_last
 schema.Member.ui_member_class = "cocktail.schema.Member"
 
 member_exporters = TypeMapping()
+model_exporters = TypeMapping()
 excluded_members = set()
 
 schema.Member.ui_display = None
@@ -37,6 +38,14 @@ schema.Member.ui_autocomplete_display = None
 schema.Member.ui_column_width = None
 schema.Member.ui_sortable = True
 
+
+def get_member_exporter(member):
+    if isinstance(member, schema.SchemaClass):
+        return model_exporters[member]
+    else:
+        return member_exporters[member.__class__]
+
+
 def exports_member(member_type):
     def decorator(cls):
         member_exporters[member_type] = cls
@@ -44,8 +53,15 @@ def exports_member(member_type):
     return decorator
 
 
+def exports_model(model):
+    def decorator(cls):
+        model_exporters[model] = cls
+        return cls
+    return decorator
+
+
 def get_declaration(member: schema.Member) -> str:
-    export_class = member_exporters[member.__class__]
+    export_class = get_member_exporter(member)
     return export_class().get_declaration(member)
 
 
