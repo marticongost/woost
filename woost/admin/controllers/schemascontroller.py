@@ -11,7 +11,7 @@ from cocktail.controllers import Controller, Cached, request_property
 from cocktail.persistence import PersistentObject
 
 from woost import app
-from woost.admin.schemaexport import SchemaExport
+from woost.admin.schemaexport import get_member_exporter
 from woost.admin.views import available_views
 from woost.admin.filters import (
     get_filters,
@@ -49,9 +49,6 @@ class SchemasController(Cached, Controller):
         cherrypy.response.headers["Content-Type"] = \
             "application/javascript; charset=utf-8"
 
-        export = SchemaExport()
-        export.locales = [language]
-
         models = [
             model
             for model in PersistentObject.schema_tree()
@@ -70,6 +67,8 @@ class SchemasController(Cached, Controller):
             ):
                 if not issubclass(filter_class, MemberFilter):
                     custom_filters.add(filter_class)
+                    export = get_member_exporter(model)()
+                    export.locales = [language]
                     yield export.get_declaration(filter_class).encode("utf-8")
 
         # Filter templates
@@ -90,6 +89,8 @@ class SchemasController(Cached, Controller):
 
         # Model declarations
         for model in models:
+            export = get_member_exporter(model)()
+            export.locales = [language]
             yield export.get_declaration(model).encode("utf-8")
 
         # View declarations

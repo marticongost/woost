@@ -24,8 +24,9 @@ from woost.admin.filters import Filter
 from .schemaexport import (
     MemberExport,
     exports_member,
+    exports_model,
     excluded_members,
-    member_exporters
+    get_member_exporter
 )
 from .utils import iter_last
 
@@ -39,6 +40,7 @@ schema.SchemaObject.admin_item_card = None
 
 
 @exports_member(schema.Schema)
+@exports_model(schema.SchemaObject)
 class SchemaExport(MemberExport):
 
     permissions = {
@@ -120,7 +122,7 @@ class SchemaExport(MemberExport):
                 with writer.indented_block("members: [", closure):
                     for m, is_last in iter_last(members):
                         if self.should_export_member(m):
-                            exporter = member_exporters[m.__class__]()
+                            exporter = get_member_exporter(m)()
                             exporter.write_declaration(m, writer, nested = True)
                             if not is_last:
                                 writer.replace_line("%s,")

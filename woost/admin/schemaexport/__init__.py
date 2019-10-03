@@ -6,7 +6,9 @@
 from .schemaexport import (
     MemberExport,
     exports_member,
+    exports_model,
     excluded_members,
+    get_member_exporter,
     get_declaration
 )
 from .schema import SchemaExport
