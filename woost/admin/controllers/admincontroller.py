@@ -8,7 +8,7 @@ from cocktail.translations import (
     translations,
     translate_locale
 )
-from cocktail.events import event_handler
+from cocktail.events import Event, event_handler
 from cocktail.pkgutils import import_module
 from cocktail import schema
 from cocktail.ui import components
@@ -44,6 +44,8 @@ class AdminController(PublishableController):
         "ui_collection_editor_control",
         "ui_autocomplete_control"
     ]
+
+    collecting_ui_components = Event()
 
     @event_handler
     def handle_traversed(e):
@@ -102,6 +104,10 @@ class AdminController(PublishableController):
                         for view in available_views(member):
                             if view.ui_component:
                                 require_component(view.ui_component)
+
+        self.collecting_ui_components(
+            require_component=require_component
+        )
 
         html = components.get(app.publishable.main_ui_component).render_page(
             title = translations("woost.admin.ui.Layout.heading"),
