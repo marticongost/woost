@@ -14,6 +14,7 @@ from cocktail import schema
 from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
 from cocktail.persistence import PersistentClass, PersistentObject
+from cocktail.javascriptserializer import JS
 from woost import app
 from woost.models import Configuration, extensions_manager
 from woost.controllers.publishablecontroller import PublishableController
@@ -65,9 +66,10 @@ class AdminController(PublishableController):
         dependencies = set()
 
         def require_component(component):
-            if isinstance(component, tuple):
-                component = component[0]
-            dependencies.add(components.get(component))
+            if not isinstance(component, JS):
+                if isinstance(component, tuple):
+                    component = component[0]
+                dependencies.add(components.get(component))
 
         for component_name in app.publishable.ui_components:
             require_component(component_name)

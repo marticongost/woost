@@ -4,7 +4,7 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from typing import Iterable, Set, Tuple, Union
-from cocktail.javascriptserializer import dumps
+from cocktail.javascriptserializer import dumps, JS
 from cocktail.translations import translations
 from cocktail import schema
 from cocktail.schema.expressions import Expression
@@ -306,6 +306,8 @@ class MemberExport(object):
                 display[0],
                 dumps(display[1])
             )
+        elif isinstance(display, JS):
+            return str(display)
         else:
             return "() => " + display
 
