@@ -34,7 +34,7 @@ woost.models.File[woost.admin.ui.describeType] = function (obj) {
 
 woost.models.File[woost.admin.nodes.itemNodeClass] = woost.admin.nodes.FileEditNode;
 
-woost.models.File.upload = async function (file, parameters = null) {
+woost.models.uploadFile = async function (file, parameters = null) {
 
     const xhr = await cocktail.ui.request({
         url: "/async_upload",
@@ -49,7 +49,7 @@ woost.models.File.upload = async function (file, parameters = null) {
 
     const obj = Object.assign({}, parameters && parameters.values);
     if (!obj._class) {
-        obj._class = this;
+        obj._class = woost.models.File;
     }
     obj._new = true;
     obj._upload = xhr.response.id;

@@ -73,7 +73,7 @@
                     i++;
                     const values = {title: {[cocktail.getLanguage()]: file.name}};
                     woost.admin.actions.attempt(
-                        woost.models.File.upload(file, {values})
+                        woost.models.uploadFile(file, {values})
                             .then((obj) => {
                                 const data = {
                                     model: woost.models.File,
