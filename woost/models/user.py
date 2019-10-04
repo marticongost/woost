@@ -197,11 +197,14 @@ class User(Item):
         else:
             return not self.password
 
-    def iter_roles(self, recursive=True):
+    def iter_roles(self, recursive: bool = True) -> Role:
         """Obtains all the roles that apply to the user.
 
-        The following roles can be yielded:
+        The following roles can be yielded, in the specified order:
 
+            * A 'general' role that applies to all users, preceding all other
+              roles. This is used to enforce critical site wide rules that
+              override anything stated by other roles.
             * The user's L{explicit role<role>} will be yielded if defined
             * An 'authenticated' role will be yielded if the user is not
               L{anonymous}
@@ -210,9 +213,16 @@ class User(Item):
 
         Roles are sorted in descending relevancy order.
 
-        @return: An iterable sequence of roles that apply to the user.
-        @rtype: L{Role}
+        :param recursive: When set to True (the default), each yielded role
+            will be preceded by the sequence of its ancestor roles (as
+            specified by the `woost.models.role.Role.base_roles` member).
+
+        :return: An iterable sequence of roles that apply to the user.
         """
+        general_role = Role.get_instance(qname="woost.general_role")
+        if general_role is not None:
+            yield general_role
+
         explicit_role = self.role
         if explicit_role:
             if recursive:

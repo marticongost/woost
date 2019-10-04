@@ -619,3 +619,14 @@ def copy_document_description_to_summary_and_meta_description(e):
                     doc.set("summary", desc, lang)
                     doc.set("meta_description", desc, lang)
 
+
+@migration_step
+def create_general_role(e):
+
+    from woost.models import Configuration
+    from woost.models.initialization import SiteInitializer
+
+    init = SiteInitializer()
+    init.languages = Configuration.instance.languages
+    init.create_general_role()
+
