@@ -85,6 +85,14 @@ class ContentPermission(Permission):
 
         query = self.select_items(user = user)
 
+        # Permissions can indicate they don't apply to the current
+        # context by producing None as their query of matching items
+        # (ie. set 'items = None' in their content_expression)
+        if query is None:
+            if verbose:
+                print(permission_doesnt_match_style("null query; skipping permission"), end=' ')
+            return False
+
         if isinstance(target, type):
             if not issubclass(target, query.type):
                 if verbose:
@@ -123,7 +131,7 @@ class ContentPermission(Permission):
             exec(code, context)
             items = context["items"]
 
-        if args or kwargs:
+        if items is not None and (args or kwargs):
             items = items.select(*args, **kwargs)
 
         return items
@@ -469,6 +477,13 @@ class PermissionExpression(Expression):
 
             for permission in user.iter_permissions(self.permission_type):
                 permission_query = permission.select_items(user=user)
+
+                # Permissions can indicate they don't apply to the current
+                # context by producing None as their query of matching items
+                # (ie. set 'items = None' in their content_expression)
+                if permission_query is None:
+                    continue
+
                 permission_query.verbose = query.verbose
                 permission_query.nesting = query.nesting + 1
                 covers_whole_set = (
@@ -619,6 +634,11 @@ def content_permission_translation_factory(language, predicate):
                 try:
                     query = instance.select_items()
                 except:
+                    query = None
+
+                if query:
+                    subject = decapitalize(translations(query, language))
+                else:
                     subject = (
                         decapitalize(
                             translations(
@@ -633,8 +653,6 @@ def content_permission_translation_factory(language, predicate):
                             language
                         )
                     )
-                else:
-                    subject = decapitalize(translations(query, language))
 
         if hasattr(predicate, "__call__"):
             return predicate(instance, subject, **kwargs)
