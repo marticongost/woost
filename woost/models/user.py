@@ -114,7 +114,8 @@ class User(Item):
         type="woost.models.Role",
         bidirectional=True,
         listed_by_default=True,
-        member_group="user_data"
+        member_group="user_data",
+        ui_form_control="cocktail.ui.DropdownSelector"
     )
 
     def _preferred_language_default():
