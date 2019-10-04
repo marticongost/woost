@@ -24,6 +24,18 @@ PWD_RESET_LINK = """<a href="${confirmation_url}">${confirmation_url}</a>"""
     es: Administradores
     en: Administrators
 
+    [general_role]
+
+        [title]
+        ca: General
+        es: General
+        en: General
+
+        [managed_roles_permissions_subject]
+        ca: usuaris de rols que no gestioni
+        es: usuarios de roles que no gestione
+        en: users outside its managed roles
+
     [everybody.title]
     ca: Tothom
     es: Todos los usuarios

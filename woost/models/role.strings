@@ -43,6 +43,29 @@ en: Role
         es: Roles derivados
         en: Derived roles
 
+        [managed_roles]
+        ca: Rols gestionats
+        es: Roles gestionados
+        en: Managed roles
+
+            [explanation]
+            ca:
+                Limita els usuaris que aquest rol pot crear, modificar o eliminar a aquells
+                que tinguin els rols indicats. Deixar en blanc per permetre operar sobre tot
+                tipus d'usuaris.
+            es:
+                Limita los usuarios que este rol puede crear, modificar o eliminar a aquellos
+                que tengan los roles indicados. Dejar en blanco para permitir operar sobre
+                todo tipo de usuarios.
+            en:
+                Limits the users that this role can create, modify or delete to those with
+                the given roles. Leave blank to allow the role to manage all kind of users.
+
+        [overseeing_roles]
+        ca: Rols que el gestionen
+        es: Roles que lo gestionan
+        en: Overseeing roles
+
         [implicit]
         ca: Implícit
         es: Implícito

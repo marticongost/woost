@@ -29,6 +29,8 @@ class Role(Item):
         "title",
         "base_roles",
         "child_roles",
+        "managed_roles",
+        "overseeing_roles",
         "permissions",
         "access_levels",
         "users"
@@ -47,13 +49,28 @@ class Role(Item):
 
     base_roles = schema.Collection(
         items="woost.models.Role",
-        bidirectional=True
+        bidirectional=True,
+        related_key="child_roles"
     )
 
     child_roles = schema.Collection(
         items="woost.models.Role",
         bidirectional=True,
-        editable=schema.NOT_EDITABLE
+        editable=schema.NOT_EDITABLE,
+        related_key="base_roles"
+    )
+
+    managed_roles = schema.Collection(
+        items="woost.models.Role",
+        bidirectional=True,
+        related_key="overseeing_roles"
+    )
+
+    overseeing_roles = schema.Collection(
+        items="woost.models.Role",
+        bidirectional=True,
+        editable=schema.NOT_EDITABLE,
+        related_key="managed_roles"
     )
 
     permissions = schema.Collection(

@@ -282,6 +282,7 @@ class SiteInitializer(object):
         self.administrator_role = self.create_administrator_role()
         self.administrator.role = self.administrator_role
 
+        self.general_role = self.create_general_role()
         self.everybody_role = self.create_everybody_role()
         self.authenticated_role = self.create_authenticated_role()
         self.editor_role = self.create_editor_role()
@@ -420,6 +421,34 @@ class SiteInitializer(object):
                 self._create(ModifyMemberPermission),
                 self._create(ReadHistoryPermission),
                 self._create(DebugPermission)
+            ]
+        )
+
+    def create_general_role(self):
+        role = self._create(
+            Role,
+            implicit=True,
+            qname="woost.general_role",
+            title=TranslatedValues(),
+            permissions=[
+                self._create(
+                    perm_type,
+                    content_type=User,
+                    authorized=False,
+                    subject_description=TranslatedValues(
+                        "general_role.managed_roles_permissions_subject"
+                    ),
+                    content_expression =
+                        "if user.role and user.role.managed_roles:\n"
+                        "    items.add_filter(cls.role.not_one_of(user.role.managed_roles))\n"
+                        "else:\n"
+                        "    items = None\n"
+                )
+                for perm_type in (
+                    CreatePermission,
+                    ModifyPermission,
+                    DeletePermission
+                )
             ]
         )
 
