@@ -35,6 +35,7 @@ class FormController(FormProcessor, Controller):
                     name = "agreement%d" % agreement.id,
                     document = agreement.document
                 )
+                self.schema.members_order.append(agreement_member.name)
                 if agreement.text or agreement.document_title:
                     agreement_member.text = agreement.text
                     agreement_member.document_title = agreement.document_title
