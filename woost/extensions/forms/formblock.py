@@ -86,6 +86,7 @@ class FormBlock(Block):
         Block.init_view(self, view)
         view.depends_on(Field)
         view.depends_on(OptionsFieldOption)
+        view.depends_on(self.agreements)
 
     @request_property
     def form_model(self):
