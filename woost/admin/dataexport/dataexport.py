@@ -15,6 +15,7 @@ from cocktail import schema
 from cocktail.persistence import PersistentClass, PersistentObject
 from woost import app
 from woost.models import (
+    Item,
     Configuration,
     ReadPermission,
     ReadMemberPermission,
@@ -53,6 +54,12 @@ class Export(metaclass = ExportMetaclass):
     model_exporters = ChainTypeMapping()
     member_expansion = ChainMap()
     member_fields = ChainMap()
+    member_fields[Item.id] = (
+        lambda exp, member, ref: (identity_field(exp, member),)
+    )
+    member_fields[Item.global_id] = (
+        lambda exp, member, ref: (identity_field(exp, member),)
+    )
     include_slots: bool = False
     include_paths: bool = False
 
@@ -67,6 +74,7 @@ class Export(metaclass = ExportMetaclass):
     fixed_order = False
     count_enabled = True
     children_export = None
+    preserve_integral_children_identity = True
     exported_permissions = {"modify": ModifyPermission}
     verbose = False
 
@@ -89,7 +97,8 @@ class Export(metaclass = ExportMetaclass):
         thumbnail_factory="admin_thumbnail",
         children_export=None,
         include_slots: bool = None,
-        include_paths: bool = None
+        include_paths: bool = None,
+        preserve_integral_children_identity: bool = None
     ):
         self.__model_fields = {}
         self.__languages = set(languages or Configuration.instance.languages)
@@ -127,6 +136,10 @@ class Export(metaclass = ExportMetaclass):
 
         if include_paths is not None:
             self.include_paths = include_paths
+
+        if preserve_integral_children_identity is not None:
+            self.preserve_integral_children_identity = \
+                preserve_integral_children_identity
 
     def iter_members(self, model):
 
@@ -443,10 +456,26 @@ class Export(metaclass = ExportMetaclass):
             self.__member_permissions[member] = member
             return has_permission
 
+
 def object_field(exporter, member):
     key = member.name
     val = exporter.export_member
-    return (lambda obj, path: (key, val(obj, member, path = path)))
+    return (lambda obj, path: (key, val(obj, member, path=path)))
+
+
+def identity_field(exporter, member):
+    key = member.name
+    val = exporter.export_member
+    return (
+        lambda obj, path:
+            None
+            if
+                not exporter.preserve_integral_children_identity
+                and path
+                and getattr(path[-1], "integral", True)
+            else (key, val(obj, member, path=path))
+    )
+
 
 def make_permissions_field(exporter):
 

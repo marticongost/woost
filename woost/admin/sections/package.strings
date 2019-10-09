@@ -4,10 +4,10 @@
     [crud.CRUD.instance(instance)]
     *: ${translations(instance.model, suffix=".admin.menu_entry") or translations(instance.model, suffix=".plural")}
 
-    [sitetreesection.SiteTreeSection.instance]
-    ca: Arbre de pàgines
-    es: Árbol de páginas
-    en: Site tree
+    [publishableitemssection.PublishableItemsSection.instance]
+    ca: Contingut
+    es: Contenido
+    en: Content
 
     [settingsrootsection.SettingsRootSection.instance]
     ca: Configuració

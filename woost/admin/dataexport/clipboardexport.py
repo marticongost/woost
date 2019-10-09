@@ -14,6 +14,7 @@ from .dataexport import Export
 class ClipboardExport(Export):
 
     include_slots = True
+    preserve_integral_children_identity = False
 
     def should_include_member(self, member):
         return (
