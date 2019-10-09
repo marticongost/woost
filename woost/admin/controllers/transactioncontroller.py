@@ -17,7 +17,6 @@ from woost.models import (
     changeset_context,
     Item,
     CreatePermission,
-    ModifyPermission,
     DeletePermission
 )
 from woost.admin.dataexport import Export
@@ -147,16 +146,8 @@ class TransactionController(Controller):
                     elif new:
                         model = get_model_from_state(state)
                         obj = model()
-                        user.require_permission(
-                            CreatePermission,
-                            target=obj
-                        )
                     else:
                         obj = resolve_object_ref(id)
-                        user.require_permission(
-                            ModifyPermission,
-                            target=obj
-                        )
 
                     imports.append(self._import_object(obj, state))
 
