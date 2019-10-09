@@ -66,10 +66,6 @@ cocktail.declare("woost.admin.ui");
             return cocktail.ui.READ_ONLY;
         }
 
-        if (member.relatedType && !woost.models.hasPermission(member.relatedType, "modify")) {
-            return cocktail.ui.READ_ONLY;
-        }
-
         return cocktail.ui.EDITABLE;
     }
 
