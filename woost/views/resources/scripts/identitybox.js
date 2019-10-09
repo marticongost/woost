@@ -26,7 +26,7 @@ cocktail.bind(".IdentityBox", function ($box) {
             jQuery(document.documentElement).attr("data-woost-auth-state", "authenticated");
             $box.attr("data-woost-auth-state", "authenticated");
             var $boxContent = jQuery(cocktail.instantiate("woost.views.IdentityBox.current_user_info"));
-            $boxContent.find(".user_label").html(woost.user.label);
+            $box.find(".user_label").html(woost.user.label);
             $panel.append($boxContent);
         }
     }
