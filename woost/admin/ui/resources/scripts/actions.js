@@ -417,11 +417,27 @@ woost.admin.actions.EditBlocksAction = class EditBlocksAction extends woost.admi
     matchesModel(model) {
 
         if (super.matchesModel(model)) {
-            for (let member of model.members()) {
-                if (
-                    member instanceof woost.models.Slot
-                    && woost.models.hasPermission(member, "read")
-                ) {
+
+            const canEditBlocks = (schema) => {
+                for (let member of schema.members(false)) {
+                    if (
+                        member instanceof woost.models.Slot
+                        && woost.models.hasPermission(member, "read")
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            for (let schema of model.ascendInheritance(false)) {
+                if (canEditBlocks(schema)) {
+                    return true;
+                }
+            }
+
+            for (let schema of model.schemaTree()) {
+                if (canEditBlocks(schema)) {
                     return true;
                 }
             }
