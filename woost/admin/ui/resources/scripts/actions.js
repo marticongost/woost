@@ -962,7 +962,12 @@ woost.admin.actions.SaveAction = class SaveAction extends woost.admin.actions.Ba
             return "hidden";
         }
 
-        if (!woost.models.hasPermission(context.item, "modify")) {
+        if (context.item._new) {
+            if (!woost.models.hasPermission(context.item._class, "create")) {
+                return "hidden";
+            }
+        }
+        else if (!woost.models.hasPermission(context.item, "modify")) {
             return "hidden";
         }
 
