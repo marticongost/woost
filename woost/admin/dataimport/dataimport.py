@@ -120,7 +120,7 @@ class Import(object):
             self.edit_permission_check(obj)
 
         if not self.dry_run:
-            item.insert()
+            obj.insert()
 
     def edit_permission_check(self, obj):
         self.user.require_permission(
