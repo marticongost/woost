@@ -109,13 +109,18 @@ class Import(object):
 
     def import_object(self, obj, data):
 
-        if self.permission_check and self.user:
-            self.check_permissions_before_importing_data(obj)
+        # Pre-modification permission check
+        if self.permission_check and obj.is_inserted:
+            self.edit_permission_check(obj)
 
         import_object(obj, self, data)
 
+        # Insertion or post-modification permission check
         if self.permission_check and self.user:
-            self.check_permissions_after_importing_data(obj)
+            self.edit_permission_check(obj)
+
+        if not self.dry_run:
+            item.insert()
 
     def edit_permission_check(self, obj):
         self.user.require_permission(
@@ -125,12 +130,6 @@ class Import(object):
             target=obj,
             verbose=self.verbose_permission_checks
         )
-
-    def check_permissions_before_importing_data(self, obj):
-        self.edit_permission_check(obj)
-
-    def check_permissions_after_importing_data(self, obj):
-        self.edit_permission_check(obj)
 
     def check_translation_permission(self, obj, language):
 
@@ -336,9 +335,6 @@ class Import(object):
                 item = model()
                 item.id = id
                 self.__object_map[id] = item
-
-                if not self.dry_run:
-                    item.insert()
 
         elif self.permission_check and self.user:
             self.user.require_permission(
