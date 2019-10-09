@@ -62,8 +62,8 @@
     en: Refresh
 
     [clear-cache]
-    ca: Netejar el cache
-    es: Limpiar la cache
+    ca: Netejar cache
+    es: Limpiar cache
     en: Clear cache
 
     [excel]
