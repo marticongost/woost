@@ -122,8 +122,8 @@ class Import(object):
             ModifyPermission
                 if obj.is_inserted
                 else CreatePermission,
-            target = obj,
-            verbose = self.verbose_permission_checks
+            target=obj,
+            verbose=self.verbose_permission_checks
         )
 
     def check_permissions_before_importing_data(self, obj):
