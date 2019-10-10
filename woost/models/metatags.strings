@@ -1,0 +1,17 @@
+
+[woost.models.metatags.MetaTags.default_member_translation]
+
+    [explanation]
+    ca:
+        Per cada entrada indicar el nom de la metadada
+        (l'atribut <code>name</code> o <code>http-equiv</code>)
+        i el seu valor (l'atribut <code>content</code>)
+    es:
+        Para cada entrada indicar el nombre del metadato
+        (el atributo <code>name</code> o <code>http-equiv</code>)
+        y su valor (el atributo <code>content</code>)
+    en:
+        Each entry must contain the name of the metadata
+        (the <code>name</code> or <code>http-equiv</code> attribute)
+        and its value (the <code>content</code> attribute)
+
