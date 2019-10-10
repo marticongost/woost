@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.ActionList
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?js
+    woost.admin.ui.sizes.adapt(element, {buttonStyle: {XL: "iconAboveText", any: "iconOnly"}});
+    ?>
+
+</ui:cocktail.ui.ActionList>
+

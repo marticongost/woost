@@ -2,7 +2,6 @@
 @import "woost.admin.ui://styles/common";
 
 $bar-color: $selection-background;
-$bar-width: 20em;
 $icon-size: 2.5em;
 $submenu-width: 40em;
 $submenu-background-color: white;
@@ -27,6 +26,11 @@ $submenu-transition: 0.4s ease;
     bottom: 0;
     display: flex;
     flex-direction: row;
+    --bar-width: 4.6em;
+}
+
+@include size(XL) {
+    --bar-width: 20em;
 }
 
 #bar {
@@ -80,6 +84,13 @@ $submenu-transition: 0.4s ease;
 
     .moreSign {
         display: none;
+        position: absolute;
+        right: 0.2em;
+        bottom: 0.2em;
+
+        @include size(XL) {
+            position: static;
+        }
     }
 
     // Top entries
@@ -93,15 +104,22 @@ $submenu-transition: 0.4s ease;
             padding: $padding !important;
             border-bottom: 1px solid #444;
             background-image: linear-gradient(lighten($bar-color, 1), $bar-color);
-            width: $bar-width;
+            width: var(--bar-width);
             cursor: pointer;
             color: white;
+
+            @include size(L) {
+                width: 5em;
+            }
 
             svg {
                 width: $icon-size;
                 max-height: $icon-size;
                 fill: #999;
-                margin-right: 1em;
+
+                @include size(XL) {
+                    margin-right: 1em;
+                }
             }
 
             &:hover {
@@ -127,6 +145,11 @@ $submenu-transition: 0.4s ease;
                 width: 75%;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                display: none;
+
+                @include size(XL) {
+                    display: block;
+                }
             }
         }
 
@@ -194,7 +217,7 @@ $submenu-transition: 0.4s ease;
             z-index: 1000;
             overflow: hidden;
             overflow-y: auto;
-            left: $bar-width;
+            left: var(--bar-width);
             top: 0;
             bottom: 0;
             width: $submenu-width;

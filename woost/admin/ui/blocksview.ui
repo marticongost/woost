@@ -338,9 +338,7 @@
     ?>
 
     <ui:with ui:element="headerContent">
-        <ui:cocktail.ui.ActionList
-            id="actionList"
-            buttonStyle="iconAboveText">
+        <ui:cocktail.ui.ActionList id="actionList">
             <?js
             element.actionContext = {
                 view: this,
