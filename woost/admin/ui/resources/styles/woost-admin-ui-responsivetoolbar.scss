@@ -1,0 +1,14 @@
+
+@import "woost.admin.ui://styles/common";
+
+$compact-padding: 0.8em;
+$wide-padding: 1em 1.3em;
+
+:host {
+    --action-list-button-padding: #{$compact-padding};
+}
+
+@include size(XL) {
+    --action-list-button-padding: #{$wide-padding};
+}
+

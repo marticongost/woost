@@ -13,6 +13,7 @@
     <ui:requires component="cocktail.ui.Notice"/>
     <ui:requires component="cocktail.ui.CollectionEditor"/>
     <ui:requires component="cocktail.ui.ExtraActionList"/>
+    <ui:requires component="woost.admin.ui.ResponsiveToolbar"/>
     <ui:requires component="woost.admin.ui.Thumbnail"/>
     <ui:requires component="woost.admin.ui.ItemLink"/>
     <ui:requires component="woost.admin.ui.ItemCard"/>
@@ -30,6 +31,7 @@
     <ui:requires-translation-bundle name="woost.admin.ui.partitioning"/>
     <ui:requires-translation-bundle name="woost.admin.ui.views"/>
 
+    <ui:resource href="cocktail.ui://scripts/screensize.js"/>
     <ui:resource href="woost.admin.ui://scripts/views.js"/>
     <ui:resource href="woost.admin.ui://scripts/partitioning.js"/>
     <ui:resource href="woost.admin.ui://scripts/editstate.js"/>
@@ -144,6 +146,19 @@
 
     <?on-window click
     instance.closeMenu();
+    ?>
+
+    <?js
+    woost.admin.ui.sizes = new cocktail.ui.Sizes(
+        {
+            XS: 400,
+            S:  700,
+            M:  1400,
+            L:  1700,
+            XL: null
+        },
+        "admin-size"
+    );
     ?>
 
     <header id="bar">

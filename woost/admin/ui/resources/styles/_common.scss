@@ -53,3 +53,17 @@ $panel-heading-color: lighten(desaturate($panel-action-color, 15), 10);
     font-size: 1rem;
 }
 
+@mixin size($size-selector) {
+    $selector: ":host-context(body[admin-size='#{$size-selector}'])";
+    @if not & {
+        #{$selector} {
+            @content;
+        }
+    }
+    @else {
+        #{$selector} & {
+            @content;
+        }
+    }
+}
+

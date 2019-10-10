@@ -1381,6 +1381,7 @@ woost.admin.actions.contextMenu = new cocktail.ui.ActionSet("context-menu", {
 woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar", {
     entries: [
         new cocktail.ui.ActionSet("main", {
+            component: () => woost.admin.ui.ResponsiveToolbar,
             entries: [
                 new woost.admin.actions.SelectViewAction("select-view"),
                 new woost.admin.actions.NewAction("new"),
@@ -1420,6 +1421,7 @@ woost.admin.actions.listingToolbar = new cocktail.ui.ActionSet("listing-toolbar"
 });
 
 woost.admin.actions.selectionToolbar = new cocktail.ui.ActionSet("selection-toolbar", {
+    component: () => woost.admin.ui.ResponsiveToolbar,
     entries: [
         new cocktail.ui.ActionSet("main", {
             entries: [
@@ -1480,6 +1482,7 @@ woost.admin.actions.collectionToolbar = new cocktail.ui.ActionSet("collection-to
 woost.admin.actions.editToolbar = new cocktail.ui.ActionSet("edit-toolbar", {
     entries: [
         new cocktail.ui.ActionSet("main", {
+            component: () => woost.admin.ui.ResponsiveToolbar,
             entries: [
                 new woost.admin.actions.EditBlocksAction("blocks"),
                 new woost.admin.actions.OpenURLAction("open-url"),
@@ -1494,6 +1497,7 @@ woost.admin.actions.editToolbar = new cocktail.ui.ActionSet("edit-toolbar", {
             ]
         }),
         new cocktail.ui.ActionSet("navigation", {
+            component: () => woost.admin.ui.ResponsiveToolbar,
             entries: [
                 new woost.admin.actions.TranslationsAction("translations"),
                 new woost.admin.actions.SaveAction("save"),
@@ -1510,6 +1514,7 @@ woost.admin.actions.editToolbar = new cocktail.ui.ActionSet("edit-toolbar", {
 });
 
 woost.admin.actions.deleteToolbar = new cocktail.ui.ActionSet("delete-toolbar", {
+    component: () => woost.admin.ui.ResponsiveToolbar,
     entries: [
         new woost.admin.actions.ConfirmDeleteAction("confirm-delete"),
         new woost.admin.actions.CancelAction("cancel")
@@ -1519,6 +1524,7 @@ woost.admin.actions.deleteToolbar = new cocktail.ui.ActionSet("delete-toolbar", 
 woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", {
     entries: [
         new cocktail.ui.ActionSet("main", {
+            component: () => woost.admin.ui.ResponsiveToolbar,
             entries: [
                 new woost.admin.actions.AddBlockAction("add-block"),
                 new woost.admin.actions.EditAction("edit"),
@@ -1526,7 +1532,7 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
             ]
         }),
         new cocktail.ui.ActionSet("copy-paste", {
-            component: () => cocktail.ui.ActionList.withProperties({
+            component: () => woost.admin.ui.ResponsiveToolbar.withProperties({
                 classList: ["separator"]
             }),
             entries: [
@@ -1536,6 +1542,7 @@ woost.admin.actions.blocksToolbar = new cocktail.ui.ActionSet("blocks-toolbar", 
             ]
         }),
         new cocktail.ui.ActionSet("navigation", {
+            component: () => woost.admin.ui.ResponsiveToolbar,
             entries: [
                 new woost.admin.actions.SaveBlocksAction("save"),
                 new woost.admin.actions.CancelBlocksAction("cancel"),

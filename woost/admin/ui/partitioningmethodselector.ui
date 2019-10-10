@@ -4,8 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://www.whads.com/ns/cocktail/ui"
     includeEmptyOption="true"
-    selectionDisplayed="false"
-    buttonStyle="textOnly">
+    selectionDisplayed="false">
 
     <?class
     actionSetup() {
