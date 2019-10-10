@@ -3,6 +3,9 @@
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail import schema
+from cocktail.translations import translations
+
+translations.load_bundle("woost.models.metatags")
 
 
 class MetaTags(schema.Collection):
