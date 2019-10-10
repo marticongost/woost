@@ -1,16 +1,18 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from shutil import move
+from cocktail.jsonutils import json_object
+
 from woost import app
 from woost.models.file import File, file_hash
-from .dataimport import import_object
+from .dataimport import import_object, Import
 from .item import import_item
 
+
 @import_object.implementation_for(File)
-def import_file(self, imp, data):
+def import_file(self: File, imp: Import, data: json_object):
 
     upload_id = data.get("_upload")
     import_item(self, imp, data)
@@ -36,7 +38,8 @@ def import_file(self, imp, data):
             # committed
             imp.after_commit(_move_upload, self, temp_file, self.file_path)
 
-def _move_upload(file, temp_file, dest):
+
+def _move_upload(file: File, temp_file: str, dest: str):
     file._v_upload_id = None
     move(temp_file, dest)
 

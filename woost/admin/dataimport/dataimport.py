@@ -1,26 +1,27 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
-from datetime import date, time, datetime
+from typing import Any, Callable, Iterable, Mapping, Optional, Set, Type, Union
+from datetime import datetime
 from decimal import Decimal
 from fractions import Fraction
 from collections import defaultdict
 from itertools import zip_longest
 
 from cocktail.modeling import GenericMethod
+from cocktail.jsonutils import json_data, json_object
 from cocktail import schema
 
 from woost.models import (
     Item,
+    User,
     ReadPermission,
     CreatePermission,
     ModifyPermission,
     CreateTranslationPermission,
     ModifyTranslationPermission,
     DeleteTranslationPermission,
-    ReadMemberPermission,
     ModifyMemberPermission
 )
 from woost.models.utils import get_model_dotted_name
@@ -34,31 +35,37 @@ should_import_member = GenericMethod(
 )
 
 
-class Import(object):
+class Import:
 
-    obj = None
-    data = None
-    new_translations = None
-    deleted_translations = None
-    user = None
-    permission_check = True
-    verbose_permission_checks = None
+    __object_map: Mapping[Union[int, str], Item]
+    __allowed_translations_cache: Mapping[Item, Set[str]]
+    __checked_members: Set[schema.Member]
+    __orphans: Set[Item]
+
+    obj: Item = None
+    data: dict = None
+    new_translations: Mapping[str, Set[str]] = None
+    deleted_translations: Set[str] = None
+    user: User = None
+    permission_check: bool = True
+    verbose_permission_checks: bool = None
 
     def __init__(
         self,
         data,
-        obj = None,
-        model = None,
-        deleted_translations = None,
-        user = None,
-        dry_run = False,
-        permission_check = None,
-        verbose_permission_checks = None
-    ):
+        obj: Item = None,
+        model: Type[Item] = None,
+        deleted_translations: Set[str] = None,
+        user: User = None,
+        dry_run: bool = False,
+        permission_check: bool = None,
+        verbose_permission_checks: bool = None):
+
         self.__object_map = {}
         self.__allowed_translations_cache = defaultdict(set)
         self.__checked_members = set()
         self.__orphans = set()
+
         self.data = data
         self.new_translations = defaultdict(set)
         self.deleted_translations = defaultdict(set)
@@ -81,10 +88,14 @@ class Import(object):
         if not self.dry_run:
             self._delete_orphans()
 
-    def get_instance(self, id, cls = Item):
+    def get_instance(
+            self,
+            id: Union[str, id],
+            cls: Type[Item] = Item) -> Optional[Item]:
+
         return self.__object_map.get(id) or cls.get_instance(id)
 
-    def after_commit(self, callback, *args, **kwargs):
+    def after_commit(self, callback: Callable, *args, **kwargs):
         self.after_commit_callbacks.append((callback, args, kwargs))
 
     def commit_successful(self):
@@ -107,7 +118,7 @@ class Import(object):
             else:
                 orphan.delete()
 
-    def import_object(self, obj, data):
+    def import_object(self, obj: Item, data: json_object):
 
         # Pre-modification permission check
         if self.permission_check and obj.is_inserted:
@@ -122,7 +133,7 @@ class Import(object):
         if not self.dry_run:
             obj.insert()
 
-    def edit_permission_check(self, obj):
+    def edit_permission_check(self, obj: Item):
         self.user.require_permission(
             ModifyPermission
                 if obj.is_inserted
@@ -131,7 +142,7 @@ class Import(object):
             verbose=self.verbose_permission_checks
         )
 
-    def check_translation_permission(self, obj, language):
+    def check_translation_permission(self, obj: Item, language: str):
 
         perm_cache = self.__allowed_translations_cache[obj]
 
@@ -140,20 +151,20 @@ class Import(object):
             if language in obj.translations:
                 self.user.require_permission(
                     ModifyTranslationPermission,
-                    language = language,
-                    verbose = self.verbose_permission_checks
+                    language=language,
+                    verbose=self.verbose_permission_checks
                 )
             else:
                 self.user.require_permission(
                     CreateTranslationPermission,
-                    language = language,
-                    verbose = self.verbose_permission_checks
+                    language=language,
+                    verbose=self.verbose_permission_checks
                 )
                 self.new_translations[obj].add(language)
 
             perm_cache.add(language)
 
-    def check_member_permission(self, member):
+    def check_member_permission(self, member: schema.Member):
         if member not in self.__checked_members:
             self.user.require_permission(
                 ModifyMemberPermission,
@@ -162,7 +173,7 @@ class Import(object):
             )
             self.__checked_members.add(member)
 
-    def import_members(self, obj, data):
+    def import_members(self, obj: Item, data: json_object):
         for member in obj.__class__.iter_members():
             if self.should_import_member(obj, data, member):
                 try:
@@ -172,7 +183,12 @@ class Import(object):
                 else:
                     self.import_member_value(obj, member, value)
 
-    def import_member_value(self, obj, member, value, language = None):
+    def import_member_value(
+            self,
+            obj: Item,
+            member: schema.Member,
+            value: json_data,
+            language: str = None) -> Any:
 
         # Prevent writing forbidden members
         if self.permission_check and self.user:
@@ -190,7 +206,10 @@ class Import(object):
             parsed_value = self.parse_member_value(member, value)
             self.set_object_value(obj, member, parsed_value, language)
 
-    def parse_member_value(self, member, value):
+    def parse_member_value(
+            self,
+            member: schema.Member,
+            value: json_data) -> Any:
 
         # TODO: make this extensible, per type and per member
 
@@ -266,7 +285,12 @@ class Import(object):
 
         return value
 
-    def set_object_value(self, obj, member, value, language=None):
+    def set_object_value(
+            self,
+            obj: Item,
+            member: schema.Member,
+            value: Any,
+            language: str = None):
 
         # Flag objects orphaned by an integral collection
         if (
@@ -297,7 +321,10 @@ class Import(object):
         else:
             obj.set(member, value, language)
 
-    def produce_object(self, value, root_model = Item):
+    def produce_object(
+            self,
+            value: Union[int, str, json_object],
+            root_model: Type[Item] = Item) -> Item:
 
         id = None
 
@@ -339,8 +366,8 @@ class Import(object):
         elif self.permission_check and self.user:
             self.user.require_permission(
                 ReadPermission,
-                target = item,
-                verbose = self.verbose_permission_checks
+                target=item,
+                verbose=self.verbose_permission_checks
             )
 
         if read_child_data:
@@ -348,23 +375,37 @@ class Import(object):
 
         return item
 
-    def should_import_member(self, obj, data, member):
+    def should_import_member(
+            self,
+            obj: Item,
+            data: json_data,
+            member: schema.Member) -> bool:
+
         return should_import_member(obj, self, data, member)
 
-    def delete_translations(self, obj, deleted_translations):
+    def delete_translations(
+            self,
+            obj: Item,
+            deleted_translations: Iterable[str]):
+
         if deleted_translations:
             for language in deleted_translations:
                 if language in obj.translations:
                     if self.permission_check:
                         self.user.require_permission(
                             DeleteTranslationPermission,
-                            language = language,
-                            verbose = self.verbose_permission_checks
+                            language=language,
+                            verbose=self.verbose_permission_checks
                         )
                     del obj.translations[language]
                     self.deleted_translations[obj].add(language)
 
-    def require_value_type(self, member, expected_type, value):
+    def require_value_type(
+            self,
+            member: schema.Member,
+            expected_type: Type,
+            value: Any):
+
         if not isinstance(value, expected_type):
             raise ValueError(
                 "Error while importing %r; "
@@ -372,7 +413,10 @@ class Import(object):
                 % (member, expected_type, value)
             )
 
-    def get_model_by_dotted_name(self, name, root_model = Item):
+    def get_model_by_dotted_name(
+            self,
+            name: str,
+            root_model: Type[Item] = Item) -> Type[Item]:
 
         for cls in root_model.schema_tree():
             if get_model_dotted_name(cls) == name:
