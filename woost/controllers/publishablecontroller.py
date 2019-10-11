@@ -123,7 +123,7 @@ class PublishableController(BaseCMSController, Cached):
 
         publishable = app.publishable
 
-        if publishable.redirection_mode:
+        if publishable.redirection_mode and not app.editing:
 
             redirection_target = publishable.find_redirection_target()
 
