@@ -1,0 +1,24 @@
+
+[woost.admin.ui.DiscardChangesConfirmation]
+
+    [heading]
+    ca: Tens canvis no desats
+    es: Tienes cambios sin guardar
+    en: You have unsaved changes
+
+    [notice]
+    ca:
+        <p>Si tanques aquesta vista els canvis que encara no has desat es perdran.</p>
+        <p>Segur que vols descartar-los?</p>
+    es:
+        <p>Si cierras esta vista los cambios que todavía no has guardado se perderán.</p>
+        <p>¿Seguro que quieres descartarlos?</p>
+    en:
+        <p>If you close this view all unsaved changes will be lost.</p>
+        <p>Are you sure you want to discard them?</p>
+
+    [DiscardAction]
+    ca: Descartar els canvis
+    es: Descartar los cambios
+    en: Discard changes
+
