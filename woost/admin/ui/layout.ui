@@ -333,6 +333,8 @@
 
     </ui:MenuEntry>
 
+    <ui:woost.admin.ui.DiscardChangesConfirmation id="discardChangesConfirmation"/>
+
     <?js
     // Create sections
     for (let section of woost.admin.data._root_section.children) {

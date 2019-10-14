@@ -44,6 +44,21 @@ woost.admin.nodes.globalEntries = {};
             return heading;
         }
 
+        hasPendingChanges() {
+            return false;
+        }
+
+        transitionTo(node) {
+            if (this.hasPendingChanges() && !this.isAncestorOf(node)) {
+                return cocktail.ui.root.discardChangesConfirmation.comply()
+                    .then(() => node)
+                    .catch((error) => null);
+            }
+            else {
+                return node;
+            }
+        }
+
         traverse() {
             // Redirection after creating a new object. Overriden
             // to change the animation type to fade
@@ -733,6 +748,10 @@ woost.admin.nodes.RelationNode = class RelationNode extends woost.admin.nodes.It
             }
         }
 
+        hasPendingChanges() {
+            return this.stackNode.editForm.modified;
+        }
+
         getEditState() {
             return woost.admin.editState.get(this.item);
         }
@@ -997,6 +1016,10 @@ woost.admin.nodes.BaseBlocksNode = class BaseBlocksNode extends woost.admin.node
         return woost.admin.ui.BlocksView;
     }
 
+    hasPendingChanges() {
+        return this.stackNode.modified;
+    }
+
     getEditState() {
         return woost.admin.editState.get(this.item);
     }
@@ -1080,6 +1103,10 @@ woost.admin.nodes.EditBlockNode = class EditBlockNode extends woost.admin.nodes.
     }
 
     get createsStackUI() {
+        return false;
+    }
+
+    hasPendingChanges() {
         return false;
     }
 

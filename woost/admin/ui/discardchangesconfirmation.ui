@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:cocktail.ui.Modal
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://www.whads.com/ns/cocktail/ui">
+
+    <?tail
+    cls.DiscardAction = class DiscardAction extends cls.AcceptAction {
+
+        getIconURL(context) {
+            return cocktail.normalizeResourceURI(`woost.admin.ui://images/actions/delete.svg`);
+        }
+
+        get translationKey() {
+            return "woost.admin.ui.DiscardChangesConfirmation.DiscardAction";
+        }
+    }
+    ?>
+
+    <?class
+    getActions() {
+        return new cocktail.ui.ActionSet("confirmation-actions", {
+            entries: [
+                new this.constructor.DiscardAction("discard"),
+                new this.constructor.CancelAction("cancel")
+            ]
+        });
+    }
+    ?>
+
+    <ui:with ui:element="heading">
+        <ui:translation/>
+    </ui:with>
+
+    <ui:with ui:element="content">
+        <ui:translation key=".notice"/>
+    </ui:with>
+
+</ui:cocktail.ui.Modal>
+
