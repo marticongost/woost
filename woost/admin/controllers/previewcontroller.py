@@ -1,14 +1,15 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Any, Type
+
 import cherrypy
 from cocktail.modeling import GenericMethod
-from cocktail.persistence import InstanceNotFoundError
 from cocktail.controllers import HTTPMethodController, read_json
 from cocktail.translations import set_language
 from cocktail.html import templates
+
 from woost import app
 from woost.models import (
     Item,
@@ -16,8 +17,7 @@ from woost.models import (
     Website,
     Block,
     BlocksCatalog,
-    Slot,
-    ModifyPermission
+    Slot
 )
 from woost.models.utils import get_matching_website
 from woost.admin.dataimport import Import
@@ -36,7 +36,7 @@ def get_blocks_catalog_blocks_preview_target(self):
 
 class BasePreviewController(HTTPMethodController):
 
-    data_import = Import
+    data_import: Type[Import] = Import
 
     @cherrypy.expose
     def GET(self, **kwargs):
@@ -46,7 +46,7 @@ class BasePreviewController(HTTPMethodController):
     def POST(self, **kwargs):
         return self._preview()
 
-    def _preview(self):
+    def _preview(self) -> str:
         imp = self._import_data()
         self._setup_request(imp)
         return self._produce_content(imp)
@@ -59,7 +59,7 @@ class BasePreviewController(HTTPMethodController):
             dry_run = True
         )
 
-    def _setup_request(self, imp):
+    def _setup_request(self, imp: Import):
 
         # Set the active publishable
         app.publishable = self._resolve_preview_target(imp)
@@ -90,16 +90,16 @@ class BasePreviewController(HTTPMethodController):
         # Enable editing mode
         app.editing = True
 
-    def _produce_content(self, imp):
+    def _produce_content(self, imp: Import) -> str:
         return ""
 
-    def _require_param(self, param_name):
+    def _require_param(self, param_name: str) -> Any:
         try:
             return cherrypy.request.params[param_name]
         except KeyError:
             raise cherrypy.HTTPError(400, "Missing parameter %r" % param_name)
 
-    def _resolve_preview_target(self, imp):
+    def _resolve_preview_target(self, imp: Import) -> PublishableObject:
 
         publishable = get_blocks_preview_target(imp.obj)
 
@@ -111,7 +111,11 @@ class BasePreviewController(HTTPMethodController):
 
         return publishable
 
-    def _resolve_object_param(self, param_name, imp, model = Item):
+    def _resolve_object_param(
+            self,
+            param_name: str,
+            imp: Import,
+            model: Type[Item] = Item) -> Item:
 
         id = self._require_param(param_name)
 
@@ -132,7 +136,7 @@ class BasePreviewController(HTTPMethodController):
 
 class PagePreviewController(BasePreviewController):
 
-    def _produce_content(self, imp):
+    def _produce_content(self, imp: Import) -> str:
 
         controller_class = app.publishable.resolve_controller()
 
@@ -144,7 +148,7 @@ class PagePreviewController(BasePreviewController):
 
 class BlockPreviewController(BasePreviewController):
 
-    def _produce_content(self, imp):
+    def _produce_content(self, imp: Import) -> str:
 
         block = self._resolve_object_param("block", imp, Block)
 
@@ -158,7 +162,7 @@ class BlockPreviewController(BasePreviewController):
 
 class StylesPreviewController(BasePreviewController):
 
-    def _produce_content(self, imp):
+    def _produce_content(self, imp: Import) -> str:
         block = self._resolve_object_param("block", imp, Block)
         cherrypy.response.headers["Content-Type"] = "text/css; charset=utf-8"
         return block.get_embedded_css()
@@ -166,7 +170,7 @@ class StylesPreviewController(BasePreviewController):
 
 class SlotPreviewController(BasePreviewController):
 
-    def _produce_content(self, imp):
+    def _produce_content(self, imp: Import) -> str:
 
         container = self._resolve_object_param("container", imp)
         slot = self._resolve_slot(imp, container.__class__)
@@ -176,7 +180,7 @@ class SlotPreviewController(BasePreviewController):
         block_list.slot = slot
         return block_list.render_page()
 
-    def _resolve_slot(self, imp, model):
+    def _resolve_slot(self, imp: Import, model: Type[Item]) -> Slot:
 
         slot_name = self._require_param("slot")
         slot = model.get_member(slot_name)

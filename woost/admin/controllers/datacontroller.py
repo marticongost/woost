@@ -1,10 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.translations import translations
 from cocktail.controllers import Controller
+
 from .listingcontroller import ListingController
 from .transactioncontroller import TransactionController
 from .defaultscontroller import DefaultsController
@@ -21,6 +21,7 @@ translations.load_bundle("woost.admin.controllers.datacontroller")
 
 
 class DataController(Controller):
+
     listing = ListingController
     transaction = TransactionController
     views = ViewsController

@@ -1,14 +1,15 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Any, Mapping, Optional, Sequence, Tuple, Type
 import json
 from io import BytesIO
 
 import cherrypy
 from cocktail.translations import translations, get_language
 from cocktail import schema
+from cocktail.jsonutils import json_object
 from cocktail.schema.expressions import (
     Self,
     TranslationExpression,
@@ -23,6 +24,7 @@ from cocktail.controllers import (
     json_out,
     serve_file
 )
+
 from woost import app
 from woost.models import (
     Item,
@@ -33,13 +35,15 @@ from woost.models import (
 )
 from woost.models.utils import (
     any_translation,
-    get_model_dotted_name,
     get_model_from_dotted_name
 )
 from woost.admin.dataexport import Export
 from woost.admin.dataexport.adminexport import AdminExport
-from woost.admin.partitioning import parse_partition_parameter
-from woost.admin.filters import get_filters
+from woost.admin.partitioning import (
+    parse_partition_parameter,
+    PartitioningMethod
+)
+from woost.admin.filters import get_filters, Filter
 from .utils import resolve_object_ref
 
 undefined = object()
@@ -50,13 +54,13 @@ translations.load_bundle("woost.admin.ui.listing")
 class ListingController(Controller):
 
     view = None
-    default_export = "default"
-    exports = {
+    default_export: str = "default"
+    exports: Mapping[str, Export] = {
         "default": Export,
         "admin": AdminExport
     }
-    default_order = "-last_update_time"
-    max_page_size = 10000
+    default_order: str = "-last_update_time"
+    max_page_size: int = 10000
 
     @json_out
     def __call__(self, **kwargs):
@@ -97,7 +101,7 @@ class ListingController(Controller):
 
             if not app.user.has_permission(
                 ReadPermission,
-                target = self.instance
+                target=self.instance
             ):
                 raise cherrypy.HTTPError(403, "Unauthorized object access")
 
@@ -230,23 +234,21 @@ class ListingController(Controller):
             and not self.partition
             and not self.filter_expressions
         ):
-            if app.user.has_permission(ModifyPermission, target = self.model):
+            if app.user.has_permission(ModifyPermission, target=self.model):
                 scope.update(
                     cls.full_name
-                    for cls in self.model.ascend_inheritance(
-                        include_self = True
-                    )
+                    for cls in self.model.ascend_inheritance(include_self=True)
                 )
         elif self.instance:
             if app.user.has_permission(
                 ModifyPermission,
-                target = self.instance
+                target=self.instance
             ):
                 scope.update(self.instance.get_cache_invalidation_scope())
         else:
             if self.relation:
                 member, owner = self.relation
-                query = member.select_constraint_instances(parent = owner)
+                query = member.select_constraint_instances(parent=owner)
             else:
                 query = self.model.select()
 
@@ -272,7 +274,7 @@ class ListingController(Controller):
         return list(scope)
 
     @request_property
-    def model(self):
+    def model(self) -> Type[Item]:
 
         model_name = cherrypy.request.params.get("model")
 
@@ -290,7 +292,7 @@ class ListingController(Controller):
         raise cherrypy.HTTPError(400, "No model specified")
 
     @request_property
-    def instance(self):
+    def instance(self) -> Optional[Item]:
 
         id = cherrypy.request.params.get("id")
 
@@ -300,7 +302,7 @@ class ListingController(Controller):
         return None
 
     @request_property
-    def subset(self):
+    def subset(self) -> Sequence[Item]:
         subset = cherrypy.request.params.get("subset")
         if subset:
             return [resolve_object_ref(id) for id in subset.split()]
@@ -308,7 +310,7 @@ class ListingController(Controller):
             return None
 
     @request_property
-    def locales(self):
+    def locales(self) -> Optional[Sequence[str]]:
 
         value = cherrypy.request.params.get("locales", "_object")
 
@@ -321,7 +323,7 @@ class ListingController(Controller):
         return value or [get_language()]
 
     @request_property
-    def include_slots(self):
+    def include_slots(self) -> bool:
         return get_parameter(
             schema.Boolean("slots", default=False),
             undefined="set_default",
@@ -329,7 +331,7 @@ class ListingController(Controller):
         )
 
     @request_property
-    def include_paths(self):
+    def include_paths(self) -> bool:
         return get_parameter(
             schema.Boolean("paths", default=False),
             undefined="set_default",
@@ -337,7 +339,7 @@ class ListingController(Controller):
         )
 
     @request_property
-    def refs_only(self):
+    def refs_only(self) -> bool:
         return get_parameter(
             schema.Boolean("ref", default=False),
             undefined="set_default",
@@ -366,7 +368,7 @@ class ListingController(Controller):
         raise KeyError("Unknown member " + key)
 
     @request_property
-    def members(self):
+    def members(self) -> Optional[Sequence[schema.Member]]:
 
         view = self.view
         if view and not view.allows_member_selection:
@@ -383,7 +385,7 @@ class ListingController(Controller):
         return None
 
     @request_property
-    def export(self):
+    def export(self) -> Export:
 
         export_class = cherrypy.request.params.get(
             "export",
@@ -418,7 +420,7 @@ class ListingController(Controller):
         return export
 
     @request_property
-    def order(self):
+    def order(self) -> Optional[Expression]:
 
         order = cherrypy.request.params.get("order") or self.get_default_order()
 
@@ -466,7 +468,7 @@ class ListingController(Controller):
         return expr
 
     @request_property
-    def range(self):
+    def range(self) -> Optional[Tuple[int, int]]:
 
         get_param = cherrypy.request.params.get
         page = get_param("page") or None
@@ -509,7 +511,7 @@ class ListingController(Controller):
         return (start, start + page_size)
 
     @request_property
-    def partition(self):
+    def partition(self) -> Optional[Tuple[PartitioningMethod, Any]]:
         value = cherrypy.request.params.get("partition")
         if value:
             partition = parse_partition_parameter(value)
@@ -520,11 +522,11 @@ class ListingController(Controller):
             return None
 
     @request_property
-    def search(self):
+    def search(self) -> Optional[str]:
         return cherrypy.request.params.get("search")
 
     @request_property
-    def filters(self):
+    def filters(self) -> Sequence[Filter]:
 
         filters = []
         get_param = cherrypy.request.params.get
@@ -539,7 +541,7 @@ class ListingController(Controller):
         return filters
 
     @request_property
-    def filter_expressions(self):
+    def filter_expressions(self) -> Sequence[Expression]:
 
         filter_expressions = []
 
@@ -559,10 +561,11 @@ class ListingController(Controller):
             filter_expressions.append(
                 Self.search(
                     self.search,
-                    match_mode = "prefix",
-                    languages =
+                    match_mode="prefix",
+                    languages=(
                         self.locales
                         or [None] + list(Configuration.instance.languages)
+                    )
                 )
             )
 
@@ -577,7 +580,7 @@ class ListingController(Controller):
         return filter_expressions
 
     @request_property
-    def relation(self):
+    def relation(self) -> Optional[Tuple[schema.RelationMember, Item]]:
 
         relation = cherrypy.request.params.get("relation")
 
@@ -633,21 +636,21 @@ class ListingController(Controller):
         filter = filter_class()
         get_parameter(
             filter_class,
-            target = filter,
-            source = source.get,
-            undefined = "set_default",
-            implicit_booleans = False,
-            errors = "ignore"
+            target=filter,
+            source=source.get,
+            undefined="set_default",
+            implicit_booleans=False,
+            errors="ignore"
         )
         return filter if filter_class.validate(filter) else None
 
     @property
-    def count_enabled(self):
+    def count_enabled(self) -> bool:
         if self.view:
             return self.view.count_enabled
         return True
 
-    def _get_count_object(self, count):
+    def _get_count_object(self, count: int) -> json_object:
 
         if self.partition:
             count_obj = self._export_count(count[0][1])
@@ -660,7 +663,10 @@ class ListingController(Controller):
 
         return count_obj
 
-    def _export_count(self, count, partition_value = undefined):
+    def _export_count(
+            self,
+            count: int,
+            partition_value: Any = undefined) -> json_object:
 
         if not self.count_enabled:
             return None
@@ -669,8 +675,8 @@ class ListingController(Controller):
             "value": count,
             "label": translations(
                 "woost.admin.controllers.datacontroller.count",
-                model = self.model,
-                count = count
+                model=self.model,
+                count=count
             )
         }
 
@@ -686,7 +692,10 @@ class AdminXLSXExporter(xlsx.Exporter):
 
     include_label = False
 
-    def get_columns(self, members, languages):
+    def get_columns(
+            self,
+            members: Sequence[schema.Member],
+            languages: Sequence[str]) -> Sequence[xlsx.Column]:
 
         columns = []
 
@@ -706,7 +715,7 @@ class AdminXLSXLabelColumn(xlsx.Column):
                 "woost.admin.ui.Listing.labelColumn",
             )
 
-    def get_cell_value(self, obj):
+    def get_cell_value(self, obj: schema.SchemaObject) -> Any:
         return any_translation(obj)
 
 

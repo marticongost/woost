@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Sequence
+
 import pkg_resources
 from cocktail.translations import (
     translations,
@@ -15,6 +16,7 @@ from cocktail.ui import components
 from cocktail.controllers import get_request_root_url
 from cocktail.persistence import PersistentClass, PersistentObject
 from cocktail.javascriptserializer import JS
+
 from woost import app
 from woost.models import Configuration, extensions_manager
 from woost.controllers.publishablecontroller import PublishableController
@@ -25,8 +27,10 @@ from .datacontroller import DataController
 from .previewcontroller import PreviewController
 from .utils import set_admin_language
 
-def _get_version(pkg_name):
+
+def _get_version(pkg_name: str) -> str:
     return pkg_resources.require(pkg_name)[0].version
+
 
 WOOST_VERSION = _get_version("woost")
 EXT_PREFIX = "woost.extensions."
@@ -34,7 +38,7 @@ EXT_PREFIX = "woost.extensions."
 
 class AdminController(PublishableController):
 
-    ui_component_properties = [
+    ui_component_properties: Sequence[str] = [
         "admin_edit_view",
         "admin_item_card",
         "ui_display",
@@ -90,7 +94,7 @@ class AdminController(PublishableController):
                 if component:
                     require_component(component)
 
-            for member in model.iter_members(recursive = False):
+            for member in model.iter_members(recursive=False):
 
                 if member.visible:
 
@@ -112,11 +116,11 @@ class AdminController(PublishableController):
         )
 
         html = components.get(app.publishable.main_ui_component).render_page(
-            title = translations("woost.admin.ui.Layout.heading"),
-            global_style_sheet = "woost.admin.ui://styles/global.scss.css",
-            locales = sorted(config.languages, key = translate_locale),
-            extra_dependencies = dependencies,
-            variables = {
+            title=translations("woost.admin.ui.Layout.heading"),
+            global_style_sheet="woost.admin.ui://styles/global.scss.css",
+            locales=sorted(config.languages, key=translate_locale),
+            extra_dependencies=dependencies,
+            variables={
                 "woost.admin.origin":
                     str(get_request_root_url()).rstrip("/"),
                 "woost.admin.url": url,

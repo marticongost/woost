@@ -1,17 +1,20 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Sequence, Set, Tuple
+
 import cherrypy
 from ZODB.POSException import ConflictError
 from cocktail.events import monitor_thread_events
 from cocktail.pkgutils import get_full_name
 from cocktail.translations import translations
+from cocktail.jsonutils import json_object
 from cocktail import schema
 from cocktail.schema.exceptions import ValidationError, ValueRequiredError
 from cocktail.persistence import datastore
 from cocktail.controllers import Controller, json_out, read_json
+
 from woost import app
 from woost.models import (
     changeset_context,
@@ -81,7 +84,15 @@ class TransactionController(Controller):
 
         return response_data
 
-    def _execute(self, data, dry_run = False):
+    def _execute(
+            self,
+            data: json_object,
+            dry_run: bool = False) -> Tuple[
+                Set[Item],
+                Set[Item],
+                Set[Item],
+                Sequence[ValidationError]
+            ]:
 
         states = data.get("objects")
         delete_ids = data.get("delete")
@@ -163,21 +174,26 @@ class TransactionController(Controller):
                     obj = resolve_object_ref(id)
                     user.require_permission(
                         DeletePermission,
-                        target = obj
+                        target=obj
                     )
                     obj.delete()
 
         return imports, created, modified, deleted, errors
 
-    def _import_object(self, obj, data, **kwargs):
+    def _import_object(self, obj: Item, data: json_object, **kwargs) -> Import:
         return Import(
             data,
-            obj = obj,
-            user = app.user,
+            obj=obj,
+            user=app.user,
             **kwargs
         )
 
-    def _export_changes(self, created, modified, deleted):
+    def _export_changes(
+            self,
+            created: Set[Item],
+            modified: Set[Item],
+            deleted: Set[Item]) -> json_object:
+
         exp = Export()
         return {
             "created":
@@ -192,19 +208,27 @@ class TransactionController(Controller):
                 ),
             "deleted":
                 dict(
-                    (str(obj.id), exp.export_object(obj, ref = True))
+                    (str(obj.id), exp.export_object(obj, ref=True))
                     for obj in deleted
                 )
         }
 
-    def _export_errors(self, obj, dry_run):
+    def _export_errors(
+            self,
+            obj: Item,
+            dry_run: bool) -> Sequence[ValidationError]:
+
         return [
             self._export_error(error)
             for error in obj.__class__.get_errors(obj)
             if not self._should_ignore_error(error, dry_run)
         ]
 
-    def _should_ignore_error(self, error, dry_run):
+    def _should_ignore_error(
+            self,
+            error: ValidationError,
+            dry_run: bool) -> bool:
+
         return (
             dry_run
             and isinstance(error, ValueRequiredError)
@@ -213,7 +237,7 @@ class TransactionController(Controller):
             and error.member.related_end.integral
         )
 
-    def _export_error(self, error):
+    def _export_error(self, error: ValidationError) -> json_object:
 
         record = {
             "type": get_full_name(error.__class__),

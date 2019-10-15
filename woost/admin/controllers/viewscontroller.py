@@ -1,16 +1,16 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
-from cocktail.controllers import Controller
+from cocktail.controllers import Controller, Dispatcher
+
 from woost.admin.views import require_view, UnavailableViewError
 
 
 class ViewsController(Controller):
 
-    def resolve(self, path):
+    def resolve(self, path: Dispatcher.PathProcessor) -> Controller:
 
         if not path:
             return None

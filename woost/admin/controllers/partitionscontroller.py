@@ -1,17 +1,20 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Any
+
 import cherrypy
+from cocktail.jsonutils import json_object
 from cocktail.controllers import Controller, json_out
+
 from woost.admin import partitioning
 
 
 class PartitionsController(Controller):
 
     @json_out
-    def __call__(self, method_name, value = None):
+    def __call__(self, method_name, value=None):
 
         try:
             part_method = partitioning.require_method(method_name)
@@ -32,7 +35,11 @@ class PartitionsController(Controller):
 
         return data
 
-    def export_partition(self, part_method, value):
+    def export_partition(
+            self,
+            part_method: partitioning.PartitioningMethod,
+            value: Any) -> json_object:
+
         return {
             "value": part_method.serialize_value(value),
             "label": part_method.translate_value(value)

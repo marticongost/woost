@@ -1,12 +1,10 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 import cherrypy
-from cocktail.modeling import camel_to_underscore
 from cocktail.javascriptserializer import dumps
-from cocktail import schema
+from cocktail.caching import Invalidable, CacheKey
 from cocktail.controllers import Controller, Cached, request_property
 from cocktail.persistence import PersistentObject
 
@@ -28,7 +26,7 @@ if app.cache:
 class SchemasController(Cached, Controller):
 
     @request_property
-    def invalidation(self):
+    def invalidation(self) -> Invalidable:
         invalidation = Cached.invalidation(self)
         invalidation.depends_on("woost.admin.schemas")
 
@@ -39,10 +37,10 @@ class SchemasController(Cached, Controller):
         return invalidation
 
     @request_property
-    def cache_key(self):
+    def cache_key(self) -> CacheKey:
         return Cached.cache_key(self), app.user.role.id
 
-    def _produce_content(self):
+    def _produce_content(self) -> str:
 
         language = set_admin_language()
 
