@@ -45,7 +45,7 @@ of its features include:\n"
         "Framework :: ZODB",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
-        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Natural Language :: Catalan",
         "Natural Language :: Spanish",
         "Programming Language :: Python :: 3",
