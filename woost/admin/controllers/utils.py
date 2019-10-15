@@ -1,18 +1,22 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
+from typing import Type, Union
+
 import cherrypy
 from cocktail.translations import set_language
-from cocktail.persistence import datastore, InstanceNotFoundError
+from cocktail.jsonutils import json_object
+from cocktail.persistence import InstanceNotFoundError
+
 from woost import app
 from woost.models import Item, Configuration, Website
 from woost.models.utils import get_model_from_dotted_name
 
 WEBSITE_PREFIX = "website-"
 
-def resolve_object_ref(id):
+
+def resolve_object_ref(id: Union[str, int]) -> Item:
 
     if isinstance(id, str):
 
@@ -22,7 +26,7 @@ def resolve_object_ref(id):
         if id.startswith(WEBSITE_PREFIX):
             identifier = id[len(WEBSITE_PREFIX):]
             try:
-                return Website.require_instance(identifier = identifier)
+                return Website.require_instance(identifier=identifier)
             except InstanceNotFoundError:
                 raise cherrypy.HTTPError(
                     404,
@@ -42,7 +46,8 @@ def resolve_object_ref(id):
     except InstanceNotFoundError:
         raise cherrypy.HTTPError(404, "Can't find an object with id %s" % id)
 
-def get_model_from_state(state):
+
+def get_model_from_state(state: json_object) -> Type[Item]:
 
     try:
         model_name = state["_class"]
@@ -54,6 +59,7 @@ def get_model_from_state(state):
         raise cherrypy.HTTPError(400, "Unknown model: " + model_name)
 
     return model
+
 
 def set_admin_language():
 

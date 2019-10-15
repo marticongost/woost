@@ -1,9 +1,9 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
 """
 from cocktail.controllers import Controller, json_out
+
 from woost import app
 from woost.admin.dataexport import Export
 

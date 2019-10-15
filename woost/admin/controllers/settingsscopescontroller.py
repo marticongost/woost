@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 """
 
 .. moduleauthor:: Martí Congost <marti.congost@whads.com>
@@ -6,6 +5,7 @@
 import cherrypy
 from cocktail.translations import translations
 from cocktail.controllers import HTTPMethodController, json_out
+
 from woost import app
 from woost.models import (
     Configuration,
@@ -28,7 +28,7 @@ class SettingsScopesController(HTTPMethodController):
                     app.user,
                     ReadPermission
                 ),
-                order = "site_name"
+                order="site_name"
             )
         )
         return scopes
